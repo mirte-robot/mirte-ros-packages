@@ -30,7 +30,7 @@ async def analog_write(board, pin, value):
     if board_mapping.get_mcu() == "pico":
         await board.pwm_write(pin, value)
     else:
-        await board.analog_write(board, pin, value)
+        await board.analog_write(pin, value)
 
 
 # Import ROS message types
