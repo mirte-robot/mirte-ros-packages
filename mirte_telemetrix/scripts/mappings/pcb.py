@@ -42,6 +42,10 @@ def get_analog_offset():
     return board_mapping.get_analog_offset()
 
 
+def get_adc_bits():
+    return board_mapping.get_adc_bits()
+
+
 def connector_to_pins(connector):
     if connector in connector_mapping:
         return connector_mapping[connector]

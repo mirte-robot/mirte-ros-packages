@@ -185,22 +185,25 @@ class KeypadMonitor(SensorMonitor):
     async def start(self):
         await self.board.set_pin_mode_analog_input(
             self.pins["pin"] - board_mapping.get_analog_offset(),
-            self.differential,
-            self.publish_data,
+            differential=self.differential,
+            callback=self.publish_data,
         )
 
     async def publish_data(self, data):
         # Determine the key that is pressed
+        # TODO: these values were found on a 12 bits adc, and
+        # added a scaling for the actual bits used. We could 
+        # calculate this with the R values used.
         key = ""
-        if data[2] < 70:
+        if data[2] < 70 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "left"
-        elif data[2] < 230:
+        elif data[2] < 230 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "up"
-        elif data[2] < 410:
+        elif data[2] < 410 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "down"
-        elif data[2] < 620:
+        elif data[2] < 620 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "right"
-        elif data[2] < 880:
+        elif data[2] < 880 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "enter"
 
         # Do some debouncing
@@ -674,7 +677,6 @@ pin_values = {}
 # this one more often than another pin.
 async def data_callback(data):
     global pin_values
-    print("data callback")
     pin_number = data[1]
     if data[0] == 3:
         pin_number += board_mapping.get_analog_offset()
@@ -701,7 +703,6 @@ def handle_get_pin_value(req):
             asyncio.run(board.set_pin_mode_digital_input(pin, callback=data_callback))
 
     while not pin in pin_values:
-        # print("sleeping pinvalues")
         time.sleep(0.00001)
 
     value = pin_values[pin]

@@ -16,17 +16,17 @@ distance:
     pins:
       trigger: GP9
       echo: GP8
-encoder:
-  left:
-    name: left
-    device: mirte
-    pins:
-      pin: GP15
-  right:
-    name: right
-    device: mirte
-    pins:
-      pin: GP14
+#encoder:
+#  left:
+#    name: left
+#    device: mirte
+#    pins:
+#      pin: GP15
+#  right:
+#    name: right
+#    device: mirte
+#    pins:
+#      pin: GP14
 intensity:
   left:
     name: left 
@@ -40,13 +40,13 @@ intensity:
     pins:
       analog: GP27
       digital: GP17
-oled:
-  left:
-    name: left
-    device: mirte
-    pins:
-      sda: GP4
-      scl: GP5
+#oled:
+#  left:
+#    name: left
+#    device: mirte
+#    pins:
+#      sda: GP4
+#      scl: GP5
 #  right:
 #    name: right
 #    device: mirte

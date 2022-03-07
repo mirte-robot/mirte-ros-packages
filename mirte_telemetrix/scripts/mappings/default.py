@@ -25,5 +25,9 @@ def get_analog_offset():
     return 0
 
 
+def get_adc_bits():
+    return 12
+
+
 def get_max_pwm_value():
     return 255
