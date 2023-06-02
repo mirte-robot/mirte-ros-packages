@@ -56,6 +56,14 @@ find_package(catkin REQUIRED COMPONENTS
    Intensity.msg
    IntensityDigital.msg
    Keypad.msg
+   Colour.msg
+   Colour.msg
+   Lane.msg
+   Line.msg
+   LineSegment.msg
+   LineSegmentList.msg
+   Point.msg
+   Vector.msg
  )
 
 ## Generate services in the 'srv' folder

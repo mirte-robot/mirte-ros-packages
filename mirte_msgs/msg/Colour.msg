@@ -1,0 +1,9 @@
+uint8 RED=0
+uint8 ORANGE=1
+uint8 YELLOW=2
+uint8 GREEN=3
+uint8 BLUE=4
+uint8 PURPLE=5
+uint8 BLACK=6
+uint8 WHITE=7
+uint8 type
