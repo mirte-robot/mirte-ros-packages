@@ -64,6 +64,9 @@ find_package(catkin REQUIRED COMPONENTS
    LineSegmentList.msg
    Point.msg
    Vector.msg
+   Object.msg 
+   Obstacle.msg 
+   ObstacleList.msg 
  )
 
 ## Generate services in the 'srv' folder
