@@ -1,7 +1,7 @@
 device:
   mirte:
     type: breadboard
-    mcu: nano
+    mcu: nanoatmega328
 distance:
   left:
     name: left

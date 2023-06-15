@@ -57,3 +57,19 @@ motor/<name>_motor/pin (array)
 
 
 
+# Test code style
+To check the C++ and Python code style run:
+```sh
+pip install black
+black --check **/**.py
+# Fix by using
+black **/**.py
+
+sudo apt install clang-format # preferably version 14, 10 should be fine
+clang-format --dry-run --Werror ./**/**.cpp -style=llvm
+# Fix by using
+clang-format --Werror ./**/**.cpp -style=llvm -i
+```
+
+# Required packages Telemetrix
+Requires https://github.com/mirte-robot/tmx-pico-aio.git to be installed ( ```pip install git+https://github.com/mirte-robot/tmx-pico-aio.git``` ) for the Pico and https://github.com/mirte-robot/telemetrix-aio.git for the STM32 and Arduino Nano (```pip install git+https://github.com/mirte-robot/telemetrix-aio.git```).

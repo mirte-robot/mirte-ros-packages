@@ -1,0 +1,70 @@
+device:
+  mirte:
+    type: pcb
+    version: 0.4
+    mcu: stm32
+    samping_interval: 10
+distance:
+  left:
+    name: left
+    device: mirte
+    connector: SRF2
+  right:
+    name: right
+    device: mirte
+    connector: SRF1
+encoder:
+  left:
+    name: left
+    device: mirte
+    connector: ENCB
+    ticks_per_wheel: 20
+  right:
+    name: right
+    device: mirte
+    connector: ENCA
+    ticks_per_wheel: 20
+intensity:
+  left:
+    name: left 
+    device: mirte
+    connector: IR2
+  right:
+    name: right
+    device: mirte
+    connector: IR1
+oled:
+  left:
+    name: left
+    device: mirte
+    connector: I2C2
+  right:
+    name: right
+    device: mirte
+    connector: I2C1
+servo:
+  left:
+    name: left
+    device: mirte
+    connector: Servo1
+servo:
+  left:
+    name: right
+    device: mirte
+    connector: Servo2
+keypad:
+  yellow:
+    name: keypad
+    device: mirte
+    connector: Keypad
+motor:
+  left:
+    name: left
+    device: mirte
+    connector: MB
+    type: l9110s
+  right:
+    name: right
+    device: mirte
+    connector: MA
+    type: l9110s
