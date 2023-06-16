@@ -1,3 +1,3 @@
 Colour colour
-Point start
-Point end
+geometry_msgs/Point start
+geometry_msgs/Point end

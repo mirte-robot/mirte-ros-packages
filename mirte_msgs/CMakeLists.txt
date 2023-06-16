@@ -62,8 +62,6 @@ find_package(catkin REQUIRED COMPONENTS
    Line.msg
    LineSegment.msg
    LineSegmentList.msg
-   Point.msg
-   Vector.msg
    Object.msg 
    Obstacle.msg 
    ObstacleList.msg 
