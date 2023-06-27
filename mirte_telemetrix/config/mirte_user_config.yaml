@@ -105,13 +105,13 @@ motor:
 #    device: mirte
 #    type: l9110s
 #    pins:
-#      1a: GP17
-#      1b: GP27
+#      1a: GP26
+#      1b: GP16
 #  right2:
 #    name: right2
 #    device: mirte
 #    type: l9110s
 #    pins:
-#      1a: GP16
-#      1b: GP26
+#      1a: GP27
+#      1b: GP17
 # TODO: add obstacle detection
