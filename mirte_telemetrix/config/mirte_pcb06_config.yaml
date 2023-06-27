@@ -39,17 +39,17 @@ oled:
     name: right
     device: mirte
     connector: I2C1
-# servo: # These two servos don't work with the v0.6 pcb, next version this should be fixed
-#   left:
-#     name: left
-#     device: mirte
-#     connector: Servo3
-# servo:
-#   right:
-#     name: right
-#     device: mirte
-#     connector: Servo4
-servo:
+# Servo on GP2 doens't work with the v0.6 pcb, next version this should be fixed
+#  left:
+#    name: left
+#    device: mirte
+#    connector: Servo1
+  right:
+    name: right
+    device: mirte
+    connector: Servo2
+# These servo's have the same pins as the ObjectDetectors. So as
+# soon as they are implemented, these should be commented out
   gripper:
     name: gripper
     device: mirte
@@ -75,14 +75,16 @@ motor:
     device: mirte
     connector: MC1-B
     type: l9110s
-  left2:
-    name: left2
-    device: mirte
-    connector: MC2-A
-    type: l9110s
-  right2:
-    name: right2
-    device: mirte
-    connector: MC2-B
-    type: l9110s
+# These motors have the same pins as the line intensity sensors. So
+# when uncommenting these, please comment the intensity sensors.
+#  left2:
+#    name: left2
+#    device: mirte
+#    connector: MC2-A
+#    type: l9110s
+#  right2:
+#    name: right2
+#    device: mirte
+#    connector: MC2-B
+#    type: l9110s
 # TODO: add obstacle detection
