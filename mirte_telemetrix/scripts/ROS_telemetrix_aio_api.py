@@ -192,7 +192,7 @@ class KeypadMonitor(SensorMonitor):
     async def publish_data(self, data):
         # Determine the key that is pressed
         # TODO: these values were found on a 12 bits adc, and
-        # added a scaling for the actual bits used. We could 
+        # added a scaling for the actual bits used. We could
         # calculate this with the R values used.
         key = ""
         if data[2] < 70 / 4096 * (2 ** board_mapping.get_adc_bits()):
