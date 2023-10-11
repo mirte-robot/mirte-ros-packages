@@ -840,8 +840,14 @@ def handle_get_pin_value(req):
         if req.type == "digital":
             asyncio.run(board.set_pin_mode_digital_input(pin, callback=data_callback))
 
-    while not pin in pin_values:
-        time.sleep(0.00001)
+    # timeout after 5s, don't keep waiting on something that will never happen.
+    start_time = time.time()
+    while not pin in pin_values and time.time() - start_time < 5.0:
+        time.sleep(0.001)
+    if pin in pin_values:
+        value = pin_values[pin]
+    else:
+        value = -1  # device did not report back, so return error value.
 
     value = pin_values[pin]
     return GetPinValueResponse(value)
