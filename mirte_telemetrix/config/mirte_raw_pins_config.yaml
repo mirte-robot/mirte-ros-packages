@@ -1,7 +1,8 @@
 device:
   mirte:
     type: breadboard
-    mcu: raw             # current setup is an example for the arduino nano
+    board: raw             # current setup is an example for the arduino nano
+#    max_frequency: 50
 distance:
   left:
     name: left
@@ -63,16 +64,14 @@ motor:
   left:
     name: left
     device: mirte
+    type: dp
     pins:
-      1a: 5               # pin needs PWM
-      1b: 6               # pin needs PWM
+      d1: 5
+      p1: 6
   right:
     name: right
     device: mirte
+    type: dp
     pins:
-      1a: 9               # pin needs PWM
-      1b: 10              # pin needs PWM
-#left_motor: left_motor
-#right_motor: right_motor
-#wheel_radius: 0.065
-#wheel_seperation: 0.13
+      d1: 9
+      p1: 10

@@ -43,6 +43,10 @@ def get_analog_offset():
     return 20
 
 
+def get_adc_bits():
+    return 12
+
+
 def pin_name_to_pin_number(pin):
     if pin in stm32_map:
         return stm32_map[pin]

@@ -1,6 +1,6 @@
 import mappings.pico
 import mappings.nanoatmega328
-import mappings.stm32
+import mappings.blackpill_f103c8
 
 
 mirte_pico_pcb_map06 = {
@@ -22,10 +22,10 @@ mirte_pico_pcb_map06 = {
     "Servo3": {"pin": "12"},
     "Servo4": {"pin": "13"},
     "LED": {"pin": "25"},
-    "MC1-A": {"1a": "18", "1b": "19"},
-    "MC1-B": {"1a": "20", "1b": "21"},
-    "MC2-A": {"1a": "17", "1b": "27"},
-    "MC2-B": {"1a": "16", "1b": "26"},
+    "MC1-A": {"1a": "19", "1b": "18"},
+    "MC1-B": {"1a": "21", "1b": "20"},
+    "MC2-A": {"1a": "16", "1b": "26"},
+    "MC2-B": {"1a": "17", "1b": "27"},
 }
 
 
@@ -40,6 +40,10 @@ def get_mcu():
 
 def get_analog_offset():
     return board_mapping.get_analog_offset()
+
+
+def get_adc_bits():
+    return board_mapping.get_adc_bits()
 
 
 def connector_to_pins(connector):
@@ -67,12 +71,15 @@ def set_version(new_version, mcu=""):
         if mcu == "" or mcu == "stm32":
             board_mapping = mappings.stm32
             connector_mapping = mirte_pcb04_stm_map
-        # else:
-        #     board_mapping = mappings.nano
-        #     connector_mapping = mirte_pcb04_nano_map
+        else:
+            board_mapping = mappings.nano
+            connector_mapping = mirte_pcb04_nano_map
+    if version == 0.3:
+        board_mapping = mappings.stm32
+        connector_mapping = mirte_pcb03_stm_map
     if version == 0.2:
         board_mapping = mappings.stm32
-        connector_mapping = mirte_pcb04_stm_map
+        connector_mapping = mirte_pcb02_stm_map
 
 
 def get_max_pwm_value():
@@ -83,22 +90,61 @@ def get_max_pwm_value():
 
 mirte_pcb04_stm_map = {
     "IR1": {"digital": "C15", "analog": "A0"},
-    "IR2": {"digital": "B0", "analog": "A1"},
+    "IR2": {"digital": "A2", "analog": "A1"},
     "SRF1": {"trigger": "A15", "echo": "C14"},
     "SRF2": {"trigger": "A5", "echo": "A6"},
     "I2C1": {"scl": "B6", "sda": "B7"},
     "I2C2": {"scl": "B10", "sda": "B11"},
-    "ENCA": {"pin": "B4"},
-    "ENCB": {"pin": "B12"},
+    "ENCA": {"pin": "B12"},
+    "ENCB": {"pin": "B4"},
+    "MISC1": {"pin": "B0"},
+    "MISC2": {"pin": "B1"},
+    "Keypad": {"pin": "A4"},
+    "Servo1": {"pin": "B3"},
+    "Servo2": {"pin": "A3"},
+    "LED": {"pin": "C13"},
+    "MA": {"d1": "A8", "p1": "B5"},
+    "MB": {"d1": "B14", "p1": "B15"},
+    "MC": {"d1": "A10", "p1": "A7"},
+    "MD": {"d1": "B13", "p1": "A9"},
+}
+
+mirte_pcb04_nano_map = {
+    "IR1": {"digital": "A7", "analog": "A1"},
+    "IR2": {"digital": "A6", "analog": "A0"},
+    "SRF1": {"trigger": "D9", "echo": "D8"},
+    "SRF2": {"trigger": "D11", "echo": "D10"},
+    "I2C1": {"scl": "A5", "sda": "A4"},
+    "ENCA": {"pin": "D2"},
+    "ENCB": {"pin": "D3"},
+    "Servo1": {"pin": "A3"},
+    "Servo2": {"pin": "D12"},
+    "LED": {"pin": "D13"},
+    "MA": {"d1": "D6", "p1": "D7"},
+    "MB": {"d1": "D4", "p1": "D5"},
+}
+
+mirte_pcb03_stm_map = {
+    "IR1": {"digital": "C15", "analog": "A0"},
+    "IR2": {"digital": "B0", "analog": "A1"},
+    "SRF1": {"trigger": "A5", "echo": "A6"},
+    "SRF2": {"trigger": "B7", "echo": "C14"},
+    "I2C1": {"scl": "B6", "sda": "B7"},
+    "I2C2": {"scl": "B10", "sda": "B11"},
+    "ENCA": {"pin": "B12"},
+    "ENCB": {"pin": "B4"},
     "Keypad": {"pin": "A4"},
     "Servo1": {"pin": "B5"},
-    "Servo2": {"pin": "A7"},
+    "Servo1": {"pin": "A7"},
+    "A2": {"pin": "A2"},
+    "A3": {"pin": "A3"},
     "LED": {"pin": "C13"},
-    "MA": {"1a": "A8", "1b": "B3"},
-    "MB": {"1a": "B14", "1b": "B15"},
-    "MC": {"1a": "B1", "1b": "A10"},
-    "MD": {"1a": "A9", "1b": "B13"},
+    "MC1A": {"d1": "A8", "p1": "B3"},
+    "MC1B": {"d1": "B14", "p1": "B15"},
+    "MC2A": {"d1": "A10", "p1": "B1"},
+    "MC2B": {"1d": "B13", "p1": "A9"},
 }
+
 
 mirte_pcb02_stm_map = {
     "IR1": {"digital": "B1", "analog": "A0"},
@@ -114,6 +160,6 @@ mirte_pcb02_stm_map = {
     "A2": {"pin": "A2"},
     "A3": {"pin": "A3"},
     "LED": {"pin": "C13"},
-    "MA": {"1a": "A8", "1b": "B3"},
-    "MB": {"1a": "B14", "1b": "B15"},
+    "MA": {"d1": "A8", "p1": "B3"},
+    "MB": {"d1": "B14", "p1": "B15"},
 }

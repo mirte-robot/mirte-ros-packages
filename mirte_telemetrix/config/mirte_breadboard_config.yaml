@@ -1,7 +1,8 @@
 device:
   mirte:
     type: breadboard
-    mcu: stm32
+    board: blackpill_f103c8
+#    max_frequency: 50
 distance:
   left:
     name: left
@@ -75,14 +76,14 @@ motor:
   left:
     name: left
     device: mirte
-    type: l9110s
+    type: dp
     pins:
-      1a: A8             # pin needs PWM
-      1b: B5             # pin needs PWM
+      d1: A8
+      p1: B5
   right:
     name: right
     device: mirte
-    type: l9110s
+    type: dp
     pins:
-      1a: B14            # pin needs PWM
-      1b: B15            # pin needs PWM
+      d1: B14
+      p1: B15
