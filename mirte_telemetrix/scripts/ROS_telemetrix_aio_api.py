@@ -1044,9 +1044,10 @@ async def shutdown(loop, board):
         closing = True
         await board.shutdown()
 
-        # Stop the asyncio loop
+        # Stop the asyncio loop and rospy loop
         loop.stop()
         print("Telemetrix shutdown nicely")
+        rospy.signal_shutdown(0)
 
 
 if __name__ == "__main__":
