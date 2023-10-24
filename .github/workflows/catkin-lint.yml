@@ -7,12 +7,6 @@ jobs:
       image: ros:noetic
     steps:
       - uses: actions/checkout@v3
-      - run: echo "catkin_lint" > ./requirements.txt
-      # - uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.9'
-      #     cache: 'pip' # caching pip dependencies
-      # - run: apt install python-pip
       - run: apt update && apt install catkin-lint -y
       - run: |
           mkdir -p catkin_ws/src
@@ -32,13 +26,13 @@ jobs:
           . devel/setup.sh
       - run: |
           . catkin_ws/devel/setup.sh
-          failure=0
-          catkin_lint --explain --ignore uninstalled_target --pkg mirte_bringup || failure=1
-          catkin_lint --explain --ignore uninstalled_target --pkg mirte_control || failure=1
-          catkin_lint --explain --ignore uninstalled_target --pkg mirte_msgs || failure=1
-          catkin_lint --explain --ignore uninstalled_target --pkg mirte_telemetrix || failure=1
-          catkin_lint --explain --ignore uninstalled_target --pkg mirte_teleop || failure=1
-          if failure; then
+          failure=false
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_bringup || failure=true
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_control || failure=true
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_msgs || failure=true
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_telemetrix || failure=true
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_teleop || failure=true
+          if $failure; then
               echo "Automated tests failed" >&2
           exit 1
           else
