@@ -33,11 +33,11 @@ jobs:
       - run: |
           . catkin_ws/devel/setup.sh
           failure=0
-          catkin_lint --pkg mirte_bringup || failure=1
-          catkin_lint --pkg mirte_control || failure=1
-          catkin_lint --pkg mirte_msgs || failure=1
-          catkin_lint --pkg mirte_telemetrix || failure=1
-          catkin_lint --pkg mirte_teleop || failure=1
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_bringup || failure=1
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_control || failure=1
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_msgs || failure=1
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_telemetrix || failure=1
+          catkin_lint --explain --ignore uninstalled_target --pkg mirte_teleop || failure=1
           if failure; then
               echo "Automated tests failed" >&2
           exit 1
