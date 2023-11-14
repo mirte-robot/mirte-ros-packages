@@ -933,7 +933,7 @@ def actuators(loop, board, device):
             servers.append(loop.create_task(servo.start()))
 
     if rospy.has_param("/mirte/modules"):
-        servers += add_modules(rospy.get_param("/mirte/modules"))
+        servers += add_modules(rospy.get_param("/mirte/modules"), device)
     # Set a raw pin value
     server = rospy.Service("/mirte/set_pin_value", SetPinValue, handle_set_pin_value)
 
@@ -1039,14 +1039,87 @@ def sensors(loop, board, device):
     return tasks
 
 def add_modules(modules, device) -> []:
+    print("add modules")
+    tasks = []
     # pca9685 module:
-    modules = {k: v for k, v in modules.items() if v["device"] == device}
-    for module in modules:
-        print(module)
+    module_names = {k for k, v in modules.items() if v["device"] == device}
+    for module_name in module_names:
+        print(module_name, modules[module_name])
+        module = modules[module_name]
+        if(module["type"].lower() == "pca9685"):
+            pca_module = PCA9685(board, module_name, module)
+            tasks.append(loop.create_task(pca_module.start()))
+
+    return tasks
+
+
+def sign(i):
+    if i == 0:
+        return 0
+    return i/abs(i)
+
+class PCA_Motor(Motor):
+    def __init__(self, motor_name, motor_obj, pca_update_func):
+        self.pca_update_func = pca_update_func
+        self.pin_A = motor_obj["pin_A"]
+        self.pin_B = motor_obj["pin_B"]
+        self.name = motor_name
+        self.prev_motor_speed = 0
+        self.inverted = motor_obj["inverted"] if "inverted" in motor_obj else False
     
-    return []
+    async def init_motors(self, speed):
+        pass
 
 
+    async def set_speed(self, speed):
+        if self.inverted:
+            speed = -speed
+        if self.prev_motor_speed != speed:
+            change_dir = sign(self.prev_motor_speed) != sign(speed)
+            if(change_dir): # stop the motor before sending out new values if 
+                await self.pca_update_func(self.pin_A, 0)
+                await self.pca_update_func(self.pin_B, 0)
+            if speed == 0:
+                await self.pca_update_func(self.pin_A, 0)
+                await self.pca_update_func(self.pin_B, 0)
+            elif speed > 0:
+                await self.pca_update_func(self.pin_A, int(min(speed, 100) / 100.0 * 4095))
+            elif speed < 0:
+                await self.pca_update_func(self.pin_B, int(min(-speed, 100) / 100.0 * 4095))
+            self.prev_motor_speed = speed
+class PCA9685:
+    def __init__(self, board, module_name, module):
+        self.name = module_name
+        self.module = module
+        self.board = board
+        self.motors = {}
+
+    async def start(self):
+        # setup i2c, check with oled to not init twice
+        if board_mapping.get_mcu() == "pico":
+            if "connector" in self.module:
+                pins = board_mapping.connector_to_pins(self.module["connector"])
+            else:
+                pins = self.module["pins"]
+            pin_numbers = {}
+            for item in pins:
+                pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
+            self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
+            await self.board.set_pin_mode_i2c(
+                    i2c_port=self.i2c_port,
+                    sda_gpio=pin_numbers["sda"],
+                    scl_gpio=pin_numbers["scl"],
+                )
+        # setup pca
+        self.write_pca = await self.board.modules.add_pca9685(self.i2c_port)
+        # create motors
+        for motor_name in self.module["motors"]:
+            print("motor", motor_name)
+            self.motors[motor_name] = PCA_Motor(motor_name, self.module["motors"][motor_name], self.write_pca)
+            await self.motors[motor_name].start()
+        # create servos
+
+        pass
 
 
 # Shutdown procedure

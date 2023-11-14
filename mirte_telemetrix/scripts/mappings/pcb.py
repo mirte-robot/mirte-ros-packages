@@ -1,6 +1,5 @@
 import mappings.pico
 import mappings.nanoatmega328
-import mappings.stm32
 import mappings.blackpill_f103c8
 
 mirte_pico_pcb_map06 = {
