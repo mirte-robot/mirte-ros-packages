@@ -1058,18 +1058,27 @@ def sign(i):
         return 0
     return i/abs(i)
 
+def scale(val, src, dst):
+    """
+    Scale the given value from the scale of src to the scale of dst.
+    """
+    return ((val - src[0]) / (src[1]-src[0])) * (dst[1]-dst[0]) + dst[0]
+
 class PCA_Servo():
     def __init__(self, servo_name, servo_obj, pca_update_func):
         
         self.pin = servo_obj["pin"]
-        self.name = servo_obj["name"]
+        self.name = servo_name
+        self.pca_update_func = pca_update_func
         self.min_pulse = 544
         if "min_pulse" in servo_obj:
             self.min_pulse = servo_obj["min_pulse"]
+        self.min_pulse = int(scale(self.min_pulse, [0,1_000_000/50], [0, 4095]))
         self.max_pulse = 2400
         if "max_pulse" in servo_obj:
             self.max_pulse = servo_obj["max_pulse"]
-
+        self.max_pulse = int(scale(self.max_pulse, [0,1_000_000/50], [0, 4095]))
+        print(self.min_pulse, self.max_pulse)
     async def start(self):
         await self.pca_update_func(self.pin, 0, 0)
         server = rospy.Service(
@@ -1078,9 +1087,12 @@ class PCA_Servo():
             self.set_servo_angle_service,
         )
     async def servo_write(self, angle):
-        pass
+        pwm = int(scale(angle, [0,180], [self.min_pulse, self.max_pulse]))
+        print(self.name, pwm)
+        await self.pca_update_func(self.pin, pwm, 0)
+
     def set_servo_angle_service(self, req):
-        asyncio.run(board.servo_write(self.pins["pin"], req.angle))
+        asyncio.run(self.servo_write(req.angle))
         return SetServoAngleResponse(True)
 
 class PCA_Motor(Motor):
@@ -1092,9 +1104,9 @@ class PCA_Motor(Motor):
         self.prev_motor_speed = 0
         self.inverted = motor_obj["inverted"] if "inverted" in motor_obj else False
     
-    async def start():
+    async def start(self):
         await Motor.start(self)
-        await self.init_motors(0)
+        await self.init_motors()
 
     async def init_motors(self):
         print("init motor")
