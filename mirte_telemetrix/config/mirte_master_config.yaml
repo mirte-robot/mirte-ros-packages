@@ -5,6 +5,7 @@ device:
     max_frequency: 50
 module:
   motorservocontroller:
+    device: mirte
     type: PCA9685
     id: 0x40
     # frequency: 1600

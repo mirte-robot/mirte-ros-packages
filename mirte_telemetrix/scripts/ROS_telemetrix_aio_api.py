@@ -932,6 +932,8 @@ def actuators(loop, board, device):
             servo = Servo(board, servos[servo])
             servers.append(loop.create_task(servo.start()))
 
+    if rospy.has_param("/mirte/modules"):
+        servers += add_modules(rospy.get_param("/mirte/modules"))
     # Set a raw pin value
     server = rospy.Service("/mirte/set_pin_value", SetPinValue, handle_set_pin_value)
 
@@ -1035,6 +1037,16 @@ def sensors(loop, board, device):
     # tasks.append(loop.create_task(server.start()))
 
     return tasks
+
+def add_modules(modules, device) -> []:
+    # pca9685 module:
+    modules = {k: v for k, v in modules.items() if v["device"] == device}
+    for module in modules:
+        print(module)
+    
+    return []
+
+
 
 
 # Shutdown procedure
