@@ -1049,6 +1049,9 @@ def add_modules(modules, device) -> []:
         if(module["type"].lower() == "pca9685"):
             pca_module = PCA9685(board, module_name, module)
             tasks.append(loop.create_task(pca_module.start()))
+        if(module["type"].lower() == "ina226"):
+            ina_module = INA226(board, module_name, module)
+            tasks.append(loop.create_task(ina_module.start()))
 
     return tasks
 
@@ -1176,7 +1179,55 @@ class PCA9685:
                 self.servos[servo_name] = PCA_Servo(servo_name, servo_obj, self.write_pca)
                 await self.servos[servo_name].start()
 
+class INA226():
+    def __init__(self, board, module_name, module):
+        self.name = module_name
+        self.module = module
+        self.board = board
+        self.min_voltage = module["min_voltage"] if "min_voltage" in module else -1
+        self.max_voltage = module["max_voltage"] if "max_voltage" in module else -1
+        self.max_current = module["max_current"] if "max_current" in module else -1
 
+
+    async def start(self):
+        print("start ina!")
+        # setup i2c, check with oled to not init twice
+        if board_mapping.get_mcu() == "pico":
+            if "connector" in self.module:
+                pins = board_mapping.connector_to_pins(self.module["connector"])
+            else:
+                pins = self.module["pins"]
+            pin_numbers = {}
+            for item in pins:
+                pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
+            self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
+            try:
+                await self.board.set_pin_mode_i2c(
+                        i2c_port=self.i2c_port,
+                        sda_gpio=pin_numbers["sda"],
+                        scl_gpio=pin_numbers["scl"],
+                    )
+            except Exception as e:
+                pass
+        id = 0x40 # default ina id
+        if "id" in self.module:
+            id = self.module["id"]
+        
+        await self.board.sensors.add_ina226(self.i2c_port, self.callback, id)
+    async def callback(self,data):
+        # TODO: move this to the library
+        ints = list( map(lambda i:i.to_bytes(1, 'big'), data))
+        bytes_obj = b''.join(ints)
+        vals = list(struct.unpack('<2f', bytes_obj))
+        self.voltage = vals[0]
+        self.current = vals[1]
+        if self.min_voltage != -1 and self.voltage < self.min_voltage:
+            print("TOO low voltage!")
+        if self.max_voltage != -1 and self.voltage > self.max_voltage:
+            print("TOO high voltage!")
+        if self.max_current != -1 and self.current > self.max_current:
+            print("TOO high current!")
+        print(self.voltage, self.current)
 
 # Shutdown procedure
 closing = False
