@@ -1065,8 +1065,8 @@ def scale(val, src, dst):
     return ((val - src[0]) / (src[1]-src[0])) * (dst[1]-dst[0]) + dst[0]
 
 class PCA_Servo():
-    def __init__(self, servo_name, servo_obj, pca_update_func):
-        
+
+    def __init__(self, servo_name, servo_obj, pca_update_func):    
         self.pin = servo_obj["pin"]
         self.name = servo_name
         self.pca_update_func = pca_update_func
@@ -1078,7 +1078,7 @@ class PCA_Servo():
         if "max_pulse" in servo_obj:
             self.max_pulse = servo_obj["max_pulse"]
         self.max_pulse = int(scale(self.max_pulse, [0,1_000_000/50], [0, 4095]))
-        print(self.min_pulse, self.max_pulse)
+
     async def start(self):
         await self.pca_update_func(self.pin, 0, 0)
         server = rospy.Service(
@@ -1086,9 +1086,9 @@ class PCA_Servo():
             SetServoAngle,
             self.set_servo_angle_service,
         )
+
     async def servo_write(self, angle):
         pwm = int(scale(angle, [0,180], [self.min_pulse, self.max_pulse]))
-        print(self.name, pwm)
         await self.pca_update_func(self.pin, pwm, 0)
 
     def set_servo_angle_service(self, req):
@@ -1109,7 +1109,6 @@ class PCA_Motor(Motor):
         await self.init_motors()
 
     async def init_motors(self):
-        print("init motor")
         await self.pca_update_func(self.pin_A, 0)
         await self.pca_update_func(self.pin_B, 0)
 
@@ -1130,6 +1129,7 @@ class PCA_Motor(Motor):
             elif speed < 0:
                 await self.pca_update_func(self.pin_B, int(min(-speed, 100) / 100.0 * 4095))
             self.prev_motor_speed = speed
+
 class PCA9685:
     def __init__(self, board, module_name, module):
         self.name = module_name
@@ -1154,18 +1154,27 @@ class PCA9685:
                     sda_gpio=pin_numbers["sda"],
                     scl_gpio=pin_numbers["scl"],
                 )
+        frequency = 200
+        if "frequency" in self.module:
+            frequency = self.module["frequency"]
+        if "servos" in self.module: # servos need to run at 50Hz
+            frequency = 50
+        id = 0x40 # default pca id
+        if "id" in self.module:
+            id = self.module["id"]
         # setup pca
-        self.write_pca = await self.board.modules.add_pca9685(self.i2c_port)
+        self.write_pca = await self.board.modules.add_pca9685(self.i2c_port, id, frequency)
         # create motors
-        for motor_name in self.module["motors"]:
-            print("motor", motor_name)
-            self.motors[motor_name] = PCA_Motor(motor_name, self.module["motors"][motor_name], self.write_pca)
-            await self.motors[motor_name].start()
+        if "motors" in self.module:
+            for motor_name in self.module["motors"]:
+                self.motors[motor_name] = PCA_Motor(motor_name, self.module["motors"][motor_name], self.write_pca)
+                await self.motors[motor_name].start()
         # create servos
-        for servo_name in self.module["servos"]:
-            servo_obj = self.module["servos"][servo_name]
-            self.servos[servo_name] = PCA_Servo(servo_name, servo_obj, self.write_pca)
-            await self.servos[servo_name].start()
+        if "servos" in self.module:
+            for servo_name in self.module["servos"]:
+                servo_obj = self.module["servos"][servo_name]
+                self.servos[servo_name] = PCA_Servo(servo_name, servo_obj, self.write_pca)
+                await self.servos[servo_name].start()
 
 
 
