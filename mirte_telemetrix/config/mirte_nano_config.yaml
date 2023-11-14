@@ -1,7 +1,8 @@
 device:
   mirte:
     type: breadboard
-    mcu: nanoatmega328
+    board: nanoatmega328
+#    max_frequency: 50
 distance:
   left:
     name: left
@@ -70,20 +71,16 @@ motor:
   left:
     name: left
     device: mirte
-    type: l298n
+    type: ddp
     pins:
-      en: D5               # pin needs PWM
-      in1: D7
-      in2: D8
+      d1: D7
+      d2: D8
+      p1: D5
   right:
     name: right
     device: mirte
-    type: l298n
+    type: ddp
     pins:
-      en: D6               # pin needs PWM
-      in1: D4
-      in2: D12
-#left_motor: left_motor
-#right_motor: right_motor
-#wheel_radius: 0.065
-#wheel_seperation: 0.13
+      d1: D4
+      d2: D12
+      p1: D6

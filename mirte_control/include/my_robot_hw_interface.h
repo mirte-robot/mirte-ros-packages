@@ -1,5 +1,5 @@
 // https://slaterobots.com/blog/5abd8a1ed4442a651de5cb5b/how-to-implement-ros_control-on-a-custom-robot
-// Roughlt based on:
+// Roughly based on:
 // https://github.com/eborghi10/my_ROS_mobile_robot/blob/master/my_robot_base/include/my_robot_hw_interface.h
 // https://github.com/PickNikRobotics/ros_control_boilerplate
 // https://github.com/DeborggraeveR/ampru
@@ -29,6 +29,11 @@
 #include <cmath>
 #include <sstream>
 
+#include <chrono>
+#include <future>
+#include <mutex>
+#include <thread>
+
 const unsigned int NUM_JOINTS = 2;
 
 /// \brief Hardware interface for a robot
@@ -41,33 +46,41 @@ public:
    */
   void write() {
     if (running_) {
+      // make sure the clients don't get overwritten while calling them
+      const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
+
       // cmd[0] = ros_control calculated speed of left motor in rad/s
       // cmd[1] = ros_control calculated speed of right motor in rad/s
 
       // This function converts cmd[0] to pwm and calls that service
 
-      // NOTE: this *highly* depends on teh voltage of the motors!!!!
-      // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 omwenteling/s (4*pi)
-      // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 omwentelingen/s
+      // NOTE: this *highly* depends on the voltage of the motors!!!!
+      // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 rot/s (4*pi)
+      // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
       // (6*pi)
 
       int left_speed =
           std::max(std::min(int(cmd[0] / (6 * M_PI) * 100), 100), -100);
       if (left_speed != _last_cmd[0]) {
         left_motor_service.request.speed = left_speed;
-        left_client.call(left_motor_service);
         _last_cmd[0] = left_speed;
+        if (!left_client.call(left_motor_service)) {
+          this->start_reconnect();
+          return;
+        }
       }
 
       int right_speed =
           std::max(std::min(int(cmd[1] / (6 * M_PI) * 100), 100), -100);
       if (right_speed != _last_cmd[1]) {
         right_motor_service.request.speed = right_speed;
-        right_client.call(right_motor_service);
         _last_cmd[1] = right_speed;
+        if (!right_client.call(right_motor_service)) {
+          this->start_reconnect();
+        }
       }
       // Set the direction in so the read() can use it
-      // TODO: this does not work propely, because at the end of a series
+      // TODO: this does not work properly, because at the end of a series
       // cmd_vel is negative, while the rotation is not
       _last_wheel_cmd_direction[0] = cmd[0] > 0.0 ? 1 : -1;
       _last_wheel_cmd_direction[1] = cmd[1] > 0.0 ? 1 : -1;
@@ -75,7 +88,7 @@ public:
   }
 
   /**
-   * Reading encoder values and setting position and velocity of enconders
+   * Reading encoder values and setting position and velocity of encoders
    */
   void read(const ros::Duration &period) {
     //_wheel_encoder[0] = number of ticks of left encoder since last call of
@@ -166,7 +179,25 @@ private:
     _wheel_encoder[1] = _wheel_encoder[1] + msg.value;
   }
 
+  // Thread and function to restart service clients when the service server has
+  // restarted
+  std::future<void> reconnect_thread;
+  void init_service_clients();
+  void start_reconnect();
+  std::mutex service_clients_mutex;
 }; // class
+
+void MyRobotHWInterface::init_service_clients() {
+  ros::service::waitForService("/mirte/set_left_speed");
+  ros::service::waitForService("/mirte/set_right_speed");
+  {
+    const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
+    this->left_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
+        "/mirte/set_left_speed", true);
+    this->right_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
+        "/mirte/set_right_speed", true);
+  }
+}
 
 MyRobotHWInterface::MyRobotHWInterface()
     : running_(true), private_nh("~"),
@@ -177,7 +208,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
   private_nh.param<double>("max_speed", _max_speed, 2.0);
 
-  // Intialize raw data
+  // Initialize raw data
   std::fill_n(pos, NUM_JOINTS, 0.0);
   std::fill_n(vel, NUM_JOINTS, 0.0);
   std::fill_n(eff, NUM_JOINTS, 0.0);
@@ -212,12 +243,27 @@ MyRobotHWInterface::MyRobotHWInterface()
       nh.subscribe("/mirte/encoder/right", 1,
                    &MyRobotHWInterface::rightWheelEncoderCallback, this);
 
-  ros::service::waitForService("/mirte/set_left_speed");
-  ros::service::waitForService("/mirte/set_right_speed");
-  left_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
-      "/mirte/set_left_speed", true);
-  right_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
-      "/mirte/set_right_speed", true);
-  // TODO: checl ion isvalis when running
-  // https://answers.ros.org/question/281411/persistent-service-initialization/
+  this->init_service_clients();
+}
+
+void MyRobotHWInterface::start_reconnect() {
+  using namespace std::chrono_literals;
+
+  if (this->reconnect_thread.valid()) { // does it already exist or not?
+
+    // Use wait_for() with zero milliseconds to check thread status.
+    auto status = this->reconnect_thread.wait_for(0ms);
+
+    if (status !=
+        std::future_status::ready) { // Still running -> already reconnecting
+      return;
+    }
+  }
+
+  /* Run the reconnection on a different thread to not pause the ros-control
+    loop. The launch policy std::launch::async makes sure that the task is run
+    asynchronously on a new thread. */
+
+  this->reconnect_thread =
+      std::async(std::launch::async, [this] { this->init_service_clients(); });
 }

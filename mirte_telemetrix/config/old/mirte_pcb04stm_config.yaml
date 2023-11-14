@@ -2,7 +2,7 @@ device:
   mirte:
     type: pcb
     version: 0.4
-    mcu: stm32
+    board: blackpill_f103c8
     samping_interval: 10
 distance:
   left:
@@ -47,8 +47,7 @@ servo:
     name: left
     device: mirte
     connector: Servo1
-servo:
-  left:
+  right:
     name: right
     device: mirte
     connector: Servo2
@@ -62,9 +61,9 @@ motor:
     name: left
     device: mirte
     connector: MB
-    type: l9110s
+    type: dp
   right:
     name: right
     device: mirte
     connector: MA
-    type: l9110s
+    type: dp

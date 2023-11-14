@@ -1,115 +1,89 @@
 device:
   mirte:
-    type: breadboard
-    board: pico
-#    max_frequency: 50
+    type: pcb
+    version: 0.8
+    max_frequency: 50
 distance:
   left:
     name: left
     device: mirte
-    pins:
-      trigger: GP9
-      echo: GP8
+    connector: SRF1
   right:
     name: right
     device: mirte
-    pins:
-      trigger: GP7
-      echo: GP6
-#encoder:
-#  left:
-#    name: left
-#    device: mirte
-#    pins:
-#      pin: GP14
-#  right:
-#    name: right
-#    device: mirte
-#    pins:
-#      pin: GP15
+    connector: SRF2
+encoder:
+  left:
+    name: left
+    device: mirte
+    connector: ENC1
+  right:
+    name: right
+    device: mirte
+    connector: ENC2
 intensity:
   left:
     name: left
     device: mirte
-    pins:
-      analog: GP27
-      digital: GP17
+    connector: IR1
   right:
     name: right
     device: mirte
-    pins:
-      analog: GP26
-      digital: GP16
+    connector: IR2
 oled:
   left:
     name: left
     device: mirte
-    pins:
-      sda: GP10
-      scl: GP11
+    connector: I2C2
   right:
     name: right
     device: mirte
-    pins:
-      sda: GP4
-      scl: GP5
+    connector: I2C1
 servo:
   left:
     name: left
     device: mirte
-    pins:
-      pin: GP14
+    connector: Servo1
   right:
     name: right
     device: mirte
-    pins:
-      pin: GP15
+    connector: Servo2
   # These servo's have the same pins as the ObjectDetectors. So as
   # soon as they are implemented, these should be commented out
   gripper:
     name: gripper
     device: mirte
-    pins:
-      pin: GP12
+    connector: Servo3
   arm:
     name: arm
     device: mirte
-    pins:
-      pin: GP13
+    connector: Servo4
 keypad:
   yellow:
-    name: yellow
+    name: keypad
     device: mirte
-    pins:
-      pin: GP28
+    connector: Keypad
 motor:
   left:
     name: left
     device: mirte
+    connector: MC1-A
     type: pp
-    pins:
-      p1: GP18
-      p2: GP19
   right:
     name: right
     device: mirte
+    connector: MC1-B
     type: pp
-    pins:
-      p1: GP20
-      p2: GP21
 # These motors have the same pins as the line intensity sensors. So
 # when uncommenting these, please comment the intensity sensors.
 #  left2:
 #    name: left2
 #    device: mirte
+#    connector: MC2-A
 #    type: pp
-#    pins:
-#      p1: GP26
-#      p2: GP16
 #  right2:
 #    name: right2
 #    device: mirte
+#    connector: MC2-B
 #    type: pp
-#    pins:
-#      p1: GP27
-#      p2: GP17
+# TODO: add obstacle detection

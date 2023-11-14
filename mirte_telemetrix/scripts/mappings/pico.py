@@ -15,6 +15,12 @@ def get_analog_offset():
     return 26
 
 
+def get_adc_bits():
+    # NOTE: the pico itself has 12 bits, but micropython will upgrade to 16
+    # no clue why 14 works
+    return 14
+
+
 def get_max_pwm_value():
     return 100
 

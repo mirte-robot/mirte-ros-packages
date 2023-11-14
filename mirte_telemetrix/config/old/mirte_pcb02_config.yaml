@@ -56,9 +56,9 @@ motor:
     name: left
     device: mirte
     connector: MB
-    type: l9110s
+    type: dp
   right:
     name: right
     device: mirte
     connector: MA
-    type: l9110s
+    type: dp

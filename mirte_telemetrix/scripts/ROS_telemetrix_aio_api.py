@@ -30,7 +30,7 @@ async def analog_write(board, pin, value):
     if board_mapping.get_mcu() == "pico":
         await board.pwm_write(pin, value)
     else:
-        await board.analog_write(board, pin, value)
+        await board.analog_write(pin, value)
 
 
 # Import ROS message types
@@ -46,19 +46,17 @@ import textwrap
 
 from PIL import Image, ImageDraw, ImageFont
 
-# font = ImageFont.truetype("/usr/share/fonts/truetype/terminus.ttf", 12)
-font = ImageFont.truetype("/usr/share/fonts/dejavu/DejaVuSans.ttf", 12)
+# Currently loading the PIL default font, which is
+# monospace, so works with python textwrap
+font = ImageFont.load_default()
 
 from adafruit_ssd1306 import _SSD1306
-from concurrent.futures import ThreadPoolExecutor
-
-executor = ThreadPoolExecutor(10)
 
 
 import mappings.default
 import mappings.nanoatmega328
 import mappings.pico
-import mappings.stm32
+import mappings.blackpill_f103c8
 import mappings.pcb
 
 board_mapping = mappings.default
@@ -68,26 +66,26 @@ devices = rospy.get_param("/mirte/device")
 if devices["mirte"]["type"] == "pcb":
     board_mapping = mappings.pcb
     if "version" in devices["mirte"]:
-        if "mcu" in devices["mirte"]:  # pcb 0.4 allows for nano or stm32
+        if "board" in devices["mirte"]:
             board_mapping.set_version(
-                devices["mirte"]["version"], devices["mirte"]["mcu"]
+                devices["mirte"]["version"], devices["mirte"]["board"]
             )
         else:
             board_mapping.set_version(devices["mirte"]["version"])
 
 if devices["mirte"]["type"] == "breadboard":
-    if "mcu" in devices["mirte"]:
-        if devices["mirte"]["mcu"] == "stm32":
-            board_mapping = mappings.stm32
+    if "board" in devices["mirte"]:
+        if devices["mirte"]["board"] == "blackpill_f103c8":
+            board_mapping = mappings.blackpill_f103c8
         elif (
-            "nano"
+            "nanoatmega328"
             in devices["mirte"][
-                "mcu"
-            ]  # will trigger for nano, nano_old and nanoatmega328
-            or devices["mirte"]["mcu"] == "uno"  # uno has the same pinout
+                "board"
+            ]  # will trigger for nanoatmega328new and nanoatmega328
+            or devices["mirte"]["board"] == "uno"  # uno has the same pinout
         ):
             board_mapping = mappings.nanoatmega328
-        elif devices["mirte"]["mcu"] == "pico":
+        elif devices["mirte"]["board"] == "pico":
             board_mapping = mappings.pico
         else:
             board_mapping = mappings.default
@@ -185,22 +183,25 @@ class KeypadMonitor(SensorMonitor):
     async def start(self):
         await self.board.set_pin_mode_analog_input(
             self.pins["pin"] - board_mapping.get_analog_offset(),
-            self.differential,
-            self.publish_data,
+            differential=self.differential,
+            callback=self.publish_data,
         )
 
     async def publish_data(self, data):
         # Determine the key that is pressed
+        # TODO: these values were found on a 12 bits adc, and
+        # added a scaling for the actual bits used. We could
+        # calculate this with the R values used.
         key = ""
-        if data[2] < 70:
+        if data[2] < 70 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "left"
-        elif data[2] < 230:
+        elif data[2] < 230 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "up"
-        elif data[2] < 410:
+        elif data[2] < 410 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "down"
-        elif data[2] < 620:
+        elif data[2] < 620 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "right"
-        elif data[2] < 880:
+        elif data[2] < 880 / 4096 * (2 ** board_mapping.get_adc_bits()):
             key = "enter"
 
         # Do some debouncing
@@ -392,12 +393,18 @@ class Servo:
         self.board = board
         self.pins = get_pin_numbers(servo_obj)
         self.name = servo_obj["name"]
+        self.min_pulse = 544
+        if "min_pulse" in servo_obj:
+            self.min_pulse = servo_obj["min_pulse"]
+        self.max_pulse = 2400
+        if "max_pulse" in servo_obj:
+            self.max_pulse = servo_obj["max_pulse"]
 
     async def stop(self):
         await board.detach_servo(self.pins["pin"])
 
     async def start(self):
-        await board.set_pin_mode_servo(self.pins["pin"])
+        await board.set_pin_mode_servo(self.pins["pin"], self.min_pulse, self.max_pulse)
         server = rospy.Service(
             "/mirte/set_" + self.name + "_servo_angle",
             SetServoAngle,
@@ -409,8 +416,7 @@ class Servo:
         return SetServoAngleResponse(True)
 
 
-# TODO: create motor classs and inherit from that one
-class PWMMotor:
+class Motor:
     def __init__(self, board, motor_obj):
         self.board = board
         self.pins = get_pin_numbers(motor_obj)
@@ -436,6 +442,8 @@ class PWMMotor:
         asyncio.run(self.set_speed(req.speed))
         return SetMotorSpeedResponse(True)
 
+
+class PPMotor(Motor):
     # Ideally one would initialize the pins in the constructor. But
     # since some mcu's have some voltage on pins when they are not
     # initialized yet icw some motor controllers that use the
@@ -444,15 +452,15 @@ class PWMMotor:
     # When setting this on the mcu itself the this will be done fast
     # enough. But using telemetrix is a bit too slow fow this. We
     # therefore set the pin type on first move, and do this in a way
-    # where is creates a movement in teh same direction.
+    # where it creates a movement in the same direction.
     async def init_motors(self, speed):
         if not self.initialized:
             if speed > 0:
-                await self.board.set_pin_mode_digital_output(self.pins["1a"])
-                await set_pin_mode_analog_output(self.board, self.pins["1b"])
+                await set_pin_mode_analog_output(self.board, self.pins["p2"])
+                await set_pin_mode_analog_output(self.board, self.pins["p1"])
             if speed < 0:
-                await set_pin_mode_analog_output(self.board, self.pins["1b"])
-                await self.board.set_pin_mode_digital_output(self.pins["1a"])
+                await set_pin_mode_analog_output(self.board, self.pins["p1"])
+                await set_pin_mode_analog_output(self.board, self.pins["p2"])
             self.initialized = True
 
     async def set_speed(self, speed):
@@ -460,22 +468,66 @@ class PWMMotor:
             speed = -speed
         if self.prev_motor_speed != speed:
             if speed == 0:
-                await self.board.digital_write(self.pins["1a"], 0)
-                await analog_write(self.board, self.pins["1b"], 0)
+                await analog_write(self.board, self.pins["p2"], 0)
+                await analog_write(self.board, self.pins["p1"], 0)
             elif speed > 0:
                 await self.init_motors(speed)
-                await self.board.digital_write(self.pins["1a"], 0)
+                await analog_write(self.board, self.pins["p2"], 0)
                 await analog_write(
                     self.board,
-                    self.pins["1b"],
+                    self.pins["p1"],
                     int(min(speed, 100) / 100.0 * board_mapping.get_max_pwm_value()),
                 )
             elif speed < 0:
                 await self.init_motors(speed)
-                await self.board.digital_write(self.pins["1a"], 1)
+                await analog_write(self.board, self.pins["p1"], 0)
                 await analog_write(
                     self.board,
-                    self.pins["1b"],
+                    self.pins["p2"],
+                    int(min(-speed, 100) / 100.0 * board_mapping.get_max_pwm_value()),
+                )
+            self.prev_motor_speed = speed
+
+
+class DPMotor(Motor):
+    # Ideally one would initialize the pins in the constructor. But
+    # since some mcu's have some voltage on pins when they are not
+    # initialized yet icw some motor controllers that use the
+    # difference between the pins to determine speed and direction
+    # the motor will briefly move when initializing. This is unwanted.
+    # When setting this on the mcu itself the this will be done fast
+    # enough. But using telemetrix is a bit too slow fow this. We
+    # therefore set the pin type on first move, and do this in a way
+    # where it creates a movement in the same direction.
+    async def init_motors(self, speed):
+        if not self.initialized:
+            if speed > 0:
+                await self.board.set_pin_mode_digital_output(self.pins["d1"])
+                await set_pin_mode_analog_output(self.board, self.pins["p1"])
+            if speed < 0:
+                await set_pin_mode_analog_output(self.board, self.pins["p1"])
+                await self.board.set_pin_mode_digital_output(self.pins["d1"])
+            self.initialized = True
+
+    async def set_speed(self, speed):
+        if self.prev_motor_speed != speed:
+            if speed == 0:
+                await self.board.digital_write(self.pins["d1"], 0)
+                await analog_write(self.board, self.pins["p1"], 0)
+            elif speed > 0:
+                await self.init_motors(speed)
+                await self.board.digital_write(self.pins["d1"], 0)
+                await analog_write(
+                    self.board,
+                    self.pins["p1"],
+                    int(min(speed, 100) / 100.0 * board_mapping.get_max_pwm_value()),
+                )
+            elif speed < 0:
+                await self.init_motors(speed)
+                await self.board.digital_write(self.pins["d1"], 1)
+                await analog_write(
+                    self.board,
+                    self.pins["p1"],
                     int(
                         board_mapping.get_max_pwm_value()
                         - min(abs(speed), 100)
@@ -486,19 +538,12 @@ class PWMMotor:
             self.prev_motor_speed = speed
 
 
-class L298NMotor:
-    def __init__(self, board, pins):
-        self.board = board
-        self.pins = pins
-        self.prev_motor_speed = 0
-        self.loop = asyncio.get_event_loop()
-        self.initialized = False
-
+class DDPMotor(Motor):
     async def init_motors(self):
         if not self.initialized:
-            await set_pin_mode_analog_output(self.board, self.pins["en"])
-            await self.board.set_pin_mode_digital_output(self.pins["in1"])
-            await self.board.set_pin_mode_digital_output(self.pins["in2"])
+            await set_pin_mode_analog_output(self.board, self.pins["p1"])
+            await self.board.set_pin_mode_digital_output(self.pins["d1"])
+            await self.board.set_pin_mode_digital_output(self.pins["d2"])
             self.initialized = True
 
     async def set_speed(self, speed):
@@ -507,23 +552,25 @@ class L298NMotor:
         if self.prev_motor_speed != speed:
             await self.init_motors()
             if speed >= 0:
-                await self.board.digital_write(self.pins["in1"], 0)
-                await self.board.digital_write(self.pins["in2"], 1)
+                await self.board.digital_write(self.pins["d1"], 0)
+                await self.board.digital_write(self.pins["d2"], 0)
                 await analog_write(
                     self.board,
-                    self.pins["en"],
+                    self.pins["p1"],
                     int(min(speed, 100) / 100.0 * board_mapping.get_max_pwm_value()),
                 )
+                await self.board.digital_write(self.pins["d2"], 1)
             elif speed < 0:
-                await self.board.digital_write(self.pins["in2"], 0)
-                await self.board.digital_write(self.pins["in1"], 1)
+                await self.board.digital_write(self.pins["d2"], 0)
+                await self.board.digital_write(self.pins["d1"], 0)
                 await analog_write(
                     self.board,
-                    self.pins["en"],
+                    self.pins["p1"],
                     int(
                         min(abs(speed), 100) / 100.0 * board_mapping.get_max_pwm_value()
                     ),
                 )
+                await self.board.digital_write(self.pins["d1"], 1)
             self.prev_motor_speed = speed
 
 
@@ -536,6 +583,7 @@ class Oled(_SSD1306):
         board,
         oled_obj,
         port,
+        loop,
         addr=0x3C,
         external_vcc=False,
         reset=None,
@@ -545,6 +593,11 @@ class Oled(_SSD1306):
         self.addr = addr
         self.temp = bytearray(2)
         self.i2c_port = port
+        self.failed = False
+        self.loop = loop
+        self.init_awaits = []
+        self.write_commands = []
+
         # Add an extra byte to the data buffer to hold an I2C data/command byte
         # to use hardware-compatible I2C transactions.  A memoryview of the
         # buffer is used to mask this byte from the framebuffer operations
@@ -562,7 +615,7 @@ class Oled(_SSD1306):
             for item in pins:
                 pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
             self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
-            asyncio.run(
+            self.init_awaits.append(
                 self.board.set_pin_mode_i2c(
                     i2c_port=self.i2c_port,
                     sda_gpio=pin_numbers["sda"],
@@ -570,7 +623,7 @@ class Oled(_SSD1306):
                 )
             )
         else:
-            asyncio.run(self.board.set_pin_mode_i2c(i2c_port=self.i2c_port))
+            self.init_awaits.append(self.board.set_pin_mode_i2c(i2c_port=self.i2c_port))
         time.sleep(1)
         super().__init__(
             memoryview(self.buffer)[1:],
@@ -588,8 +641,18 @@ class Oled(_SSD1306):
             self.set_oled_image_service,
         )
 
-    # TODO: make faster with asyncio
-    def set_oled_image_service(self, req):
+        for ev in self.init_awaits:
+            await ev
+        for cmd in self.write_commands:
+            out = await self.board.i2c_write(60, cmd, i2c_port=self.i2c_port)
+            if (
+                out == False
+            ):  # pico returns true/false, arduino returns always none, only catch false
+                print("write failed start", self.oled_obj["name"])
+                self.failed = True
+                return
+
+    async def set_oled_image_service_async(self, req):
         if req.type == "text":
             text = req.value.replace("\\n", "\n")
             image = Image.new("1", (128, 64))
@@ -605,10 +668,9 @@ class Oled(_SSD1306):
                 draw.text((1, y_text), line, font=font, fill=255)
                 y_text += height
             self.image(image)
-            self.show()
-
+            await self.show_async()
         if req.type == "image":
-            self.show_png(
+            await self.show_png(
                 "/usr/local/src/mirte/mirte-oled-images/images/" + req.value + ".png"
             )  # open color image
 
@@ -624,8 +686,22 @@ class Oled(_SSD1306):
                 ]
             )
             for i in range(number_of_images):
-                self.show_png(folder + req.value + "_" + str(i) + ".png")
+                await self.show_png(folder + req.value + "_" + str(i) + ".png")
 
+    def set_oled_image_service(self, req):
+        if self.failed:
+            print("oled writing failed")
+            return SetOLEDImageResponse(False)
+
+        try:
+            # the ros service is started on a different thread than the asyncio loop
+            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
+            future = asyncio.run_coroutine_threadsafe(
+                self.set_oled_image_service_async(req), self.loop
+            )
+            future.result()  # wait for it to be done
+        except Exception as e:
+            print(e)
         return SetOLEDImageResponse(True)
 
     def show(self):
@@ -651,21 +727,74 @@ class Oled(_SSD1306):
     def write_cmd(self, cmd):
         self.temp[0] = 0x80
         self.temp[1] = cmd
-        asyncio.run(self.board.i2c_write(60, self.temp, i2c_port=self.i2c_port))
+        self.write_commands.append([0x80, cmd])
 
-    def write_framebuf(self):
-        for i in range(
-            64
-        ):  # TODO: can we have higher i2c buffer (limited by firmata 64 bits and wire 32 bits, so actually 16 bits since we need 1 bit)
+    async def write_cmd_async(self, cmd):
+        if self.failed:
+            return
+        self.temp[0] = 0x80
+        self.temp[1] = cmd
+        out = await self.board.i2c_write(60, self.temp, i2c_port=self.i2c_port)
+        if out == False:
+            print("failed write oled 2")
+            self.failed = True
+
+    async def show_async(self):
+        """Update the display"""
+        # TODO: only update pixels that are changed
+        xpos0 = 0
+        xpos1 = self.width - 1
+        if self.width == 64:
+            # displays with width of 64 pixels are shifted by 32
+            xpos0 += 32
+            xpos1 += 32
+        if self.width == 72:
+            # displays with width of 72 pixels are shifted by 28
+            xpos0 += 28
+            xpos1 += 28
+
+        try:
+            cmds = [
+                self.write_cmd_async(0x21),  # SET_COL_ADDR)
+                self.write_cmd_async(xpos0),
+                self.write_cmd_async(xpos1),
+                self.write_cmd_async(0x22),  # SET_PAGE_ADDR)
+                self.write_cmd_async(0),
+                self.write_cmd_async(self.pages - 1),
+                *self.write_framebuf_async(),
+            ]
+            await asyncio.gather(*cmds)
+        except Exception as e:
+            print(e)
+
+    def write_framebuf_async(self):
+        if self.failed:
+            return
+
+        async def task(self, i):
             buf = self.buffer[i * 16 : (i + 1) * 16 + 1]
             buf[0] = 0x40
-            asyncio.run(self.board.i2c_write(60, buf, i2c_port=self.i2c_port))
+            out = await self.board.i2c_write(60, buf, i2c_port=self.i2c_port)
+            if out == False:
+                print("failed wrcmd")
+                self.failed = True
 
-    def show_png(self, file):
+        tasks = []
+        for i in range(64):
+            tasks.append(task(self, i))
+        return tasks
+
+    def write_framebuf(self):
+        for i in range(64):
+            buf = self.buffer[i * 16 : (i + 1) * 16 + 1]
+            buf[0] = 0x40
+            self.write_commands.append(buf)
+
+    async def show_png(self, file):
         image_file = Image.open(file)  # open color image
         image_file = image_file.convert("1", dither=Image.NONE)
         self.image(image_file)
-        self.show()
+        await self.show_async()
 
 
 async def handle_set_led_value(req):
@@ -692,7 +821,6 @@ pin_values = {}
 # this one more often than another pin.
 async def data_callback(data):
     global pin_values
-    print("data callback")
     pin_number = data[1]
     if data[0] == 3:
         pin_number += board_mapping.get_analog_offset()
@@ -718,9 +846,14 @@ def handle_get_pin_value(req):
         if req.type == "digital":
             asyncio.run(board.set_pin_mode_digital_input(pin, callback=data_callback))
 
-    while not pin in pin_values:
-        # print("sleeping pinvalues")
-        time.sleep(0.00001)
+    # timeout after 5s, don't keep waiting on something that will never happen.
+    start_time = time.time()
+    while not pin in pin_values and time.time() - start_time < 5.0:
+        time.sleep(0.001)
+    if pin in pin_values:
+        value = pin_values[pin]
+    else:
+        value = -1  # device did not report back, so return error value.
 
     value = pin_values[pin]
     return GetPinValueResponse(value)
@@ -761,7 +894,7 @@ def actuators(loop, board, device):
         oled_id = 0
         for oled in oleds:
             oled_obj = Oled(
-                128, 64, board, oleds[oled], port=oled_id
+                128, 64, board, oleds[oled], port=oled_id, loop=loop
             )  # get_pin_numbers(oleds[oled]))
             oled_id = oled_id + 1
             servers.append(loop.create_task(oled_obj.start()))
@@ -782,10 +915,14 @@ def actuators(loop, board, device):
         motors = {k: v for k, v in motors.items() if v["device"] == device}
         for motor in motors:
             motor_obj = {}
-            if motors[motor]["type"] == "l298n":
-                motor_obj = L298NMotor(board, motors[motor])
+            if motors[motor]["type"] == "ddp":
+                motor_obj = DDPMotor(board, motors[motor])
+            elif motors[motor]["type"] == "dp":
+                motor_obj = DPMotor(board, motors[motor])
+            elif motors[motor]["type"] == "pp":
+                motor_obj = PPMotor(board, motors[motor])
             else:
-                motor_obj = PWMMotor(board, motors[motor])
+                rospy.loginfo("Unsupported motor interface (ddp, dp, or pp)")
             servers.append(loop.create_task(motor_obj.start()))
 
     if rospy.has_param("/mirte/servo"):
@@ -806,9 +943,35 @@ def actuators(loop, board, device):
 # the data.
 def sensors(loop, board, device):
     tasks = []
-    max_freq = 10
+    max_freq = 30
     if rospy.has_param("/mirte/device/mirte/max_frequency"):
         max_freq = rospy.get_param("/mirte/device/mirte/max_frequency")
+
+    # For now, we need to set the analog scan interval to teh max_freq. When we set
+    # this to 0, we do get the updates from telemetrix as fast as possible. In that
+    # case the aiorospy creates a latency for the analog sensors (data will be
+    # updated with a delay). This also happens when you try to implement this with
+    # nest_asyncio icw rospy services.
+    # Maybe there is a better solution for this, to make sure that we get the
+    # data here asap.
+    if board_mapping.get_mcu() == "pico":
+        if max_freq <= 1:
+            tasks.append(loop.create_task(board.set_scan_delay(1)))
+        else:
+            try:
+                tasks.append(
+                    loop.create_task(board.set_scan_delay(int(1000.0 / max_freq)))
+                )
+            except:
+                print("failed scan delay")
+                pass
+    else:
+        if max_freq <= 0:
+            tasks.append(loop.create_task(board.set_analog_scan_interval(0)))
+        else:
+            tasks.append(
+                loop.create_task(board.set_analog_scan_interval(int(1000.0 / max_freq)))
+            )
 
     # initialze distance sensors
     if rospy.has_param("/mirte/distance"):
@@ -871,31 +1034,6 @@ def sensors(loop, board, device):
     # server = aiorospy.AsyncService('/mirte/get_pin_value', GetPinValue, handle_get_pin_value)
     # tasks.append(loop.create_task(server.start()))
 
-    # For now, we need to set the analog scan interval to teh max_freq. When we set
-    # this to 0, we do get the updates from telemetrix as fast as possible. In that
-    # case the aiorospy creates a latency for the analog sensors (data will be
-    # updated with a delay). This also happens when you try to implement this with
-    # nest_asyncio icw rospy services.
-    # Maybe there is a better solution for this, to make sure that we get the
-    # data here asap.
-    if board_mapping.get_mcu() == "pico":
-        if max_freq <= 1:
-            tasks.append(loop.create_task(board.set_scan_delay(1)))
-        else:
-            try:
-                tasks.append(
-                    loop.create_task(board.set_scan_delay(int(1000.0 / max_freq)))
-                )
-            except:
-                pass
-    else:
-        if max_freq <= 0:
-            tasks.append(loop.create_task(board.set_analog_scan_interval(0)))
-        else:
-            tasks.append(
-                loop.create_task(board.set_analog_scan_interval(int(1000.0 / max_freq)))
-            )
-
     return tasks
 
 
@@ -915,14 +1053,20 @@ async def shutdown(loop, board):
         # Stop the asyncio loop
         loop.stop()
         print("Telemetrix shutdown nicely")
+        rospy.signal_shutdown(0)
+        time.sleep(1)
+        exit(0)
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
 
     # Initialize the telemetrix board
     if board_mapping.get_mcu() == "pico":
-        board = tmx_pico_aio.TmxPicoAio(allow_i2c_errors=True)
+        board = tmx_pico_aio.TmxPicoAio(
+            allow_i2c_errors=True, loop=loop, autostart=False
+        )
+        loop.run_until_complete(board.start_aio())
     else:
         board = telemetrix_aio.TelemetrixAIO()
 
