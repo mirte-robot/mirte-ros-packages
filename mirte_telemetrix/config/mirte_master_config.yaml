@@ -1,0 +1,26 @@
+device:
+  mirte:
+    type: pcb
+    version: 0.6
+    max_frequency: 50
+module:
+  motorservocontroller:
+    type: PCA9685
+    id: 0x40
+    # frequency: 1600
+    motors:
+      left_front:
+        pin_A: 8
+        pin_B: 9
+      left_rear:
+        pin_A: 10
+        pin_B: 11
+      right_front:
+        pin_A: 12
+        pin_B: 13
+      right_rear:
+        pin_A: 14
+        pin_B: 15
+    servos:
+      servo1:
+        pin: 1
