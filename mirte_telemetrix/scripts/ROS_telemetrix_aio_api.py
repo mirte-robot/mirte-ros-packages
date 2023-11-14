@@ -642,7 +642,7 @@ class Oled(_SSD1306):
         )
 
         for ev in self.init_awaits:
-            try: # catch set_pin_mode_i2c already for this port
+            try:  # catch set_pin_mode_i2c already for this port
                 await ev
             except Exception as e:
                 pass
@@ -1041,6 +1041,7 @@ def sensors(loop, board, device):
 
     return tasks
 
+
 def add_modules(modules, device) -> []:
     print("add modules")
     tasks = []
@@ -1049,10 +1050,10 @@ def add_modules(modules, device) -> []:
     for module_name in module_names:
         print(module_name, modules[module_name])
         module = modules[module_name]
-        if(module["type"].lower() == "pca9685"):
+        if module["type"].lower() == "pca9685":
             pca_module = PCA9685(board, module_name, module)
             tasks.append(loop.create_task(pca_module.start()))
-        if(module["type"].lower() == "ina226"):
+        if module["type"].lower() == "ina226":
             ina_module = INA226(board, module_name, module)
             tasks.append(loop.create_task(ina_module.start()))
 
@@ -1062,28 +1063,29 @@ def add_modules(modules, device) -> []:
 def sign(i):
     if i == 0:
         return 0
-    return i/abs(i)
+    return i / abs(i)
+
 
 def scale(val, src, dst):
     """
     Scale the given value from the scale of src to the scale of dst.
     """
-    return ((val - src[0]) / (src[1]-src[0])) * (dst[1]-dst[0]) + dst[0]
+    return ((val - src[0]) / (src[1] - src[0])) * (dst[1] - dst[0]) + dst[0]
 
-class PCA_Servo():
 
-    def __init__(self, servo_name, servo_obj, pca_update_func):    
+class PCA_Servo:
+    def __init__(self, servo_name, servo_obj, pca_update_func):
         self.pin = servo_obj["pin"]
         self.name = servo_name
         self.pca_update_func = pca_update_func
         self.min_pulse = 544
         if "min_pulse" in servo_obj:
             self.min_pulse = servo_obj["min_pulse"]
-        self.min_pulse = int(scale(self.min_pulse, [0,1_000_000/50], [0, 4095]))
+        self.min_pulse = int(scale(self.min_pulse, [0, 1_000_000 / 50], [0, 4095]))
         self.max_pulse = 2400
         if "max_pulse" in servo_obj:
             self.max_pulse = servo_obj["max_pulse"]
-        self.max_pulse = int(scale(self.max_pulse, [0,1_000_000/50], [0, 4095]))
+        self.max_pulse = int(scale(self.max_pulse, [0, 1_000_000 / 50], [0, 4095]))
 
     async def start(self):
         await self.pca_update_func(self.pin, 0, 0)
@@ -1094,12 +1096,13 @@ class PCA_Servo():
         )
 
     async def servo_write(self, angle):
-        pwm = int(scale(angle, [0,180], [self.min_pulse, self.max_pulse]))
+        pwm = int(scale(angle, [0, 180], [self.min_pulse, self.max_pulse]))
         await self.pca_update_func(self.pin, pwm, 0)
 
     def set_servo_angle_service(self, req):
         asyncio.run(self.servo_write(req.angle))
         return SetServoAngleResponse(True)
+
 
 class PCA_Motor(Motor):
     def __init__(self, motor_name, motor_obj, pca_update_func):
@@ -1109,7 +1112,7 @@ class PCA_Motor(Motor):
         self.name = motor_name
         self.prev_motor_speed = 0
         self.inverted = motor_obj["inverted"] if "inverted" in motor_obj else False
-    
+
     async def start(self):
         await Motor.start(self)
         await self.init_motors()
@@ -1118,23 +1121,29 @@ class PCA_Motor(Motor):
         await self.pca_update_func(self.pin_A, 0)
         await self.pca_update_func(self.pin_B, 0)
 
-
     async def set_speed(self, speed):
         if self.inverted:
             speed = -speed
         if self.prev_motor_speed != speed:
             change_dir = sign(self.prev_motor_speed) != sign(speed)
-            if(change_dir): # stop the motor before sending out new values if changing direction
+            if (
+                change_dir
+            ):  # stop the motor before sending out new values if changing direction
                 await self.pca_update_func(self.pin_A, 0)
                 await self.pca_update_func(self.pin_B, 0)
             if speed == 0:
                 await self.pca_update_func(self.pin_A, 0)
                 await self.pca_update_func(self.pin_B, 0)
             elif speed > 0:
-                await self.pca_update_func(self.pin_A, int(min(speed, 100) / 100.0 * 4095))
+                await self.pca_update_func(
+                    self.pin_A, int(min(speed, 100) / 100.0 * 4095)
+                )
             elif speed < 0:
-                await self.pca_update_func(self.pin_B, int(min(-speed, 100) / 100.0 * 4095))
+                await self.pca_update_func(
+                    self.pin_B, int(min(-speed, 100) / 100.0 * 4095)
+                )
             self.prev_motor_speed = speed
+
 
 class PCA9685:
     def __init__(self, board, module_name, module):
@@ -1142,7 +1151,7 @@ class PCA9685:
         self.module = module
         self.board = board
         self.motors = {}
-        self.servos= {}
+        self.servos = {}
 
     async def start(self):
         # setup i2c, check with oled to not init twice
@@ -1157,35 +1166,42 @@ class PCA9685:
             self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
             try:
                 await self.board.set_pin_mode_i2c(
-                        i2c_port=self.i2c_port,
-                        sda_gpio=pin_numbers["sda"],
-                        scl_gpio=pin_numbers["scl"],
-                    )
+                    i2c_port=self.i2c_port,
+                    sda_gpio=pin_numbers["sda"],
+                    scl_gpio=pin_numbers["scl"],
+                )
             except Exception as e:
-                pass        
+                pass
         frequency = 200
         if "frequency" in self.module:
             frequency = self.module["frequency"]
-        if "servos" in self.module: # servos need to run at 50Hz
+        if "servos" in self.module:  # servos need to run at 50Hz
             frequency = 50
-        id = 0x40 # default pca id
+        id = 0x40  # default pca id
         if "id" in self.module:
             id = self.module["id"]
         # setup pca
-        self.write_pca = await self.board.modules.add_pca9685(self.i2c_port, id, frequency)
+        self.write_pca = await self.board.modules.add_pca9685(
+            self.i2c_port, id, frequency
+        )
         # create motors
         if "motors" in self.module:
             for motor_name in self.module["motors"]:
-                self.motors[motor_name] = PCA_Motor(motor_name, self.module["motors"][motor_name], self.write_pca)
+                self.motors[motor_name] = PCA_Motor(
+                    motor_name, self.module["motors"][motor_name], self.write_pca
+                )
                 await self.motors[motor_name].start()
         # create servos
         if "servos" in self.module:
             for servo_name in self.module["servos"]:
                 servo_obj = self.module["servos"][servo_name]
-                self.servos[servo_name] = PCA_Servo(servo_name, servo_obj, self.write_pca)
+                self.servos[servo_name] = PCA_Servo(
+                    servo_name, servo_obj, self.write_pca
+                )
                 await self.servos[servo_name].start()
 
-class INA226():
+
+class INA226:
     def __init__(self, board, module_name, module):
         self.name = module_name
         self.module = module
@@ -1211,22 +1227,23 @@ class INA226():
             self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
             try:
                 await self.board.set_pin_mode_i2c(
-                        i2c_port=self.i2c_port,
-                        sda_gpio=pin_numbers["sda"],
-                        scl_gpio=pin_numbers["scl"],
-                    )
+                    i2c_port=self.i2c_port,
+                    sda_gpio=pin_numbers["sda"],
+                    scl_gpio=pin_numbers["scl"],
+                )
             except Exception as e:
                 pass
-        id = 0x40 # default ina id
+        id = 0x40  # default ina id
         if "id" in self.module:
             id = self.module["id"]
-        
+
         await self.board.sensors.add_ina226(self.i2c_port, self.callback, id)
-    async def callback(self,data):
+
+    async def callback(self, data):
         # TODO: move this decoding to the library
-        ints = list( map(lambda i:i.to_bytes(1, 'big'), data))
-        bytes_obj = b''.join(ints)
-        vals = list(struct.unpack('<2f', bytes_obj))
+        ints = list(map(lambda i: i.to_bytes(1, "big"), data))
+        bytes_obj = b"".join(ints)
+        vals = list(struct.unpack("<2f", bytes_obj))
         self.voltage = vals[0]
         self.current = vals[1]
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
@@ -1242,13 +1259,14 @@ class INA226():
         bs.current = self.current
         bs.temperature = math.nan
         bs.charge = math.nan
-        bs.capacity= math.nan
-        bs.design_capacity= math.nan
+        bs.capacity = math.nan
+        bs.design_capacity = math.nan
         bs.percentage = math.nan
-        bs.power_supply_status = 0 # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
-        bs.power_supply_health = 0 # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
-        bs.power_supply_technology = 0 # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
+        bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
+        bs.power_supply_health = 0  # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
+        bs.power_supply_technology = 0  # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
         self.ina_publisher.publish(bs)
+
 
 # uint8   power_supply_health     # The battery health metric. Values defined above
 # uint8   power_supply_technology # The battery chemistry. Values defined above
