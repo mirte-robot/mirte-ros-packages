@@ -35,7 +35,7 @@ async def analog_write(board, pin, value):
 
 # Import ROS message types
 from std_msgs.msg import Header, Int32
-from sensor_msgs.msg import Range
+from sensor_msgs.msg import Range, BatteryState
 from mirte_msgs.msg import *
 
 # Import ROS services
@@ -642,7 +642,10 @@ class Oled(_SSD1306):
         )
 
         for ev in self.init_awaits:
-            await ev
+            try: # catch set_pin_mode_i2c already for this port
+                await ev
+            except Exception as e:
+                pass
         for cmd in self.write_commands:
             out = await self.board.i2c_write(60, cmd, i2c_port=self.i2c_port)
             if (
@@ -1152,11 +1155,14 @@ class PCA9685:
             for item in pins:
                 pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
             self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
-            await self.board.set_pin_mode_i2c(
-                    i2c_port=self.i2c_port,
-                    sda_gpio=pin_numbers["sda"],
-                    scl_gpio=pin_numbers["scl"],
-                )
+            try:
+                await self.board.set_pin_mode_i2c(
+                        i2c_port=self.i2c_port,
+                        sda_gpio=pin_numbers["sda"],
+                        scl_gpio=pin_numbers["scl"],
+                    )
+            except Exception as e:
+                pass        
         frequency = 200
         if "frequency" in self.module:
             frequency = self.module["frequency"]
@@ -1187,7 +1193,9 @@ class INA226():
         self.min_voltage = module["min_voltage"] if "min_voltage" in module else -1
         self.max_voltage = module["max_voltage"] if "max_voltage" in module else -1
         self.max_current = module["max_current"] if "max_current" in module else -1
-
+        self.ina_publisher = rospy.Publisher(
+            "/mirte/power/" + module_name, BatteryState, queue_size=1
+        )
 
     async def start(self):
         print("start ina!")
@@ -1215,19 +1223,35 @@ class INA226():
         
         await self.board.sensors.add_ina226(self.i2c_port, self.callback, id)
     async def callback(self,data):
-        # TODO: move this to the library
+        # TODO: move this decoding to the library
         ints = list( map(lambda i:i.to_bytes(1, 'big'), data))
         bytes_obj = b''.join(ints)
         vals = list(struct.unpack('<2f', bytes_obj))
         self.voltage = vals[0]
         self.current = vals[1]
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
-            print("TOO low voltage!")
+            rospy.logwarn("Low voltage: %f", self.voltage)
         if self.max_voltage != -1 and self.voltage > self.max_voltage:
-            print("TOO high voltage!")
+            rospy.logwarn("High voltage: %f", self.voltage)
         if self.max_current != -1 and self.current > self.max_current:
-            print("TOO high current!")
-        print(self.voltage, self.current)
+            rospy.logwarn("High current: %f", self.current)
+        bs = BatteryState()
+        bs.header = Header()
+        bs.header.stamp = rospy.Time.now()
+        bs.voltage = self.voltage
+        bs.current = self.current
+        bs.temperature = math.nan
+        bs.charge = math.nan
+        bs.capacity= math.nan
+        bs.design_capacity= math.nan
+        bs.percentage = math.nan
+        bs.power_supply_status = 0 # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
+        bs.power_supply_health = 0 # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
+        bs.power_supply_technology = 0 # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
+        self.ina_publisher.publish(bs)
+
+# uint8   power_supply_health     # The battery health metric. Values defined above
+# uint8   power_supply_technology # The battery chemistry. Values defined above
 
 # Shutdown procedure
 closing = False
