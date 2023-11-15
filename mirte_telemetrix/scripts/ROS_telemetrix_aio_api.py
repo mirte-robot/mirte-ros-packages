@@ -11,7 +11,7 @@ import io
 from inspect import signature
 from tmx_pico_aio import tmx_pico_aio
 from telemetrix_aio import telemetrix_aio
-
+from typing import Literal, Tuple
 
 # Import the right Telemetrix AIO
 devices = rospy.get_param("/mirte/device")
@@ -1042,8 +1042,7 @@ def sensors(loop, board, device):
     return tasks
 
 
-def add_modules(modules, device) -> []:
-    print("add modules")
+def add_modules(modules: dict, device: dict) -> []:
     tasks = []
     # pca9685 module:
     module_names = {k for k, v in modules.items() if v["device"] == device}
@@ -1060,13 +1059,13 @@ def add_modules(modules, device) -> []:
     return tasks
 
 
-def sign(i):
+def sign(i: float) -> Literal[-1, 0, 1]:
     if i == 0:
         return 0
-    return i / abs(i)
+    return 1 if i / abs(i) > 0 else -1
 
 
-def scale(val, src, dst):
+def scale(val: float, src: Tuple[int, int], dst: Tuple[int, int]) -> float:
     """
     Scale the given value from the scale of src to the scale of dst.
     """
