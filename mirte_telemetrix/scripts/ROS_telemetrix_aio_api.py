@@ -889,49 +889,62 @@ def actuators(loop, board, device):
     servers = []
 
     if rospy.has_param("/mirte/oled"):
-        oleds = rospy.get_param("/mirte/oled")
-        oleds = {k: v for k, v in oleds.items() if v["device"] == device}
-        oled_id = 0
-        for oled in oleds:
-            oled_obj = Oled(
-                128, 64, board, oleds[oled], port=oled_id, loop=loop
-            )  # get_pin_numbers(oleds[oled]))
-            oled_id = oled_id + 1
-            servers.append(loop.create_task(oled_obj.start()))
-
+        try:
+            oleds = rospy.get_param("/mirte/oled")
+            oleds = {k: v for k, v in oleds.items() if v["device"] == device}
+            oled_id = 0
+            for oled in oleds:
+                oled_obj = Oled(
+                    128, 64, board, oleds[oled], port=oled_id, loop=loop
+                )  # get_pin_numbers(oleds[oled]))
+                oled_id = oled_id + 1
+                servers.append(loop.create_task(oled_obj.start()))
+        except Exception as e:
+            print("Failed oled creation")
+            print(e)
     # TODO: support multiple leds
     if rospy.has_param("/mirte/led"):
-        led = rospy.get_param("/mirte/led")
-        loop.run_until_complete(
-            set_pin_mode_analog_output(board, get_pin_numbers(led)["pin"])
-        )
-        server = aiorospy.AsyncService(
-            "/mirte/set_led_value", SetLEDValue, handle_set_led_value
-        )
-        servers.append(loop.create_task(server.start()))
-
+        try:
+            led = rospy.get_param("/mirte/led")
+            loop.run_until_complete(
+                set_pin_mode_analog_output(board, get_pin_numbers(led)["pin"])
+            )
+            server = aiorospy.AsyncService(
+                "/mirte/set_led_value", SetLEDValue, handle_set_led_value
+            )
+            servers.append(loop.create_task(server.start()))
+        except Exception as e:
+            print("Failed led creation")
+            print(e)
     if rospy.has_param("/mirte/motor"):
-        motors = rospy.get_param("/mirte/motor")
-        motors = {k: v for k, v in motors.items() if v["device"] == device}
-        for motor in motors:
-            motor_obj = {}
-            if motors[motor]["type"] == "ddp":
-                motor_obj = DDPMotor(board, motors[motor])
-            elif motors[motor]["type"] == "dp":
-                motor_obj = DPMotor(board, motors[motor])
-            elif motors[motor]["type"] == "pp":
-                motor_obj = PPMotor(board, motors[motor])
-            else:
-                rospy.loginfo("Unsupported motor interface (ddp, dp, or pp)")
-            servers.append(loop.create_task(motor_obj.start()))
+        try:
+            motors = rospy.get_param("/mirte/motor")
+            motors = {k: v for k, v in motors.items() if v["device"] == device}
+            for motor in motors:
+                motor_obj = {}
+                if motors[motor]["type"] == "ddp":
+                    motor_obj = DDPMotor(board, motors[motor])
+                elif motors[motor]["type"] == "dp":
+                    motor_obj = DPMotor(board, motors[motor])
+                elif motors[motor]["type"] == "pp":
+                    motor_obj = PPMotor(board, motors[motor])
+                else:
+                    rospy.loginfo("Unsupported motor interface (ddp, dp, or pp)")
+                servers.append(loop.create_task(motor_obj.start()))
+        except Exception as e:
+            print("Failed motors creation")
+            print(e)
 
     if rospy.has_param("/mirte/servo"):
-        servos = rospy.get_param("/mirte/servo")
-        servos = {k: v for k, v in servos.items() if v["device"] == device}
-        for servo in servos:
-            servo = Servo(board, servos[servo])
-            servers.append(loop.create_task(servo.start()))
-
+        try:
+            servos = rospy.get_param("/mirte/servo")
+            servos = {k: v for k, v in servos.items() if v["device"] == device}
+            for servo in servos:
+                servo = Servo(board, servos[servo])
+                servers.append(loop.create_task(servo.start()))
+        except Exception as e:
+            print("Failed servos creation")
+            print(e)
     # Set a raw pin value
     server = rospy.Service("/mirte/set_pin_value", SetPinValue, handle_set_pin_value)
 
@@ -954,79 +967,93 @@ def sensors(loop, board, device):
     # nest_asyncio icw rospy services.
     # Maybe there is a better solution for this, to make sure that we get the
     # data here asap.
-    if board_mapping.get_mcu() == "pico":
-        if max_freq <= 1:
-            tasks.append(loop.create_task(board.set_scan_delay(1)))
-        else:
-            try:
+    try:
+        if board_mapping.get_mcu() == "pico":
+        
+            if max_freq <= 1:
+                tasks.append(loop.create_task(board.set_scan_delay(1)))
+            else:
+        
                 tasks.append(
                     loop.create_task(board.set_scan_delay(int(1000.0 / max_freq)))
                 )
-            except:
-                print("failed scan delay")
-                pass
-    else:
-        if max_freq <= 0:
-            tasks.append(loop.create_task(board.set_analog_scan_interval(0)))
+        
         else:
-            tasks.append(
-                loop.create_task(board.set_analog_scan_interval(int(1000.0 / max_freq)))
-            )
-
+            if max_freq <= 0:
+                tasks.append(loop.create_task(board.set_analog_scan_interval(0)))
+            else:
+                tasks.append(
+                    loop.create_task(board.set_analog_scan_interval(int(1000.0 / max_freq)))
+                )
+    except:
+            print("failed scan delay")
+            pass
     # initialze distance sensors
     if rospy.has_param("/mirte/distance"):
-        distance_sensors = rospy.get_param("/mirte/distance")
-        distance_sensors = {
-            k: v for k, v in distance_sensors.items() if v["device"] == device
-        }
-        for sensor in distance_sensors:
-            distance_sensors[sensor]["max_frequency"] = max_freq
-            distance_publisher = rospy.Publisher(
-                "/mirte/" + sensor, Range, queue_size=1, latch=True
-            )
-            monitor = DistanceSensorMonitor(board, distance_sensors[sensor])
-            tasks.append(loop.create_task(monitor.start()))
-
+        try:
+            distance_sensors = rospy.get_param("/mirte/distance")
+            distance_sensors = {
+                k: v for k, v in distance_sensors.items() if v["device"] == device
+            }
+            for sensor in distance_sensors:
+                distance_sensors[sensor]["max_frequency"] = max_freq
+                distance_publisher = rospy.Publisher(
+                    "/mirte/" + sensor, Range, queue_size=1, latch=True
+                )
+                monitor = DistanceSensorMonitor(board, distance_sensors[sensor])
+                tasks.append(loop.create_task(monitor.start()))
+        except Exception as e:
+            print("Failed distance sensor creation")
+            print(e)
     # Initialize intensity sensors
     if rospy.has_param("/mirte/intensity"):
-        intensity_sensors = rospy.get_param("/mirte/intensity")
-        intensity_sensors = {
-            k: v for k, v in intensity_sensors.items() if v["device"] == device
-        }
-        for sensor in intensity_sensors:
-            intensity_sensors[sensor]["max_frequency"] = max_freq
-            if "analog" in get_pin_numbers(intensity_sensors[sensor]):
-                monitor = AnalogIntensitySensorMonitor(board, intensity_sensors[sensor])
-                tasks.append(loop.create_task(monitor.start()))
-            if "digital" in get_pin_numbers(intensity_sensors[sensor]):
-                monitor = DigitalIntensitySensorMonitor(
-                    board, intensity_sensors[sensor]
-                )
-                tasks.append(loop.create_task(monitor.start()))
-
+        try:
+            intensity_sensors = rospy.get_param("/mirte/intensity")
+            intensity_sensors = {
+                k: v for k, v in intensity_sensors.items() if v["device"] == device
+            }
+            for sensor in intensity_sensors:
+                intensity_sensors[sensor]["max_frequency"] = max_freq
+                if "analog" in get_pin_numbers(intensity_sensors[sensor]):
+                    monitor = AnalogIntensitySensorMonitor(board, intensity_sensors[sensor])
+                    tasks.append(loop.create_task(monitor.start()))
+                if "digital" in get_pin_numbers(intensity_sensors[sensor]):
+                    monitor = DigitalIntensitySensorMonitor(
+                        board, intensity_sensors[sensor]
+                    )
+                    tasks.append(loop.create_task(monitor.start()))
+        except Exception as e:
+            print("Failed intensity sensor creation")
+            print(e)
     # Initialize keypad sensors
     if rospy.has_param("/mirte/keypad"):
-        keypad_sensors = rospy.get_param("/mirte/keypad")
-        keypad_sensors = {
-            k: v for k, v in keypad_sensors.items() if v["device"] == device
-        }
-        for sensor in keypad_sensors:
-            keypad_sensors[sensor]["max_frequency"] = max_freq
-            monitor = KeypadMonitor(board, keypad_sensors[sensor])
-            tasks.append(loop.create_task(monitor.start()))
-
+        try:
+            keypad_sensors = rospy.get_param("/mirte/keypad")
+            keypad_sensors = {
+                k: v for k, v in keypad_sensors.items() if v["device"] == device
+            }
+            for sensor in keypad_sensors:
+                keypad_sensors[sensor]["max_frequency"] = max_freq
+                monitor = KeypadMonitor(board, keypad_sensors[sensor])
+                tasks.append(loop.create_task(monitor.start()))
+        except Exception as e:
+            print("Failed keypad sensor creation")
+            print(e)
     # Initialize encoder sensors
     if rospy.has_param("/mirte/encoder"):
-        encoder_sensors = rospy.get_param("/mirte/encoder")
-        encoder_sensors = {
-            k: v for k, v in encoder_sensors.items() if v["device"] == device
-        }
-        for sensor in encoder_sensors:
-            monitor = EncoderSensorMonitor(board, encoder_sensors[sensor])
-            tasks.append(loop.create_task(monitor.start()))
-            # encoder sensors do not need a max_frequency. They are interrupts on
-            # on the mcu side.
-
+        try:
+            encoder_sensors = rospy.get_param("/mirte/encoder")
+            encoder_sensors = {
+                k: v for k, v in encoder_sensors.items() if v["device"] == device
+            }
+            for sensor in encoder_sensors:
+                monitor = EncoderSensorMonitor(board, encoder_sensors[sensor])
+                tasks.append(loop.create_task(monitor.start()))
+                # encoder sensors do not need a max_frequency. They are interrupts on
+                # on the mcu side.
+        except Exception as e:
+            print("Failed distance sensor creation")
+            print(e)
     # Get a raw pin value
     # TODO: this still needs to be tested. We are waiting on an implementation of ananlog_read()
     # on the telemetrix side
@@ -1062,14 +1089,25 @@ if __name__ == "__main__":
     loop = asyncio.new_event_loop()
 
     # Initialize the telemetrix board
-    if board_mapping.get_mcu() == "pico":
-        board = tmx_pico_aio.TmxPicoAio(
-            allow_i2c_errors=True, loop=loop, autostart=False
-        )
-        loop.run_until_complete(board.start_aio())
-    else:
-        board = telemetrix_aio.TelemetrixAIO()
-
+    has_board = False
+    while(not has_board):
+        try:
+            if board_mapping.get_mcu() == "pico":
+                board = tmx_pico_aio.TmxPicoAio(
+                    allow_i2c_errors=True, loop=loop, autostart=False
+                )
+                loop.run_until_complete(board.start_aio())
+                has_board = True
+            else:
+                board = telemetrix_aio.TelemetrixAIO()
+                has_board = True
+        except Exception as e: 
+            # the constructor will fail when there is no board connected, which used to crash the node, restarting the node immediately.
+            # The launch file then restarted the node immediately, resulting in continuous crashes
+            # catching the exception and retrying some time later will reduce cpu load.
+            print(e)
+            has_board = False
+            time.sleep(10)
     # Catch signals to exit properly
     # We need to do it this way instead of usgin the try/catch
     # as in the telemetrix examples
