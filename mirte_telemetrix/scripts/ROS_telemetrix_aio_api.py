@@ -969,25 +969,25 @@ def sensors(loop, board, device):
     # data here asap.
     try:
         if board_mapping.get_mcu() == "pico":
-        
             if max_freq <= 1:
                 tasks.append(loop.create_task(board.set_scan_delay(1)))
             else:
-        
                 tasks.append(
                     loop.create_task(board.set_scan_delay(int(1000.0 / max_freq)))
                 )
-        
+
         else:
             if max_freq <= 0:
                 tasks.append(loop.create_task(board.set_analog_scan_interval(0)))
             else:
                 tasks.append(
-                    loop.create_task(board.set_analog_scan_interval(int(1000.0 / max_freq)))
+                    loop.create_task(
+                        board.set_analog_scan_interval(int(1000.0 / max_freq))
+                    )
                 )
     except:
-            print("failed scan delay")
-            pass
+        print("failed scan delay")
+        pass
     # initialze distance sensors
     if rospy.has_param("/mirte/distance"):
         try:
@@ -1015,7 +1015,9 @@ def sensors(loop, board, device):
             for sensor in intensity_sensors:
                 intensity_sensors[sensor]["max_frequency"] = max_freq
                 if "analog" in get_pin_numbers(intensity_sensors[sensor]):
-                    monitor = AnalogIntensitySensorMonitor(board, intensity_sensors[sensor])
+                    monitor = AnalogIntensitySensorMonitor(
+                        board, intensity_sensors[sensor]
+                    )
                     tasks.append(loop.create_task(monitor.start()))
                 if "digital" in get_pin_numbers(intensity_sensors[sensor]):
                     monitor = DigitalIntensitySensorMonitor(
@@ -1090,7 +1092,7 @@ if __name__ == "__main__":
 
     # Initialize the telemetrix board
     has_board = False
-    while(not has_board):
+    while not has_board:
         try:
             if board_mapping.get_mcu() == "pico":
                 board = tmx_pico_aio.TmxPicoAio(
@@ -1101,7 +1103,7 @@ if __name__ == "__main__":
             else:
                 board = telemetrix_aio.TelemetrixAIO()
                 has_board = True
-        except Exception as e: 
+        except Exception as e:
             # the constructor will fail when there is no board connected, which used to crash the node, restarting the node immediately.
             # The launch file then restarted the node immediately, resulting in continuous crashes
             # catching the exception and retrying some time later will reduce cpu load.
