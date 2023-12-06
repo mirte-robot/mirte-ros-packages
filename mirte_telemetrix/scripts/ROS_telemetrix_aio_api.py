@@ -1055,6 +1055,9 @@ def add_modules(modules: dict, device: dict) -> []:
         if module["type"].lower() == "ina226":
             ina_module = INA226(board, module_name, module)
             tasks.append(loop.create_task(ina_module.start()))
+        if module["type"].lower() == "hiwonder_servo":
+            servo_module = Hiwonder_Servo(board, module_name, module)
+            tasks.append(loop.create_task(servo_module.start()))
 
     return tasks
 
@@ -1261,14 +1264,76 @@ class INA226:
         bs.capacity = math.nan
         bs.design_capacity = math.nan
         bs.percentage = math.nan
+        # uint8   power_supply_health     # The battery health metric. Values defined above
+        # uint8   power_supply_technology # The battery chemistry. Values defined above
         bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
         bs.power_supply_health = 0  # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
         bs.power_supply_technology = 0  # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
         self.ina_publisher.publish(bs)
 
 
-# uint8   power_supply_health     # The battery health metric. Values defined above
-# uint8   power_supply_technology # The battery chemistry. Values defined above
+class Hiwonder_Servo:
+    def __init__(self, servo_name, servo_obj, write_single_servo):
+        self.id = servo_obj["id"]
+        self.name = servo_name
+        self.write_single_servo = write_single_servo
+        self.min_angle = 0
+        if "min_angle" in servo_obj:
+            self.min_pulse = servo_obj["min_angle"]
+        self.max_angle = 24000 # centidegrees
+        if "max_angle" in servo_obj:
+            self.max_angle = servo_obj["max_angle"]
+
+    async def start(self):
+        server = rospy.Service(
+            "/mirte/set_" + self.name + "_servo_angle",
+            SetServoAngle,
+            self.set_servo_angle_service,
+        )
+
+    async def servo_write(self, angle):
+        angle = angle *100 # centidegrees
+        angle = max(self.min_angle, min(angle, self.max_angle))
+        await self.write_single_servo(self.id, angle, 100)
+
+    def set_servo_angle_service(self, req):
+        asyncio.run(self.servo_write(req.angle))
+        return SetServoAngleResponse(True)
+
+
+class Hiwonder_Bus:
+    def __init__(self, board, module_name, module):
+        self.name = module_name
+        self.module = module
+        self.board = board
+        self.servos = {}
+        # TODO: create publisher for current state
+        # self.servo_publisher = rospy.Publisher(
+        #     "/mirte/servos/" + module_name, BatteryState, queue_size=1
+        # )
+
+    async def start(self):
+        print("start hiwonder!")
+        uart = self.module["uart"]
+        if(uart !=0 and uart !=1):
+            return
+        rx = self.module["rx_pin"]
+        tx = self.module["tx_pin"]
+        ids = []
+        if "servos" in self.module:
+            for servo_name in self.module["servos"]:
+                servo_obj = self.module["servos"][servo_name]
+                self.servos[servo_name] = Hiwonder_Servo(
+                    servo_name, servo_obj, self.write_single_servo
+                )
+                await self.servos[servo_name].start()
+
+        await self.board.modules.add_hiwonder_servo(uart, rx, tx, ids, self.callback)
+
+    async def callback(self, data):
+        # todo: on each update, publish all, including old data of the other servos.
+        pass
+
 
 # Shutdown procedure
 closing = False

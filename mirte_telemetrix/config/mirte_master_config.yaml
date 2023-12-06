@@ -26,6 +26,21 @@ modules:
     servos:
       servo1:
         pin: 1
+  servo_controller:
+    device: mirte
+    type: Hiwonder_Servo
+    uart: 1
+    rx_pin: 4
+    tx_pin: 5
+    servos:
+      servoH1:
+        id: 3
+        min_angle: 9000
+        max_angle: 14000
+      servoH2:
+        id: 4
+        min_angle: 800
+        max_angle: 4000
   power_watcher:
     device: mirte
     type: INA226
