@@ -1280,7 +1280,7 @@ class Hiwonder_Servo:
         self.min_angle = 0
         if "min_angle" in servo_obj:
             self.min_pulse = servo_obj["min_angle"]
-        self.max_angle = 24000 # centidegrees
+        self.max_angle = 24000  # centidegrees
         if "max_angle" in servo_obj:
             self.max_angle = servo_obj["max_angle"]
 
@@ -1292,7 +1292,7 @@ class Hiwonder_Servo:
         )
 
     async def servo_write(self, angle):
-        angle = angle *100 # centidegrees
+        angle = angle * 100  # centidegrees
         angle = max(self.min_angle, min(angle, self.max_angle))
         await self.write_single_servo(self.id, angle, 100)
 
@@ -1315,7 +1315,7 @@ class Hiwonder_Bus:
     async def start(self):
         print("start hiwonder!")
         uart = self.module["uart"]
-        if(uart !=0 and uart !=1):
+        if uart != 0 and uart != 1:
             return
         rx = self.module["rx_pin"]
         tx = self.module["tx_pin"]
