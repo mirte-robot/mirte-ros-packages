@@ -1,0 +1,26 @@
+name: Mypy
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Mypy
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install mypy mypy-baseline tmx_pico_aio telemetrix_aio
+        mypy --version
+    - name: mypy
+      run: |
+        mypy ./ --non-interactive --install-types || true
+        (mypy ./ --install-types | mypy-baseline filter) || true
+        (mypy ./ --install-types | mypy-baseline filter --no-color || true) | grep -q "new: 0"
+        
+        

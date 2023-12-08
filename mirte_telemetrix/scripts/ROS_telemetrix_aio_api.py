@@ -8,7 +8,6 @@ import rospy
 import signal
 import aiorospy
 import io
-from inspect import signature
 from tmx_pico_aio import tmx_pico_aio
 from telemetrix_aio import telemetrix_aio
 
