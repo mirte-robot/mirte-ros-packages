@@ -1,6 +1,5 @@
 import mappings.pico
 import mappings.nanoatmega328
-import mappings.stm32
 import mappings.blackpill_f103c8
 
 mirte_pico_pcb_map06 = {
@@ -73,16 +72,16 @@ def set_version(new_version, mcu=""):
         connector_mapping = mirte_pico_pcb_map06
     if version == 0.4:
         if mcu == "" or mcu == "stm32":
-            board_mapping = mappings.stm32
+            board_mapping = mappings.blackpill_f103c8
             connector_mapping = mirte_pcb04_stm_map
         else:
             board_mapping = mappings.nano
             connector_mapping = mirte_pcb04_nano_map
     if version == 0.3:
-        board_mapping = mappings.stm32
+        board_mapping = mappings.blackpill_f103c8
         connector_mapping = mirte_pcb03_stm_map
     if version == 0.2:
-        board_mapping = mappings.stm32
+        board_mapping = mappings.blackpill_f103c8
         connector_mapping = mirte_pcb02_stm_map
 
 
