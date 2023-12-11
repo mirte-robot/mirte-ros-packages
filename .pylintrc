@@ -436,7 +436,8 @@ disable=raw-checker-failed,
         missing-module-docstring,
         line-too-long,
         missing-class-docstring,
-        import-error
+        import-error,
+        broad-exception-caught
 
 
 # Enable the message, report, category or checker with the given id(s). You can
