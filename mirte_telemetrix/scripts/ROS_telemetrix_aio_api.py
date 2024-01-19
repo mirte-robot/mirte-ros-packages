@@ -640,14 +640,16 @@ class Oled(_SSD1306):
             SetOLEDImage,
             self.set_oled_image_service,
         )
-
         for ev in self.init_awaits:
             try:  # catch set_pin_mode_i2c already for this port
                 await ev
             except Exception as e:
                 pass
         for cmd in self.write_commands:
+            # // TODO: arduino will just stop forwarding i2c write messages after a single failed message. No feedback from it yet.
             out = await self.board.i2c_write(60, cmd, i2c_port=self.i2c_port)
+            if out is None:
+                await asyncio.sleep(0.05)
             if (
                 out == False
             ):  # pico returns true/false, arduino returns always none, only catch false
@@ -738,6 +740,8 @@ class Oled(_SSD1306):
         self.temp[0] = 0x80
         self.temp[1] = cmd
         out = await self.board.i2c_write(60, self.temp, i2c_port=self.i2c_port)
+        if out is None:
+            await asyncio.sleep(0.05)
         if out == False:
             print("failed write oled 2")
             self.failed = True
@@ -757,20 +761,17 @@ class Oled(_SSD1306):
             xpos1 += 28
 
         try:
-            cmds = [
-                self.write_cmd_async(0x21),  # SET_COL_ADDR)
-                self.write_cmd_async(xpos0),
-                self.write_cmd_async(xpos1),
-                self.write_cmd_async(0x22),  # SET_PAGE_ADDR)
-                self.write_cmd_async(0),
-                self.write_cmd_async(self.pages - 1),
-                *self.write_framebuf_async(),
-            ]
-            await asyncio.gather(*cmds)
+            await self.write_cmd_async(0x21)  # SET_COL_ADDR)
+            await self.write_cmd_async(xpos0)
+            await self.write_cmd_async(xpos1)
+            await self.write_cmd_async(0x22)  # SET_PAGE_ADDR)
+            await self.write_cmd_async(0)
+            await self.write_cmd_async(self.pages - 1)
+            await self.write_framebuf_async()
         except Exception as e:
             print(e)
 
-    def write_framebuf_async(self):
+    async def write_framebuf_async(self):
         if self.failed:
             return
 
@@ -778,14 +779,14 @@ class Oled(_SSD1306):
             buf = self.buffer[i * 16 : (i + 1) * 16 + 1]
             buf[0] = 0x40
             out = await self.board.i2c_write(60, buf, i2c_port=self.i2c_port)
+            if out is None:
+                await asyncio.sleep(0.05)
             if out == False:
                 print("failed wrcmd")
                 self.failed = True
 
-        tasks = []
         for i in range(64):
-            tasks.append(task(self, i))
-        return tasks
+            await task(self, i)
 
     def write_framebuf(self):
         for i in range(64):
@@ -858,7 +859,6 @@ def handle_get_pin_value(req):
     else:
         value = -1  # device did not report back, so return error value.
 
-    value = pin_values[pin]
     return GetPinValueResponse(value)
 
 
@@ -896,6 +896,9 @@ def actuators(loop, board, device):
         oleds = {k: v for k, v in oleds.items() if v["device"] == device}
         oled_id = 0
         for oled in oleds:
+            oled_settings = oleds[oled]
+            if "name" not in oled_settings:
+                oled_settings["name"] = oled
             oled_obj = Oled(
                 128, 64, board, oleds[oled], port=oled_id, loop=loop
             )  # get_pin_numbers(oleds[oled]))
@@ -1375,7 +1378,7 @@ if __name__ == "__main__":
         )
         loop.run_until_complete(board.start_aio())
     else:
-        board = telemetrix_aio.TelemetrixAIO()
+        board = telemetrix_aio.TelemetrixAIO(loop=loop)
 
     # Catch signals to exit properly
     # We need to do it this way instead of usgin the try/catch
