@@ -1293,7 +1293,9 @@ class Hiwonder_Servo:
             SetServoAngle,
             self.set_servo_angle_service,
         )
-        self.publisher = rospy.Publisher(f"/mirte/servos/{self.name}/position", Int32, queue_size=1)
+        self.publisher = rospy.Publisher(
+            f"/mirte/servos/{self.name}/position", Int32, queue_size=1
+        )
 
     async def servo_write(self, angle):
         angle = angle * 100  # centidegrees
@@ -1308,6 +1310,7 @@ class Hiwonder_Servo:
         message = Int32
         message.data = data["value"]
         self.publisher.publish(message)
+
 
 class Hiwonder_Bus:
     def __init__(self, board, module_name, module):
@@ -1326,24 +1329,25 @@ class Hiwonder_Bus:
         if "servos" in self.module:
             for servo_name in self.module["servos"]:
                 servo_obj = self.module["servos"][servo_name]
-                servo = Hiwonder_Servo(
-                    servo_name, servo_obj, self
-                )
+                servo = Hiwonder_Servo(servo_name, servo_obj, self)
                 ids.append(servo.id)
                 await servo.start()
                 self.servos[servo_name] = servo
 
-        updaters = await self.board.modules.add_hiwonder_servo(uart, rx, tx, ids, self.callback)
+        updaters = await self.board.modules.add_hiwonder_servo(
+            uart, rx, tx, ids, self.callback
+        )
         self.set_single_servo = updaters["set_single_servo"]
         self.set_multiple_servos = updaters["set_multiple_servos"]
 
         # TODO: add service to update multiple servos
 
-
     async def callback(self, data):
         for servo_update in data:
-            servos = list(filter(lambda servo:servo_update["id"]==servo.id, self.servos))
-            if(len(servos) == 1):
+            servos = list(
+                filter(lambda servo: servo_update["id"] == servo.id, self.servos)
+            )
+            if len(servos) == 1:
                 servos[0].callback(servo_update)
 
 
