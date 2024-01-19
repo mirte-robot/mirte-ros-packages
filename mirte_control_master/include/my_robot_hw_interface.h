@@ -44,10 +44,13 @@ public:
 
   bool write_single(int joint, int speed)
   {
+
     int speed_mapped =
         std::max(std::min(int(cmd[joint] / (6 * M_PI) * 100), 100), -100);
     if (speed_mapped != _last_cmd[joint])
     {
+      std::cout << "write " << joint << " " << speed << std::endl;
+
       service_requests[joint].request.speed = speed_mapped;
       _last_cmd[joint] = speed_mapped;
       if (!service_clients[joint].call(service_requests[joint]))
@@ -102,7 +105,7 @@ public:
     //_wheel_encoder[0] = number of ticks of left encoder since last call of
     // this function _wheel_encoder[1] = number of ticks of right encoder since
     // last call of this function
-
+    // TODO: fix reading
     double meterPerEncoderTick = (_wheel_diameter / 2) * 2 * M_PI / 40.0;
     int diff_left = _wheel_encoder[0] - _last_value[0];
     int diff_right = _wheel_encoder[1] - _last_value[1];
@@ -180,7 +183,7 @@ private:
     return true;
   }
 
-  void WheelEncoderCallback( const mirte_msgs::Encoder::ConstPtr&  msg, int joint )
+  void WheelEncoderCallback(const mirte_msgs::Encoder::ConstPtr &msg, int joint)
   {
     _wheel_encoder[joint] = _wheel_encoder[joint] + msg->value;
   }
@@ -265,7 +268,7 @@ MyRobotHWInterface::MyRobotHWInterface()
     std::ostringstream os;
     os << "/mirte/encoder/" << i;
     wheel_encoder_subs_[i] = nh.subscribe<mirte_msgs::Encoder>(
-        os.str(), 1, boost::bind(&MyRobotHWInterface::WheelEncoderCallback, this, _1, i ));
+        os.str(), 1, boost::bind(&MyRobotHWInterface::WheelEncoderCallback, this, _1, i));
   }
   // left_wheel_encoder_sub_ =
   //     nh.subscribe("/mirte/encoder/left", 1,

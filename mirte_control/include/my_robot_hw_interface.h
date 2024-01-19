@@ -37,15 +37,18 @@
 const unsigned int NUM_JOINTS = 2;
 
 /// \brief Hardware interface for a robot
-class MyRobotHWInterface : public hardware_interface::RobotHW {
+class MyRobotHWInterface : public hardware_interface::RobotHW
+{
 public:
   MyRobotHWInterface();
 
   /*
    *
    */
-  void write() {
-    if (running_) {
+  void write()
+  {
+    if (running_)
+    {
       // make sure the clients don't get overwritten while calling them
       const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
 
@@ -61,10 +64,12 @@ public:
 
       int left_speed =
           std::max(std::min(int(cmd[0] / (6 * M_PI) * 100), 100), -100);
-      if (left_speed != _last_cmd[0]) {
+      if (left_speed != _last_cmd[0])
+      {
         left_motor_service.request.speed = left_speed;
         _last_cmd[0] = left_speed;
-        if (!left_client.call(left_motor_service)) {
+        if (!left_client.call(left_motor_service))
+        {
           this->start_reconnect();
           return;
         }
@@ -72,10 +77,12 @@ public:
 
       int right_speed =
           std::max(std::min(int(cmd[1] / (6 * M_PI) * 100), 100), -100);
-      if (right_speed != _last_cmd[1]) {
+      if (right_speed != _last_cmd[1])
+      {
         right_motor_service.request.speed = right_speed;
         _last_cmd[1] = right_speed;
-        if (!right_client.call(right_motor_service)) {
+        if (!right_client.call(right_motor_service))
+        {
           this->start_reconnect();
         }
       }
@@ -90,7 +97,8 @@ public:
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
-  void read(const ros::Duration &period) {
+  void read(const ros::Duration &period)
+  {
     //_wheel_encoder[0] = number of ticks of left encoder since last call of
     // this function _wheel_encoder[1] = number of ticks of right encoder since
     // last call of this function
@@ -160,22 +168,26 @@ private:
   mirte_msgs::SetMotorSpeed right_motor_service;
 
   bool start_callback(std_srvs::Empty::Request & /*req*/,
-                      std_srvs::Empty::Response & /*res*/) {
+                      std_srvs::Empty::Response & /*res*/)
+  {
     running_ = true;
     return true;
   }
 
   bool stop_callback(std_srvs::Empty::Request & /*req*/,
-                     std_srvs::Empty::Response & /*res*/) {
+                     std_srvs::Empty::Response & /*res*/)
+  {
     running_ = false;
     return true;
   }
 
-  void leftWheelEncoderCallback(const mirte_msgs::Encoder &msg) {
+  void leftWheelEncoderCallback(const mirte_msgs::Encoder &msg)
+  {
     _wheel_encoder[0] = _wheel_encoder[0] + msg.value;
   }
 
-  void rightWheelEncoderCallback(const mirte_msgs::Encoder &msg) {
+  void rightWheelEncoderCallback(const mirte_msgs::Encoder &msg)
+  {
     _wheel_encoder[1] = _wheel_encoder[1] + msg.value;
   }
 
@@ -187,7 +199,8 @@ private:
   std::mutex service_clients_mutex;
 }; // class
 
-void MyRobotHWInterface::init_service_clients() {
+void MyRobotHWInterface::init_service_clients()
+{
   ros::service::waitForService("/mirte/set_left_speed");
   ros::service::waitForService("/mirte/set_right_speed");
   {
@@ -204,7 +217,8 @@ MyRobotHWInterface::MyRobotHWInterface()
       start_srv_(nh.advertiseService(
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
-                                    this)) {
+                                    this))
+{
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
   private_nh.param<double>("max_speed", _max_speed, 2.0);
 
@@ -215,7 +229,8 @@ MyRobotHWInterface::MyRobotHWInterface()
   std::fill_n(cmd, NUM_JOINTS, 0.0);
 
   // connect and register the joint state and velocity interfaces
-  for (unsigned int i = 0; i < NUM_JOINTS; ++i) {
+  for (unsigned int i = 0; i < NUM_JOINTS; ++i)
+  {
     std::ostringstream os;
     os << "wheel_" << i << "_joint";
 
@@ -246,16 +261,19 @@ MyRobotHWInterface::MyRobotHWInterface()
   this->init_service_clients();
 }
 
-void MyRobotHWInterface::start_reconnect() {
+void MyRobotHWInterface::start_reconnect()
+{
   using namespace std::chrono_literals;
 
-  if (this->reconnect_thread.valid()) { // does it already exist or not?
+  if (this->reconnect_thread.valid())
+  { // does it already exist or not?
 
     // Use wait_for() with zero milliseconds to check thread status.
     auto status = this->reconnect_thread.wait_for(0ms);
 
     if (status !=
-        std::future_status::ready) { // Still running -> already reconnecting
+        std::future_status::ready)
+    { // Still running -> already reconnecting
       return;
     }
   }
@@ -265,5 +283,6 @@ void MyRobotHWInterface::start_reconnect() {
     asynchronously on a new thread. */
 
   this->reconnect_thread =
-      std::async(std::launch::async, [this] { this->init_service_clients(); });
+      std::async(std::launch::async, [this]
+                 { this->init_service_clients(); });
 }
