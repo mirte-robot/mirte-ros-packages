@@ -1,0 +1,12 @@
+<launch>
+    <rosparam command="load" file="$(find mirte_master_control)/config/control.yaml" />
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="ridgeback_joint_publisher ridgeback_velocity_controller" />
+
+    <node pkg="mirte_control_master" type="mirte_control_master_node"
+        name="mirte_control_master_node" output="screen">
+    </node>
+
+</launch>
+  
