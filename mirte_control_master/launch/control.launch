@@ -2,7 +2,7 @@
     <rosparam command="load" file="$(find mirte_control_master)/config/control.yaml" />
 
     <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="mirte_master_velocity_controller" />
+        args="mobile_base_controller" />
 
     <node pkg="mirte_control_master" type="mirte_control_master_node"
         name="mirte_control_master_node" output="screen">

@@ -23,7 +23,7 @@ if __name__ == "__main__":
         lambda request: my_service_callback(request, 1),
     )
     my_service2 = rospy.Service(
-        "/mirte/set_left_back_speed",
+        "/mirte/set_left_rear_speed",
         SetMotorSpeed,
         lambda request: my_service_callback(request, 2),
     )
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         lambda request: my_service_callback(request, 3),
     )
     my_service4 = rospy.Service(
-        "/mirte/set_right_back_speed",
+        "/mirte/set_right_rear_speed",
         SetMotorSpeed,
         lambda request: my_service_callback(request, 4),
     )
