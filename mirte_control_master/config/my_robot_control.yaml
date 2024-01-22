@@ -21,3 +21,4 @@ my_robot:
     joint: right_wheel_hinge
     pid: {p: 100.0, i: 0.1, d: 10.0}
     #pid: {p: 1.0, i: 1.0, d: 0.0}
+# TODO: extend this for the mirte-master
