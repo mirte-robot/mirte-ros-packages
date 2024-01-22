@@ -33,10 +33,11 @@
 #include <future>
 #include <mutex>
 #include <thread>
+#include <boost/format.hpp>
 
 const unsigned int NUM_JOINTS = 4;
-const auto service_format = "/mirte/set_{}_speed";
-const bool bidirectional = true;
+auto service_format = "/mirte/set_{}_speed";
+bool bidirectional = true;
 
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW
@@ -99,7 +100,8 @@ public:
     }
   }
 
-  double meter_per_enc_tick() {
+  double meter_per_enc_tick()
+  {
     return (_wheel_diameter / 2) * 2 * M_PI / 40.0; // TODO: get ticks from parameter server
   }
 
@@ -133,7 +135,7 @@ public:
 
     for (int i = 0; i < NUM_JOINTS; i++)
     {
-      read_single(i);
+      this->read_single(i, period);
     }
   }
 
@@ -224,9 +226,9 @@ void MyRobotHWInterface::init_service_clients()
                     "left_back", // TODO: check ordering
                     "right_front", "right_back"};
   }
-  for (auto joint : this.joint)
+  for (auto joint : this->joints)
   {
-    auto service = std::format(service_format, joint);
+    auto service = (boost::format(service_format) % joint).str();
     ROS_INFO_STREAM("Waiting for service " << service);
     ros::service::waitForService(service,
                                  -1);
@@ -236,7 +238,7 @@ void MyRobotHWInterface::init_service_clients()
     for (int i = 0; i < NUM_JOINTS; i++)
     {
       service_clients[i] =
-          nh.serviceClient<mirte_msgs::SetMotorSpeed>(std::format(service_format, joints[i]), true);
+          nh.serviceClient<mirte_msgs::SetMotorSpeed>((boost::format(service_format) % this->joints[i]).str(), true);
     }
   }
 }
@@ -250,6 +252,7 @@ MyRobotHWInterface::MyRobotHWInterface()
 {
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
   private_nh.param<double>("max_speed", _max_speed, 2.0);
+  private_nh.param<bool>("bidirectional", bidirectional, true);
 
   // Initialize raw data
   std::fill_n(pos, NUM_JOINTS, 0.0);
@@ -261,7 +264,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   for (unsigned int i = 0; i < NUM_JOINTS; ++i)
   {
     std::ostringstream os;
-    os << "wheel_" << this.joints[i] << "_joint";
+    os << "wheel_" << this->joints[i] << "_joint";
 
     hardware_interface::JointStateHandle state_handle(os.str(), &pos[i],
                                                       &vel[i], &eff[i]);
@@ -282,7 +285,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   // Initialize publishers and subscribers
   for (int i = 0; i < NUM_JOINTS; i++)
   {
-    auto encoder_topic = std::format("/mirte/encoder/{}", this->joints[i]);
+    auto encoder_topic = (boost::format(service_format) % this->joints[i]).str();
     wheel_encoder_subs_[i] = nh.subscribe<mirte_msgs::Encoder>(
         encoder_topic, 1,
         boost::bind(&MyRobotHWInterface::WheelEncoderCallback, this, _1, i));
