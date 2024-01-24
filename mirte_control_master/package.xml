@@ -22,7 +22,6 @@
   <depend>diagnostic_updater</depend>
   <depend>geometry_msgs</depend>
   <depend>ridgeback_msgs</depend>
-  <depend version_gte="0.3.0">puma_motor_driver</depend>
   <depend>realtime_tools</depend>
   <depend>rosserial_server</depend>
   <depend>sensor_msgs</depend>
@@ -35,7 +34,7 @@
   <exec_depend>imu_filter_madgwick</exec_depend>
   <exec_depend>ridgeback_control</exec_depend>
   <exec_depend>ridgeback_description</exec_depend>
-  <exec_depend>python-scipy</exec_depend>
+  <!-- <exec_depend>python-scipy</exec_depend> -->
   <exec_depend>rosserial_python</exec_depend>
   <exec_depend>teleop_twist_joy</exec_depend>
   <exec_depend>tf</exec_depend>
