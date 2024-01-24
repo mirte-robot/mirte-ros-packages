@@ -1082,7 +1082,7 @@ class PCA_Servo:
     def __init__(self, servo_name, servo_obj, pca_update_func):
         self.pin = servo_obj["pin"]
         self.name = servo_name
-        self.pca_update_func = pca_update_func
+        self.pca_update_func = pca_update_func["set_pwm"]
         self.min_pulse = 544
         if "min_pulse" in servo_obj:
             self.min_pulse = servo_obj["min_pulse"]
@@ -1111,7 +1111,7 @@ class PCA_Servo:
 
 class PCA_Motor(Motor):
     def __init__(self, motor_name, motor_obj, pca_update_func):
-        self.pca_update_func = pca_update_func
+        self.pca_update_func = pca_update_func["set_pwm"]
         self.pin_A = motor_obj["pin_A"]
         self.pin_B = motor_obj["pin_B"]
         self.name = motor_name
