@@ -3,8 +3,7 @@
 #include <my_robot_hw_interface.h>
 #include <ros/callback_queue.h>
 
-template <int NUM_JOINTS>
-void controlLoop(MyRobotHWInterface<NUM_JOINTS> &hw,
+void controlLoop(MyRobotHWInterface &hw,
                  controller_manager::ControllerManager &cm,
                  std::chrono::system_clock::time_point &last_time) {
   std::chrono::system_clock::time_point current_time =
@@ -21,7 +20,7 @@ void controlLoop(MyRobotHWInterface<NUM_JOINTS> &hw,
 int main(int argc, char **argv) {
   ros::init(argc, argv, "my_robot_base_node");
 
-  MyRobotHWInterface<2> hw;
+  MyRobotHWInterface hw;
   controller_manager::ControllerManager cm(&hw, hw.nh);
 
   double control_frequency;
@@ -34,7 +33,7 @@ int main(int argc, char **argv) {
       std::chrono::system_clock::now();
   ros::TimerOptions control_timer(
       ros::Duration(1 / control_frequency),
-      std::bind(controlLoop<2>, std::ref(hw), std::ref(cm), std::ref(last_time)),
+      std::bind(controlLoop, std::ref(hw), std::ref(cm), std::ref(last_time)),
       &my_robot_queue);
   ros::Timer control_loop = hw.nh.createTimer(control_timer);
   my_robot_spinner.start();
