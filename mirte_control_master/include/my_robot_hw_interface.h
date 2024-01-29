@@ -36,8 +36,7 @@
 #include <thread>
 
 // const unsigned int NUM_JOINTS = 4;
-auto service_format = "/mirte/set_%s_speed";
-bool bidirectional = true; // TODO: make this a parameter
+const auto service_format = "/mirte/set_%s_speed";
 
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
@@ -47,7 +46,7 @@ public:
   bool write_single(int joint, int speed) {
 
     int speed_mapped =
-        std::max(std::min(int(cmd[joint] / (6 * M_PI) * 100), 100), -100);
+        std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
     if (speed_mapped != _last_cmd[joint]) {
       service_requests[joint].request.speed = speed_mapped;
       _last_cmd[joint] = speed_mapped;
@@ -75,7 +74,7 @@ public:
       // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 rot/s (4*pi)
       // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
       // (6*pi)
-      for (int i = 0; i < NUM_JOINTS; i++) {
+      for (size_t i = 0; i < NUM_JOINTS; i++) {
         if (!write_single(i, cmd[i])) {
           return;
         }
@@ -83,7 +82,7 @@ public:
       // Set the direction in so the read() can use it
       // TODO: this does not work properly, because at the end of a series
       // cmd_vel is negative, while the rotation is not
-      for (int i = 0; i < NUM_JOINTS; i++) {
+      for (size_t i = 0; i < NUM_JOINTS; i++) {
         _last_wheel_cmd_direction[i] = cmd[i] > 0.0 ? 1 : -1;
       }
     }
@@ -119,22 +118,11 @@ public:
    */
   void read(const ros::Duration &period) {
 
-    for (int i = 0; i < NUM_JOINTS; i++) {
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
       this->read_single(i, period);
     }
   }
 
-  /*
-    ros::Time get_time() {
-      prev_update_time = curr_update_time;
-      curr_update_time = ros::Time::now();
-      return curr_update_time;
-    }
-
-    ros::Duration get_period() {
-      return curr_update_time - prev_update_time;
-    }
-  */
   ros::NodeHandle nh;
   ros::NodeHandle private_nh;
 
@@ -146,7 +134,7 @@ private:
   std::vector<double> vel;
   std::vector<double> eff;
 
-  bool running_;
+  bool running_ = true;
   double _wheel_diameter;
   double _max_speed;
   std::vector<int> _wheel_encoder;
@@ -177,6 +165,9 @@ private:
 
   void WheelEncoderCallback(const mirte_msgs::Encoder::ConstPtr &msg,
                             int joint) {
+    if (msg->value < 0) {
+      bidirectional = true;
+    }
     _wheel_encoder[joint] = _wheel_encoder[joint] + msg->value;
   }
 
@@ -187,7 +178,9 @@ private:
   void start_reconnect();
   std::mutex service_clients_mutex;
 
-  int NUM_JOINTS = 2;
+  bool bidirectional = false; // assume it is one direction, when receiving any
+                              // negative value, it will be set to true
+  unsigned int NUM_JOINTS = 2;
 }; // class
 
 void MyRobotHWInterface::init_service_clients() {
@@ -198,7 +191,7 @@ void MyRobotHWInterface::init_service_clients() {
   }
   {
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    for (int i = 0; i < NUM_JOINTS; i++) {
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
       service_clients.push_back(nh.serviceClient<mirte_msgs::SetMotorSpeed>(
           (boost::format(service_format) % this->joints[i]).str(), true));
       service_requests.push_back(mirte_msgs::SetMotorSpeed());
@@ -206,8 +199,21 @@ void MyRobotHWInterface::init_service_clients() {
   }
 }
 
+unsigned int detect_joints(ros::NodeHandle &nh) {
+  std::string type;
+  nh.param<std::string>("/mobile_base_controller/type", type, "");
+  if (type.rfind("mecanum", 0) == 0) { // starts with mecanum
+    return 4;
+  } else if (type.rfind("diff", 0) == 0) { // starts with diff
+    return 2;
+  } else {
+    ROS_ERROR_STREAM("Unknown type: " << type);
+    return 0;
+  }
+}
+
 MyRobotHWInterface::MyRobotHWInterface()
-    : running_(true), private_nh("~"),
+    : private_nh("~"), running_(true),
       start_srv_(nh.advertiseService(
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
@@ -215,10 +221,9 @@ MyRobotHWInterface::MyRobotHWInterface()
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
   private_nh.param<double>("max_speed", _max_speed, 2.0);
   // private_nh.param<bool>("bidirectional", bidirectional, true);
-  this->NUM_JOINTS = 2;
+  this->NUM_JOINTS = detect_joints(private_nh);
   // Initialize raw data
-
-  for (int i = 0; i < NUM_JOINTS; i++) {
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
     _wheel_encoder.push_back(0);
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
@@ -264,7 +269,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   registerInterface(&jnt_vel_interface);
 
   // Initialize publishers and subscribers
-  for (int i = 0; i < NUM_JOINTS; i++) {
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
     auto encoder_topic =
         (boost::format(service_format) % this->joints[i]).str();
     wheel_encoder_subs_.push_back(nh.subscribe<mirte_msgs::Encoder>(
