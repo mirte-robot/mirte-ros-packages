@@ -35,11 +35,12 @@
 #include <mutex>
 #include <thread>
 
-const unsigned int NUM_JOINTS = 4;
+// const unsigned int NUM_JOINTS = 4;
 auto service_format = "/mirte/set_%s_speed";
-bool bidirectional = true;
+bool bidirectional = true; // TODO: make this a parameter
 
 /// \brief Hardware interface for a robot
+template <int NUM_JOINTS>
 class MyRobotHWInterface : public hardware_interface::RobotHW {
 public:
   MyRobotHWInterface();
@@ -185,10 +186,6 @@ private:
     _wheel_encoder[joint] = _wheel_encoder[joint] + msg->value;
   }
 
-  // void rightWheelEncoderCallback(const mirte_msgs::Encoder &msg)
-  // {
-  //   _wheel_encoder[1] = _wheel_encoder[1] + msg.value;
-  // }
 
   // Thread and function to restart service clients when the service server has
   // restarted
@@ -198,7 +195,8 @@ private:
   std::mutex service_clients_mutex;
 }; // class
 
-void MyRobotHWInterface::init_service_clients() {
+template<int NUM_JOINTS>
+void MyRobotHWInterface<NUM_JOINTS>::init_service_clients() {
   for (auto joint : this->joints) {
     auto service = (boost::format(service_format) % joint).str();
     ROS_INFO_STREAM("Waiting for service " << service);
@@ -213,7 +211,8 @@ void MyRobotHWInterface::init_service_clients() {
   }
 }
 
-MyRobotHWInterface::MyRobotHWInterface()
+template<int NUM_JOINTS>
+MyRobotHWInterface<NUM_JOINTS>::MyRobotHWInterface()
     : running_(true), private_nh("~"),
       start_srv_(nh.advertiseService(
           "start", &MyRobotHWInterface::start_callback, this)),
@@ -267,7 +266,8 @@ MyRobotHWInterface::MyRobotHWInterface()
   this->init_service_clients();
 }
 
-void MyRobotHWInterface::start_reconnect() {
+template<int NUM_JOINTS>
+void MyRobotHWInterface<NUM_JOINTS>::start_reconnect() {
   using namespace std::chrono_literals;
 
   if (this->reconnect_thread.valid()) { // does it already exist or not?
