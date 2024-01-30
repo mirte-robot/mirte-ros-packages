@@ -29,18 +29,34 @@
 #include <cmath>
 #include <sstream>
 
+#include <boost/format.hpp>
 #include <chrono>
 #include <future>
 #include <mutex>
 #include <thread>
 
-const unsigned int NUM_JOINTS = 2;
+// const unsigned int NUM_JOINTS = 4;
+const auto service_format = "/mirte/set_%s_speed";
 
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
 public:
   MyRobotHWInterface();
 
+  bool write_single(int joint, int speed) {
+
+    int speed_mapped =
+        std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
+    if (speed_mapped != _last_cmd[joint]) {
+      service_requests[joint].request.speed = speed_mapped;
+      _last_cmd[joint] = speed_mapped;
+      if (!service_clients[joint].call(service_requests[joint])) {
+        this->start_reconnect();
+        return false;
+      }
+    }
+    return true;
+  }
   /*
    *
    */
@@ -58,107 +74,83 @@ public:
       // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 rot/s (4*pi)
       // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
       // (6*pi)
-
-      int left_speed =
-          std::max(std::min(int(cmd[0] / (6 * M_PI) * 100), 100), -100);
-      if (left_speed != _last_cmd[0]) {
-        left_motor_service.request.speed = left_speed;
-        _last_cmd[0] = left_speed;
-        if (!left_client.call(left_motor_service)) {
-          this->start_reconnect();
+      for (size_t i = 0; i < NUM_JOINTS; i++) {
+        if (!write_single(i, cmd[i])) {
           return;
-        }
-      }
-
-      int right_speed =
-          std::max(std::min(int(cmd[1] / (6 * M_PI) * 100), 100), -100);
-      if (right_speed != _last_cmd[1]) {
-        right_motor_service.request.speed = right_speed;
-        _last_cmd[1] = right_speed;
-        if (!right_client.call(right_motor_service)) {
-          this->start_reconnect();
         }
       }
       // Set the direction in so the read() can use it
       // TODO: this does not work properly, because at the end of a series
       // cmd_vel is negative, while the rotation is not
-      _last_wheel_cmd_direction[0] = cmd[0] > 0.0 ? 1 : -1;
-      _last_wheel_cmd_direction[1] = cmd[1] > 0.0 ? 1 : -1;
+      for (size_t i = 0; i < NUM_JOINTS; i++) {
+        _last_wheel_cmd_direction[i] = cmd[i] > 0.0 ? 1 : -1;
+      }
     }
+  }
+
+  double meter_per_enc_tick() {
+    return (_wheel_diameter / 2) * 2 * M_PI /
+           40.0; // TODO: get ticks from parameter server
+  }
+
+  /**
+   * Reading encoder values and setting position and velocity of encoders
+   */
+  void read_single(int joint, const ros::Duration &period) {
+    auto diff = _wheel_encoder[joint] - _last_value[joint];
+    _last_value[joint] = _wheel_encoder[joint];
+    double meterPerEncoderTick = meter_per_enc_tick();
+    double distance;
+    if (bidirectional) { // if encoder is counting bidirectional, then it
+                         // decreases by itself, dont want to use
+                         // last_wheel_cmd_direction
+      distance = diff * meterPerEncoderTick * 1.0;
+    } else {
+      distance =
+          diff * meterPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
+    }
+    pos[joint] += distance;
+    vel[joint] = distance / period.toSec(); // WHY: was this turned off?
   }
 
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
   void read(const ros::Duration &period) {
-    //_wheel_encoder[0] = number of ticks of left encoder since last call of
-    // this function _wheel_encoder[1] = number of ticks of right encoder since
-    // last call of this function
 
-    double meterPerEncoderTick = (_wheel_diameter / 2) * 2 * M_PI / 40.0;
-    int diff_left = _wheel_encoder[0] - _last_value[0];
-    int diff_right = _wheel_encoder[1] - _last_value[1];
-    _last_value[0] = _wheel_encoder[0];
-    _last_value[1] = _wheel_encoder[1];
-
-    double magic_number = 1.0;
-
-    double distance_left = diff_left * meterPerEncoderTick *
-                           _last_wheel_cmd_direction[0] * magic_number;
-    double distance_right = diff_right * meterPerEncoderTick *
-                            _last_wheel_cmd_direction[1] * magic_number;
-
-    pos[0] += distance_left;
-    //    vel[0] = distance_left / period.toSec();
-    pos[1] += distance_right;
-    //    vel[1] = distance_right / period.toSec();
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
+      this->read_single(i, period);
+    }
   }
 
-  /*
-    ros::Time get_time() {
-      prev_update_time = curr_update_time;
-      curr_update_time = ros::Time::now();
-      return curr_update_time;
-    }
-
-    ros::Duration get_period() {
-      return curr_update_time - prev_update_time;
-    }
-  */
   ros::NodeHandle nh;
   ros::NodeHandle private_nh;
 
 private:
   hardware_interface::JointStateInterface jnt_state_interface;
   hardware_interface::VelocityJointInterface jnt_vel_interface;
-  double cmd[NUM_JOINTS];
-  double pos[NUM_JOINTS];
-  double vel[NUM_JOINTS];
-  double eff[NUM_JOINTS];
+  std::vector<double> cmd;
+  std::vector<double> pos;
+  std::vector<double> vel;
+  std::vector<double> eff;
 
-  bool running_;
+  bool running_ = true;
   double _wheel_diameter;
   double _max_speed;
-  double _wheel_angle[NUM_JOINTS];
-  int _wheel_encoder[NUM_JOINTS];
-  int _last_cmd[NUM_JOINTS];
-  int _last_value[NUM_JOINTS];
-  int _last_wheel_cmd_direction[NUM_JOINTS];
+  std::vector<int> _wheel_encoder;
+  std::vector<int> _last_cmd;
+  std::vector<int> _last_value;
+  std::vector<int> _last_wheel_cmd_direction;
 
   ros::Time curr_update_time, prev_update_time;
 
-  ros::Subscriber left_wheel_encoder_sub_;
-  ros::Subscriber right_wheel_encoder_sub_;
-
+  std::vector<ros::Subscriber> wheel_encoder_subs_;
   ros::ServiceServer start_srv_;
   ros::ServiceServer stop_srv_;
 
-  ros::ServiceClient left_client;
-  ros::ServiceClient right_client;
-
-  mirte_msgs::SetMotorSpeed left_motor_service;
-  mirte_msgs::SetMotorSpeed right_motor_service;
-
+  std::vector<ros::ServiceClient> service_clients;
+  std::vector<mirte_msgs::SetMotorSpeed> service_requests;
+  std::vector<std::string> joints;
   bool start_callback(std_srvs::Empty::Request & /*req*/,
                       std_srvs::Empty::Response & /*res*/) {
     running_ = true;
@@ -171,12 +163,12 @@ private:
     return true;
   }
 
-  void leftWheelEncoderCallback(const mirte_msgs::Encoder &msg) {
-    _wheel_encoder[0] = _wheel_encoder[0] + msg.value;
-  }
-
-  void rightWheelEncoderCallback(const mirte_msgs::Encoder &msg) {
-    _wheel_encoder[1] = _wheel_encoder[1] + msg.value;
+  void WheelEncoderCallback(const mirte_msgs::Encoder::ConstPtr &msg,
+                            int joint) {
+    if (msg->value < 0) {
+      bidirectional = true;
+    }
+    _wheel_encoder[joint] = _wheel_encoder[joint] + msg->value;
   }
 
   // Thread and function to restart service clients when the service server has
@@ -185,68 +177,113 @@ private:
   void init_service_clients();
   void start_reconnect();
   std::mutex service_clients_mutex;
+
+  bool bidirectional = false; // assume it is one direction, when receiving any
+                              // negative value, it will be set to true
+  unsigned int NUM_JOINTS = 2;
 }; // class
 
 void MyRobotHWInterface::init_service_clients() {
-  ros::service::waitForService("/mirte/set_left_speed");
-  ros::service::waitForService("/mirte/set_right_speed");
+  for (auto joint : this->joints) {
+    auto service = (boost::format(service_format) % joint).str();
+    ROS_INFO_STREAM("Waiting for service " << service);
+    ros::service::waitForService(service, -1);
+  }
   {
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    this->left_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
-        "/mirte/set_left_speed", true);
-    this->right_client = nh.serviceClient<mirte_msgs::SetMotorSpeed>(
-        "/mirte/set_right_speed", true);
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
+      service_clients.push_back(nh.serviceClient<mirte_msgs::SetMotorSpeed>(
+          (boost::format(service_format) % this->joints[i]).str(), true));
+      service_requests.push_back(mirte_msgs::SetMotorSpeed());
+    }
+  }
+}
+
+unsigned int detect_joints(ros::NodeHandle &nh) {
+  std::string type;
+  nh.param<std::string>("/mobile_base_controller/type", type, "");
+  if (type.rfind("mecanum", 0) == 0) { // starts with mecanum
+    return 4;
+  } else if (type.rfind("diff", 0) == 0) { // starts with diff
+    return 2;
+  } else {
+    ROS_ERROR_STREAM("Unknown type: " << type);
+    return 0;
   }
 }
 
 MyRobotHWInterface::MyRobotHWInterface()
-    : running_(true), private_nh("~"),
+    : private_nh("~"), running_(true),
       start_srv_(nh.advertiseService(
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
   private_nh.param<double>("max_speed", _max_speed, 2.0);
-
+  // private_nh.param<bool>("bidirectional", bidirectional, true);
+  this->NUM_JOINTS = detect_joints(private_nh);
   // Initialize raw data
-  std::fill_n(pos, NUM_JOINTS, 0.0);
-  std::fill_n(vel, NUM_JOINTS, 0.0);
-  std::fill_n(eff, NUM_JOINTS, 0.0);
-  std::fill_n(cmd, NUM_JOINTS, 0.0);
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
+    _wheel_encoder.push_back(0);
+    _last_value.push_back(0);
+    _last_wheel_cmd_direction.push_back(0);
+    _last_cmd.push_back(0);
+    pos.push_back(0);
+    vel.push_back(0);
+    eff.push_back(0);
+    cmd.push_back(0);
+  }
+  assert(_wheel_encoder.size() == NUM_JOINTS);
+  assert(_last_value.size() == NUM_JOINTS);
+  assert(_last_wheel_cmd_direction.size() == NUM_JOINTS);
+  assert(_last_cmd.size() == NUM_JOINTS);
+  assert(pos.size() == NUM_JOINTS);
+  assert(vel.size() == NUM_JOINTS);
+  assert(eff.size() == NUM_JOINTS);
+  assert(cmd.size() == NUM_JOINTS);
+
+  this->joints = {"left", // Edit the control.yaml when using this for the
+                          // normal mirte as well
+                  "right"};
+  if (NUM_JOINTS == 4) {
+    this->joints = {"left_front",
+                    "left_rear", // TODO: check ordering
+                    "right_front", "right_rear"};
+  }
+  std::cout << "Initializing MyRobotHWInterface with " << NUM_JOINTS
+            << " joints" << std::endl;
 
   // connect and register the joint state and velocity interfaces
   for (unsigned int i = 0; i < NUM_JOINTS; ++i) {
-    std::ostringstream os;
-    os << "wheel_" << i << "_joint";
-
-    hardware_interface::JointStateHandle state_handle(os.str(), &pos[i],
-                                                      &vel[i], &eff[i]);
+    std::string joint =
+        (boost::format("wheel_%s_joint") % this->joints[i]).str();
+    hardware_interface::JointStateHandle state_handle(joint, &pos[i], &vel[i],
+                                                      &eff[i]);
     jnt_state_interface.registerHandle(state_handle);
 
     hardware_interface::JointHandle vel_handle(
-        jnt_state_interface.getHandle(os.str()), &cmd[i]);
+        jnt_state_interface.getHandle(joint), &cmd[i]);
     jnt_vel_interface.registerHandle(vel_handle);
-
-    _wheel_encoder[i] = 0;
-    _last_value[i] = 0;
-    _last_wheel_cmd_direction[i] = 0;
-    _last_cmd[i] = 0;
   }
   registerInterface(&jnt_state_interface);
   registerInterface(&jnt_vel_interface);
 
   // Initialize publishers and subscribers
-  left_wheel_encoder_sub_ =
-      nh.subscribe("/mirte/encoder/left", 1,
-                   &MyRobotHWInterface::leftWheelEncoderCallback, this);
-  right_wheel_encoder_sub_ =
-      nh.subscribe("/mirte/encoder/right", 1,
-                   &MyRobotHWInterface::rightWheelEncoderCallback, this);
-
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
+    auto encoder_topic =
+        (boost::format(service_format) % this->joints[i]).str();
+    wheel_encoder_subs_.push_back(nh.subscribe<mirte_msgs::Encoder>(
+        encoder_topic, 1,
+        boost::bind(&MyRobotHWInterface::WheelEncoderCallback, this, _1, i)));
+  }
+  assert(joints.size() == NUM_JOINTS);
   this->init_service_clients();
+  assert(service_requests.size() == NUM_JOINTS);
+
+  assert(service_clients.size() == NUM_JOINTS);
 }
 
-void MyRobotHWInterface::start_reconnect() {
+void MyRobotHWInterface ::start_reconnect() {
   using namespace std::chrono_literals;
 
   if (this->reconnect_thread.valid()) { // does it already exist or not?
