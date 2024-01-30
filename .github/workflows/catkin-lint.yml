@@ -1,0 +1,43 @@
+name: Compile and catkin_lint ros style check
+on: [push, pull_request]
+jobs:
+  check_ros_style:
+    runs-on: ubuntu-latest
+    container:
+      image: ros:noetic
+    steps:
+      - uses: actions/checkout@v4
+      - run: apt update && apt install catkin-lint -y
+      - run: |
+          mkdir -p catkin_ws/src
+          mv mirte_bringup catkin_ws/src/
+          mv mirte_control catkin_ws/src/
+          mv mirte_msgs catkin_ws/src/
+          mv mirte_telemetrix catkin_ws/src/
+          mv mirte_teleop catkin_ws/src/
+          cd catkin_ws/src
+          . /opt/ros/noetic/setup.sh
+          catkin_init_workspace
+          cd ..
+          rosdep init || true
+          rosdep update || true
+          rosdep install -y --from-paths src/ --ignore-src --rosdistro noetic
+          catkin_make
+          . devel/setup.sh
+      - run: |
+          . catkin_ws/devel/setup.sh
+          failure=false
+          # Run all tests before failing to test all packages
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_bringup || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_control || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_msgs || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_telemetrix || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_teleop || failure=true
+          if $failure; then
+              echo "Automated tests failed" >&2
+          exit 1
+          else
+              echo "Automated tests succeeded" >&2
+              exit 0
+          fi
+

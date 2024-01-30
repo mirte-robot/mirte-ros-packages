@@ -50,24 +50,27 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>mirte_msgs</build_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>hardware_interface</build_depend>
-  <build_depend>trajectory_msgs</build_depend>
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>mirte_msgs</depend>
+  <depend>controller_manager</depend>
+  <depend>hardware_interface</depend>
+  <depend>trajectory_msgs</depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>effort_controllers</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
 
-  <exec_depend>roscpp</exec_depend>
+    <!-- <depend>roscpp</build_export_depend> -->
+  <!-- <build_export_depend>std_msgs</build_export_depend> -->
+
+  <!-- <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>mirte_msgs</exec_depend>
-  <exec_depend>message_runtime</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>hardware_interface</exec_depend>
-  <exec_depend>effort_controllers</exec_depend>
-  <exec_depend>trajectory_msgs</exec_depend>
-  <exec_depend>diff_drive_controller</exec_depend>
+  
+  <build_export_depend >trajectory_msgs</build_export_depend >
+   -->
 
 
   <!-- The export tag contains other, unspecified, tags -->
