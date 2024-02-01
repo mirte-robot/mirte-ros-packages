@@ -35,6 +35,7 @@ async def analog_write(board, pin, value):
 
 # Import ROS message types
 from std_msgs.msg import Header, Int32
+from std_srvs.srv import SetBool, SetBoolResponse
 from sensor_msgs.msg import Range, BatteryState
 from mirte_msgs.msg import *
 
@@ -1280,12 +1281,14 @@ class Hiwonder_Servo:
         self.id = servo_obj["id"]
         self.name = servo_name
         self.bus = bus
-        self.min_angle = 0
-        if "min_angle" in servo_obj:
-            self.min_angle = servo_obj["min_angle"]
-        self.max_angle = 24000  # centidegrees
-        if "max_angle" in servo_obj:
-            self.max_angle = servo_obj["max_angle"]
+        self.min_angle_in = 0
+        self.max_angle_in = 180  # degrees or whatever you want to use
+
+        self.min_angle_out = 0
+        self.max_angle_out = 24000  # centidegrees
+        for name in ["min_angle_in", "min_angle_out", "max_angle_in", "max_angle_out"]:
+            if name in servo_obj:
+                setattr(self, name, servo_obj[name])
 
     async def start(self):
         server = rospy.Service(
@@ -1293,13 +1296,26 @@ class Hiwonder_Servo:
             SetServoAngle,
             self.set_servo_angle_service,
         )
+        rospy.Service(
+            "/mirte/set_" + self.name + "_servo_enable",
+            SetBool,
+            self.set_servo_enabled_service,
+        )
         self.publisher = rospy.Publisher(
             f"/mirte/servos/{self.name}/position", Int32, queue_size=1
         )
 
+    def set_servo_enabled_service(self, req):
+        asyncio.run(self.bus.set_enabled(self.id, req.value))
+        return SetBoolResponse(True)
+
     async def servo_write(self, angle):
-        angle = angle * 100  # centidegrees
-        angle = max(self.min_angle, min(angle, self.max_angle))
+        angle = scale(
+            angle,
+            [self.min_angle_in, self.max_angle_in],
+            [self.min_angle_out, self.max_angle_out],
+        )
+        angle = max(self.min_angle_out, min(angle, self.max_angle_out))  # clamp
         await self.bus.set_single_servo(self.id, angle, 100)
 
     def set_servo_angle_service(self, req):
@@ -1339,8 +1355,19 @@ class Hiwonder_Bus:
         )
         self.set_single_servo = updaters["set_single_servo"]
         self.set_multiple_servos = updaters["set_multiple_servos"]
+        self.set_enabled = updaters["set_enabled"]
+        self.set_enabled_all = updaters["set_enabled_all"]
+        rospy.Service(
+            "/mirte/set_" + self.name + "_all_servos_enable",
+            SetBool,
+            self.set_servo_enabled_service,
+        )
 
         # TODO: add service to update multiple servos
+
+    def set_all_servos_enabled(self, req):
+        asyncio.run(self.bus.set_enabled_all(req.value))
+        return SetBoolResponse(True)
 
     async def callback(self, data):
         for servo_update in data:
