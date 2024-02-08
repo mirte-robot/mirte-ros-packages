@@ -1306,8 +1306,8 @@ class Hiwonder_Servo:
         )
 
     def set_servo_enabled_service(self, req):
-        asyncio.run(self.bus.set_enabled(self.id, req.value))
-        return SetBoolResponse(True)
+        asyncio.run(self.bus.set_enabled(self.id, req.data))
+        return SetBoolResponse(True, "enabled" if req.data else "disabled")
 
     async def servo_write(self, angle):
         angle = scale(
@@ -1366,8 +1366,8 @@ class Hiwonder_Bus:
         # TODO: add service to update multiple servos
 
     def set_all_servos_enabled(self, req):
-        asyncio.run(self.bus.set_enabled_all(req.value))
-        return SetBoolResponse(True)
+        asyncio.run(self.set_enabled_all(req.data))
+        return SetBoolResponse(True, "enabled" if req.data else "disabled")
 
     async def callback(self, data):
         try:
