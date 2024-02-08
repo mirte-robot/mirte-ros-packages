@@ -1326,6 +1326,7 @@ class Hiwonder_Servo:
         # TODO: map back to 'angle'
         self.publisher.publish(data["angle"])
 
+
 class Hiwonder_Bus:
     def __init__(self, board, module_name, module):
         self.name = module_name
@@ -1348,7 +1349,6 @@ class Hiwonder_Bus:
                 await servo.start()
                 self.servos[servo_name] = servo
                 self.servos[servo.id] = servo
-                
 
         updaters = await self.board.modules.add_hiwonder_servo(
             uart, rx, tx, ids, self.callback
@@ -1371,7 +1371,7 @@ class Hiwonder_Bus:
 
     async def callback(self, data):
         try:
-            for servo_update in data: 
+            for servo_update in data:
                 sid = servo_update["id"]
                 if sid in self.servos:
                     self.servos[sid].callback(servo_update)
