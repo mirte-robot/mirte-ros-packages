@@ -1323,10 +1323,7 @@ class Hiwonder_Servo:
         return SetServoAngleResponse(True)
 
     def callback(self, data):
-        message = Int32
-        message.data = data["value"]
-        self.publisher.publish(message)
-
+        self.publisher.publish(data["angle"])
 
 class Hiwonder_Bus:
     def __init__(self, board, module_name, module):
@@ -1349,6 +1346,8 @@ class Hiwonder_Bus:
                 ids.append(servo.id)
                 await servo.start()
                 self.servos[servo_name] = servo
+                self.servos[servo.id] = servo
+                
 
         updaters = await self.board.modules.add_hiwonder_servo(
             uart, rx, tx, ids, self.callback
@@ -1360,7 +1359,7 @@ class Hiwonder_Bus:
         rospy.Service(
             "/mirte/set_" + self.name + "_all_servos_enable",
             SetBool,
-            self.set_servo_enabled_service,
+            self.set_all_servos_enabled,
         )
 
         # TODO: add service to update multiple servos
@@ -1370,12 +1369,14 @@ class Hiwonder_Bus:
         return SetBoolResponse(True)
 
     async def callback(self, data):
-        for servo_update in data:
-            servos = list(
-                filter(lambda servo: servo_update["id"] == servo.id, self.servos)
-            )
-            if len(servos) == 1:
-                servos[0].callback(servo_update)
+        try:
+            for servo_update in data: 
+                sid = servo_update["id"]
+                if sid in self.servos:
+                    self.servos[sid].callback(servo_update)
+        except Exception as e:
+            print("hiwonder servo callback err:")
+            print(e)
 
 
 # Shutdown procedure
