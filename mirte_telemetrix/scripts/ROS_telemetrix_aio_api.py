@@ -1315,7 +1315,7 @@ class Hiwonder_Servo:
             [self.min_angle_in, self.max_angle_in],
             [self.min_angle_out, self.max_angle_out],
         )
-        angle = max(self.min_angle_out, min(angle, self.max_angle_out))  # clamp
+        angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
         await self.bus.set_single_servo(self.id, angle, 100)
 
     def set_servo_angle_service(self, req):
@@ -1323,6 +1323,7 @@ class Hiwonder_Servo:
         return SetServoAngleResponse(True)
 
     def callback(self, data):
+        # TODO: map back to 'angle'
         self.publisher.publish(data["angle"])
 
 class Hiwonder_Bus:
