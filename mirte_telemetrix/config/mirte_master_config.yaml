@@ -12,40 +12,40 @@ modules:
     frequency: 1500
     motors:
       left_front:
-        pin_A: 8
-        pin_B: 9
+        pin_A: 0
+        pin_B: 1
       left_rear:
-        pin_A: 10
-        pin_B: 11
+        pin_A: 3
+        pin_B: 2
       right_front:
-        pin_A: 12
-        pin_B: 13
+        pin_A: 5
+        pin_B: 4
       right_rear:
-        pin_A: 14
-        pin_B: 15
-    servos:
-      servo1:
-        pin: 1
-  servo_controller:
-    device: mirte
-    type: Hiwonder_Servo
-    uart: 1
-    rx_pin: 4
-    tx_pin: 5
-    servos:
-      servoH1:
-        id: 3
-        min_angle: 9000
-        max_angle: 14000
-      servoH2:
-        id: 4
-        min_angle: 800
-        max_angle: 4000
-  power_watcher:
-    device: mirte
-    type: INA226
-    connector: I2C1
-    id: 0x41
-    min_voltage: 11
-    max_current: 1
-    max_voltage: 15
+        pin_A: 7
+        pin_B: 6
+    # servos:
+    #   servo1:
+    #     pin: 1
+  # servo_controller:
+  #   device: mirte
+  #   type: Hiwonder_Servo
+  #   uart: 0
+  #   rx_pin: 0
+  #   tx_pin: 1
+  #   servos:
+  #     servoH1:
+  #       id: 3
+  #       min_angle: 9000
+  #       max_angle: 14000
+  #     servoH2:
+  #       id: 4
+  #       min_angle: 800
+  #       max_angle: 4000
+  # power_watcher:
+  #   device: mirte
+  #   type: INA226
+  #   connector: I2C1
+  #   id: 0x41
+  #   min_voltage: 11
+  #   max_current: 1
+  #   max_voltage: 15

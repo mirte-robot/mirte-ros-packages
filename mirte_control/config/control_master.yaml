@@ -16,7 +16,7 @@ mobile_base_controller:
   # Override URDF look-up for wheel separation since the parent link is not the base_link.
   wheel_separation_x: 0.638
   wheel_separation_y: 0.551
-  wheel_radius: 0.165
+  wheel_radius: 0.08
   # Odometry fused with IMU is published by robot_localization, so
   # no need to publish a TF based on encoders alone.
   enable_odom_tf: true
@@ -29,20 +29,20 @@ mobile_base_controller:
   # Whenever a min_* is unspecified, default to -max_*
   linear:
     x:
-      has_velocity_limits    : true
+      has_velocity_limits    : false
       max_velocity           : 1.1   # m/s
-      has_acceleration_limits: true
+      has_acceleration_limits: false
       max_acceleration       : 2.5   # m/s^2
     y:
-      has_velocity_limits    : true
+      has_velocity_limits    : false
       max_velocity           : 1.1   # m/s
-      has_acceleration_limits: true
+      has_acceleration_limits: false
       max_acceleration       : 2.5   # m/s^2
   angular:
     z:
-      has_velocity_limits    : true
+      has_velocity_limits    : false
       max_velocity           : 2.0   # rad/s
-      has_acceleration_limits: true
+      has_acceleration_limits: false
       max_acceleration       : 1.0   # rad/s^2
 
 # ekf_localization:

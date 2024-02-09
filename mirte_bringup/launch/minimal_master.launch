@@ -3,7 +3,7 @@
     <!-- Load parameters that match the correct
          mcu connections -->
     <group ns="mirte">
-        <rosparam file="$(find mirte_telemetrix)/config/mirte_user_config.yaml"/>
+        <rosparam file="$(find mirte_telemetrix)/config/mirte_master_config.yaml"/>
     </group>
 
     <!-- Telemetrix node to start all services and topics
