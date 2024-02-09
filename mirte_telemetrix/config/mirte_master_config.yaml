@@ -23,6 +23,32 @@ modules:
       right_rear:
         pin_A: 7
         pin_B: 6
+encoder:
+  left_front:
+    name: left_front
+    device: mirte
+    pins:
+      A: 21
+      B: 20
+  left_rear:
+    name: left_rear
+    device: mirte
+    pins:
+      A: 17
+      B: 16
+  right_front:
+    name: right_front
+    device: mirte
+    pins:
+      A: 18
+      B: 19
+  right_rear:
+    name: right_rear
+    device: mirte
+    pins:
+      A: 15
+      B: 14
+  
     # servos:
     #   servo1:
     #     pin: 1
