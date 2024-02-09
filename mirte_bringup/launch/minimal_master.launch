@@ -3,7 +3,7 @@
     <!-- Load parameters that match the correct
          mcu connections -->
     <group ns="mirte">
-        <rosparam file="$(find mirte_telemetrix)/config/mirte_user_config.yaml"/>
+        <rosparam file="$(find mirte_telemetrix)/config/mirte_master_config.yaml"/>
     </group>
 
     <!-- Telemetrix node to start all services and topics
@@ -20,39 +20,17 @@
           pkg="mirte_control"
           type="mirte_control_node"/>
 
-    <!-- <node name="my_robot_camera"
-          pkg="mirte_ros_package"
-          type="camera.py" output="screen"/> -->
-
-    <!-- <node name="mirte_navigation"
-          pkg="mirte_ros_package"
-          type="navigation.py" output="screen"/> -->
-
     <!-- Load controller config -->
     <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
+
+    <!-- Load controller settings -->
+    <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/>
 
     <node name="controller_spawner"
           pkg="controller_manager"
           type="spawner"
           output="screen"
           args="mobile_base_controller"/>
-
-    <!-- Start the websocket server -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-      <arg name="websocket_external_port" value="80"/>
-    </include>
-
-
-  <!-- TODO: openCV bridge -->
-  <node name="webcam" pkg="usb_cam" type="usb_cam_node">
-     <param name="pixel_format" value="yuyv"/>
-  </node>
-
-
-  <node name="web_video_server" pkg="web_video_server" type="web_video_server">
-    <param name="default_transport" value="theora"/>
-    <param name="port" value="8181"/>
-  </node>
 
 
 </launch>
