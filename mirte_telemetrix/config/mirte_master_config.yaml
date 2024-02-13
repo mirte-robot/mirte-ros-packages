@@ -38,17 +38,17 @@ modules:
         id: 4
         min_angle: 800
         max_angle: 4000
-  power_watcher:
-    device: mirte
-    type: INA226
-    connector: I2C1
-    id: 0b1000101
-    min_voltage: 11
-    max_current: 1
-    max_voltage: 15
-    turn_off_pin: 27
-    turn_off_value: True
-    turn_off_time: 10
+  # power_watcher:
+  #   device: mirte
+  #   type: INA226
+  #   connector: I2C1
+  #   id: 0b1000101
+  #   min_voltage: 11
+  #   max_current: 1
+  #   max_voltage: 15
+  #   turn_off_pin: 27
+  #   turn_off_value: True
+  #   turn_off_time: 10
 encoder:
   left_front:
     name: left_front
@@ -74,6 +74,13 @@ encoder:
     pins:
       A: 15
       B: 14
+neopixel:
+  name: leds
+  pins:
+    pin: 27
+  default_color: 0x123456
+  max_intensity: 50
+  pixels: 18
 
     # servos:
     #   servo1:

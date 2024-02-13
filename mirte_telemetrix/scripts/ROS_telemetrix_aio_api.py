@@ -33,6 +33,9 @@ async def analog_write(board, pin, value):
     else:
         await board.analog_write(pin, value)
 
+def get_obj_value(s, obj, key, def_value=None):
+    # shorthand of self.key = obj["key"] if "key" in obj else def_value
+    setattr(s, key, obj[key] if key in obj else def_value )
 
 # Import ROS message types
 from std_msgs.msg import Header, Int32
@@ -94,8 +97,8 @@ if devices["mirte"]["type"] == "breadboard":
 
 
 def get_pin_numbers(component):
-    devices = rospy.get_param("/mirte/device")
-    device = devices[component["device"]]
+    # devices = rospy.get_param("/mirte/device")
+    # device = devices[component["device"]]
     pins = {}
     if "connector" in component:
         pins = board_mapping.connector_to_pins(component["connector"])
@@ -389,6 +392,36 @@ class EncoderSensorMonitor(SensorMonitor):
 
         await self.publish(encoder)
 
+class Neopixel:
+    def __init__(self, board, neo_obj):
+        self.board = board
+        self.settings = neo_obj
+        self.pins = get_pin_numbers(neo_obj)
+        self.name = neo_obj["name"]
+        self.pixels = neo_obj["pixels"] # num of leds
+        get_obj_value(self, neo_obj, "max_intensity", 50)
+        get_obj_value(self, neo_obj, "default_color", 0x000000)
+        server = rospy.Service(f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service)
+    
+    async def start(self):
+        colors = self.unpack_color_and_scale(self.default_color)
+        print(colors[0], colors[1], colors[2])
+        await board.set_pin_mode_neopixel(  pin_number=self.pins["pin"], num_pixels=self.pixels, fill_r=colors[0], fill_g=colors[1], fill_b=colors[2] )
+
+    async def set_color_all(self, color):
+        colors = self.unpack_color_and_scale(color)
+        await board.neopixel_fill(  r=colors[0], g=colors[1], b=colors[2] )
+
+    async def set_color_single(self, pixel, color):
+        colors = self.unpack_color_and_scale(color)
+        await board.neopixel_fill(  r=colors[0], g=colors[1], b=colors[2] )
+
+    def set_color_all_service(self, req):
+        asyncio.run(self.set_color_all(req.value))
+        return SetLEDValueResponse(True)
+
+    def unpack_color_and_scale(self, color_num): # hex color number (0x123456) or string ("0x123456")
+        return [int(x*0.5) for x in struct.unpack('BBB', bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6)))]
 
 class Servo:
     def __init__(self, board, servo_obj):
@@ -940,6 +973,10 @@ def actuators(loop, board, device):
             servo = Servo(board, servos[servo])
             servers.append(loop.create_task(servo.start()))
 
+    if rospy.has_param("/mirte/neopixel"):
+        neopixel = rospy.get_param("/mirte/neopixel")
+        servers.append(loop.create_task(Neopixel(board, neopixel).start()))
+
     if rospy.has_param("/mirte/modules"):
         servers += add_modules(rospy.get_param("/mirte/modules"), device)
     # Set a raw pin value
@@ -1036,7 +1073,7 @@ def sensors(loop, board, device):
             tasks.append(loop.create_task(monitor.start()))
             # encoder sensors do not need a max_frequency. They are interrupts on
             # on the mcu side.
-
+    
     # Get a raw pin value
     # TODO: this still needs to be tested. We are waiting on an implementation of ananlog_read()
     # on the telemetrix side
