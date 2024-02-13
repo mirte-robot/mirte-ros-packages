@@ -45,7 +45,10 @@ modules:
     device: mirte
     type: INA226
     connector: I2C1
-    id: 0x41
+    id: 0b1000101
     min_voltage: 11
     max_current: 1
     max_voltage: 15
+    turn_off_pin: 27
+    turn_off_value: True
+    turn_off_time: 10
