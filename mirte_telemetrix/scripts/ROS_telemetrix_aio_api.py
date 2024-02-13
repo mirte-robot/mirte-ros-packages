@@ -402,10 +402,11 @@ class Neopixel:
         get_obj_value(self, neo_obj, "max_intensity", 50)
         get_obj_value(self, neo_obj, "default_color", 0x000000)
         server = rospy.Service(f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service)
+        server = rospy.Service(f"/mirte/set_{self.name}_color_single", SetSingleLEDValue, self.set_color_single_service)
+
     
     async def start(self):
         colors = self.unpack_color_and_scale(self.default_color)
-        print(colors[0], colors[1], colors[2])
         await board.set_pin_mode_neopixel(  pin_number=self.pins["pin"], num_pixels=self.pixels, fill_r=colors[0], fill_g=colors[1], fill_b=colors[2] )
 
     async def set_color_all(self, color):
@@ -414,11 +415,18 @@ class Neopixel:
 
     async def set_color_single(self, pixel, color):
         colors = self.unpack_color_and_scale(color)
-        await board.neopixel_fill(  r=colors[0], g=colors[1], b=colors[2] )
+        if(pixel >=self.pixels):
+            return False
+        await board.neo_pixel_set_value(pixel,  r=colors[0], g=colors[1], b=colors[2], auto_show=True )
+        return True
 
     def set_color_all_service(self, req):
         asyncio.run(self.set_color_all(req.value))
         return SetLEDValueResponse(True)
+
+    def set_color_single_service(self, req):
+        ok = asyncio.run(self.set_color_single(req.pixel, req.value))
+        return SetSingleLEDValueResponse(ok)
 
     def unpack_color_and_scale(self, color_num): # hex color number (0x123456) or string ("0x123456")
         return [int(x*0.5) for x in struct.unpack('BBB', bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6)))]
