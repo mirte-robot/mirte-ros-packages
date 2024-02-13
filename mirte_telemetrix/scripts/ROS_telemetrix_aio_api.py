@@ -13,6 +13,7 @@ from tmx_pico_aio import tmx_pico_aio
 from telemetrix_aio import telemetrix_aio
 from typing import Literal, Tuple
 import subprocess
+
 # Import the right Telemetrix AIO
 devices = rospy.get_param("/mirte/device")
 
@@ -1215,10 +1216,18 @@ class INA226:
         self.min_voltage = module["min_voltage"] if "min_voltage" in module else -1
         self.max_voltage = module["max_voltage"] if "max_voltage" in module else -1
         self.max_current = module["max_current"] if "max_current" in module else -1
-        self.turn_off_pin = board_mapping.pin_name_to_pin_number(module["turn_off_pin"]) if "turn_off_pin" in module else -1
-        self.turn_off_pin_value = module["turn_off_pin_value"] if "turn_off_pin_value" in module else True # what should be the output when the relay should be opened.
-        self.turn_off_time = module["turn_off_time"] if "turn_off_time" in module else 30 # time to wait for computer to shut down
-        self.enable_turn_off = False # require at least a single message with a real value before arming the turn off system
+        self.turn_off_pin = (
+            board_mapping.pin_name_to_pin_number(module["turn_off_pin"])
+            if "turn_off_pin" in module
+            else -1
+        )
+        self.turn_off_pin_value = (
+            module["turn_off_pin_value"] if "turn_off_pin_value" in module else True
+        )  # what should be the output when the relay should be opened.
+        self.turn_off_time = (
+            module["turn_off_time"] if "turn_off_time" in module else 30
+        )  # time to wait for computer to shut down
+        self.enable_turn_off = False  # require at least a single message with a real value before arming the turn off system
         self.shutdown_triggered = False
         self.turn_off_trigger_start_time = -1
         self.ina_publisher = rospy.Publisher(
@@ -1250,8 +1259,12 @@ class INA226:
             id = self.module["id"]
 
         await self.board.sensors.add_ina226(self.i2c_port, self.callback, id)
-        if(self.turn_off_pin != -1):
-            self.trigger_shutdown_relay = await self.board.modules.add_shutdown_relay(self.turn_off_pin, not not self.turn_off_pin_value, self.turn_off_time+10)
+        if self.turn_off_pin != -1:
+            self.trigger_shutdown_relay = await self.board.modules.add_shutdown_relay(
+                self.turn_off_pin,
+                not not self.turn_off_pin_value,
+                self.turn_off_time + 10, # add 10s to the shutdown time for the 10s shutdown command wait time
+            )
 
     async def callback(self, data):
         # TODO: move this decoding to the library
@@ -1285,36 +1298,42 @@ class INA226:
         await self.turn_off_cb()
 
     async def turn_off_cb(self):
-        if(self.turn_off_pin == -1):
+        if self.turn_off_pin == -1:
             # Dont turn off when this feature is disabled
             return
 
         # make sure that there are real values coming from the ina226 module
-        if(not self.enable_turn_off):
-            if(self.voltage > 6 and self.current > 0.3):
+        if not self.enable_turn_off:
+            if self.voltage > 6 and self.current > 0.3:
                 self.enable_turn_off = True
                 rospy.logwarn("Shutdown relay armed")
             return
-    
+
         # at first dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
         # this makes sure that a short dip (motor start) does not trigger it
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
-            if(self.turn_off_trigger_start_time == -1):
+            if self.turn_off_trigger_start_time == -1:
                 self.turn_off_trigger_start_time = time.time()
-            rospy.logwarn("Low voltage, %ss till shutdown.", 5- (time.time()-self.turn_off_trigger_start_time))
+            rospy.logwarn(
+                "Low voltage, %ss till shutdown.",
+                5 - (time.time() - self.turn_off_trigger_start_time),
+            )
         else:
             self.turn_off_trigger_start_time = -1
 
-        if(self.turn_off_trigger_start_time != -1 and time.time()-self.turn_off_trigger_start_time > 5):
+        if (
+            self.turn_off_trigger_start_time != -1
+            and time.time() - self.turn_off_trigger_start_time > 5
+        ):
             await self.shutdown_robot()
-    
+
     async def shutdown_robot(self):
-        if(not self.shutdown_triggered):
+        if not self.shutdown_triggered:
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
         # subprocess.run("sudo shutdown 10s")
-        
+
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):
