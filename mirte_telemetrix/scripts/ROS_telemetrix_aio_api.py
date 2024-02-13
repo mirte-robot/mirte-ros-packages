@@ -1342,7 +1342,7 @@ class Hiwonder_Servo:
             self.set_servo_enabled_service,
         )
         self.publisher = rospy.Publisher(
-            f"/mirte/servos/{self.name}/position", Int32, queue_size=1
+            f"/mirte/servos/{self.name}/position", Int32, queue_size=1, latch=True
         )
 
     def set_servo_enabled_service(self, req):
