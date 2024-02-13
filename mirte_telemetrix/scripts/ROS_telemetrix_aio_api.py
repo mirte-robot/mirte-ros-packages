@@ -1263,7 +1263,8 @@ class INA226:
             self.trigger_shutdown_relay = await self.board.modules.add_shutdown_relay(
                 self.turn_off_pin,
                 not not self.turn_off_pin_value,
-                self.turn_off_time + 10, # add 10s to the shutdown time for the 10s shutdown command wait time
+                self.turn_off_time
+                + 10,  # add 10s to the shutdown time for the 10s shutdown command wait time
             )
 
     async def callback(self, data):
