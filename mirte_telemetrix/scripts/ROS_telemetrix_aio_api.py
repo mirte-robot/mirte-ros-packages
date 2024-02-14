@@ -1278,6 +1278,9 @@ class INA226:
         self.ina_publisher = rospy.Publisher(
             "/mirte/power/" + module_name, BatteryState, queue_size=1
         )
+        server = rospy.Service("/mirte/shutdown", SetBool, self.shutdown_service)
+        
+        self.last_low_voltage = -1
 
     async def start(self):
         print("start ina!")
@@ -1319,8 +1322,9 @@ class INA226:
         vals = list(struct.unpack("<2f", bytes_obj))
         self.voltage = vals[0]
         self.current = vals[1]
-        if self.min_voltage != -1 and self.voltage < self.min_voltage:
+        if self.min_voltage != -1 and self.voltage < self.min_voltage and self.last_low_voltage != self.voltage:
             rospy.logwarn("Low voltage: %f", self.voltage)
+            self.last_low_voltage = self.voltage
         if self.max_voltage != -1 and self.voltage > self.max_voltage:
             rospy.logwarn("High voltage: %f", self.voltage)
         if self.max_current != -1 and self.current > self.max_current:
@@ -1376,10 +1380,15 @@ class INA226:
     async def shutdown_robot(self):
         if not self.shutdown_triggered:
             rospy.logerr("Triggering shutdown, shutting down in 10s")
+            # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
             await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
         # subprocess.run("sudo shutdown 10s")
 
+    def shutdown_service(self, req):
+        # also called from systemd shutdown service
+        asyncio.run(self.shutdown_robot())
+        return SetBoolResponse(True, "")
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):
