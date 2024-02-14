@@ -1278,6 +1278,9 @@ class INA226:
         self.ina_publisher = rospy.Publisher(
             "/mirte/power/" + module_name, BatteryState, queue_size=1
         )
+        self.ina_publisher_used = rospy.Publisher(f"/mirte/power/{module_name}/used", Int32, queue_size=1)
+        self.used_energy = 0 # mah
+        self.last_used_calc = time.time()
         server = rospy.Service("/mirte/shutdown", SetBool, self.shutdown_service)
         
         self.last_low_voltage = -1
@@ -1345,7 +1348,18 @@ class INA226:
         bs.power_supply_health = 0  # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
         bs.power_supply_technology = 0  # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
         self.ina_publisher.publish(bs)
+        self.integrate_usage()
         await self.turn_off_cb()
+
+    def integrate_usage(self):
+        time_diff = time.time() - self.last_used_calc # seconds
+        self.last_used_calc = time.time()
+        used_mA_sec = time_diff * self.current * 1000
+        used_mAh = used_mA_sec/3600
+        print(time_diff, self.current, used_mA_sec, used_mAh, self.used_energy)
+        self.used_energy += used_mAh
+
+        self.ina_publisher_used.publish(int(self.used_energy))
 
     async def turn_off_cb(self):
         if self.turn_off_pin == -1:
