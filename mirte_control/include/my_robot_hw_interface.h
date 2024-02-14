@@ -37,7 +37,7 @@
 
 // const unsigned int NUM_JOINTS = 4;
 const auto service_format = "/mirte/set_%s_speed";
-
+const auto max_speed = 80; // Quick fix hopefully for power dip.
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
 public:
@@ -47,6 +47,7 @@ public:
 
     int speed_mapped =
         std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
+    speed_mapped = std::clamp(speed_mapped, -max_speed, max_speed);
     if (speed_mapped != _last_cmd[joint]) {
       service_requests[joint].request.speed = speed_mapped;
       _last_cmd[joint] = speed_mapped;

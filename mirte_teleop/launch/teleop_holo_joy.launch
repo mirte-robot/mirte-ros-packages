@@ -3,6 +3,8 @@
           pkg="joy"
           type="joy_node" output="screen">
         <param name="dev" value="/dev/input/js0"/>
+        <param name="autorepeat_rate" value="10"/>
+        <param name="coalesce_interval" value="0.01"/>
     </node>
     <group ns="teleop_twist_joy">
     <rosparam command="load" file="$(find mirte_teleop)/config/ps3-holonomic.config.yaml"/>
