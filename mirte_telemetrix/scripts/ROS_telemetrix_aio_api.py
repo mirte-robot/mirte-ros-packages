@@ -1387,8 +1387,9 @@ class Hiwonder_Servo:
         self.name = servo_name
         self.bus = bus
         self.min_angle_in = 0
-        self.max_angle_in = 180  # degrees or whatever you want to use
+        self.max_angle_in = 18000  # centidegrees or whatever you want to use
 
+        # angles for the servo, differs probably per servo
         self.min_angle_out = 0
         self.max_angle_out = 24000  # centidegrees
         for name in ["min_angle_in", "min_angle_out", "max_angle_in", "max_angle_out"]:
@@ -1428,8 +1429,9 @@ class Hiwonder_Servo:
         return SetServoAngleResponse(True)
 
     def callback(self, data):
-        # TODO: map back to 'angle'
-        self.publisher.publish(data["angle"])
+        angle = int(scale(data["angle"],  
+            [self.min_angle_out, self.max_angle_out],[self.min_angle_in, self.max_angle_in]))
+        self.publisher.publish(angle) 
 
 
 class Hiwonder_Bus:

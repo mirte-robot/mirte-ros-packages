@@ -1,0 +1,118 @@
+device:
+  mirte:
+    type: pcb
+    version: 0.6
+    max_frequency: 50
+modules:
+  motorservocontroller:
+    device: mirte
+    type: PCA9685
+    id: 0x40
+    connector: I2C1
+    frequency: 1500
+    motors:
+      left_front:
+        pin_A: 1
+        pin_B: 0
+      left_rear:
+        pin_A: 3
+        pin_B: 2
+      right_rear:
+        pin_A: 4
+        pin_B: 5
+      right_front:
+        pin_A: 6
+        pin_B: 7
+  servo_controller:
+    device: mirte
+    type: Hiwonder_Servo
+    uart: 0
+    rx_pin: 0
+    tx_pin: 1
+    servos:
+      servoRot:
+        id: 2
+        min_angle_out: 2952
+        max_angle_out: 20832
+      servoShoulder:
+        id: 3
+        min_angle_out: 10944
+        max_angle_out: 20328
+      servoElbow:
+        id: 4
+        min_angle_out: 2976
+        max_angle_out: 13896
+      servoWrist:
+        id: 5
+        min_angle_out: 10032
+        max_angle_out: 14208
+  # power_watcher:
+  #   device: mirte
+  #   type: INA226
+  #   connector: I2C1
+  #   id: 0b1000101
+  #   min_voltage: 11
+  #   max_current: 1
+  #   max_voltage: 15
+  #   turn_off_pin: 27
+  #   turn_off_value: True
+  #   turn_off_time: 10
+encoder:
+  left_front:
+    name: left_front
+    device: mirte
+    pins:
+      A: 21
+      B: 20
+  left_rear:
+    name: left_rear
+    device: mirte
+    pins:
+      A: 17
+      B: 16
+  right_front:
+    name: right_front
+    device: mirte
+    pins:
+      A: 18
+      B: 19
+  right_rear:
+    name: right_rear
+    device: mirte
+    pins:
+      A: 15
+      B: 14
+# neopixel:
+#   name: leds
+#   pins:
+#     pin: 27
+#   default_color: 0x123456
+#   max_intensity: 50
+#   pixels: 18
+
+    # servos:
+    #   servo1:
+    #     pin: 1
+  # servo_controller:
+  #   device: mirte
+  #   type: Hiwonder_Servo
+  #   uart: 0
+  #   rx_pin: 0
+  #   tx_pin: 1
+  #   servos:
+  #     servoH1:
+  #       id: 3
+  #       min_angle: 9000
+  #       max_angle: 14000
+  #     servoH2:
+  #       id: 4
+  #       min_angle: 800
+  #       max_angle: 4000
+  # power_watcher:
+  #   device: mirte
+  #   type: INA226
+  #   connector: I2C1
+  #   id: 0x41
+  #   min_voltage: 11
+  #   max_current: 1
+  #   max_voltage: 15
