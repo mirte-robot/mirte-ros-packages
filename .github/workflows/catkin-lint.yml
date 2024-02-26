@@ -7,7 +7,7 @@ jobs:
       image: ros:noetic
     steps:
       - uses: actions/checkout@v4
-      - run: apt update && apt install catkin-lint -y
+      - run: apt update && apt install catkin-lint git libuvc-dev -y
       - run: |
           mkdir -p catkin_ws/src
           mv mirte_bringup catkin_ws/src/
@@ -16,6 +16,10 @@ jobs:
           mv mirte_telemetrix catkin_ws/src/
           mv mirte_teleop catkin_ws/src/
           cd catkin_ws/src
+          git clone https://github.com/arendjan/ridgeback.git
+          git clone https://github.com/Slamtec/rplidar_ros.git
+          git clone https://github.com/orbbec/ros_astra_camera.git
+
           . /opt/ros/noetic/setup.sh
           catkin_init_workspace
           cd ..
