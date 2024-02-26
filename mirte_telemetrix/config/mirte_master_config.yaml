@@ -18,7 +18,7 @@ modules:
         pin_A: 3
         pin_B: 2
       right_rear:
-         pin_A: 4
+        pin_A: 4
         pin_B: 5
       right_front:
         pin_A: 6
