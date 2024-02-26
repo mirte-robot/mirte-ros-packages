@@ -33,9 +33,11 @@ async def analog_write(board, pin, value):
     else:
         await board.analog_write(pin, value)
 
+
 def get_obj_value(s, obj, key, def_value=None):
     # shorthand of self.key = obj["key"] if "key" in obj else def_value
-    setattr(s, key, obj[key] if key in obj else def_value )
+    setattr(s, key, obj[key] if key in obj else def_value)
+
 
 # Import ROS message types
 from std_msgs.msg import Header, Int32
@@ -392,32 +394,46 @@ class EncoderSensorMonitor(SensorMonitor):
 
         await self.publish(encoder)
 
+
 class Neopixel:
     def __init__(self, board, neo_obj):
         self.board = board
         self.settings = neo_obj
         self.pins = get_pin_numbers(neo_obj)
         self.name = neo_obj["name"]
-        self.pixels = neo_obj["pixels"] # num of leds
+        self.pixels = neo_obj["pixels"]  # num of leds
         get_obj_value(self, neo_obj, "max_intensity", 50)
         get_obj_value(self, neo_obj, "default_color", 0x000000)
-        server = rospy.Service(f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service)
-        server = rospy.Service(f"/mirte/set_{self.name}_color_single", SetSingleLEDValue, self.set_color_single_service)
+        server = rospy.Service(
+            f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service
+        )
+        server = rospy.Service(
+            f"/mirte/set_{self.name}_color_single",
+            SetSingleLEDValue,
+            self.set_color_single_service,
+        )
 
-    
     async def start(self):
         colors = self.unpack_color_and_scale(self.default_color)
-        await board.set_pin_mode_neopixel(  pin_number=self.pins["pin"], num_pixels=self.pixels, fill_r=colors[0], fill_g=colors[1], fill_b=colors[2] )
+        await board.set_pin_mode_neopixel(
+            pin_number=self.pins["pin"],
+            num_pixels=self.pixels,
+            fill_r=colors[0],
+            fill_g=colors[1],
+            fill_b=colors[2],
+        )
 
     async def set_color_all(self, color):
         colors = self.unpack_color_and_scale(color)
-        await board.neopixel_fill(  r=colors[0], g=colors[1], b=colors[2] )
+        await board.neopixel_fill(r=colors[0], g=colors[1], b=colors[2])
 
     async def set_color_single(self, pixel, color):
         colors = self.unpack_color_and_scale(color)
-        if(pixel >=self.pixels):
+        if pixel >= self.pixels:
             return False
-        await board.neo_pixel_set_value(pixel,  r=colors[0], g=colors[1], b=colors[2], auto_show=True )
+        await board.neo_pixel_set_value(
+            pixel, r=colors[0], g=colors[1], b=colors[2], auto_show=True
+        )
         return True
 
     def set_color_all_service(self, req):
@@ -428,8 +444,16 @@ class Neopixel:
         ok = asyncio.run(self.set_color_single(req.pixel, req.value))
         return SetSingleLEDValueResponse(ok)
 
-    def unpack_color_and_scale(self, color_num): # hex color number (0x123456) or string ("0x123456")
-        return [int(x*0.5) for x in struct.unpack('BBB', bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6)))]
+    def unpack_color_and_scale(
+        self, color_num
+    ):  # hex color number (0x123456) or string ("0x123456")
+        return [
+            int(x * 0.5)
+            for x in struct.unpack(
+                "BBB", bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6))
+            )
+        ]
+
 
 class Servo:
     def __init__(self, board, servo_obj):
@@ -1081,7 +1105,7 @@ def sensors(loop, board, device):
             tasks.append(loop.create_task(monitor.start()))
             # encoder sensors do not need a max_frequency. They are interrupts on
             # on the mcu side.
-    
+
     # Get a raw pin value
     # TODO: this still needs to be tested. We are waiting on an implementation of ananlog_read()
     # on the telemetrix side
@@ -1278,11 +1302,13 @@ class INA226:
         self.ina_publisher = rospy.Publisher(
             "/mirte/power/" + module_name, BatteryState, queue_size=1
         )
-        self.ina_publisher_used = rospy.Publisher(f"/mirte/power/{module_name}/used", Int32, queue_size=1)
-        self.used_energy = 0 # mah
+        self.ina_publisher_used = rospy.Publisher(
+            f"/mirte/power/{module_name}/used", Int32, queue_size=1
+        )
+        self.used_energy = 0  # mah
         self.last_used_calc = time.time()
         server = rospy.Service("/mirte/shutdown", SetBool, self.shutdown_service)
-        
+
         self.last_low_voltage = -1
 
     async def start(self):
@@ -1325,7 +1351,11 @@ class INA226:
         vals = list(struct.unpack("<2f", bytes_obj))
         self.voltage = vals[0]
         self.current = vals[1]
-        if self.min_voltage != -1 and self.voltage < self.min_voltage and self.last_low_voltage != self.voltage:
+        if (
+            self.min_voltage != -1
+            and self.voltage < self.min_voltage
+            and self.last_low_voltage != self.voltage
+        ):
             rospy.logwarn("Low voltage: %f", self.voltage)
             self.last_low_voltage = self.voltage
         if self.max_voltage != -1 and self.voltage > self.max_voltage:
@@ -1352,10 +1382,10 @@ class INA226:
         await self.turn_off_cb()
 
     def integrate_usage(self):
-        time_diff = time.time() - self.last_used_calc # seconds
+        time_diff = time.time() - self.last_used_calc  # seconds
         self.last_used_calc = time.time()
         used_mA_sec = time_diff * self.current * 1000
-        used_mAh = used_mA_sec/3600
+        used_mAh = used_mA_sec / 3600
         print(time_diff, self.current, used_mA_sec, used_mAh, self.used_energy)
         self.used_energy += used_mAh
 
@@ -1403,6 +1433,7 @@ class INA226:
         # also called from systemd shutdown service
         asyncio.run(self.shutdown_robot())
         return SetBoolResponse(True, "")
+
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):
@@ -1452,9 +1483,14 @@ class Hiwonder_Servo:
         return SetServoAngleResponse(True)
 
     def callback(self, data):
-        angle = int(scale(data["angle"],  
-            [self.min_angle_out, self.max_angle_out],[self.min_angle_in, self.max_angle_in]))
-        self.publisher.publish(angle) 
+        angle = int(
+            scale(
+                data["angle"],
+                [self.min_angle_out, self.max_angle_out],
+                [self.min_angle_in, self.max_angle_in],
+            )
+        )
+        self.publisher.publish(angle)
 
 
 class Hiwonder_Bus:
