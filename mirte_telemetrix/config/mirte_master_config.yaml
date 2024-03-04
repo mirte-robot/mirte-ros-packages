@@ -105,6 +105,6 @@ encoder:
   #   type: INA226
   #   connector: I2C1
   #   id: 0x41
-  #   min_voltage: 11
+  #   min_voltage: 11.18
   #   max_current: 1
-  #   max_voltage: 15
+  #   max_voltage: 13.0
