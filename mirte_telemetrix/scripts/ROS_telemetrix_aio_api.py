@@ -1524,9 +1524,9 @@ class INA226:
     async def shutdown_robot(self):
         if not self.shutdown_triggered:
             subprocess.run(
+                # wall does not show up on vscode terminal
                 f"bash -c \"wall 'Shutting down.'\"", shell=True
             )
-            # ("echo 'Shutting down now.'")
 
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
