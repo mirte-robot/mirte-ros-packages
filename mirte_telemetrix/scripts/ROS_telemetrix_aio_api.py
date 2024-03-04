@@ -1352,7 +1352,6 @@ class INA226:
         get_obj_value(self, module, "switch_pull", 0)
         get_obj_value(self, module, "switch_time", 5)
 
-
     async def start(self):
         # setup i2c, check with oled to not init twice
         if board_mapping.get_mcu() == "pico":
@@ -1385,49 +1384,54 @@ class INA226:
                 self.turn_off_time
                 + 10,  # add 10s to the shutdown time for the 10s shutdown command wait time
             )
-        if(self.switch_pin > 0):
-            if(self.switch_pull == 1):
+        if self.switch_pin > 0:
+            if self.switch_pull == 1:
                 await self.board.set_pin_mode_digital_input_pullup(
-                    self.switch_pin, callback=self.switch_data,
-            )
-            elif(self.switch_pull == -1):
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
+            elif self.switch_pull == -1:
                 await self.board.set_pin_mode_digital_input_pull_down(
-                    self.switch_pin, callback=self.switch_data,
-            )
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
             else:
                 await self.board.set_pin_mode_digital_input(
-                    self.switch_pin, callback=self.switch_data,
-            )
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
             self.switch_armed = False
             self.switch_trigger_start_time = -1
             self.switch_val = -1
             rospy.Timer(rospy.Duration(0.5), self.check_switch_sync)
 
-
-
     async def switch_data(self, data):
-        self.switch_val= bool(data[2])
+        self.switch_val = bool(data[2])
         await self.check_switch()
 
     def check_switch_sync(self, event=None):
         asyncio.run(self.check_switch())
+
     async def check_switch(self):
-        if(self.switch_val == -1):
+        if self.switch_val == -1:
             return
-        if(not self.switch_armed):
-            if(self.switch_val != self.switch_off_value):
+        if not self.switch_armed:
+            if self.switch_val != self.switch_off_value:
                 rospy.logwarn("Shutdown switch armed")
                 self.switch_armed = True
             return
-        
-        if(self.switch_val == self.switch_off_value):
+
+        if self.switch_val == self.switch_off_value:
             if self.switch_trigger_start_time == -1:
                 self.switch_trigger_start_time = time.time()
-                rospy.logwarn(f"Switch turned off, shutting down in {self.switch_time}s if not restored.")
+                rospy.logwarn(
+                    f"Switch turned off, shutting down in {self.switch_time}s if not restored."
+                )
 
                 # Send a message to all users that the switch is off and possibly shutting down
                 subprocess.run(
-                    f"wall 'Switch turned off, shutting down in {self.switch_time}s if not restored.'", shell=True
+                    f"wall 'Switch turned off, shutting down in {self.switch_time}s if not restored.'",
+                    shell=True,
                 )
         else:
             self.switch_trigger_start_time = -1
@@ -1437,8 +1441,6 @@ class INA226:
             and time.time() - self.switch_trigger_start_time > self.switch_time
         ):
             await self.shutdown_robot()
-
-
 
     async def callback(self, data):
         # TODO: move this decoding to the library
@@ -1525,12 +1527,13 @@ class INA226:
         if not self.shutdown_triggered:
             subprocess.run(
                 # wall does not show up on vscode terminal
-                f"bash -c \"wall 'Shutting down.'\"", shell=True
+                f"bash -c \"wall 'Shutting down.'\"",
+                shell=True,
             )
 
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
-            if(hasattr(self,"trigger_shutdown_relay" )):
+            if hasattr(self, "trigger_shutdown_relay"):
                 await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
         # subprocess.run("sudo shutdown 10s")
