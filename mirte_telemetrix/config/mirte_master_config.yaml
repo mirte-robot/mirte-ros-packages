@@ -74,6 +74,14 @@ encoder:
     pins:
       A: 15
       B: 14
+oled:
+  middle:
+    device: mirte
+    connector: I2C1
+    show_hostname: True
+    show_ip: True
+    show_wifi: True
+  
 # neopixel:
 #   name: leds
 #   pins:

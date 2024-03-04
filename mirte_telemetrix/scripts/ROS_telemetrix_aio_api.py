@@ -735,6 +735,23 @@ class Oled(_SSD1306):
                 print("write failed start", self.oled_obj["name"])
                 self.failed = True
                 return
+        await self.show_default()
+
+    async def show_default(self):
+        text = ""
+        if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
+            ips = subprocess.getoutput("hostname -I").split(" ")
+            text += "IPs: " + ', '.join(ips)
+        if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
+            text += "\nHostname:" + subprocess.getoutput("hostname")
+        if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
+            wifi = subprocess.getoutput("iwgetid -r").strip()
+            if len(wifi) > 0:
+                text += "\nWi-Fi:" + wifi
+        if len(text) > 0:
+            await self.set_oled_image_service_async(
+                SetOLEDImageRequest(type="text", value=text)
+            )
 
     async def set_oled_image_service_async(self, req):
         if req.type == "text":
@@ -1309,7 +1326,9 @@ class INA226:
             module["turn_off_time"] if "turn_off_time" in module else 30
         )  # time to wait for computer to shut down
         self.enable_turn_off = False  # require at least a single message with a real value before arming the turn off system
-        get_obj_value(self, module, "power_low_time", 5) # how long(s) for the voltage to be below the trigger voltage before triggering shutting down
+        get_obj_value(
+            self, module, "power_low_time", 5
+        )  # how long(s) for the voltage to be below the trigger voltage before triggering shutting down
         self.shutdown_triggered = False
         self.turn_off_trigger_start_time = -1
         self.ina_publisher = rospy.Publisher(
@@ -1422,7 +1441,9 @@ class INA226:
             if self.turn_off_trigger_start_time == -1:
                 self.turn_off_trigger_start_time = time.time()
                 # Send a message to all users that the voltage is low and possibly shutting down
-                subprocess.run(f"wall 'Low voltage, shutting down in {self.power_low_time}s if not restored.'")
+                subprocess.run(
+                    f"wall 'Low voltage, shutting down in {self.power_low_time}s if not restored.'"
+                )
             rospy.logwarn(
                 "Low voltage, %ss till shutdown.",
                 self.power_low_time - (time.time() - self.turn_off_trigger_start_time),
