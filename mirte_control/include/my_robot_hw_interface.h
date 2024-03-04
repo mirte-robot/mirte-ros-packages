@@ -91,8 +91,7 @@ public:
   }
 
   double meter_per_enc_tick() {
-    return (this->_wheel_diameter / 2) * 2 * M_PI /
-           this->ticks;
+    return (this->_wheel_diameter / 2) * 2 * M_PI / this->ticks;
   }
 
   /**

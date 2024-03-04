@@ -35,8 +35,20 @@ async def analog_write(board, pin, value):
 
 
 def get_obj_value(s, obj, key, def_value=None):
-    # shorthand of self.key = obj["key"] if "key" in obj else def_value
-    setattr(s, key, obj[key] if key in obj else def_value)
+    # shorthand of self.key = obj["key"] if "key" in obj else def_value with type checking
+    def_type = type(def_value)
+    out = obj[key] if key in obj else def_value
+    out_type = type(out)
+    if def_type != out_type:
+        if def_type == int:
+            out = int(out)
+        if def_type == float:
+            out = float(out)
+        if def_type == str:
+            out = str(out)
+        if def_type == bool:
+            out = bool(out)
+    setattr(s, key, out)
 
 
 # Import ROS message types
@@ -1297,6 +1309,7 @@ class INA226:
             module["turn_off_time"] if "turn_off_time" in module else 30
         )  # time to wait for computer to shut down
         self.enable_turn_off = False  # require at least a single message with a real value before arming the turn off system
+        get_obj_value(self, module, "power_low_time", 5) # how long(s) for the voltage to be below the trigger voltage before triggering shutting down
         self.shutdown_triggered = False
         self.turn_off_trigger_start_time = -1
         self.ina_publisher = rospy.Publisher(
@@ -1312,12 +1325,12 @@ class INA226:
         self.last_low_voltage = -1
 
     async def start(self):
-        print("start ina!")
         # setup i2c, check with oled to not init twice
         if board_mapping.get_mcu() == "pico":
             if "connector" in self.module:
                 pins = board_mapping.connector_to_pins(self.module["connector"])
             else:
+                # TODO: no other boards have support for this yet
                 pins = self.module["pins"]
             pin_numbers = {}
             for item in pins:
@@ -1403,14 +1416,16 @@ class INA226:
                 rospy.logwarn("Shutdown relay armed")
             return
 
-        # at first dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
+        # at start dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
         # this makes sure that a short dip (motor start) does not trigger it
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
             if self.turn_off_trigger_start_time == -1:
                 self.turn_off_trigger_start_time = time.time()
+                # Send a message to all users that the voltage is low and possibly shutting down
+                subprocess.run(f"wall 'Low voltage, shutting down in {self.power_low_time}s if not restored.'")
             rospy.logwarn(
                 "Low voltage, %ss till shutdown.",
-                5 - (time.time() - self.turn_off_trigger_start_time),
+                self.power_low_time - (time.time() - self.turn_off_trigger_start_time),
             )
         else:
             self.turn_off_trigger_start_time = -1
@@ -1423,6 +1438,7 @@ class INA226:
 
     async def shutdown_robot(self):
         if not self.shutdown_triggered:
+            subprocess.run(f"wall 'Low voltage, shutting down now.'")
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
             await self.trigger_shutdown_relay()
