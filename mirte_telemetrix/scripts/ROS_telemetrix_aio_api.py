@@ -52,7 +52,7 @@ def get_obj_value(s, obj, key, def_value=None):
 
 
 # Import ROS message types
-from std_msgs.msg import Header, Int32
+from std_msgs.msg import Header, Int32, Float32
 from std_srvs.srv import SetBool, SetBoolResponse
 from sensor_msgs.msg import Range, BatteryState
 from mirte_msgs.msg import *
@@ -1550,15 +1550,32 @@ class Hiwonder_Servo:
         self.id = servo_obj["id"]
         self.name = servo_name
         self.bus = bus
-        self.min_angle_in = 0
-        self.max_angle_in = 18000  # centidegrees or whatever you want to use
 
         # angles for the servo, differs probably per servo
         self.min_angle_out = 0
         self.max_angle_out = 24000  # centidegrees
-        for name in ["min_angle_in", "min_angle_out", "max_angle_in", "max_angle_out"]:
+        self.home_out = 1000 # centidegrees, will be mapped to ros angle 0 rad. 
+        for name in ["home_out", "min_angle_out", "max_angle_out"]:
             if name in servo_obj:
                 setattr(self, name, servo_obj[name])
+        if "home_out" not in servo_obj: # set it to the lowest value
+            self.home_out = self.min_angle_out
+        if(self.home_out < self.min_angle_out):
+            raise Exception(f"Home_out{self.home_out} should be more than min_angle_out{self.min_angle_out}")
+        if(self.home_out > self.max_angle_out):
+            raise Exception(f"Home_out{self.home_out} should be less than max_angle_out{self.max_angle_out}")
+        diff_min = self.min_angle_out - self.home_out # centidegrees
+        diff_min = diff_min/100 #degrees
+        self.min_angle_in = math.radians(diff_min)
+        diff_max = self.max_angle_out - self.home_out # centidegrees
+        diff_max = diff_max/100 #degrees
+        self.max_angle_in = math.radians(diff_max)
+        get_obj_value(self, servo_obj, "invert", False)
+        if(self.invert): # swap min and max angle values, home should stay at the same spot.
+            t = self.min_angle_in
+            self.min_angle_in = -self.max_angle_in
+            self.max_angle_in = -t
+        print("rad range", self.name, [self.min_angle_in, self.max_angle_in])
 
     async def start(self):
         server = rospy.Service(
@@ -1572,7 +1589,7 @@ class Hiwonder_Servo:
             self.set_servo_enabled_service,
         )
         self.publisher = rospy.Publisher(
-            f"/mirte/servos/{self.name}/position", Int32, queue_size=1, latch=True
+            f"/mirte/servos/{self.name}/position", Float32, queue_size=1, latch=True
         )
 
     def set_servo_enabled_service(self, req):
@@ -1583,20 +1600,24 @@ class Hiwonder_Servo:
         angle = scale(
             angle,
             [self.min_angle_in, self.max_angle_in],
-            [self.min_angle_out, self.max_angle_out],
+            # when inverted, xxx_angle_IN is swapped, so also swap xxx_angle_OUT
+            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
+        # print("clamp", angle)
         await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
+        if(req.angle > self.max_angle_in or req.angle < self.min_angle_in ):
+            return SetServoAngleResponse(False)
         asyncio.run(self.servo_write(req.angle))
         return SetServoAngleResponse(True)
 
     def callback(self, data):
-        angle = int(
+        angle = float(
             scale(
                 data["angle"],
-                [self.min_angle_out, self.max_angle_out],
+                            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
                 [self.min_angle_in, self.max_angle_in],
             )
         )

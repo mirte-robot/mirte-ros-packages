@@ -34,10 +34,14 @@ modules:
         id: 3
         min_angle_out: 9000
         max_angle_out: 14000
+        home_out: 1000
+        invert: false
       servoH2:
         id: 4 
         min_angle_out: 800
         max_angle_out: 4000
+        home_out: 1000
+        invert: false
   power_watcher:
     device: mirte
     type: INA226
