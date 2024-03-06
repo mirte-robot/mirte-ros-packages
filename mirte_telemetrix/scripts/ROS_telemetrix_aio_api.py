@@ -1174,6 +1174,7 @@ class PCA_Motor(Motor):
         await self.pca_update_func(self.pin_B, 0)
 
     async def set_speed(self, speed):
+        # print(self.name, speed)
         if self.inverted:
             speed = -speed
         if self.prev_motor_speed != speed:
@@ -1445,7 +1446,7 @@ class Hiwonder_Servo:
             [self.min_angle_out, self.max_angle_out],
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
-        await self.bus.set_single_servo(self.id, angle, 100)
+        await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
         asyncio.run(self.servo_write(req.angle))
