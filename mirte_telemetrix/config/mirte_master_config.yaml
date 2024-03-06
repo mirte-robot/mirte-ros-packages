@@ -35,45 +35,71 @@ modules:
         min_angle_out: 9000
         max_angle_out: 14000
       servoH2:
-        id: 4
+        id: 4 
         min_angle_out: 800
         max_angle_out: 4000
-  # power_watcher:
-  #   device: mirte
-  #   type: INA226
-  #   connector: I2C1
-  #   id: 0b1000101
-  #   min_voltage: 11
-  #   max_current: 1
-  #   max_voltage: 15
-  #   turn_off_pin: 27
-  #   turn_off_value: True
-  #   turn_off_time: 10
-encoder:
-  left_front:
-    name: left_front
+  power_watcher:
+    device: mirte
+    type: INA226
+    connector: I2C1
+    id: 0b1000101
+    min_voltage: 11
+    max_current: 1
+    max_voltage: 15
+    switch_pin: GP28
+    switch_off_value: True
+    switch_pull: 1 # -1 for pulldown, 1 for pullup, 0 for none
+    switch_time: 5
+    # turn_off_pin: 27
+    # turn_off_value: True
+    # turn_off_time: 10
+# encoder:
+#   left_front:
+#     name: left_front
+#     device: mirte
+#     pins:
+#       A: 21
+#       B: 20
+#   left_rear:
+#     name: left_rear
+#     device: mirte
+#     pins:
+#       A: 17
+#       B: 16
+#   right_front:
+#     name: right_front
+#     device: mirte
+#     pins:
+#       A: 18
+#       B: 19
+#   right_rear:
+#     name: right_rear
+#     device: mirte
+#     pins:
+#       A: 15
+#       B: 14
+neopixel:
+  name: leds
+  pins:
+    pin: 27
+  default_color: 0xF
+  max_intensity: 50
+  pixels: 100
+intensity:
+  left:
+    name: left
     device: mirte
     pins:
-      A: 21
-      B: 20
-  left_rear:
-    name: left_rear
+      analog: GP26
+      digital: GP10
+oled:
+  middle:
     device: mirte
-    pins:
-      A: 17
-      B: 16
-  right_front:
-    name: right_front
-    device: mirte
-    pins:
-      A: 18
-      B: 19
-  right_rear:
-    name: right_rear
-    device: mirte
-    pins:
-      A: 15
-      B: 14
+    connector: I2C1
+    show_hostname: True
+    show_ip: True
+    show_wifi: True
+  
 # neopixel:
 #   name: leds
 #   pins:
@@ -81,6 +107,7 @@ encoder:
 #   default_color: 0x123456
 #   max_intensity: 50
 #   pixels: 18
+
 
     # servos:
     #   servo1:
@@ -105,6 +132,6 @@ encoder:
   #   type: INA226
   #   connector: I2C1
   #   id: 0x41
-  #   min_voltage: 11
+  #   min_voltage: 11.18
   #   max_current: 1
-  #   max_voltage: 15
+  #   max_voltage: 13.0

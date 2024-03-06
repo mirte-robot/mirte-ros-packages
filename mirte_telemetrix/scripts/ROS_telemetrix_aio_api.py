@@ -33,9 +33,23 @@ async def analog_write(board, pin, value):
     else:
         await board.analog_write(pin, value)
 
+
 def get_obj_value(s, obj, key, def_value=None):
-    # shorthand of self.key = obj["key"] if "key" in obj else def_value
-    setattr(s, key, obj[key] if key in obj else def_value )
+    # shorthand of self.key = obj["key"] if "key" in obj else def_value with type checking
+    def_type = type(def_value)
+    out = obj[key] if key in obj else def_value
+    out_type = type(out)
+    if def_type != out_type:
+        if def_type == int:
+            out = int(out)
+        if def_type == float:
+            out = float(out)
+        if def_type == str:
+            out = str(out)
+        if def_type == bool:
+            out = bool(out)
+    setattr(s, key, out)
+
 
 # Import ROS message types
 from std_msgs.msg import Header, Int32
@@ -392,32 +406,46 @@ class EncoderSensorMonitor(SensorMonitor):
 
         await self.publish(encoder)
 
+
 class Neopixel:
     def __init__(self, board, neo_obj):
         self.board = board
         self.settings = neo_obj
         self.pins = get_pin_numbers(neo_obj)
         self.name = neo_obj["name"]
-        self.pixels = neo_obj["pixels"] # num of leds
+        self.pixels = neo_obj["pixels"]  # num of leds
         get_obj_value(self, neo_obj, "max_intensity", 50)
         get_obj_value(self, neo_obj, "default_color", 0x000000)
-        server = rospy.Service(f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service)
-        server = rospy.Service(f"/mirte/set_{self.name}_color_single", SetSingleLEDValue, self.set_color_single_service)
+        server = rospy.Service(
+            f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service
+        )
+        server = rospy.Service(
+            f"/mirte/set_{self.name}_color_single",
+            SetSingleLEDValue,
+            self.set_color_single_service,
+        )
 
-    
     async def start(self):
         colors = self.unpack_color_and_scale(self.default_color)
-        await board.set_pin_mode_neopixel(  pin_number=self.pins["pin"], num_pixels=self.pixels, fill_r=colors[0], fill_g=colors[1], fill_b=colors[2] )
+        await board.set_pin_mode_neopixel(
+            pin_number=self.pins["pin"],
+            num_pixels=self.pixels,
+            fill_r=colors[0],
+            fill_g=colors[1],
+            fill_b=colors[2],
+        )
 
     async def set_color_all(self, color):
         colors = self.unpack_color_and_scale(color)
-        await board.neopixel_fill(  r=colors[0], g=colors[1], b=colors[2] )
+        await board.neopixel_fill(r=colors[0], g=colors[1], b=colors[2])
 
     async def set_color_single(self, pixel, color):
         colors = self.unpack_color_and_scale(color)
-        if(pixel >=self.pixels):
+        if pixel >= self.pixels:
             return False
-        await board.neo_pixel_set_value(pixel,  r=colors[0], g=colors[1], b=colors[2], auto_show=True )
+        await board.neo_pixel_set_value(
+            pixel, r=colors[0], g=colors[1], b=colors[2], auto_show=True
+        )
         return True
 
     def set_color_all_service(self, req):
@@ -428,8 +456,16 @@ class Neopixel:
         ok = asyncio.run(self.set_color_single(req.pixel, req.value))
         return SetSingleLEDValueResponse(ok)
 
-    def unpack_color_and_scale(self, color_num): # hex color number (0x123456) or string ("0x123456")
-        return [int(x*0.5) for x in struct.unpack('BBB', bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6)))]
+    def unpack_color_and_scale(
+        self, color_num
+    ):  # hex color number (0x123456) or string ("0x123456")
+        return [
+            int(x * 0.5)
+            for x in struct.unpack(
+                "BBB", bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6))
+            )
+        ]
+
 
 class Servo:
     def __init__(self, board, servo_obj):
@@ -699,6 +735,23 @@ class Oled(_SSD1306):
                 print("write failed start", self.oled_obj["name"])
                 self.failed = True
                 return
+        await self.show_default()
+
+    async def show_default(self):
+        text = ""
+        if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
+            ips = subprocess.getoutput("hostname -I").split(" ")
+            text += "IPs: " + ", ".join(ips)
+        if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
+            text += "\nHostname:" + subprocess.getoutput("hostname")
+        if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
+            wifi = subprocess.getoutput("iwgetid -r").strip()
+            if len(wifi) > 0:
+                text += "\nWi-Fi:" + wifi
+        if len(text) > 0:
+            await self.set_oled_image_service_async(
+                SetOLEDImageRequest(type="text", value=text)
+            )
 
     async def set_oled_image_service_async(self, req):
         if req.type == "text":
@@ -1081,7 +1134,7 @@ def sensors(loop, board, device):
             tasks.append(loop.create_task(monitor.start()))
             # encoder sensors do not need a max_frequency. They are interrupts on
             # on the mcu side.
-    
+
     # Get a raw pin value
     # TODO: this still needs to be tested. We are waiting on an implementation of ananlog_read()
     # on the telemetrix side
@@ -1274,25 +1327,39 @@ class INA226:
             module["turn_off_time"] if "turn_off_time" in module else 30
         )  # time to wait for computer to shut down
         self.enable_turn_off = False  # require at least a single message with a real value before arming the turn off system
+        get_obj_value(
+            self, module, "power_low_time", 5
+        )  # how long(s) for the voltage to be below the trigger voltage before triggering shutting down
         self.shutdown_triggered = False
         self.turn_off_trigger_start_time = -1
         self.ina_publisher = rospy.Publisher(
             "/mirte/power/" + module_name, BatteryState, queue_size=1
         )
-        self.ina_publisher_used = rospy.Publisher(f"/mirte/power/{module_name}/used", Int32, queue_size=1)
-        self.used_energy = 0 # mah
+        self.ina_publisher_used = rospy.Publisher(
+            f"/mirte/power/{module_name}/used", Int32, queue_size=1
+        )
+        self.used_energy = 0  # mah
         self.last_used_calc = time.time()
         server = rospy.Service("/mirte/shutdown", SetBool, self.shutdown_service)
-        
+
         self.last_low_voltage = -1
 
+        self.switch_pin = (
+            board_mapping.pin_name_to_pin_number(module["switch_pin"])
+            if "switch_pin" in module
+            else -1
+        )
+        get_obj_value(self, module, "switch_off_value", True)
+        get_obj_value(self, module, "switch_pull", 0)
+        get_obj_value(self, module, "switch_time", 5)
+
     async def start(self):
-        print("start ina!")
         # setup i2c, check with oled to not init twice
         if board_mapping.get_mcu() == "pico":
             if "connector" in self.module:
                 pins = board_mapping.connector_to_pins(self.module["connector"])
             else:
+                # TODO: no other boards have support for this yet
                 pins = self.module["pins"]
             pin_numbers = {}
             for item in pins:
@@ -1318,6 +1385,63 @@ class INA226:
                 self.turn_off_time
                 + 10,  # add 10s to the shutdown time for the 10s shutdown command wait time
             )
+        if self.switch_pin > 0:
+            if self.switch_pull == 1:
+                await self.board.set_pin_mode_digital_input_pullup(
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
+            elif self.switch_pull == -1:
+                await self.board.set_pin_mode_digital_input_pull_down(
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
+            else:
+                await self.board.set_pin_mode_digital_input(
+                    self.switch_pin,
+                    callback=self.switch_data,
+                )
+            self.switch_armed = False
+            self.switch_trigger_start_time = -1
+            self.switch_val = -1
+            rospy.Timer(rospy.Duration(0.5), self.check_switch_sync)
+
+    async def switch_data(self, data):
+        self.switch_val = bool(data[2])
+        await self.check_switch()
+
+    def check_switch_sync(self, event=None):
+        asyncio.run(self.check_switch())
+
+    async def check_switch(self):
+        if self.switch_val == -1:
+            return
+        if not self.switch_armed:
+            if self.switch_val != self.switch_off_value:
+                rospy.logwarn("Shutdown switch armed")
+                self.switch_armed = True
+            return
+
+        if self.switch_val == self.switch_off_value:
+            if self.switch_trigger_start_time == -1:
+                self.switch_trigger_start_time = time.time()
+                rospy.logwarn(
+                    f"Switch turned off, shutting down in {self.switch_time}s if not restored."
+                )
+
+                # Send a message to all users that the switch is off and possibly shutting down
+                subprocess.run(
+                    f"wall 'Switch turned off, shutting down in {self.switch_time}s if not restored.'",
+                    shell=True,
+                )
+        else:
+            self.switch_trigger_start_time = -1
+
+        if (
+            self.switch_trigger_start_time != -1
+            and time.time() - self.switch_trigger_start_time > self.switch_time
+        ):
+            await self.shutdown_robot()
 
     async def callback(self, data):
         # TODO: move this decoding to the library
@@ -1326,7 +1450,11 @@ class INA226:
         vals = list(struct.unpack("<2f", bytes_obj))
         self.voltage = vals[0]
         self.current = vals[1]
-        if self.min_voltage != -1 and self.voltage < self.min_voltage and self.last_low_voltage != self.voltage:
+        if (
+            self.min_voltage != -1
+            and self.voltage < self.min_voltage
+            and self.last_low_voltage != self.voltage
+        ):
             rospy.logwarn("Low voltage: %f", self.voltage)
             self.last_low_voltage = self.voltage
         if self.max_voltage != -1 and self.voltage > self.max_voltage:
@@ -1353,11 +1481,10 @@ class INA226:
         await self.turn_off_cb()
 
     def integrate_usage(self):
-        time_diff = time.time() - self.last_used_calc # seconds
+        time_diff = time.time() - self.last_used_calc  # seconds
         self.last_used_calc = time.time()
         used_mA_sec = time_diff * self.current * 1000
-        used_mAh = used_mA_sec/3600
-        print(time_diff, self.current, used_mA_sec, used_mAh, self.used_energy)
+        used_mAh = used_mA_sec / 3600
         self.used_energy += used_mAh
 
         self.ina_publisher_used.publish(int(self.used_energy))
@@ -1374,29 +1501,41 @@ class INA226:
                 rospy.logwarn("Shutdown relay armed")
             return
 
-        # at first dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
+        # at start dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
         # this makes sure that a short dip (motor start) does not trigger it
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
             if self.turn_off_trigger_start_time == -1:
                 self.turn_off_trigger_start_time = time.time()
+                # Send a message to all users that the voltage is low and possibly shutting down
+                subprocess.run(
+                    f"wall 'Low voltage, shutting down in {self.power_low_time}s if not restored.'"
+                )
             rospy.logwarn(
                 "Low voltage, %ss till shutdown.",
-                5 - (time.time() - self.turn_off_trigger_start_time),
+                self.power_low_time - (time.time() - self.turn_off_trigger_start_time),
             )
         else:
             self.turn_off_trigger_start_time = -1
 
         if (
             self.turn_off_trigger_start_time != -1
-            and time.time() - self.turn_off_trigger_start_time > 5
+            and time.time() - self.turn_off_trigger_start_time > self.power_low_time
         ):
+            subprocess.run("wall 'Low voltage, shutting down now.'", shell=True)
             await self.shutdown_robot()
 
     async def shutdown_robot(self):
         if not self.shutdown_triggered:
+            subprocess.run(
+                # wall does not show up on vscode terminal
+                f"bash -c \"wall 'Shutting down.'\"",
+                shell=True,
+            )
+
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
-            await self.trigger_shutdown_relay()
+            if hasattr(self, "trigger_shutdown_relay"):
+                await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
         # subprocess.run("sudo shutdown 10s")
 
@@ -1404,6 +1543,7 @@ class INA226:
         # also called from systemd shutdown service
         asyncio.run(self.shutdown_robot())
         return SetBoolResponse(True, "")
+
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):
@@ -1453,9 +1593,14 @@ class Hiwonder_Servo:
         return SetServoAngleResponse(True)
 
     def callback(self, data):
-        angle = int(scale(data["angle"],  
-            [self.min_angle_out, self.max_angle_out],[self.min_angle_in, self.max_angle_in]))
-        self.publisher.publish(angle) 
+        angle = int(
+            scale(
+                data["angle"],
+                [self.min_angle_out, self.max_angle_out],
+                [self.min_angle_in, self.max_angle_in],
+            )
+        )
+        self.publisher.publish(angle)
 
 
 class Hiwonder_Bus:

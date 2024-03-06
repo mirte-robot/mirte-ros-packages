@@ -37,6 +37,7 @@
 
 // const unsigned int NUM_JOINTS = 4;
 const auto service_format = "/mirte/set_%s_speed";
+const auto encoder_format = "/mirte/encoder/%s";
 const auto max_speed = 80; // Quick fix hopefully for power dip.
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
@@ -90,8 +91,7 @@ public:
   }
 
   double meter_per_enc_tick() {
-    return (_wheel_diameter / 2) * 2 * M_PI /
-           40.0; // TODO: get ticks from parameter server
+    return (this->_wheel_diameter / 2) * 2 * M_PI / this->ticks;
   }
 
   /**
@@ -138,6 +138,8 @@ private:
   bool running_ = true;
   double _wheel_diameter;
   double _max_speed;
+  double ticks = 40.0;
+
   std::vector<int> _wheel_encoder;
   std::vector<int> _last_cmd;
   std::vector<int> _last_value;
@@ -220,8 +222,8 @@ MyRobotHWInterface::MyRobotHWInterface()
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
   private_nh.param<double>("wheel_diameter", _wheel_diameter, 0.06);
-  private_nh.param<double>("max_speed", _max_speed, 2.0);
-  // private_nh.param<bool>("bidirectional", bidirectional, true);
+  private_nh.param<double>("max_speed", _max_speed, 2.0); // TODO: unused
+  private_nh.param<double>("ticks", ticks, 40.0);
   this->NUM_JOINTS = detect_joints(private_nh);
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
@@ -272,7 +274,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   // Initialize publishers and subscribers
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     auto encoder_topic =
-        (boost::format(service_format) % this->joints[i]).str();
+        (boost::format(encoder_format) % this->joints[i]).str();
     wheel_encoder_subs_.push_back(nh.subscribe<mirte_msgs::Encoder>(
         encoder_topic, 1,
         boost::bind(&MyRobotHWInterface::WheelEncoderCallback, this, _1, i)));

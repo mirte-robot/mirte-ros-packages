@@ -55,7 +55,9 @@
   <exec_depend>mirte_teleop</exec_depend>
   <exec_depend>mirte_control</exec_depend>
   <exec_depend>mirte_msgs</exec_depend>
-
+  <exec_depend>tf</exec_depend>
+  <exec_depend>rplidar_ros</exec_depend>
+  <exec_depend>astra_camera</exec_depend>
   <exec_depend>usb_cam</exec_depend>
   <exec_depend>image_common</exec_depend>
   <exec_depend>image_transport_plugins</exec_depend>
