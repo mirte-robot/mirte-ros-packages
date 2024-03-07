@@ -1554,24 +1554,30 @@ class Hiwonder_Servo:
         # angles for the servo, differs probably per servo
         self.min_angle_out = 0
         self.max_angle_out = 24000  # centidegrees
-        self.home_out = 1000 # centidegrees, will be mapped to ros angle 0 rad. 
+        self.home_out = 1000  # centidegrees, will be mapped to ros angle 0 rad.
         for name in ["home_out", "min_angle_out", "max_angle_out"]:
             if name in servo_obj:
                 setattr(self, name, servo_obj[name])
-        if "home_out" not in servo_obj: # set it to the lowest value
+        if "home_out" not in servo_obj:  # set it to the lowest value
             self.home_out = self.min_angle_out
-        if(self.home_out < self.min_angle_out):
-            raise Exception(f"Home_out{self.home_out} should be more than min_angle_out{self.min_angle_out}")
-        if(self.home_out > self.max_angle_out):
-            raise Exception(f"Home_out{self.home_out} should be less than max_angle_out{self.max_angle_out}")
-        diff_min = self.min_angle_out - self.home_out # centidegrees
-        diff_min = diff_min/100 #degrees
+        if self.home_out < self.min_angle_out:
+            raise Exception(
+                f"Home_out{self.home_out} should be more than min_angle_out{self.min_angle_out}"
+            )
+        if self.home_out > self.max_angle_out:
+            raise Exception(
+                f"Home_out{self.home_out} should be less than max_angle_out{self.max_angle_out}"
+            )
+        diff_min = self.min_angle_out - self.home_out  # centidegrees
+        diff_min = diff_min / 100  # degrees
         self.min_angle_in = math.radians(diff_min)
-        diff_max = self.max_angle_out - self.home_out # centidegrees
-        diff_max = diff_max/100 #degrees
+        diff_max = self.max_angle_out - self.home_out  # centidegrees
+        diff_max = diff_max / 100  # degrees
         self.max_angle_in = math.radians(diff_max)
         get_obj_value(self, servo_obj, "invert", False)
-        if(self.invert): # swap min and max angle values, home should stay at the same spot.
+        if (
+            self.invert
+        ):  # swap min and max angle values, home should stay at the same spot.
             t = self.min_angle_in
             self.min_angle_in = -self.max_angle_in
             self.max_angle_in = -t
@@ -1601,14 +1607,18 @@ class Hiwonder_Servo:
             angle,
             [self.min_angle_in, self.max_angle_in],
             # when inverted, xxx_angle_IN is swapped, so also swap xxx_angle_OUT
-            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
+            (
+                [self.min_angle_out, self.max_angle_out]
+                if not self.invert
+                else [self.max_angle_out, self.min_angle_out]
+            ),
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
         # print("clamp", angle)
         await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
-        if(req.angle > self.max_angle_in or req.angle < self.min_angle_in ):
+        if req.angle > self.max_angle_in or req.angle < self.min_angle_in:
             return SetServoAngleResponse(False)
         asyncio.run(self.servo_write(req.angle))
         return SetServoAngleResponse(True)
@@ -1617,7 +1627,11 @@ class Hiwonder_Servo:
         angle = float(
             scale(
                 data["angle"],
-                            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
+                (
+                    [self.min_angle_out, self.max_angle_out]
+                    if not self.invert
+                    else [self.max_angle_out, self.min_angle_out]
+                ),
                 [self.min_angle_in, self.max_angle_in],
             )
         )
