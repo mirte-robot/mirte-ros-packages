@@ -18,6 +18,18 @@ import subprocess
 devices = rospy.get_param("/mirte/device")
 
 
+# check any ttyACM or ttyUSB devices
+# if none found, sleep for 5 seconds and try again
+# if still none found, exit the program
+def check_tty():
+    while True:
+        out = subprocess.getoutput("ls /dev/ttyACM* /dev/ttyUSB*")
+        if len(out) > 0:
+            return
+        time.sleep(5)
+
+check_tty()
+
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
 # we need to add a simple wrapper
 async def set_pin_mode_analog_output(board, pin):
