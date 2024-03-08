@@ -18,6 +18,7 @@ import subprocess
 devices = rospy.get_param("/mirte/device")
 
 
+
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
 # we need to add a simple wrapper
 async def set_pin_mode_analog_output(board, pin):
@@ -1554,24 +1555,30 @@ class Hiwonder_Servo:
         # angles for the servo, differs probably per servo
         self.min_angle_out = 0
         self.max_angle_out = 24000  # centidegrees
-        self.home_out = 1000 # centidegrees, will be mapped to ros angle 0 rad. 
+        self.home_out = 1000  # centidegrees, will be mapped to ros angle 0 rad.
         for name in ["home_out", "min_angle_out", "max_angle_out"]:
             if name in servo_obj:
                 setattr(self, name, servo_obj[name])
-        if "home_out" not in servo_obj: # set it to the lowest value
+        if "home_out" not in servo_obj:  # set it to the lowest value
             self.home_out = self.min_angle_out
-        if(self.home_out < self.min_angle_out):
-            raise Exception(f"Home_out{self.home_out} should be more than min_angle_out{self.min_angle_out}")
-        if(self.home_out > self.max_angle_out):
-            raise Exception(f"Home_out{self.home_out} should be less than max_angle_out{self.max_angle_out}")
-        diff_min = self.min_angle_out - self.home_out # centidegrees
-        diff_min = diff_min/100 #degrees
+        if self.home_out < self.min_angle_out:
+            raise Exception(
+                f"Home_out{self.home_out} should be more than min_angle_out{self.min_angle_out}"
+            )
+        if self.home_out > self.max_angle_out:
+            raise Exception(
+                f"Home_out{self.home_out} should be less than max_angle_out{self.max_angle_out}"
+            )
+        diff_min = self.min_angle_out - self.home_out  # centidegrees
+        diff_min = diff_min / 100  # degrees
         self.min_angle_in = math.radians(diff_min)
-        diff_max = self.max_angle_out - self.home_out # centidegrees
-        diff_max = diff_max/100 #degrees
+        diff_max = self.max_angle_out - self.home_out  # centidegrees
+        diff_max = diff_max / 100  # degrees
         self.max_angle_in = math.radians(diff_max)
         get_obj_value(self, servo_obj, "invert", False)
-        if(self.invert): # swap min and max angle values, home should stay at the same spot.
+        if (
+            self.invert
+        ):  # swap min and max angle values, home should stay at the same spot.
             t = self.min_angle_in
             self.min_angle_in = -self.max_angle_in
             self.max_angle_in = -t
@@ -1601,14 +1608,18 @@ class Hiwonder_Servo:
             angle,
             [self.min_angle_in, self.max_angle_in],
             # when inverted, xxx_angle_IN is swapped, so also swap xxx_angle_OUT
-            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
+            (
+                [self.min_angle_out, self.max_angle_out]
+                if not self.invert
+                else [self.max_angle_out, self.min_angle_out]
+            ),
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
         # print("clamp", angle)
         await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
-        if(req.angle > self.max_angle_in or req.angle < self.min_angle_in ):
+        if req.angle > self.max_angle_in or req.angle < self.min_angle_in:
             return SetServoAngleResponse(False)
         asyncio.run(self.servo_write(req.angle))
         return SetServoAngleResponse(True)
@@ -1617,7 +1628,11 @@ class Hiwonder_Servo:
         angle = float(
             scale(
                 data["angle"],
-                            [self.min_angle_out, self.max_angle_out] if not self.invert else [self.max_angle_out, self.min_angle_out],
+                (
+                    [self.min_angle_out, self.max_angle_out]
+                    if not self.invert
+                    else [self.max_angle_out, self.min_angle_out]
+                ),
                 [self.min_angle_in, self.max_angle_in],
             )
         )
@@ -1705,8 +1720,24 @@ async def shutdown(loop, board):
         time.sleep(1)
         exit(0)
 
+# check any ttyACM or ttyUSB devices
+# if none found, sleep for 5 seconds and try again
+# if still none found, exit the program
+def check_tty():
+    while True:
+        out = subprocess.getoutput("ls /dev/ttyACM* /dev/ttyUSB* 2> /dev/null")
+        if len(out) > 0:
+            return
+        rospy.logwarn("No ttyACM/ttyUSB device, trying again in 5s")
+        time.sleep(5)
+
 
 if __name__ == "__main__":
+    # Initialize the ROS node as anonymous since there
+    # should only be one instnace running.
+    rospy.init_node("mirte_telemetrix", anonymous=False)
+    check_tty()
+    
     loop = asyncio.new_event_loop()
 
     # Initialize the telemetrix board
@@ -1726,9 +1757,7 @@ if __name__ == "__main__":
         l = lambda loop=loop, board=board: asyncio.ensure_future(shutdown(loop, board))
         loop.add_signal_handler(s, l)
 
-    # Initialize the ROS node as anonymous since there
-    # should only be one instnace running.
-    rospy.init_node("mirte_telemetrix", anonymous=False)
+
 
     # Escalate siging to this process in order to shutdown nicely
     # This is needed when only this process is killed (eg. rosnode kill)
