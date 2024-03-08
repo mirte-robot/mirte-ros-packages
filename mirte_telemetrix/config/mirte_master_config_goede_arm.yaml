@@ -32,28 +32,28 @@ modules:
     servos:
       servoRot:
         id: 2
-        home_out: 4000
-        min_angle_out: 2952
-        max_angle_out: 20832
+        home_out: 12000
+        min_angle_out: 3400
+        max_angle_out: 21000
         invert: true
       servoShoulder:
         id: 3
-        home_out: 12000
-        min_angle_out: 10944
-        max_angle_out: 20328
-        invert: false
+        home_out: 11450
+        min_angle_out: 11450
+        max_angle_out: 20000
+        invert: true
       servoElbow:
         id: 4
-        home_out: 12000
-        min_angle_out: 2976
-        max_angle_out: 13896
+        home_out: 11750
+        min_angle_out: 3000
+        max_angle_out: 21000
         invert: false
       servoWrist:
         id: 5
-        home_out: 12000
-        min_angle_out: 10032
-        max_angle_out: 14208
-        invert: false
+        home_out: 12200
+        min_angle_out: 3000
+        max_angle_out: 21000
+        invert: true
   # power_watcher:
   #   device: mirte
   #   type: INA226

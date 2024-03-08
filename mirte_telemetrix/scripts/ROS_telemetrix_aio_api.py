@@ -1589,7 +1589,7 @@ class Hiwonder_Servo:
             self.set_servo_enabled_service,
         )
         self.publisher = rospy.Publisher(
-            f"/mirte/servos/{self.name}/position", Float32, queue_size=1, latch=True
+            f"/mirte/servos/{self.name}/position", ServoPosition, queue_size=1, latch=True
         )
 
     def set_servo_enabled_service(self, req):
@@ -1621,7 +1621,15 @@ class Hiwonder_Servo:
                 [self.min_angle_in, self.max_angle_in],
             )
         )
-        self.publisher.publish(angle)
+        header = Header()
+        header.stamp = rospy.Time.now()
+
+        position = ServoPosition()
+        position.header = header
+        position.raw = data["angle"]
+        position.angle = angle
+
+        self.publisher.publish(position)
 
 
 class Hiwonder_Bus:
