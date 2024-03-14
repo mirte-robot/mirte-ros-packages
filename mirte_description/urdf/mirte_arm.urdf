@@ -1,0 +1,239 @@
+<?xml version="1.0" ?>
+<robot name="mearm">
+    <link name="world"/>
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.13 0.03 0.036" />
+            </geometry>
+            <material name="cyan">
+                <color rgba="1 0 1 1" />
+            </material>
+            <origin rpy="0 0 0" xyz=".05 0 0.018" />
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.13 0.03 0.036" />
+            </geometry>
+            <origin rpy="0 0 0" xyz=".05 0 0.018" />
+        </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+    <link name="link1">
+        <visual>
+            <geometry>
+                <cylinder length="0.03" radius="0.05" />
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1" />
+            </material>
+            <origin rpy="0 0 0" xyz="0 0 0.015" />
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.03" radius="0.05" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.015" />
+        </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+    <link name="link2">
+        <visual>
+            <geometry>
+                <cylinder length="0.102" radius="0.0125" />
+            </geometry>
+            <material name="yellow" />
+            <origin rpy="0 0 0" xyz="0 0 0.051" />
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.102" radius="0.0125" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.051" />
+        </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+    <link name="link3">
+        <visual>
+            <geometry>
+                <cylinder length="0.107" radius="0.0125" />
+            </geometry>
+            <material name="yellow" />
+            <origin rpy="0 0 0" xyz="0 0 0.051" />
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.107" radius="0.0125" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.0535" />
+        </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+    <link name="gripper">
+        <visual>
+            <geometry>
+                <box size="0.02 0.12 0.12" />
+            </geometry>
+            <material name="yellow" />
+            <origin rpy="0 0 0" xyz="0 0 0.06" />
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.02 0.12 0.12" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.06" />
+        </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+    <!--
+  <link name="upper_arm">
+    <visual>
+      <geometry>
+        <cylinder length="0.8" radius="0.05"/>
+      </geometry>
+      <material name="yellow"/>
+      <origin rpy="0 0 0" xyz="0 0 0.4"/>
+    </visual>
+	<collision>
+      <geometry>
+        <cylinder length="0.8" radius="0.05"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.4"/>
+    </collision>
+  </link>
+
+  <link name="hand">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="yellow"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+
+-->
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
+    <joint name="shoulder" type="revolute">
+        <axis xyz="0 0 -1" />
+        <parent link="base_link" />
+        <child link="link1" />
+        <origin rpy="0 0 3.14" xyz="0.0 0.0 0.036" />
+        <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+    </joint>
+    <joint name="arm" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 0.03" />
+        <parent link="link1" />
+        <child link="link2" />
+        <axis xyz="0 1 0" />
+        <limit effort="30" velocity="1.0" lower="-1.57" upper="0.0" />
+    </joint>
+    <joint name="arm2" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 0.102" />
+        <parent link="link2" />
+        <child link="link3" />
+        <axis xyz="0 1 0" />
+        <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+    </joint>
+    <joint name="gripper_joint" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 0.107" />
+        <parent link="link3" />
+        <child link="gripper" />
+        <axis xyz="0 1 0" />
+        <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+    </joint>
+    <!--
+  <joint name="elbow" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.8"/>
+    <parent link="lower_arm"/>
+    <child link="upper_arm"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="30" velocity="1.0" lower="1.54" upper="2.75" />
+  </joint>    
+
+  <joint name="wrist" type="revolute">
+    <axis xyz="1 0 0"/>
+    <parent link="lower_arm"/>
+    <child link="hand"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.805"/>
+    <limit effort="30" velocity="1.0" lower="0.0" upper="2.7" />
+  </joint>
+-->
+    <transmission name="trans_shoulder">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shoulder">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shoulder_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_arm">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="arm_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_arm2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="arm2_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_gripper_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="gripper_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="gripper_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>
+

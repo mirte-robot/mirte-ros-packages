@@ -14,29 +14,46 @@
           type="ROS_telemetrix_aio_api.py"
           respawn="true"/>
 
-    <!-- ROS control hardware interface for differential
+    <!-- ROS control hardware interface for mecanum
          drive robot. -->
-    <node name="mirte_base_node" output="screen"
+<!--
+    <group>
+      <node name="mirte_base_node" output="screen"
           pkg="mirte_control"
           type="mirte_control_node"/>
 
+       <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
 
-    <!-- ROS control hardware for manipulator -->
-     <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main"
-          output="screen"/>
-
-
-    <!-- Load controller config -->
-    <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
-
-    <!-- Load controller settings -->
-    <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/>
-
-    <node name="controller_spawner"
+       <node name="controller_spawner"
           pkg="controller_manager"
           type="spawner"
           output="screen"
-          args="mobile_base_controller joint_state_controller position_trajectory_controller"/>
+          args="mobile_base_controller"/>
+
+   </group>
+-->
+
+   <group>
+
+     <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main" 
+          output="screen"/>
+
+     <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/>
+
+     <node name="controller_spawner_arm"
+          pkg="controller_manager"
+          type="spawner"
+          output="screen"
+          args="joint_state_controller position_trajectory_controller"/>
+
+     <param name="robot_description" textfile="$(find mirte_description)/urdf/mirte_arm.urdf"/>
+
+   </group>
+
+
+
+
+
 
     <!-- Start the lidar -->
     <!-- <include file="$(find rplidar_ros)/launch/rplidar_c1.launch"/>
@@ -46,7 +63,9 @@
     <node pkg="tf" type="static_transform_publisher" name="astra_transform_color" args="0 0 0 0 0 -1.57 map camera_color_optical_frame 100"/>
     <node pkg="tf" type="static_transform_publisher" name="astra_transform_depth" args="0 0 0 0 0 -1.57 map camera_depth_optical_frame 100"/> -->
 
+<!--
 <include file="$(find mirte_teleop)/launch/teleop_holo_joy.launch"/>
       <node pkg="joy_arm" type="joyArm.py" name="joyArm"/>
+-->
 
 </launch>

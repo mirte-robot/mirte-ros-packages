@@ -1604,6 +1604,7 @@ class Hiwonder_Servo:
         return SetBoolResponse(True, "enabled" if req.data else "disabled")
 
     async def servo_write(self, angle):
+        print(angle)
         angle = scale(
             angle,
             [self.min_angle_in, self.max_angle_in],
