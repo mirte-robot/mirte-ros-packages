@@ -57,6 +57,8 @@ modules:
     # turn_off_pin: 27
     # turn_off_value: True
     # turn_off_time: 10
+    percentage_led_chip: gpiochip4
+    percentage_led_line: 12 # B4, left-most led on usb switcher pcb
 # encoder:
 #   left_front:
 #     name: left_front

@@ -13,7 +13,10 @@ from tmx_pico_aio import tmx_pico_aio
 from telemetrix_aio import telemetrix_aio
 from typing import Literal, Tuple
 import subprocess
-
+try:
+    import gpiod
+except:
+    pass
 # Import the right Telemetrix AIO
 devices = rospy.get_param("/mirte/device")
 
@@ -1404,7 +1407,29 @@ class INA226:
             self.switch_armed = False
             self.switch_trigger_start_time = -1
             self.switch_val = -1
+
+        
             rospy.Timer(rospy.Duration(0.5), self.check_switch_sync)
+
+        if("gpiod" in sys.modules):
+            await self.setup_percentage_led()
+    async def setup_percentage_led(self):
+            if "percentage_led_chip" in self.module:
+                return            
+            if not "percentage_led_line" in self.module:
+                return
+
+            chip = gpiod.chip(self.module["percentage_led_chip"])
+            line = self.module["percentage_led_line"]
+            led = chip.get_line(line)
+
+            config = gpiod.line_request()
+            config.consumer = "ROS percentage"
+            config.request_type = gpiod.line_request.DIRECTION_OUTPUT
+
+            led.request(config)
+            self.percentage_led = led
+            rospy.Timer(rospy.Duration(0.5), self.check_percentage_sync)
 
     async def switch_data(self, data):
         self.switch_val = bool(data[2])
@@ -1412,6 +1437,22 @@ class INA226:
 
     def check_switch_sync(self, event=None):
         asyncio.run(self.check_switch())
+    def check_percentage_sync(self, event=None):
+        asyncio.run(self.show_percentage())
+
+    async def show_percentage(self):
+        # show the SOC by blinking the led. Shorter pulse -> lower SOC
+        # cycle time of 5s
+        time_sec = time.time() % 5
+        percentage = self.calculate_percentage()/20
+        if(time_sec>percentage):
+            # turn off the led
+            self.percentage_led.set_value(0)
+            
+        else:
+            # turn on the led
+            self.percentage_led.set_value(1)
+            
 
     async def check_switch(self):
         if self.switch_val == -1:
@@ -1442,7 +1483,39 @@ class INA226:
             and time.time() - self.switch_trigger_start_time > self.switch_time
         ):
             await self.shutdown_robot()
-
+    def calculate_percentage(self):
+        soc_levels = { # single cell voltages
+            3.27: 0,
+            3.61: 5,
+            3.69: 10,
+            3.71: 15,
+            3.73: 20,
+            3.75: 25,
+            3.77: 30,
+            3.79: 35,
+            3.80: 40,
+            3.82: 45,
+            3.84: 50,
+            3.85: 55,
+            3.87: 60,
+            3.91: 65,
+            3.95: 70,
+            3.98: 75,
+            4.02: 80,
+            4.08: 85,
+            4.11: 90,
+            4.15: 95,
+            4.20: 100
+        }
+        voltage = self.voltage / 3 # 3s lipo
+        percentage = None
+        for level, percent in soc_levels.items():
+            if voltage >= level: # take the highest soc that is lower than voltage
+                percentage = percent
+        if percentage is None:
+            percentage = 10
+        return percentage
+        
     async def callback(self, data):
         # TODO: move this decoding to the library
         ints = list(map(lambda i: i.to_bytes(1, "big"), data))
@@ -1470,12 +1543,12 @@ class INA226:
         bs.charge = math.nan
         bs.capacity = math.nan
         bs.design_capacity = math.nan
-        bs.percentage = math.nan
+        bs.percentage = self.calculate_percentage()/100
         # uint8   power_supply_health     # The battery health metric. Values defined above
         # uint8   power_supply_technology # The battery chemistry. Values defined above
         bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
         bs.power_supply_health = 0  # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
-        bs.power_supply_technology = 0  # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
+        bs.power_supply_technology = 3  # uint8 POWER_SUPPLY_TECHNOLOGY_LIPO = 3
         self.ina_publisher.publish(bs)
         self.integrate_usage()
         await self.turn_off_cb()
