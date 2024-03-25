@@ -18,7 +18,10 @@ try:
     import gpiod
 except:
     pass
-# Import the right Telemetrix AIO
+
+from modules import MPU9250
+
+
 devices = rospy.get_param("/mirte/device")
 
 
@@ -1178,6 +1181,9 @@ def add_modules(modules: dict, device: dict) -> []:
         if module["type"].lower() == "hiwonder_servo":
             servo_module = Hiwonder_Bus(board, module_name, module)
             tasks.append(loop.create_task(servo_module.start()))
+        if module["type"].lower() == "mpu9250":
+            imu_module = MPU9250(board, module_name, module)
+            tasks.append(loop.create_task(imu_module.start()))
 
     return tasks
 
@@ -1827,7 +1833,7 @@ def check_tty():
 
 if __name__ == "__main__":
     # Initialize the ROS node as anonymous since there
-    # should only be one instnace running.
+    # should only be one instance running.
     rospy.init_node("mirte_telemetrix", anonymous=False)
     check_tty()
 
