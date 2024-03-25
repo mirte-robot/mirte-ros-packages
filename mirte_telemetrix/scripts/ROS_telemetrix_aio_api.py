@@ -22,6 +22,9 @@ except:
 devices = rospy.get_param("/mirte/device")
 
 
+current_soc = "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
+
+
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
 # we need to add a simple wrapper
 async def set_pin_mode_analog_output(board, pin):
@@ -739,9 +742,16 @@ class Oled(_SSD1306):
                 print("write failed start", self.oled_obj["name"])
                 self.failed = True
                 return
-        await self.show_default()
+        self.default_image = True
+        rospy.Timer(rospy.Duration(10), self.show_default)
 
-    async def show_default(self):
+
+    def show_default(self, event=None):
+        if not self.default_image:
+            return
+        asyncio.run(self.show_default_async())
+
+    async def show_default_async(self):
         text = ""
         if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
             ips = subprocess.getoutput("hostname -I").split(" ")
@@ -752,6 +762,9 @@ class Oled(_SSD1306):
             wifi = subprocess.getoutput("iwgetid -r").strip()
             if len(wifi) > 0:
                 text += "\nWi-Fi:" + wifi
+        if "show_soc" in self.oled_obj and self.oled_obj["show_soc"]:
+            # TODO: change to soc ros service
+            text += f"\nSOC: {current_soc}%"
         if len(text) > 0:
             await self.set_oled_image_service_async(
                 SetOLEDImageRequest(type="text", value=text)
@@ -794,6 +807,7 @@ class Oled(_SSD1306):
                 await self.show_png(folder + req.value + "_" + str(i) + ".png")
 
     def set_oled_image_service(self, req):
+        self.default_image = False
         if self.failed:
             print("oled writing failed")
             return SetOLEDImageResponse(False)
@@ -1515,7 +1529,7 @@ class INA226:
             if voltage >= level:  # take the highest soc that is lower than voltage
                 percentage = percent
         if percentage is None:
-            percentage = 10
+            percentage = 1
         return percentage
 
     async def callback(self, data):
@@ -1546,6 +1560,8 @@ class INA226:
         bs.capacity = math.nan
         bs.design_capacity = math.nan
         bs.percentage = self.calculate_percentage() / 100
+        global current_soc
+        current_soc = int(self.calculate_percentage())
         # uint8   power_supply_health     # The battery health metric. Values defined above
         # uint8   power_supply_technology # The battery chemistry. Values defined above
         bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
