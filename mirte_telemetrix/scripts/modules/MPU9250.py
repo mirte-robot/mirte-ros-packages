@@ -1,5 +1,5 @@
 import rospy
-from sensor_msgs import Imu
+from sensor_msgs.msg import Imu
 import math
 
 
