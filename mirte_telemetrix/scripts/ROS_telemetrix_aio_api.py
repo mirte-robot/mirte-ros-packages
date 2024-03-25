@@ -745,7 +745,6 @@ class Oled(_SSD1306):
         self.default_image = True
         rospy.Timer(rospy.Duration(10), self.show_default)
 
-
     def show_default(self, event=None):
         if not self.default_image:
             return
