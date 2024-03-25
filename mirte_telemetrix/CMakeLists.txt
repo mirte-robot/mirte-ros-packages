@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   mirte_msgs
-  roslaunch
 )
 
 ## System dependencies are found with CMake's conventions

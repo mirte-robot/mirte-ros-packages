@@ -1,4 +1,4 @@
-int32 angle
+float32 angle
 ---
 bool status
 

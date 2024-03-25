@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(mirte_control)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++14)
+add_compile_options(-std=c++17)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -13,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   mirte_msgs
   controller_manager
   hardware_interface
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,9 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  # INCLUDE_DIRS include/
 #  LIBRARIES mirte_ros_package
-  CATKIN_DEPENDS roscpp std_msgs mirte_msgs message_runtime controller_manager hardware_interface
+  CATKIN_DEPENDS roscpp std_msgs mirte_msgs message_runtime controller_manager hardware_interface trajectory_msgs
 #  DEPENDS system_lib
 )
 
