@@ -22,15 +22,15 @@
 
 
     <!-- ROS control hardware for manipulator -->
-     <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main"
-          output="screen"/>
+     <!-- <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main"
+          output="screen"/> -->
 
 
     <!-- Load controller config -->
     <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
 
     <!-- Load controller settings -->
-    <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/>
+    <!-- <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/> -->
 
     <node name="controller_spawner"
           pkg="controller_manager"
