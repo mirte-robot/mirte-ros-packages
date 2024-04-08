@@ -1,5 +1,6 @@
 import rospy
 from sensor_msgs.msg import Imu
+from mirte_msgs.srv import GetIMU, GetIMUResponse
 import math
 
 
@@ -13,6 +14,7 @@ class MPU9250:
         self.gyroscope = [0, 0, 0]
         self.magnetometer = [0, 0, 0]
         self.i2c_port = None
+        self.last_message = Imu()
 
     async def start(self):
         if self.board_mapping.get_mcu() == "pico":
@@ -43,6 +45,12 @@ class MPU9250:
         # TODO: no support yet for other addresses than 0x68
         await self.board.sensors.add_mpu9250(self.i2c_port, self.callback)
 
+        self.serv = rospy.Service(
+            f"/mirte/{self.name}/get_imu",
+            GetIMU,
+            self.get_imu_service,
+        )
+
     async def callback(self, acc, gyro, mag):
         self.acceleration = acc
         self.gyroscope = gyro
@@ -50,19 +58,21 @@ class MPU9250:
         self.pub()
 
     def pub(self):
-        self.imu_publisher.publish(
-            Imu(
-                linear_acceleration=[
-                    a * 9.81 for a in self.acceleration
-                ],  # convert from g to m/s^2
-                angular_velocity=[
-                    g * math.pi / 180.0 for g in self.gyroscope
-                ],  # convert from degrees/s to rad/s
-                orientation=self.magnetometer,  # unknown if we need to convert this
-                # TODO: what should these values be?
-                # currently set to -1 to indicate unknown
-                orientation_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
-                angular_velocity_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
-                linear_acceleration_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
-            )
+        self.last_message = Imu(
+            linear_acceleration=[
+                a * 9.81 for a in self.acceleration
+            ],  # convert from g to m/s^2
+            angular_velocity=[
+                g * math.pi / 180.0 for g in self.gyroscope
+            ],  # convert from degrees/s to rad/s
+            orientation=self.magnetometer,  # unknown if we need to convert this
+            # TODO: what should these values be?
+            # currently set to -1 to indicate unknown
+            orientation_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
+            angular_velocity_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
+            linear_acceleration_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
         )
+        self.imu_publisher.publish(self.last_message)
+
+    def get_imu_service(self, req):
+        return GetIMUResponse(self.last_message)

@@ -1182,7 +1182,7 @@ def add_modules(modules: dict, device: dict) -> []:
             servo_module = Hiwonder_Bus(board, module_name, module)
             tasks.append(loop.create_task(servo_module.start()))
         if module["type"].lower() == "mpu9250":
-            imu_module = MPU9250(board, module_name, module)
+            imu_module = MPU9250.MPU9250(board, module_name, module, board_mapping)
             tasks.append(loop.create_task(imu_module.start()))
 
     return tasks
