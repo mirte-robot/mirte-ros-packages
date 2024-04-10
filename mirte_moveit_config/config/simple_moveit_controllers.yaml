@@ -1,0 +1,11 @@
+ros_control_namespace: /arm/rrbot_hardware_interface
+controller_list:
+  - name: manipulator_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - shoulder
+      - arm
+      - arm2
+      - gripper_joint
