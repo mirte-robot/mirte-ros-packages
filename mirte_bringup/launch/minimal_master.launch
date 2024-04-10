@@ -16,26 +16,11 @@
 
     <!-- ROS control hardware interface for mecanum
          drive robot. -->
-<!--
-    <group>
-      <node name="mirte_base_node" output="screen"
-          pkg="mirte_control"
-          type="mirte_control_node"/>
 
-       <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
 
-       <node name="controller_spawner"
-          pkg="controller_manager"
-          type="spawner"
-          output="screen"
-          args="mobile_base_controller"/>
+   <group ns="arm">
 
-   </group>
--->
-
-   <group>
-
-     <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main" 
+     <node name="rrbot_hardware_interface" pkg="ros_control_boilerplate" type="rrbot_hw_main"
           output="screen"/>
 
      <rosparam file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml" command="load"/>
@@ -50,9 +35,19 @@
 
    </group>
 
+    <group>
+      <node name="mirte_base_node" output="screen"
+          pkg="mirte_control"
+          type="mirte_control_node"/>
 
+       <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
+       <node name="controller_spawner"
+          pkg="controller_manager"
+          type="spawner"
+          output="screen"
+          args="mobile_base_controller"/>
 
-
+   </group>
 
 
     <!-- Start the lidar -->
