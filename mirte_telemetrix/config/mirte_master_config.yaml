@@ -7,7 +7,7 @@ modules:
   motorservocontroller:
     device: mirte
     type: PCA9685
-    id: 0x40
+    id: 0x41 # bridged A0
     connector: I2C1
     frequency: 1500
     motors:
@@ -46,7 +46,7 @@ modules:
     device: mirte
     type: INA226
     connector: I2C1
-    id: 0b1000101
+    id: 0x40 # default id
     min_voltage: 11
     max_current: 1
     max_voltage: 15
@@ -57,6 +57,13 @@ modules:
     # turn_off_pin: 27
     # turn_off_value: True
     # turn_off_time: 10
+    percentage_led_chip: gpiochip4
+    percentage_led_line: 12 # B4, left-most led on usb switcher pcb
+  movement:
+    type: MPU9250
+    connector: I2C1
+    device: mirte
+    id: 0x68
 # encoder:
 #   left_front:
 #     name: left_front
@@ -103,7 +110,7 @@ oled:
     show_hostname: True
     show_ip: True
     show_wifi: True
-  
+    show_soc: True
 # neopixel:
 #   name: leds
 #   pins:

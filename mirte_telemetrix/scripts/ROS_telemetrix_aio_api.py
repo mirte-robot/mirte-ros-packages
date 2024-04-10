@@ -14,9 +14,18 @@ from telemetrix_aio import telemetrix_aio
 from typing import Literal, Tuple
 import subprocess
 
-# Import the right Telemetrix AIO
+try:
+    import gpiod
+except:
+    pass
+
+from modules import MPU9250
+
+
 devices = rospy.get_param("/mirte/device")
 
+
+current_soc = "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
 
 
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
@@ -736,9 +745,15 @@ class Oled(_SSD1306):
                 print("write failed start", self.oled_obj["name"])
                 self.failed = True
                 return
-        await self.show_default()
+        self.default_image = True
+        rospy.Timer(rospy.Duration(10), self.show_default)
 
-    async def show_default(self):
+    def show_default(self, event=None):
+        if not self.default_image:
+            return
+        asyncio.run(self.show_default_async())
+
+    async def show_default_async(self):
         text = ""
         if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
             ips = subprocess.getoutput("hostname -I").split(" ")
@@ -749,6 +764,9 @@ class Oled(_SSD1306):
             wifi = subprocess.getoutput("iwgetid -r").strip()
             if len(wifi) > 0:
                 text += "\nWi-Fi:" + wifi
+        if "show_soc" in self.oled_obj and self.oled_obj["show_soc"]:
+            # TODO: change to soc ros service
+            text += f"\nSOC: {current_soc}%"
         if len(text) > 0:
             await self.set_oled_image_service_async(
                 SetOLEDImageRequest(type="text", value=text)
@@ -791,6 +809,7 @@ class Oled(_SSD1306):
                 await self.show_png(folder + req.value + "_" + str(i) + ".png")
 
     def set_oled_image_service(self, req):
+        self.default_image = False
         if self.failed:
             print("oled writing failed")
             return SetOLEDImageResponse(False)
@@ -1162,6 +1181,9 @@ def add_modules(modules: dict, device: dict) -> []:
         if module["type"].lower() == "hiwonder_servo":
             servo_module = Hiwonder_Bus(board, module_name, module)
             tasks.append(loop.create_task(servo_module.start()))
+        if module["type"].lower() == "mpu9250":
+            imu_module = MPU9250.MPU9250(board, module_name, module, board_mapping)
+            tasks.append(loop.create_task(imu_module.start()))
 
     return tasks
 
@@ -1405,7 +1427,29 @@ class INA226:
             self.switch_armed = False
             self.switch_trigger_start_time = -1
             self.switch_val = -1
+
             rospy.Timer(rospy.Duration(0.5), self.check_switch_sync)
+
+        if "gpiod" in sys.modules:
+            await self.setup_percentage_led()
+
+    async def setup_percentage_led(self):
+        if "percentage_led_chip" in self.module:
+            return
+        if not "percentage_led_line" in self.module:
+            return
+
+        chip = gpiod.chip(self.module["percentage_led_chip"])
+        line = self.module["percentage_led_line"]
+        led = chip.get_line(line)
+
+        config = gpiod.line_request()
+        config.consumer = "ROS percentage"
+        config.request_type = gpiod.line_request.DIRECTION_OUTPUT
+
+        led.request(config)
+        self.percentage_led = led
+        rospy.Timer(rospy.Duration(0.5), self.check_percentage_sync)
 
     async def switch_data(self, data):
         self.switch_val = bool(data[2])
@@ -1413,6 +1457,22 @@ class INA226:
 
     def check_switch_sync(self, event=None):
         asyncio.run(self.check_switch())
+
+    def check_percentage_sync(self, event=None):
+        asyncio.run(self.show_percentage())
+
+    async def show_percentage(self):
+        # show the SOC by blinking the led. Shorter pulse -> lower SOC
+        # cycle time of 5s
+        time_sec = time.time() % 5
+        percentage = self.calculate_percentage() / 20
+        if time_sec > percentage:
+            # turn off the led
+            self.percentage_led.set_value(0)
+
+        else:
+            # turn on the led
+            self.percentage_led.set_value(1)
 
     async def check_switch(self):
         if self.switch_val == -1:
@@ -1444,6 +1504,39 @@ class INA226:
         ):
             await self.shutdown_robot()
 
+    def calculate_percentage(self):
+        soc_levels = {  # single cell voltages
+            3.27: 0,
+            3.61: 5,
+            3.69: 10,
+            3.71: 15,
+            3.73: 20,
+            3.75: 25,
+            3.77: 30,
+            3.79: 35,
+            3.80: 40,
+            3.82: 45,
+            3.84: 50,
+            3.85: 55,
+            3.87: 60,
+            3.91: 65,
+            3.95: 70,
+            3.98: 75,
+            4.02: 80,
+            4.08: 85,
+            4.11: 90,
+            4.15: 95,
+            4.20: 100,
+        }
+        voltage = self.voltage / 3  # 3s lipo
+        percentage = None
+        for level, percent in soc_levels.items():
+            if voltage >= level:  # take the highest soc that is lower than voltage
+                percentage = percent
+        if percentage is None:
+            percentage = 1
+        return percentage
+
     async def callback(self, data):
         # TODO: move this decoding to the library
         ints = list(map(lambda i: i.to_bytes(1, "big"), data))
@@ -1471,12 +1564,14 @@ class INA226:
         bs.charge = math.nan
         bs.capacity = math.nan
         bs.design_capacity = math.nan
-        bs.percentage = math.nan
+        bs.percentage = self.calculate_percentage() / 100
+        global current_soc
+        current_soc = int(self.calculate_percentage())
         # uint8   power_supply_health     # The battery health metric. Values defined above
         # uint8   power_supply_technology # The battery chemistry. Values defined above
         bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
         bs.power_supply_health = 0  # uint8 POWER_SUPPLY_HEALTH_UNKNOWN = 0
-        bs.power_supply_technology = 0  # uint8 POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0
+        bs.power_supply_technology = 3  # uint8 POWER_SUPPLY_TECHNOLOGY_LIPO = 3
         self.ina_publisher.publish(bs)
         self.integrate_usage()
         await self.turn_off_cb()
@@ -1596,7 +1691,10 @@ class Hiwonder_Servo:
             self.set_servo_enabled_service,
         )
         self.publisher = rospy.Publisher(
-            f"/mirte/servos/{self.name}/position", ServoPosition, queue_size=1, latch=True
+            f"/mirte/servos/{self.name}/position",
+            ServoPosition,
+            queue_size=1,
+            latch=True,
         )
 
     def set_servo_enabled_service(self, req):
@@ -1720,6 +1818,7 @@ async def shutdown(loop, board):
         time.sleep(1)
         exit(0)
 
+
 # check any ttyACM or ttyUSB devices
 # if none found, sleep for 5 seconds and try again
 # if still none found, exit the program
@@ -1734,10 +1833,10 @@ def check_tty():
 
 if __name__ == "__main__":
     # Initialize the ROS node as anonymous since there
-    # should only be one instnace running.
+    # should only be one instance running.
     rospy.init_node("mirte_telemetrix", anonymous=False)
     check_tty()
-    
+
     loop = asyncio.new_event_loop()
 
     # Initialize the telemetrix board
@@ -1756,8 +1855,6 @@ if __name__ == "__main__":
     for s in signals:
         l = lambda loop=loop, board=board: asyncio.ensure_future(shutdown(loop, board))
         loop.add_signal_handler(s, l)
-
-
 
     # Escalate siging to this process in order to shutdown nicely
     # This is needed when only this process is killed (eg. rosnode kill)

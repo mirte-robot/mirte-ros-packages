@@ -44,4 +44,3 @@ jobs:
               echo "Automated tests succeeded" >&2
               exit 0
           fi
-

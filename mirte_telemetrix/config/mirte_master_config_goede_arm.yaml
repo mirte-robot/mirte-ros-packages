@@ -7,7 +7,7 @@ modules:
   motorservocontroller:
     device: mirte
     type: PCA9685
-    id: 0x40
+    id: 0x41 # bridged A0
     connector: I2C1
     frequency: 1500
     motors:
@@ -58,7 +58,7 @@ modules:
   #   device: mirte
   #   type: INA226
   #   connector: I2C1
-  #   id: 0b1000101
+  #   id: 0b1000100 # default 0x40
   #   min_voltage: 11
   #   max_current: 1
   #   max_voltage: 15

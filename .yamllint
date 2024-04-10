@@ -1,0 +1,19 @@
+---
+extends: default
+
+rules:
+  comments-indentation: disable # don't bother me with this rule
+  line-length:
+    max: 1000
+    level: warning
+  truthy:
+    check-keys: false
+    allowed-values: ["true", "false", "True", "False"]
+  trailing-spaces: false
+  comments:
+    min-spaces-from-content: 1
+    require-starting-space: false
+  document-start: disable
+  colons:
+    max-spaces-before: -1
+    max-spaces-after: 1
