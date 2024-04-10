@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(mirte_control)
+project(mirte_base_control)
 
 add_compile_options(-std=c++17)
 

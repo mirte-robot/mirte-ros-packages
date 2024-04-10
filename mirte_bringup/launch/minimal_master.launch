@@ -37,10 +37,10 @@
 
     <group>
       <node name="mirte_base_node" output="screen"
-          pkg="mirte_control"
-          type="mirte_control_node"/>
+          pkg="mirte_base_control"
+          type="mirte_base_control_node"/>
 
-       <rosparam command="load" file="$(find mirte_control)/config/control_master.yaml"/>
+       <rosparam command="load" file="$(find mirte_base_control)/config/control_master.yaml"/>
        <node name="controller_spawner"
           pkg="controller_manager"
           type="spawner"

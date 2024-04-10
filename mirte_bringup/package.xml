@@ -53,7 +53,7 @@
 
   <exec_depend>mirte_telemetrix</exec_depend>
   <exec_depend>mirte_teleop</exec_depend>
-  <exec_depend>mirte_control</exec_depend>
+  <exec_depend>mirte_base_control</exec_depend>
   <exec_depend>mirte_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>rplidar_ros</exec_depend>
