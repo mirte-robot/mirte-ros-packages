@@ -1633,7 +1633,7 @@ class INA226:
             if hasattr(self, "trigger_shutdown_relay"):
                 await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
-            subprocess.run("sudo shutdown 10s")
+            subprocess.run("sleep 10; sudo shutdown now")
 
     def shutdown_service(self, req):
         # also called from systemd shutdown service
