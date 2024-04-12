@@ -1600,7 +1600,7 @@ class INA226:
         # at start dip of too low voltage, start timer, when longer than 5s below trigger voltage, then shut down
         # this makes sure that a short dip (motor start) does not trigger it
         if self.min_voltage != -1 and self.voltage < self.min_voltage:
-            if self.turn_off_trigger_start_time == -1:
+            if self.turn_off_trigger_start_time < 0:
                 self.turn_off_trigger_start_time = time.time()
                 # Send a message to all users that the voltage is low and possibly shutting down
                 subprocess.run(
@@ -1633,7 +1633,7 @@ class INA226:
             if hasattr(self, "trigger_shutdown_relay"):
                 await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
-        # subprocess.run("sudo shutdown 10s")
+        subprocess.run("sudo shutdown 10s")
 
     def shutdown_service(self, req):
         # also called from systemd shutdown service
