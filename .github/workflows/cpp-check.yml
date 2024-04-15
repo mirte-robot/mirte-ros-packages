@@ -1,17 +1,15 @@
+---
 name: test-clang-format
-
 on: [push, pull_request]
-
 jobs:
   cpp_style_check:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: DoozyX/clang-format-lint-action@v0.14
         with:
-          source: "."
+          source: .
           # exclude: './third_party ./external'
-          extensions: "h,cpp"
+          extensions: h,cpp
           clangFormatVersion: 14
           style: llvm

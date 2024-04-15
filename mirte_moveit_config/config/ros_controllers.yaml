@@ -1,11 +1,8 @@
+---
 ros_control_namespace: /arm/rrbot_hardware_interface
 manipulator_controller:
   type: effort_controllers/JointTrajectoryController
-  joints:
-    - shoulder
-    - arm
-    - arm2
-    - gripper_joint
+  joints: [shoulder, arm, arm2, gripper_joint]
   gains:
     shoulder:
       p: 100

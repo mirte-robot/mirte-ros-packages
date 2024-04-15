@@ -1,3 +1,4 @@
+---
 name: Compile and catkin_lint ros style check
 on: [push, pull_request]
 jobs:
@@ -19,7 +20,6 @@ jobs:
           git clone https://github.com/arendjan/ridgeback.git
           git clone https://github.com/Slamtec/rplidar_ros.git
           git clone https://github.com/orbbec/ros_astra_camera.git
-
           . /opt/ros/noetic/setup.sh
           catkin_init_workspace
           cd ..
@@ -28,7 +28,7 @@ jobs:
           rosdep install -y --from-paths src/ --ignore-src --rosdistro noetic
           catkin_make
           . devel/setup.sh
-      - run: |
+      - run: |-
           . catkin_ws/devel/setup.sh
           failure=false
           # Run all tests before failing to test all packages

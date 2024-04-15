@@ -1,3 +1,4 @@
+---
 stomp/manipulator:
   group_name: manipulator
   optimization:
@@ -20,8 +21,8 @@ stomp/manipulator:
         longest_valid_joint_move: 0.05
     noisy_filters:
       - class: stomp_moveit/JointLimits
-        lock_start: True
-        lock_goal: True
+        lock_start: true
+        lock_goal: true
       - class: stomp_moveit/MultiTrajectoryVisualization
         line_width: 0.02
         rgb: [255, 255, 0]
@@ -34,6 +35,6 @@ stomp/manipulator:
         line_width: 0.05
         rgb: [0, 191, 255]
         error_rgb: [255, 0, 0]
-        publish_intermediate: True
+        publish_intermediate: true
         marker_topic: stomp_trajectory
         marker_namespace: optimized
