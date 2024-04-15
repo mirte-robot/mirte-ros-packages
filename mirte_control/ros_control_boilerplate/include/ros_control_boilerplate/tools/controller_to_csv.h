@@ -33,7 +33,8 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc analysis
+   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc
+   analysis
 */
 
 #ifndef GENERIC_ROS_CONTROL__CONTROLLER_TO_CSV_H
@@ -45,25 +46,24 @@
 // ros_control
 #include <control_msgs/JointTrajectoryControllerState.h>
 
-namespace ros_control_boilerplate
-{
-class ControllerToCSV
-{
+namespace ros_control_boilerplate {
+class ControllerToCSV {
 public:
   /**
    * \brief Constructor
    * \param topic - ROS message to listen to from controller
    */
-  ControllerToCSV(const std::string& topic);
+  ControllerToCSV(const std::string &topic);
 
   /** \brief Destructor */
   ~ControllerToCSV();
 
-  /** \brief Whether to record at a specific frequency, or record all incoming data */
+  /** \brief Whether to record at a specific frequency, or record all incoming
+   * data */
   bool recordAll();
 
   /** \brief Start the data collection */
-  void startRecording(const std::string& file_name);
+  void startRecording(const std::string &file_name);
 
   /** \brief End recording */
   void stopRecording();
@@ -73,13 +73,15 @@ private:
   bool writeToFile();
 
   /** \brief Callback from ROS message */
-  void stateCB(const control_msgs::JointTrajectoryControllerState::ConstPtr& state);
+  void
+  stateCB(const control_msgs::JointTrajectoryControllerState::ConstPtr &state);
 
   /** \brief Recieve data from controller via ROS message */
-  void update(const ros::TimerEvent& e);
+  void update(const ros::TimerEvent &e);
 
   /** \brief Check if topic has been connected to successfully */
-  bool waitForSubscriber(const ros::Subscriber& sub, const double& wait_time = 10.0);
+  bool waitForSubscriber(const ros::Subscriber &sub,
+                         const double &wait_time = 10.0);
 
   // Class name
   std::string name_ = "controller_to_csv";
@@ -93,7 +95,8 @@ private:
 
   // Listener to state of controller
   ros::Subscriber state_sub_;
-  double record_hz_;  // how often to record the latest incoming data. if zero, record all
+  double record_hz_; // how often to record the latest incoming data. if zero,
+                     // record all
 
   // Where to save the CSV
   std::string file_name_;
@@ -108,12 +111,12 @@ private:
   // How often to sample the state
   ros::Timer non_realtime_loop_;
 
-};  // end class
+}; // end class
 
 // Create std pointers for this class
 typedef std::shared_ptr<ControllerToCSV> ControllerToCSVPtr;
 typedef std::shared_ptr<const ControllerToCSV> ControllerToCSVConstPtr;
 
-}  // namespace ros_control_boilerplate
+} // namespace ros_control_boilerplate
 
 #endif

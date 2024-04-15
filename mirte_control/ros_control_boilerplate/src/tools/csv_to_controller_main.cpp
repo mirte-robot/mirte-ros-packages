@@ -33,7 +33,8 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Records ros_control ControllerState datas to CSV for Matlab/etc analysis
+   Desc:   Records ros_control ControllerState datas to CSV for Matlab/etc
+   analysis
 */
 
 #include <ros_control_boilerplate/tools/csv_to_controller.h>
@@ -42,11 +43,12 @@
 #include <gflags/gflags.h>
 
 DEFINE_string(csv_path, "", "File location to load recoded data from");
-DEFINE_string(joint_trajectory_action, "", "Which action server to send commands to");
-DEFINE_string(controller_state_topic, "", "Where to subscribe the controller state");
+DEFINE_string(joint_trajectory_action, "",
+              "Which action server to send commands to");
+DEFINE_string(controller_state_topic, "",
+              "Where to subscribe the controller state");
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   google::SetVersionString("0.0.1");
   google::SetUsageMessage("Utility to load commands from a CSV");
   google::ParseCommandLineFlags(&argc, &argv, true);
@@ -55,18 +57,19 @@ int main(int argc, char** argv)
   ROS_INFO_STREAM_NAMED("main", "Starting CSVToController...");
 
   // Get file name
-  if (FLAGS_csv_path.empty())
-  {
+  if (FLAGS_csv_path.empty()) {
     ROS_ERROR_STREAM_NAMED("csv_to_controller", "No file name passed in");
     return 0;
   }
-  ROS_INFO_STREAM_NAMED("csv_to_controller", "Reading from file " << FLAGS_csv_path);
+  ROS_INFO_STREAM_NAMED("csv_to_controller",
+                        "Reading from file " << FLAGS_csv_path);
 
   // Allow the action server to recieve and send ros messages
   ros::AsyncSpinner spinner(2);
   spinner.start();
 
-  ros_control_boilerplate::CSVToController converter(FLAGS_joint_trajectory_action, FLAGS_controller_state_topic);
+  ros_control_boilerplate::CSVToController converter(
+      FLAGS_joint_trajectory_action, FLAGS_controller_state_topic);
   converter.loadAndRunCSV(FLAGS_csv_path);
 
   ROS_INFO_STREAM_NAMED("main", "Shutting down.");

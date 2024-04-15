@@ -33,7 +33,8 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Records ros_control ControllerState data to CSV for Matlab/etc analysis
+   Desc:   Records ros_control ControllerState data to CSV for Matlab/etc
+   analysis
 */
 
 #include <ros_control_boilerplate/tools/controller_to_csv.h>
@@ -41,11 +42,12 @@
 // Command line arguments
 #include <gflags/gflags.h>
 
-DEFINE_string(csv_path, "/tmp/recorded_trajectory_1.csv", "File location to save recoded data to");
-DEFINE_string(topic, "/robot/position_trajectory_controller/state", "ROS topic to subscribe to");
+DEFINE_string(csv_path, "/tmp/recorded_trajectory_1.csv",
+              "File location to save recoded data to");
+DEFINE_string(topic, "/robot/position_trajectory_controller/state",
+              "ROS topic to subscribe to");
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   google::SetVersionString("0.0.1");
   google::SetUsageMessage("Utility to record controller topic to a CSV");
   google::ParseCommandLineFlags(&argc, &argv, true);

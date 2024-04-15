@@ -33,7 +33,8 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc analysis
+   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc
+   analysis
 */
 
 #ifndef GENERIC_ROS_CONTROL__CSV_TO_CONTROLLER_H
@@ -50,25 +51,25 @@
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
 
-namespace ros_control_boilerplate
-{
-static const double RECORD_RATE_HZ = 100.0;  // times per second to record
+namespace ros_control_boilerplate {
+static const double RECORD_RATE_HZ = 100.0; // times per second to record
 
-class CSVToController
-{
+class CSVToController {
 public:
   /**
    * \brief Constructor
    */
-  CSVToController(const std::string& joint_trajectory_action, const std::string& controller_state_topic);
+  CSVToController(const std::string &joint_trajectory_action,
+                  const std::string &controller_state_topic);
 
   /** \brief Callback from ROS message */
-  void stateCB(const control_msgs::JointTrajectoryControllerState::ConstPtr& state);
+  void
+  stateCB(const control_msgs::JointTrajectoryControllerState::ConstPtr &state);
 
-  void printPoint(trajectory_msgs::JointTrajectoryPoint& point);
+  void printPoint(trajectory_msgs::JointTrajectoryPoint &point);
 
   // Start the data collection
-  void loadAndRunCSV(const std::string& file_name);
+  void loadAndRunCSV(const std::string &file_name);
 
 private:
   // A shared node handle
@@ -78,7 +79,8 @@ private:
   ros::Subscriber state_sub_;
 
   // Action
-  actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> joint_trajectory_action_;
+  actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction>
+      joint_trajectory_action_;
 
   // Where to save the CSV
   std::string file_name_;
@@ -87,8 +89,8 @@ private:
   // Cache of last recieved state
   control_msgs::JointTrajectoryControllerState current_state_;
 
-};  // end class
+}; // end class
 
-}  // namespace ros_control_boilerplate
+} // namespace ros_control_boilerplate
 
 #endif

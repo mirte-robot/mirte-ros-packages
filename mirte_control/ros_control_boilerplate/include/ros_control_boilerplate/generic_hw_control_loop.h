@@ -33,35 +33,35 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Example control loop for reading, updating, and writing commands to a hardware interface
-   using MONOTOIC system time
+   Desc:   Example control loop for reading, updating, and writing commands to a
+   hardware interface using MONOTOIC system time
 */
 
-#include <time.h>
 #include <controller_manager/controller_manager.h>
 #include <hardware_interface/robot_hw.h>
+#include <time.h>
 
-namespace ros_control_boilerplate
-{
+namespace ros_control_boilerplate {
 // Used to convert seconds elapsed to nanoseconds
 static const double BILLION = 1000000000.0;
 
 /**
- * \brief The control loop - repeatidly calls read() and write() to the hardware interface at a
- * specified frequency
- *        We use MONOTONIC time to ensure robustness in the event of system time updates/change.
- *        See
+ * \brief The control loop - repeatidly calls read() and write() to the hardware
+ * interface at a specified frequency We use MONOTONIC time to ensure robustness
+ * in the event of system time updates/change. See
  * http://stackoverflow.com/questions/3523442/difference-between-clock-realtime-and-clock-monotonic
  */
-class GenericHWControlLoop
-{
+class GenericHWControlLoop {
 public:
   /**
    * \brief Constructor
    * \param NodeHandle
-   * \param hardware_interface - the robot-specific hardware interface to be use with your robot
+   * \param hardware_interface - the robot-specific hardware interface to be use
+   * with your robot
    */
-  GenericHWControlLoop(ros::NodeHandle& nh, std::shared_ptr<hardware_interface::RobotHW> hardware_interface);
+  GenericHWControlLoop(
+      ros::NodeHandle &nh,
+      std::shared_ptr<hardware_interface::RobotHW> hardware_interface);
 
   // Run the control loop (blocking)
   void run();
@@ -97,6 +97,6 @@ protected:
   /** \brief Abstract Hardware Interface for your robot */
   std::shared_ptr<hardware_interface::RobotHW> hardware_interface_;
 
-};  // end class
+}; // end class
 
-}  // namespace ros_control_boilerplate
+} // namespace ros_control_boilerplate

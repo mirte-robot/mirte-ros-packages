@@ -39,8 +39,7 @@
 #include <ros_control_boilerplate/generic_hw_control_loop.h>
 #include <ros_control_boilerplate/sim_hw_interface.h>
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   ros::init(argc, argv, "sim_hw_interface");
   ros::NodeHandle nh;
 
@@ -55,8 +54,9 @@ int main(int argc, char** argv)
   sim_hw_interface->init();
 
   // Start the control loop
-  ros_control_boilerplate::GenericHWControlLoop control_loop(nh, sim_hw_interface);
-  control_loop.run();  // Blocks until shutdown signal recieved
+  ros_control_boilerplate::GenericHWControlLoop control_loop(nh,
+                                                             sim_hw_interface);
+  control_loop.run(); // Blocks until shutdown signal recieved
 
   return 0;
 }

@@ -36,10 +36,10 @@
    Desc:   Tweak a TF transform using a keyboard
 */
 
-#include <termios.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <termios.h>
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
@@ -76,33 +76,28 @@
 int kfd = 0;
 struct termios cooked, raw;
 
-void quit(int sig)
-{
+void quit(int sig) {
   tcsetattr(kfd, TCSANOW, &cooked);
   exit(0);
 }
 
-class TeleopJointsKeyboard
-{
+class TeleopJointsKeyboard {
 public:
-  TeleopJointsKeyboard() : has_recieved_joints_(false)
-  {
+  TeleopJointsKeyboard() : has_recieved_joints_(false) {
     std::cout << "init " << std::endl;
     // TODO: make this robot agonistic
-    joints_sub_ = nh_.subscribe<sensor_msgs::JointState>("/iiwa_7_r800/joint_states", 1,
-                                                         &TeleopJointsKeyboard::stateCallback, this);
-    joints_pub_ = nh_.advertise<std_msgs::Float64MultiArray>("/iiwa_7_r800/joints_position_controller/command", 1);
+    joints_sub_ = nh_.subscribe<sensor_msgs::JointState>(
+        "/iiwa_7_r800/joint_states", 1, &TeleopJointsKeyboard::stateCallback,
+        this);
+    joints_pub_ = nh_.advertise<std_msgs::Float64MultiArray>(
+        "/iiwa_7_r800/joints_position_controller/command", 1);
     cmd_.data.resize(7);
   }
 
-  ~TeleopJointsKeyboard()
-  {
-  }
+  ~TeleopJointsKeyboard() {}
 
-  void stateCallback(const sensor_msgs::JointStateConstPtr& msg)
-  {
-    if (msg->position.size() != 7)
-    {
+  void stateCallback(const sensor_msgs::JointStateConstPtr &msg) {
+    if (msg->position.size() != 7) {
       ROS_ERROR_STREAM("Not enough joints!");
       exit(-1);
     }
@@ -112,15 +107,14 @@ public:
       cmd_.data = msg->position;
 
     // Debug
-    // std::copy(cmd_.data.begin(), cmd_.data.end(), std::ostream_iterator<double>(std::cout, " "));
-    // std::cout << std::endl;
+    // std::copy(cmd_.data.begin(), cmd_.data.end(),
+    // std::ostream_iterator<double>(std::cout, " ")); std::cout << std::endl;
 
     // Important safety feature
     has_recieved_joints_ = true;
   }
 
-  void keyboardLoop()
-  {
+  void keyboardLoop() {
     char c;
     bool dirty = false;
 
@@ -146,88 +140,83 @@ public:
 
     double delta_dist = 0.005;
 
-    for (;;)
-    {
+    for (;;) {
       // get the next event from the keyboard
-      if (read(kfd, &c, 1) < 0)
-      {
+      if (read(kfd, &c, 1) < 0) {
         perror("read():");
         exit(-1);
       }
 
       dirty = true;
-      switch (c)
-      {
-        case KEYCODE_q:
-          cmd_.data[0] = cmd_.data[0] + delta_dist;  // radians
-          break;
-        case KEYCODE_a:
-          cmd_.data[0] = cmd_.data[0] - delta_dist;  // radians
-          break;
+      switch (c) {
+      case KEYCODE_q:
+        cmd_.data[0] = cmd_.data[0] + delta_dist; // radians
+        break;
+      case KEYCODE_a:
+        cmd_.data[0] = cmd_.data[0] - delta_dist; // radians
+        break;
 
-        case KEYCODE_w:
-          cmd_.data[1] = cmd_.data[1] + delta_dist;  // radians
-          break;
-        case KEYCODE_s:
-          cmd_.data[1] = cmd_.data[1] - delta_dist;  // radians
-          break;
+      case KEYCODE_w:
+        cmd_.data[1] = cmd_.data[1] + delta_dist; // radians
+        break;
+      case KEYCODE_s:
+        cmd_.data[1] = cmd_.data[1] - delta_dist; // radians
+        break;
 
-        case KEYCODE_e:
-          cmd_.data[2] = cmd_.data[2] + delta_dist;  // radians
-          break;
-        case KEYCODE_d:
-          cmd_.data[2] = cmd_.data[2] - delta_dist;  // radians
-          break;
+      case KEYCODE_e:
+        cmd_.data[2] = cmd_.data[2] + delta_dist; // radians
+        break;
+      case KEYCODE_d:
+        cmd_.data[2] = cmd_.data[2] - delta_dist; // radians
+        break;
 
-        case KEYCODE_r:
-          cmd_.data[3] = cmd_.data[3] + delta_dist;  // radians
-          break;
-        case KEYCODE_f:
-          cmd_.data[3] = cmd_.data[3] - delta_dist;  // radians
-          break;
+      case KEYCODE_r:
+        cmd_.data[3] = cmd_.data[3] + delta_dist; // radians
+        break;
+      case KEYCODE_f:
+        cmd_.data[3] = cmd_.data[3] - delta_dist; // radians
+        break;
 
-        case KEYCODE_t:
-          cmd_.data[4] = cmd_.data[4] + delta_dist;  // radians
-          break;
-        case KEYCODE_g:
-          cmd_.data[4] = cmd_.data[4] - delta_dist;  // radians
-          break;
+      case KEYCODE_t:
+        cmd_.data[4] = cmd_.data[4] + delta_dist; // radians
+        break;
+      case KEYCODE_g:
+        cmd_.data[4] = cmd_.data[4] - delta_dist; // radians
+        break;
 
-        case KEYCODE_y:
-          cmd_.data[5] = cmd_.data[5] + delta_dist;  // radians
-          break;
-        case KEYCODE_h:
-          cmd_.data[5] = cmd_.data[5] - delta_dist;  // radians
-          break;
+      case KEYCODE_y:
+        cmd_.data[5] = cmd_.data[5] + delta_dist; // radians
+        break;
+      case KEYCODE_h:
+        cmd_.data[5] = cmd_.data[5] - delta_dist; // radians
+        break;
 
-        case KEYCODE_u:
-          cmd_.data[6] = cmd_.data[6] + delta_dist;  // radians
-          break;
-        case KEYCODE_j:
-          cmd_.data[6] = cmd_.data[6] - delta_dist;  // radians
-          break;
+      case KEYCODE_u:
+        cmd_.data[6] = cmd_.data[6] + delta_dist; // radians
+        break;
+      case KEYCODE_j:
+        cmd_.data[6] = cmd_.data[6] - delta_dist; // radians
+        break;
 
-        case KEYCODE_ESCAPE:
-          std::cout << std::endl;
-          std::cout << "Exiting " << std::endl;
-          quit(0);
-          break;
+      case KEYCODE_ESCAPE:
+        std::cout << std::endl;
+        std::cout << "Exiting " << std::endl;
+        quit(0);
+        break;
 
-        default:
-          std::cout << "CODE: " << c << std::endl;
-          dirty = false;
+      default:
+        std::cout << "CODE: " << c << std::endl;
+        dirty = false;
       }
 
       // Publish command
-      if (dirty)
-      {
+      if (dirty) {
         // Important safety feature
-        if (!has_recieved_joints_)
-        {
-          ROS_ERROR_STREAM_NAMED("joint_teleop", "Unable to send joint commands because robot state is invalid");
-        }
-        else
-        {
+        if (!has_recieved_joints_) {
+          ROS_ERROR_STREAM_NAMED(
+              "joint_teleop",
+              "Unable to send joint commands because robot state is invalid");
+        } else {
           std::cout << ".";
           joints_pub_.publish(cmd_);
         }
@@ -243,8 +232,7 @@ private:
   bool has_recieved_joints_;
 };
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   ros::init(argc, argv, "joints_teleop_keyboard");
   signal(SIGINT, quit);
 

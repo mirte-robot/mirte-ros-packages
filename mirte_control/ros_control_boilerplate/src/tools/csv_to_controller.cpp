@@ -33,31 +33,32 @@
  *********************************************************************/
 
 /* Author: Dave Coleman
-   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc analysis
+   Desc:   Records a ros_control ControllerState data to CSV for Matlab/etc
+   analysis
 */
 
 #include <ros_control_boilerplate/tools/csv_to_controller.h>
 
 // Basic file operations
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <iterator>
 #include <sstream>
 #include <stdlib.h>
-#include <iterator>
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace ros_control_boilerplate
-{
-CSVToController::CSVToController(const std::string& joint_trajectory_action, const std::string& controller_state_topic)
-  : joint_trajectory_action_(joint_trajectory_action), controller_state_topic_(controller_state_topic)
-{
+namespace ros_control_boilerplate {
+CSVToController::CSVToController(const std::string &joint_trajectory_action,
+                                 const std::string &controller_state_topic)
+    : joint_trajectory_action_(joint_trajectory_action),
+      controller_state_topic_(controller_state_topic) {
   ROS_INFO_STREAM_NAMED("csv_to_controller", "Waiting for action server");
   joint_trajectory_action_.waitForServer();
 
   // State subscriber
-  state_sub_ = nh_.subscribe<control_msgs::JointTrajectoryControllerState>(controller_state_topic_, 1,
-                                                                           &CSVToController::stateCB, this);
+  state_sub_ = nh_.subscribe<control_msgs::JointTrajectoryControllerState>(
+      controller_state_topic_, 1, &CSVToController::stateCB, this);
 
   // Wait for states to populate
   ros::spinOnce();
@@ -66,21 +67,20 @@ CSVToController::CSVToController(const std::string& joint_trajectory_action, con
   ROS_INFO_STREAM_NAMED("csv_to_controller", "CSVToController Ready.");
 }
 
-void CSVToController::stateCB(const control_msgs::JointTrajectoryControllerState::ConstPtr& state)
-{
+void CSVToController::stateCB(
+    const control_msgs::JointTrajectoryControllerState::ConstPtr &state) {
   current_state_ = *state;
 }
 
-void CSVToController::printPoint(trajectory_msgs::JointTrajectoryPoint& point)
-{
+void CSVToController::printPoint(trajectory_msgs::JointTrajectoryPoint &point) {
   // Show new line
-  std::copy(point.positions.begin(), point.positions.end(), std::ostream_iterator<double>(std::cout, " "));
+  std::copy(point.positions.begin(), point.positions.end(),
+            std::ostream_iterator<double>(std::cout, " "));
   std::cout << std::endl;
 }
 
 // Start the data collection
-void CSVToController::loadAndRunCSV(const std::string& file_name)
-{
+void CSVToController::loadAndRunCSV(const std::string &file_name) {
   file_name_ = file_name;
 
   // Open file
@@ -91,8 +91,8 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
   std::string line;
   std::string cell;
 
-  control_msgs::FollowJointTrajectoryGoal pre_goal;  // moving to start state
-  control_msgs::FollowJointTrajectoryGoal goal;      // csv file
+  control_msgs::FollowJointTrajectoryGoal pre_goal; // moving to start state
+  control_msgs::FollowJointTrajectoryGoal goal;     // csv file
 
   // Populate joint names
   goal.trajectory.joint_names.push_back("joint_a1");
@@ -109,8 +109,7 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
   std::getline(input_file, line);
 
   // For each line/row
-  while (std::getline(input_file, line))
-  {
+  while (std::getline(input_file, line)) {
     std::stringstream lineStream(line);
 
     trajectory_msgs::JointTrajectoryPoint point;
@@ -122,8 +121,7 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
     point.time_from_start = ros::Duration(atof(cell.c_str()));
 
     // For each item/column
-    for (std::size_t i = 0; i < num_joints; ++i)
-    {
+    for (std::size_t i = 0; i < num_joints; ++i) {
       // DESIRED POSITION
       if (!std::getline(lineStream, cell, ','))
         ROS_ERROR_STREAM_NAMED("csv_to_controller", "no joint value");
@@ -151,12 +149,12 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
     }
 
     goal.trajectory.points.push_back(point);
-  }  // while
+  } // while
 
   // Check that we have a current state
-  if (current_state_.actual.positions.empty())
-  {
-    ROS_ERROR_STREAM_NAMED("csv_to_controller", "Unable to find current state msg");
+  if (current_state_.actual.positions.empty()) {
+    ROS_ERROR_STREAM_NAMED("csv_to_controller",
+                           "Unable to find current state msg");
     return;
   }
   // Add current state to start of trajectory
@@ -172,13 +170,12 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
 
   // Interpolate from first point
   bool done = false;
-  double max_velocity = 0.1;                  // m/s  or radians/s
-  double frequency = 200;                     // hz
-  double q_delta = max_velocity / frequency;  // m
+  double max_velocity = 0.1;                 // m/s  or radians/s
+  double frequency = 200;                    // hz
+  double q_delta = max_velocity / frequency; // m
   double t_delta = 1 / frequency;
   ros::Duration time_from_start(1);
-  while (!done)
-  {
+  while (!done) {
     done = true;
     trajectory_msgs::JointTrajectoryPoint new_point = last_point;
 
@@ -187,19 +184,18 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
     new_point.time_from_start = time_from_start;
 
     // Position change
-    for (std::size_t i = 0; i < num_joints; ++i)  // each joint
+    for (std::size_t i = 0; i < num_joints; ++i) // each joint
     {
       // Do we need to move this joint foward?
-      if (new_point.positions[i] < goal.trajectory.points.front().positions[i])
-      {
+      if (new_point.positions[i] <
+          goal.trajectory.points.front().positions[i]) {
         // Do not allow to go past goal point
         new_point.positions[i] =
-            std::min(new_point.positions[i] + q_delta, goal.trajectory.points.front().positions[i]);
+            std::min(new_point.positions[i] + q_delta,
+                     goal.trajectory.points.front().positions[i]);
         new_point.velocities[i] = max_velocity;
         done = false;
-      }
-      else
-      {
+      } else {
         // Maintain velocity
         new_point.velocities[i] = 0;
       }
@@ -218,8 +214,7 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
   joint_trajectory_action_.sendGoal(pre_goal);
   ros::Duration(time_from_start).sleep();
 
-  for (std::size_t i = 0; i < goal.trajectory.points.size(); ++i)
-  {
+  for (std::size_t i = 0; i < goal.trajectory.points.size(); ++i) {
     printPoint(goal.trajectory.points[i]);
   }
 
@@ -229,4 +224,4 @@ void CSVToController::loadAndRunCSV(const std::string& file_name)
   joint_trajectory_action_.sendGoal(goal);
 }
 
-}  // namespace ros_control_boilerplate
+} // namespace ros_control_boilerplate
