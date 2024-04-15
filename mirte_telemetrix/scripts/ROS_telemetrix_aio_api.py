@@ -751,7 +751,15 @@ class Oled(_SSD1306):
     def show_default(self, event=None):
         if not self.default_image:
             return
-        asyncio.run(self.show_default_async())
+        try:
+            # the ros service is started on a different thread than the asyncio loop
+            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
+            future = asyncio.run_coroutine_threadsafe(
+                self.show_default_async(), self.loop
+            )
+            future.result()  # wait for it to be done
+        except Exception as e:
+            print(e)
 
     async def show_default_async(self):
         text = ""
