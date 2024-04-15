@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mirte_ros_package
-  CATKIN_DEPENDS rospy std_msgs mirte_msgs message_runtime
+  CATKIN_DEPENDS rospy std_msgs mirte_msgs message_runtime geometry_msgs
 #  DEPENDS system_lib
 )
 
