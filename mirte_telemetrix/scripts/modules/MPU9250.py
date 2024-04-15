@@ -1,6 +1,6 @@
 import rospy
 from sensor_msgs.msg import Imu
-from geometry_msgs.msg import Vector3,Quaternion 
+from geometry_msgs.msg import Vector3, Quaternion
 from mirte_msgs.srv import GetIMU, GetIMUResponse
 import math
 
@@ -28,9 +28,7 @@ class MPU9250:
             pins = self.module["pins"]
         pin_numbers = {}
         for item in pins:
-            pin_numbers[item] = self.board_mapping.pin_name_to_pin_number(
-                pins[item]
-            )
+            pin_numbers[item] = self.board_mapping.pin_name_to_pin_number(pins[item])
         self.i2c_port = self.board_mapping.get_I2C_port(pin_numbers["sda"])
         try:
             await self.board.set_pin_mode_i2c(
@@ -60,15 +58,24 @@ class MPU9250:
         self.pub()
 
     def pub(self):
-        lin_acc = Vector3(x=self.acceleration[0]*9.81, y=self.acceleration[1]*9.81, z=self.acceleration[2]*9.81)
-        ang_vel = Vector3(x=self.gyroscope[0]* math.pi / 180.0, y=self.gyroscope[1]* math.pi / 180.0, z=self.gyroscope[2]* math.pi / 180.0)
-        orie = Quaternion(x=self.magnetometer[0], y=self.magnetometer[1], z=self.magnetometer[2])
-        # lin_acc.x = 
+        lin_acc = Vector3(
+            x=self.acceleration[0] * 9.81,
+            y=self.acceleration[1] * 9.81,
+            z=self.acceleration[2] * 9.81,
+        )
+        ang_vel = Vector3(
+            x=self.gyroscope[0] * math.pi / 180.0,
+            y=self.gyroscope[1] * math.pi / 180.0,
+            z=self.gyroscope[2] * math.pi / 180.0,
+        )
+        orie = Quaternion(
+            x=self.magnetometer[0], y=self.magnetometer[1], z=self.magnetometer[2]
+        )
+        # lin_acc.x =
         self.last_message = Imu(
-            linear_acceleration= lin_acc
-              ,  # converted from g to m/s^2
+            linear_acceleration=lin_acc,  # converted from g to m/s^2
             angular_velocity=ang_vel,  # converted from degrees/s to rad/s
-            orientation=orie, # unknown if we need to convert this
+            orientation=orie,  # unknown if we need to convert this
             # TODO: what should these values be?
             # currently set to -1 to indicate unknown
             orientation_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
