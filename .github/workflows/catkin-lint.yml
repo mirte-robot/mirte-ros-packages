@@ -33,7 +33,10 @@ jobs:
           failure=false
           # Run all tests before failing to test all packages
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_bringup || failure=true
-          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_control || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_base_control || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg ros_control_boilerplate || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_moveit_config || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_description || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_msgs || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_telemetrix || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_teleop || failure=true
