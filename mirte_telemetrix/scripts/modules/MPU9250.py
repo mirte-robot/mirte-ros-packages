@@ -1,5 +1,6 @@
 import rospy
 from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Vector3,Quaternion 
 from mirte_msgs.srv import GetIMU, GetIMUResponse
 import math
 
@@ -39,11 +40,10 @@ class MPU9250:
             )
         except Exception as e:
             pass
-
         self.imu_publisher = rospy.Publisher(
             f"/mirte/{self.name}/imu", Imu, queue_size=1
         )
-        self.i2c_port = 1
+        # self.i2c_port = 0
         # TODO: no support yet for other addresses than 0x68
         await self.board.sensors.add_mpu9250(self.i2c_port, self.callback)
 
@@ -54,21 +54,21 @@ class MPU9250:
         )
 
     async def callback(self, acc, gyro, mag):
-        print("data imu!")
         self.acceleration = acc
         self.gyroscope = gyro
         self.magnetometer = mag
         self.pub()
 
     def pub(self):
+        lin_acc = Vector3(x=self.acceleration[0]*9.81, y=self.acceleration[1]*9.81, z=self.acceleration[2]*9.81)
+        ang_vel = Vector3(x=self.gyroscope[0]* math.pi / 180.0, y=self.gyroscope[1]* math.pi / 180.0, z=self.gyroscope[2]* math.pi / 180.0)
+        orie = Quaternion(x=self.magnetometer[0], y=self.magnetometer[1], z=self.magnetometer[2])
+        # lin_acc.x = 
         self.last_message = Imu(
-            linear_acceleration=[
-                a * 9.81 for a in self.acceleration
-            ],  # convert from g to m/s^2
-            angular_velocity=[
-                g * math.pi / 180.0 for g in self.gyroscope
-            ],  # convert from degrees/s to rad/s
-            orientation=self.magnetometer,  # unknown if we need to convert this
+            linear_acceleration= lin_acc
+              ,  # converted from g to m/s^2
+            angular_velocity=ang_vel,  # converted from degrees/s to rad/s
+            orientation=orie, # unknown if we need to convert this
             # TODO: what should these values be?
             # currently set to -1 to indicate unknown
             orientation_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],

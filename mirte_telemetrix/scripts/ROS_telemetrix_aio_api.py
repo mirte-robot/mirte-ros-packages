@@ -767,7 +767,7 @@ class Oled(_SSD1306):
             ips = subprocess.getoutput("hostname -I").split(" ")
             text += "IPs: " + ", ".join(ips)
         if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
-            text += "\nHostname:" + subprocess.getoutput("hostname")
+            text += "\nHn:" + subprocess.getoutput("hostname")
         if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
             wifi = subprocess.getoutput("iwgetid -r").strip()
             if len(wifi) > 0:
