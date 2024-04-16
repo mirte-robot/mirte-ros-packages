@@ -747,6 +747,7 @@ class Oled(_SSD1306):
                 return
         self.default_image = True
         rospy.Timer(rospy.Duration(10), self.show_default)
+        await self.show_default_async()
 
     def show_default(self, event=None):
         if not self.default_image:
@@ -765,7 +766,7 @@ class Oled(_SSD1306):
         text = ""
         if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
             ips = subprocess.getoutput("hostname -I").split(" ")
-            text += "IPs: " + ", ".join(ips)
+            text += "IPs: " + ", ".join(filter(None, ips))
         if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
             text += "\nHn:" + subprocess.getoutput("hostname")
         if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
@@ -1258,7 +1259,6 @@ class PCA_Motor(Motor):
         await self.pca_update_func(self.pin_B, 0)
 
     async def set_speed(self, speed):
-        # print(self.name, speed)
         if self.inverted:
             speed = -speed
         if self.prev_motor_speed != speed:
@@ -1641,7 +1641,7 @@ class INA226:
             if hasattr(self, "trigger_shutdown_relay"):
                 await self.trigger_shutdown_relay()
             self.shutdown_triggered = True
-            subprocess.run("sleep 10; sudo shutdown now")
+            subprocess.run("sleep 10; sudo shutdown now", shell=True)
 
     def shutdown_service(self, req):
         # also called from systemd shutdown service
@@ -1850,7 +1850,7 @@ if __name__ == "__main__":
     # Initialize the telemetrix board
     if board_mapping.get_mcu() == "pico":
         board = tmx_pico_aio.TmxPicoAio(
-            allow_i2c_errors=True, loop=loop, autostart=False
+            allow_i2c_errors=True, loop=loop, autostart=False, hard_shutdown=True
         )
         loop.run_until_complete(board.start_aio())
     else:
