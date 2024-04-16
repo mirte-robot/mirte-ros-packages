@@ -59,7 +59,7 @@ def move_arm(rot, updown):
 def talker():
     global set_rot, set_sh, set_el, set_gr
     rospy.init_node('arm_control', anonymous=True)
-    rospy.Subscriber("/joy", Joy, callback_joy)
+    rospy.Subscriber("/joy", Joy, callback_joy, queue_size=1)
     rospy.Subscriber("/mirte/servos/servoRot/position", ServoPosition, cb_rot)
     rospy.Subscriber("/mirte/servos/servoShoulder/position", ServoPosition, cb_sh)
     rospy.Subscriber("/mirte/servos/servoElbow/position", ServoPosition, cb_el)
