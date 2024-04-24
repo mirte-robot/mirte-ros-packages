@@ -20,7 +20,10 @@
 
    <group ns="arm">
 
-
+     <rosparam command="load" file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml"/>  
+     <node name="mirte_arm_node" output="screen"
+          pkg="ros_control_boilerplate"
+          type="rrbot_hw_main"/>
 
      <node name="controller_spawner_arm"
           pkg="controller_manager"
@@ -69,6 +72,5 @@
     <param name="default_transport" value="theora"/>
     <param name="port" value="8181"/>
   </node>
-
 
 </launch>
