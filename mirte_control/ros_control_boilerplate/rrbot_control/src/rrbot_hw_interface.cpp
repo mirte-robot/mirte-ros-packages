@@ -46,6 +46,8 @@
 namespace rrbot_control {
 
 double data[4] = {0.0, 0.0, 0.0, 0.0};
+bool servo_init[4] = {false, false, false, false};
+bool initialized = false;
 
 ros::Subscriber sub0;
 ros::Subscriber sub1;
@@ -64,18 +66,22 @@ mirte_msgs::SetServoAngle srv3;
 
 void callbackJoint0(const mirte_msgs::ServoPosition::ConstPtr &msg) {
   data[0] = msg->angle;
+  servo_init[0] = true;
 }
 
 void callbackJoint1(const mirte_msgs::ServoPosition::ConstPtr &msg) {
   data[1] = msg->angle;
+  servo_init[1] = true;
 }
 
 void callbackJoint2(const mirte_msgs::ServoPosition::ConstPtr &msg) {
   data[2] = msg->angle;
+  servo_init[2] = true;
 }
 
 void callbackJoint3(const mirte_msgs::ServoPosition::ConstPtr &msg) {
   data[3] = msg->angle;
+  servo_init[3] = true;
 }
 
 RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
@@ -104,6 +110,7 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
                       rrbot_control::callbackJoint3);
 
   ROS_INFO_NAMED("rrbot_hw_interface", "RRBotHWInterface Ready.");
+
 }
 
 void RRBotHWInterface::read(ros::Duration &elapsed_time) {
@@ -116,29 +123,74 @@ void RRBotHWInterface::read(ros::Duration &elapsed_time) {
   }
 }
 
+bool closeTo(double a, double b){
+   return std::abs(a-b) < 0.01;
+}
+
+
 void RRBotHWInterface::write(ros::Duration &elapsed_time) {
   // Safety
   enforceLimits(elapsed_time);
 
-  srv0.request.angle = (float)(joint_position_command_[0]);
-  if (!client0.call(srv0)) {
-    //     ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
+  if (initialized){
+//    std::cout << "setting angle to: "  << (float)(joint_position_command_[3]) << std::endl;
+    srv0.request.angle = (float)(joint_position_command_[0]);
+    srv1.request.angle = (float)(joint_position_command_[1]);
+    srv2.request.angle = (float)(joint_position_command_[2]);
+    srv3.request.angle = (float)(joint_position_command_[3]);
+
+  } else {
+    if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]){
+      srv0.request.angle = data[0];
+      srv1.request.angle = data[1];
+      srv2.request.angle = data[2];
+      srv3.request.angle = data[3];
+
+
+      std::cout << "data0: "  <<  data[0] << "     "  << joint_position_command_[0] << std::endl;
+      std::cout << "data1: "  <<  data[1] << "     "  << joint_position_command_[1] << std::endl;
+      std::cout << "data2: "  <<  data[2] << "     "  << joint_position_command_[2] << std::endl;
+      std::cout << "data3: "  <<  data[3] << "     "  << joint_position_command_[3] << std::endl;
+
+
+      if (closeTo(data[0], joint_position_command_[0]) &&
+        closeTo(data[1], joint_position_command_[1]) &&
+        closeTo(data[2], joint_position_command_[2]) &&
+        closeTo(data[3], joint_position_command_[3])){
+          initialized = true;
+          ROS_INFO_NAMED("rrbot_hw_interface", "Initialized arm");
+      }
+    }
   }
 
-  srv1.request.angle = (float)(joint_position_command_[1]);
-  if (!client1.call(srv1)) {
-    //     ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
+  if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]){
+
+    if (!client0.call(srv0)) {
+      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
+    }
+
+    if (!client1.call(srv1)) {
+      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
+    }
+
+    if (!client2.call(srv2)) {
+      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 2 error");
+    }
+
+    if (!client3.call(srv3)) {
+      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 3 error");
+    }
+
+
   }
 
-  srv2.request.angle = (float)(joint_position_command_[2]);
-  if (!client2.call(srv2)) {
-    //     ROS_INFO_NAMED("rrbot_hw_interface", "Motor 2 error");
-  }
 
-  srv3.request.angle = (float)(joint_position_command_[3]);
-  if (!client3.call(srv3)) {
-    //     ROS_INFO_NAMED("rrbot_hw_interface", "Motor 3 error");
-  }
+
+
+
+
+  //std::cout << data[0] << "    "  << data[1] << "     " << data[2] << "    " << data[3] << std::endl;
+
 }
 
 void RRBotHWInterface::enforceLimits(ros::Duration &period) {
