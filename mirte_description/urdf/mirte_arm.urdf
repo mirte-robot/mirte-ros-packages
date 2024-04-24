@@ -157,7 +157,7 @@
         <parent link="link1" />
         <child link="link2" />
         <axis xyz="0 1 0" />
-        <limit effort="30" velocity="1.0" lower="-1.57" upper="0.0" />
+        <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
     </joint>
     <joint name="arm2" type="revolute">
         <origin rpy="0 0 0" xyz="0 0 0.102" />
