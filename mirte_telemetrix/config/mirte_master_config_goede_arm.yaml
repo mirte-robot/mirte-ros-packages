@@ -12,8 +12,8 @@ modules:
     frequency: 1500
     motors:
       left_rear:
-        pin_A: 0
-        pin_B: 1
+        pin_A: 6 #0
+        pin_B: 7 #1
       left_front:
         pin_A: 2
         pin_B: 3
@@ -21,8 +21,8 @@ modules:
         pin_A: 5
         pin_B: 4
       right_front:
-        pin_A: 7
-        pin_B: 6
+        pin_A: 1
+        pin_B: 0
   servo_controller:
     device: mirte
     type: Hiwonder_Servo
@@ -39,20 +39,26 @@ modules:
       servoShoulder:
         id: 3
         home_out: 11450
-        min_angle_out: 11450
+        min_angle_out: 2832
         max_angle_out: 20000
         invert: true
       servoElbow:
         id: 4
         home_out: 11750
-        min_angle_out: 3000
+        min_angle_out: 120
         max_angle_out: 21000
         invert: false
       servoWrist:
         id: 5
         home_out: 12200
-        min_angle_out: 3000
+        min_angle_out: 1128
         max_angle_out: 21000
+        invert: true
+      servoGripper:
+        id: 6
+        home_out: 10524
+        min_angle_out: 6168
+        max_angle_out: 11224
         invert: true
   power_watcher:
     device: mirte
@@ -66,36 +72,77 @@ modules:
     turn_off_value: True
     turn_off_time: 10
     power_low_time: 20
+    switch_pin: GP28
+    switch_off_value: True
+    switch_pull: 1 # -1 for pulldown, 1 for pullup, 0 for none
+    switch_time: 5
+    percentage_led_chip: gpiochip4
+    percentage_led_line: 12 # B4, left-most led on usb switcher pcb
+
   movement:
     type: MPU9250
     connector: I2C1
     device: mirte
     id: 0x68
-# encoder:
-#   left_front:
-#     name: left_front
-#     device: mirte
-#     pins:
-#       A: 21
-#       B: 20
-#   left_rear:
-#     name: left_rear
-#     device: mirte
-#     pins:
-#       A: 17
-#       B: 16
-#   right_front:
-#     name: right_front
-#     device: mirte
-#     pins:
-#       A: 18
-#       B: 19
-#   right_rear:
-#     name: right_rear
-#     device: mirte
-#     pins:
-#       A: 15
-#       B: 14
+oled:
+  middle:
+    name: middle
+    device: mirte
+    connector: I2C1
+    show_ip: true
+    show_hostname: true
+    show_wifi: true
+    show_soc: true
+encoder:
+  left_front:
+    name: left_front
+    device: mirte
+    pins:
+      A: 15 #21
+      B: 14 #20
+  left_rear:
+    name: left_rear
+    device: mirte
+    pins:
+      A: 17
+      B: 16
+  right_front:
+    name: right_front
+    device: mirte
+    pins:
+      A: 19
+      B: 18
+  right_rear:
+    name: right_rear
+    device: mirte
+    pins:
+      A: 20
+      B: 21
+distance:
+  left_front:
+    name: left_front
+    device: mirte
+    pins:
+      trigger: 6
+      echo: 7
+  left_rear:
+    name: left_rear
+    device: mirte
+    pins:
+      trigger: 8
+      echo: 9
+  right_front:
+    name: right_front
+    device: mirte
+    pins:
+      trigger: 10
+      echo: 11
+  right_rear:
+    name: right_rear
+    device: mirte
+    pins:
+      trigger: 12
+      echo: 13
 # neopixel:
 #   name: leds
 #   pins:
