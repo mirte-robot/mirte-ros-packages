@@ -39,20 +39,26 @@ modules:
       servoShoulder:
         id: 3
         home_out: 11450
-        min_angle_out: 11450
+        min_angle_out: 2832
         max_angle_out: 20000
         invert: true
       servoElbow:
         id: 4
         home_out: 11750
-        min_angle_out: 3000
+        min_angle_out: 120
         max_angle_out: 21000
         invert: false
       servoWrist:
         id: 5
         home_out: 12200
-        min_angle_out: 3000
+        min_angle_out: 1128
         max_angle_out: 21000
+        invert: true
+      servoGripper:
+        id: 6
+        home_out: 10524
+        min_angle_out: 6168
+        max_angle_out: 11224
         invert: true
   power_watcher:
     device: mirte
@@ -66,6 +72,11 @@ modules:
     turn_off_value: True
     turn_off_time: 10
     power_low_time: 20
+    switch_pull: 1 # -1 for pulldown, 1 for pullup, 0 for none
+    switch_time: 5
+    percentage_led_chip: gpiochip4
+    percentage_led_line: 12 # B4, left-most led on usb switcher pcb
+
   movement:
     type: MPU9250
     connector: I2C1
