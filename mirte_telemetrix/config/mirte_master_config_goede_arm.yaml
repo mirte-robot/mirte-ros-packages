@@ -41,7 +41,7 @@ modules:
         home_out: 11450
         min_angle_out: 2832
         max_angle_out: 20000
-        invert: true
+        invert: false
       servoElbow:
         id: 4
         home_out: 11750
@@ -53,7 +53,7 @@ modules:
         home_out: 12200
         min_angle_out: 1128
         max_angle_out: 21000
-        invert: true
+        invert: false
       servoGripper:
         id: 6
         home_out: 10524
