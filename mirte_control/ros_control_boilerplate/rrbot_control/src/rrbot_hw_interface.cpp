@@ -48,6 +48,7 @@ namespace rrbot_control {
 double data[4] = {0.0, 0.0, 0.0, 0.0};
 bool servo_init[4] = {false, false, false, false};
 bool initialized = false;
+int init_steps = 0;
 
 ros::Subscriber sub0;
 ros::Subscriber sub1;
@@ -145,18 +146,25 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
       srv1.request.angle = data[1];
       srv2.request.angle = data[2];
       srv3.request.angle = data[3];
-
+      ++init_steps;
 
       std::cout << "data0: "  <<  data[0] << "     "  << joint_position_command_[0] << std::endl;
       std::cout << "data1: "  <<  data[1] << "     "  << joint_position_command_[1] << std::endl;
       std::cout << "data2: "  <<  data[2] << "     "  << joint_position_command_[2] << std::endl;
       std::cout << "data3: "  <<  data[3] << "     "  << joint_position_command_[3] << std::endl;
 
+      joint_position_command_[0] = data[0];
+      joint_position_command_[1] = data[1];
+      joint_position_command_[2] = data[2];
+      joint_position_command_[3] = data[3];
 
-      if (closeTo(data[0], joint_position_command_[0]) &&
-        closeTo(data[1], joint_position_command_[1]) &&
-        closeTo(data[2], joint_position_command_[2]) &&
-        closeTo(data[3], joint_position_command_[3])){
+      if (init_steps == 20){
+
+
+//      if (closeTo(data[0], joint_position_command_[0]) &&
+//        closeTo(data[1], joint_position_command_[1]) &&
+//        closeTo(data[2], joint_position_command_[2]) &&
+//        closeTo(data[3], joint_position_command_[3])){
           initialized = true;
           ROS_INFO_NAMED("rrbot_hw_interface", "Initialized arm");
       }
@@ -169,9 +177,9 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
     }
 
-    if (!client1.call(srv1)) {
-      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
-    }
+//    if (!client1.call(srv1)) {
+//      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
+//    }
 
     if (!client2.call(srv2)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 2 error");
