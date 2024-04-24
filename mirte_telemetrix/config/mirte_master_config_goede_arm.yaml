@@ -82,6 +82,15 @@ modules:
     connector: I2C1
     device: mirte
     id: 0x68
+oled:
+  middle:
+    name: middle
+    device: mirte
+    connector: I2C1
+    show_ip: true
+    show_hostname: true
+    show_wifi: true
+    show_soc: true
 # encoder:
 #   left_front:
 #     name: left_front
