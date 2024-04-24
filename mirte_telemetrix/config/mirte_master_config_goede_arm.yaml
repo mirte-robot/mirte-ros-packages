@@ -96,8 +96,8 @@ encoder:
     name: left_front
     device: mirte
     pins:
-      A: 21
-      B: 20
+      A: 15 #21
+      B: 14 #20
   left_rear:
     name: left_rear
     device: mirte
@@ -108,14 +108,39 @@ encoder:
     name: right_front
     device: mirte
     pins:
-      A: 18
-      B: 19
+      A: 19
+      B: 18
   right_rear:
     name: right_rear
     device: mirte
     pins:
-      A: 15
-      B: 14
+      A: 20
+      B: 21
+distance:
+  left_front:
+    name: left_front
+    device: mirte
+    pins:
+      trigger: 6
+      echo: 7
+  left_rear:
+    name: left_rear
+    device: mirte
+    pins:
+      trigger: 8
+      echo: 9
+  right_front:
+    name: right_front
+    device: mirte
+    pins:
+      trigger: 10
+      echo: 11
+  right_rear:
+    name: right_rear
+    device: mirte
+    pins:
+      trigger: 12
+      echo: 13
 # neopixel:
 #   name: leds
 #   pins:
