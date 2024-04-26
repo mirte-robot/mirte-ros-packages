@@ -1442,7 +1442,7 @@ class INA226:
             await self.setup_percentage_led()
 
     async def setup_percentage_led(self):
-        if "percentage_led_chip" in self.module:
+        if not "percentage_led_chip" in self.module:
             return
         if not "percentage_led_line" in self.module:
             return
