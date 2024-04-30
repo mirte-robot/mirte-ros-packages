@@ -1645,13 +1645,19 @@ class INA226:
                 f"bash -c \"wall 'Shutting down.'\"",
                 shell=True,
             )
-            for oled_name in ["right", "middle", "left"]: # TODO: use the oled obj directly without hard-coded names
+            for oled_name in [
+                "right",
+                "middle",
+                "left",
+            ]:  # TODO: use the oled obj directly without hard-coded names
                 try:
-                    set_image = rospy.ServiceProxy(f'/mirte/set_{oled_name}_image', SetOLEDImage)
+                    set_image = rospy.ServiceProxy(
+                        f"/mirte/set_{oled_name}_image", SetOLEDImage
+                    )
                     set_image("text", "Shutting down")
-                    
+
                 except rospy.ServiceException as e:
-                    print("Service call failed: %s"%e)
+                    print("Service call failed: %s" % e)
                 except Exception as e:
                     print("shutdown image err", e)
             rospy.logerr("Triggering shutdown, shutting down in 10s")
