@@ -262,37 +262,56 @@ class KeypadMonitor(SensorMonitor):
 
 class DistanceSensorMonitor(SensorMonitor):
     def __init__(self, board, sensor):
-        pub = rospy.Publisher(
+        self.pub = rospy.Publisher(
             "/mirte/distance/" + sensor["name"], Range, queue_size=1, latch=True
         )
         srv = rospy.Service(
             "/mirte/get_distance_" + sensor["name"], GetDistance, self.get_data
         )
-        super().__init__(board, sensor, pub)
+        super().__init__(board, sensor, self.pub)
         self.last_publish_value = Range()
 
     def get_data(self, req):
         return GetDistanceResponse(self.last_publish_value.range)
 
     async def start(self):
-        #   await self.board.set_scan_delay(100)
+        self.range = Range()
+        self.range.radiation_type = self.range.ULTRASOUND
+        self.range.field_of_view = math.pi * 5
+        self.range.min_range = 0.02
+        self.range.max_range = 1.5
+        self.range.header = self.get_header()
+        self.range.range = -1   
         await self.board.set_pin_mode_sonar(
-            self.pins["trigger"], self.pins["echo"], self.publish_data
+            self.pins["trigger"], self.pins["echo"], self.receive_data
         )
+        rospy.Timer(rospy.Duration(0.1), self.publish_data)
 
-    async def publish_data(self, data):
+
+
+    async def receive_data(self, data):
+        self.range = Range()
+        self.range.radiation_type = self.range.ULTRASOUND
+        self.range.field_of_view = math.pi * 5
+        self.range.min_range = 0.02
+        self.range.max_range = 1.5
+        self.range.header = self.get_header()
+        self.range.range = data[2]
+
+    def publish_data(self, event=None):
+        
         # Although the initialization of this Range message
         # including some of the values could be placed in the
         # constructor for efficiency reasons. This does
         # for some reason not work though.
-        range = Range()
-        range.radiation_type = range.ULTRASOUND
-        range.field_of_view = math.pi * 5
-        range.min_range = 0.02
-        range.max_range = 1.5
-        range.header = self.get_header()
-        range.range = data[2]
-        await self.publish(range)
+        try:
+            self.range.header = self.get_header()
+            self.pub.publish(self.range)
+        except Exception as e:
+            print("err", e)
+        
+
+
 
 
 class DigitalIntensitySensorMonitor(SensorMonitor):
@@ -753,12 +772,14 @@ class Oled(_SSD1306):
         if not self.default_image:
             return
         try:
+            print("show default_start")
             # the ros service is started on a different thread than the asyncio loop
             # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
             future = asyncio.run_coroutine_threadsafe(
                 self.show_default_async(), self.loop
             )
             future.result()  # wait for it to be done
+            print("show default_done")
         except Exception as e:
             print(e)
 
