@@ -65,7 +65,7 @@ modules:
     type: INA226
     connector: I2C1
     id: 0x40 # default 0x40
-    min_voltage: 10.5
+    min_voltage: 11.1 # around 10-15% battery
     max_current: 5
     max_voltage: 15
     turn_off_pin: 27
