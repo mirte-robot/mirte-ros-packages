@@ -72,18 +72,18 @@ modules:
     turn_off_value: True
     turn_off_time: 10
     power_low_time: 20
-    switch_pin: GP28
-    switch_off_value: True
-    switch_pull: 1 # -1 for pulldown, 1 for pullup, 0 for none
-    switch_time: 5
+    # switch_pin: GP28
+    # switch_off_value: True
+    # switch_pull: 1 # -1 for pulldown, 1 for pullup, 0 for none
+    # switch_time: 5
     percentage_led_chip: gpiochip4
     percentage_led_line: 12 # B4, left-most led on usb switcher pcb
 
-  movement:
-    type: MPU9250
-    connector: I2C1
-    device: mirte
-    id: 0x68
+  # movement:
+  #   type: MPU9250
+  #   connector: I2C1
+  #   device: mirte
+  #   id: 0x68
 oled:
   middle:
     name: middle
