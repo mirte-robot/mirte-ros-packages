@@ -111,12 +111,11 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
                       rrbot_control::callbackJoint3);
 
   ROS_INFO_NAMED("rrbot_hw_interface", "RRBotHWInterface Ready.");
-
 }
 
 void RRBotHWInterface::read(ros::Duration &elapsed_time) {
   for (std::size_t joint_id = 0; joint_id < num_joints_; ++joint_id) {
-      joint_position_[joint_id] = data[joint_id];
+    joint_position_[joint_id] = data[joint_id];
   }
 }
 
@@ -124,13 +123,13 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
   // Safety
   enforceLimits(elapsed_time);
 
-  if (initialized){
+  if (initialized) {
     srv0.request.angle = (float)(joint_position_command_[0]);
     srv1.request.angle = (float)(joint_position_command_[1]);
     srv2.request.angle = (float)(joint_position_command_[2]);
     srv3.request.angle = (float)(joint_position_command_[3]);
   } else {
-    if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]){
+    if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]) {
       // TOOD: why do we get a segfault when we
       // set joint_positino_command_ in the contructor?
       srv0.request.angle = data[0];
@@ -144,14 +143,14 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
       joint_position_command_[2] = data[2];
       joint_position_command_[3] = data[3];
 
-      if (init_steps == 50){
+      if (init_steps == 50) {
         initialized = true;
         ROS_INFO_NAMED("rrbot_hw_interface", "Initialized arm");
       }
     }
   }
 
-  if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]){
+  if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]) {
 
     if (!client0.call(srv0)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
@@ -168,8 +167,6 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
     if (!client3.call(srv3)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 3 error");
     }
-
-
   }
 }
 
