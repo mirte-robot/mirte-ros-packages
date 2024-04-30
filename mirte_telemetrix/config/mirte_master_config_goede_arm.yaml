@@ -68,8 +68,8 @@ modules:
     min_voltage: 11.1 # around 10-15% battery
     max_current: 5
     max_voltage: 15
-    turn_off_pin: 27
-    turn_off_value: True
+    # turn_off_pin: 27
+    # turn_off_value: True
     turn_off_time: 10
     power_low_time: 20
     # switch_pin: GP28
