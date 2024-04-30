@@ -1654,7 +1654,7 @@ class INA226:
             #         set_image = rospy.ServiceProxy(
             #             f"/mirte/set_{oled_name}_image", SetOLEDImage
             #         )
-                    # TODO: does not work, as it is async, calling async....
+            # TODO: does not work, as it is async, calling async....
             #         set_image("text", "Shutting down")
 
             #     except rospy.ServiceException as e:
