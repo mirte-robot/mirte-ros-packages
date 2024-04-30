@@ -1645,14 +1645,15 @@ class INA226:
                 f"bash -c \"wall 'Shutting down.'\"",
                 shell=True,
             )
-            try:
-                set_image = rospy.ServiceProxy('/mirte/set_middle_image', SetOLEDImage)
-                set_image("text", "Shutting down")
-                
-            except rospy.ServiceException as e:
-                print("Service call failed: %s"%e)
-            except Exception as e:
-                print("shutdown image err", e)
+            for oled_name in ["right", "middle", "left"]: # TODO: use the oled obj directly without hard-coded names
+                try:
+                    set_image = rospy.ServiceProxy(f'/mirte/set_{oled_name}_image', SetOLEDImage)
+                    set_image("text", "Shutting down")
+                    
+                except rospy.ServiceException as e:
+                    print("Service call failed: %s"%e)
+                except Exception as e:
+                    print("shutdown image err", e)
             rospy.logerr("Triggering shutdown, shutting down in 10s")
             # This will make the pico unresponsive after the delay, so ping errors are expected. Need to restart telemetrix to continue.
             if hasattr(self, "trigger_shutdown_relay"):
