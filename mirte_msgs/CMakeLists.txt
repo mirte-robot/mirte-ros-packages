@@ -81,6 +81,7 @@ add_service_files(
   Move.srv
   Turn.srv
   GetIMU.srv
+  GetRange.srv
 )
 
 ## Generate actions in the 'action' folder

@@ -58,7 +58,7 @@ modules:
         id: 6
         home_out: 10524
         min_angle_out: 6168
-        max_angle_out: 11224
+        max_angle_out: 14224
         invert: true
   power_watcher:
     device: mirte
