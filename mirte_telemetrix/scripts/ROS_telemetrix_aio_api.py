@@ -1723,15 +1723,19 @@ class Hiwonder_Servo:
             SetBool,
             self.set_servo_enabled_service,
         )
-        rospy.Service(f"/mirte/get_{self.name}_servo_range", GetRange, self.get_servo_range)
+        rospy.Service(
+            f"/mirte/get_{self.name}_servo_range", GetRange, self.get_servo_range
+        )
         self.publisher = rospy.Publisher(
             f"/mirte/servos/{self.name}/position",
             ServoPosition,
             queue_size=1,
             latch=True,
         )
+
     def get_servo_range(self, req):
         return GetRangeResponse(self.min_angle_in, self.max_angle_in)
+
     def set_servo_enabled_service(self, req):
         asyncio.run(self.bus.set_enabled(self.id, req.data))
         return SetBoolResponse(True, "enabled" if req.data else "disabled")
