@@ -278,7 +278,7 @@ class DistanceSensorMonitor(SensorMonitor):
         self.range = Range()
         self.range.radiation_type = self.range.ULTRASOUND
         self.range.field_of_view = math.pi * 5
-        self.range.min_range = 0.02
+        self.range.min_range = 2
         self.range.max_range = 1.5
         self.range.header = self.get_header()
         self.range.range = -1
@@ -295,7 +295,7 @@ class DistanceSensorMonitor(SensorMonitor):
         self.range.min_range = 0.02
         self.range.max_range = 1.5
         self.range.header = self.get_header()
-        self.range.range = data[2]
+        self.range.range = data[2] / 100
 
     def publish_data(self, event=None):
         try:
