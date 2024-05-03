@@ -270,6 +270,7 @@ class DistanceSensorMonitor(SensorMonitor):
         )
         super().__init__(board, sensor, self.pub)
         self.last_publish_value = Range()
+        self.name = sensor["name"]
 
     def get_data(self, req):
         return GetDistanceResponse(self.last_publish_value.range)
@@ -285,7 +286,7 @@ class DistanceSensorMonitor(SensorMonitor):
         await self.board.set_pin_mode_sonar(
             self.pins["trigger"], self.pins["echo"], self.receive_data
         )
-        rospy.Timer(rospy.Duration(0.1), self.publish_data)
+        # rospy.Timer(rospy.Duration(0.1), self.publish_data)
 
     async def receive_data(self, data):
         # Only on data change
@@ -296,6 +297,7 @@ class DistanceSensorMonitor(SensorMonitor):
         self.range.max_range = 1.5
         self.range.header = self.get_header()
         self.range.range = data[2]
+        self.pub.publish(self.range)
 
     def publish_data(self, event=None):
         try:
