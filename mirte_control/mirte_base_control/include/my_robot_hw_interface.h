@@ -93,9 +93,7 @@ public:
   double meter_per_enc_tick() {
     return (this->_wheel_diameter) * M_PI / this->ticks;
   }
-  double rad_per_enc_tick() {
-    return 2.0 * M_PI / this->ticks;
-  }
+  double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -109,8 +107,8 @@ public:
                          // last_wheel_cmd_direction
       distance_rad = diff_ticks * radPerEncoderTick * 1.0;
     } else {
-      distance_rad =
-          diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
+      distance_rad = diff_ticks * radPerEncoderTick *
+                     _last_wheel_cmd_direction[joint] * 1.0;
     }
     pos[joint] += distance_rad;
     vel[joint] = distance_rad / period.toSec(); // WHY: was this turned off?
@@ -173,7 +171,7 @@ private:
     if (msg->value < 0) {
       bidirectional = true;
     }
-    _wheel_encoder[joint] =   msg->value;
+    _wheel_encoder[joint] = msg->value;
   }
 
   // Thread and function to restart service clients when the service server has
@@ -223,13 +221,15 @@ MyRobotHWInterface::MyRobotHWInterface()
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
-  private_nh.param<double>("/mobile_base_controller/wheel_radius", _wheel_diameter, 0.06);
-  _wheel_diameter *=2; // convert from radius to diameter
-  private_nh.param<double>("/mobile_base_controller/max_speed", _max_speed, 2.0); // TODO: unused
+  private_nh.param<double>("/mobile_base_controller/wheel_radius",
+                           _wheel_diameter, 0.06);
+  _wheel_diameter *= 2; // convert from radius to diameter
+  private_nh.param<double>("/mobile_base_controller/max_speed", _max_speed,
+                           2.0); // TODO: unused
   private_nh.param<double>("/mobile_base_controller/ticks", ticks, 40.0);
   this->NUM_JOINTS = detect_joints(private_nh);
-  if(this->NUM_JOINTS > 2) {
-        this->bidirectional = true;
+  if (this->NUM_JOINTS > 2) {
+    this->bidirectional = true;
   }
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
