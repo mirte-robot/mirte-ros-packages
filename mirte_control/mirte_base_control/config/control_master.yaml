@@ -3,7 +3,7 @@ my_robot:
   type: joint_state_controller/JointStateController
   publish_rate: 50
 mobile_base_controller:
-  ticks: 330  # TODO: check 11pps*30reduction
+  ticks: 1320  # TODO: check 11pps*30reduction *4
   type: mecanum_drive_controller/MecanumDriveController
   front_left_wheel_joint: wheel_left_front_joint
   back_left_wheel_joint: wheel_left_rear_joint
@@ -27,9 +27,9 @@ mobile_base_controller:
   cmd_vel_timeout: 0.25
 
   # Override URDF look-up for wheel separation since the parent link is not the base_link.
-  wheel_separation_x: 0.638
-  wheel_separation_y: 0.551
-  wheel_radius: 0.08  # 8cm
+  wheel_separation_x: 0.18
+  wheel_separation_y: 0.27
+  wheel_radius: 0.051  # 8cm
   # Odometry fused with IMU is published by robot_localization, so
   # no need to publish a TF based on encoders alone.
   enable_odom_tf: true
