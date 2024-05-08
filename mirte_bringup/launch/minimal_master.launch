@@ -52,12 +52,12 @@
 
     <!-- Start the lidar -->
     <include file="$(find rplidar_ros)/launch/rplidar_c1.launch"/>
-    <node pkg="tf" type="static_transform_publisher" name="laser_transform" args="0 0 0 0 0 0 map laser 100"/> 
+    <node pkg="tf" type="static_transform_publisher" name="laser_transform" args="0 0 0 0 0 0 base_link laser 100"/> 
 
     <include file="$(find astra_camera)/launch/astra_pro_plus.launch"/>
-    <node pkg="tf" type="static_transform_publisher" name="astra_transform_color" args="0 0 0 0 0 -1.57 map camera_color_optical_frame 100"/>
-    <node pkg="tf" type="static_transform_publisher" name="astra_transform_depth" args="0 0 0 0 0 -1.57 map camera_depth_optical_frame 100"/> 
-    <node pkg="tf" type="static_transform_publisher" name="astra_transform_ir" args="0 0 0 0 0 -1.57 map camera_ir_optical_frame 100"/> 
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_color" args="0 0 0 0 0 -1.57 base_link camera_color_optical_frame 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_depth" args="0 0 0 0 0 -1.57 base_link camera_depth_optical_frame 100"/> 
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_ir" args="0 0 0 0 0 -1.57 base_link camera_ir_optical_frame 100"/> 
 
 <!--
 <include file="$(find mirte_teleop)/launch/teleop_holo_joy.launch"/>
