@@ -1,6 +1,7 @@
 include_directories(
   include/
 )
+set (CMAKE_CXX_STANDARD 17)
 
 # RRBot Hardware Interface
 add_library(rrbot_hw_interface

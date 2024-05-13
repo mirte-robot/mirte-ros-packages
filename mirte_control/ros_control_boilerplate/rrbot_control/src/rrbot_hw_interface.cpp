@@ -42,6 +42,7 @@
 #include <mirte_msgs/ServoPosition.h>
 #include <mirte_msgs/SetServoAngle.h>
 #include <rrbot_control/rrbot_hw_interface.h>
+#include <chrono>
 
 namespace rrbot_control {
 
@@ -87,19 +88,7 @@ void callbackJoint3(const mirte_msgs::ServoPosition::ConstPtr &msg) {
 
 RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
     : ros_control_boilerplate::GenericHWInterface(nh, urdf_model) {
-  ros::service::waitForService("/mirte/set_servoRot_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoShoulder_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoElbow_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoWrist_servo_angle", -1);
-
-  client0 = nh.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoRot_servo_angle", true);
-  client1 = nh.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoShoulder_servo_angle", true);
-  client2 = nh.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoElbow_servo_angle", true);
-  client3 = nh.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoWrist_servo_angle", true);
+  this->connectServices();
 
   sub0 = nh.subscribe("/mirte/servos/servoRot/position", 1,
                       rrbot_control::callbackJoint0);
@@ -113,12 +102,53 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
   ROS_INFO_NAMED("rrbot_hw_interface", "RRBotHWInterface Ready.");
 }
 
+void RRBotHWInterface::connectServices() {
+  ROS_INFO_NAMED("rrbot_hw_interface", "Connecting to the services...");
+  
+  ros::service::waitForService("/mirte/set_servoRot_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoShoulder_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoElbow_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoWrist_servo_angle", -1);
+  { // Only mutex when actually writing to class vars.
+    const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
+  client0 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+      "/mirte/set_servoRot_servo_angle", true);
+  client1 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+      "/mirte/set_servoShoulder_servo_angle", true);
+  client2 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+      "/mirte/set_servoElbow_servo_angle", true);
+  client3 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+      "/mirte/set_servoWrist_servo_angle", true);
+  }
+      ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
+}
+
 void RRBotHWInterface::read(ros::Duration &elapsed_time) {
   for (std::size_t joint_id = 0; joint_id < num_joints_; ++joint_id) {
     joint_position_[joint_id] = data[joint_id];
   }
 }
+void RRBotHWInterface ::start_reconnect() {
+  using namespace std::chrono_literals;
 
+  if (this->reconnect_thread.valid()) { // does it already exist or not?
+
+    // Use wait_for() with zero milliseconds to check thread status.
+    auto status = this->reconnect_thread.wait_for(0ms);
+
+    if (status !=
+        std::future_status::ready) { // Still running -> already reconnecting
+      return;
+    }
+  }
+
+  /* Run the reconnection on a different thread to not pause the ros-control
+    loop. The launch policy std::launch::async makes sure that the task is run
+    asynchronously on a new thread. */
+
+  this->reconnect_thread =
+      std::async(std::launch::async, [this] { this->connectServices(); });
+}
 void RRBotHWInterface::write(ros::Duration &elapsed_time) {
   // Safety
   enforceLimits(elapsed_time);
@@ -151,21 +181,29 @@ void RRBotHWInterface::write(ros::Duration &elapsed_time) {
   }
 
   if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]) {
-
+    const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
     if (!client0.call(srv0)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
+      this->start_reconnect();
+      return;
     }
 
     if (!client1.call(srv1)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
+      this->start_reconnect();
+      return;
     }
 
     if (!client2.call(srv2)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 2 error");
+      this->start_reconnect();
+      return;
     }
 
     if (!client3.call(srv3)) {
       ROS_INFO_NAMED("rrbot_hw_interface", "Motor 3 error");
+      this->start_reconnect();
+      return;
     }
   }
 }

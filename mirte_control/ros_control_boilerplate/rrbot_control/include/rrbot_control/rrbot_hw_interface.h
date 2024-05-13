@@ -41,6 +41,11 @@
 #define RRBOT_CONTROL__RRBOT_HW_INTERFACE_H
 
 #include <ros_control_boilerplate/generic_hw_interface.h>
+#include <boost/format.hpp>
+#include <chrono>
+#include <future>
+#include <mutex>
+#include <thread>
 
 namespace rrbot_control {
 /// \brief Hardware interface for a robot
@@ -60,6 +65,11 @@ public:
 
   /** \brief Enforce limits for all values before writing */
   virtual void enforceLimits(ros::Duration &period);
+
+  void connectServices();
+  void start_reconnect();
+  std::future<void> reconnect_thread;
+  std::mutex service_clients_mutex;
 
 }; // class
 
