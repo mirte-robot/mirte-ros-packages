@@ -79,11 +79,11 @@ modules:
     percentage_led_chip: gpiochip4
     percentage_led_line: 12 # B4, left-most led on usb switcher pcb
 
-  # movement:
-  #   type: MPU9250
-  #   connector: I2C1
-  #   device: mirte
-  #   id: 0x68
+  movement:
+    type: MPU9250
+    connector: I2C1
+    device: mirte
+    id: 0x68
 oled:
   middle:
     name: middle
@@ -143,13 +143,13 @@ distance:
     pins:
       trigger: 12
       echo: 13
-# neopixel:
-#   name: leds
-#   pins:
-#     pin: 27
-#   default_color: 0x123456
-#   max_intensity: 50
-#   pixels: 18
+neopixel:
+  name: leds
+  pins:
+    pin: 22
+  default_color: 0x123456
+  max_intensity: 50
+  pixels: 10
 
     # servos:
     #   servo1:

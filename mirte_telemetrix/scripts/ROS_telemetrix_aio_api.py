@@ -482,7 +482,7 @@ class Neopixel:
         self, color_num
     ):  # hex color number (0x123456) or string ("0x123456")
         return [
-            int(x * 0.5)
+            int(x * self.max_intensity / 100)
             for x in struct.unpack(
                 "BBB", bytes.fromhex(hex(int(str(color_num), 0))[2:].zfill(6))
             )

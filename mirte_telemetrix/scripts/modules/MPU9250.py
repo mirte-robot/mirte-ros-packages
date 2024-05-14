@@ -58,18 +58,23 @@ class MPU9250:
         self.pub()
 
     def pub(self):
+        x_index = 1
+        y_index = 0
+        z_index = 2
         lin_acc = Vector3(
-            x=self.acceleration[0] * 9.81,
-            y=self.acceleration[1] * 9.81,
-            z=self.acceleration[2] * 9.81,
+            x=self.acceleration[x_index] * 9.81, #positive forward, Imu is positioned differently
+            y=-self.acceleration[y_index] * 9.81, #positive left
+            z=-self.acceleration[z_index] * 9.81, # up is positive
         )
+
+        # this is probably okay. Only real usefull value is z.
         ang_vel = Vector3(
-            x=self.gyroscope[0] * math.pi / 180.0,
-            y=self.gyroscope[1] * math.pi / 180.0,
-            z=self.gyroscope[2] * math.pi / 180.0,
+            x=-self.gyroscope[x_index] * math.pi / 180.0,
+            y=self.gyroscope[y_index] * math.pi / 180.0,
+            z=self.gyroscope[z_index] * math.pi / 180.0,
         )
         orie = Quaternion(
-            x=self.magnetometer[0], y=self.magnetometer[1], z=self.magnetometer[2]
+            x=self.magnetometer[x_index], y=self.magnetometer[y_index], z=self.magnetometer[z_index]
         )
         # lin_acc.x =
         self.last_message = Imu(
