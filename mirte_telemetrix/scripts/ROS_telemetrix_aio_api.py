@@ -296,7 +296,7 @@ class DistanceSensorMonitor(SensorMonitor):
         self.range.min_range = 0.02
         self.range.max_range = 1.5
         self.range.header = self.get_header()
-        self.range.range = data[2] / 100.0 # convert from cm to m
+        self.range.range = data[2] / 100.0  # convert from cm to m
         self.pub.publish(self.range)
 
     def publish_data(self, event=None):

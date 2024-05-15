@@ -62,9 +62,10 @@ class MPU9250:
         y_index = 0
         z_index = 2
         lin_acc = Vector3(
-            x=self.acceleration[x_index] * 9.81, #positive forward, Imu is positioned differently
-            y=-self.acceleration[y_index] * 9.81, #positive left
-            z=-self.acceleration[z_index] * 9.81, # up is positive
+            x=self.acceleration[x_index]
+            * 9.81,  # positive forward, Imu is positioned differently
+            y=-self.acceleration[y_index] * 9.81,  # positive left
+            z=-self.acceleration[z_index] * 9.81,  # up is positive
         )
 
         # this is probably okay. Only real usefull value is z.
@@ -74,7 +75,9 @@ class MPU9250:
             z=self.gyroscope[z_index] * math.pi / 180.0,
         )
         orie = Quaternion(
-            x=self.magnetometer[x_index], y=self.magnetometer[y_index], z=self.magnetometer[z_index]
+            x=self.magnetometer[x_index],
+            y=self.magnetometer[y_index],
+            z=self.magnetometer[z_index],
         )
         # lin_acc.x =
         self.last_message = Imu(

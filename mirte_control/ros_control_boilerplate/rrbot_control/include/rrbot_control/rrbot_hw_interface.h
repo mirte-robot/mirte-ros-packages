@@ -40,11 +40,11 @@
 #ifndef RRBOT_CONTROL__RRBOT_HW_INTERFACE_H
 #define RRBOT_CONTROL__RRBOT_HW_INTERFACE_H
 
-#include <ros_control_boilerplate/generic_hw_interface.h>
 #include <boost/format.hpp>
 #include <chrono>
 #include <future>
 #include <mutex>
+#include <ros_control_boilerplate/generic_hw_interface.h>
 #include <thread>
 
 namespace rrbot_control {

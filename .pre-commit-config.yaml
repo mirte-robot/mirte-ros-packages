@@ -1,0 +1,20 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: check-yaml
+    -   id: check-added-large-files
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black
+- repo: local
+  hooks:
+  -     id: clang-format
+        name: clang-format
+        entry: bash -c 'FILES=`find -type f -regex ".*\.\(cpp\|hpp\|h\|c\)$"`;  clang-format-14 --Werror $FILES -style=llvm -i'
+        language: system
+        types: [c]
+        pass_filenames: false

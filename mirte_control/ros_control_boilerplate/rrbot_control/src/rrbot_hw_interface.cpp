@@ -38,11 +38,11 @@
 */
 
 #include "ros/ros.h"
+#include <chrono>
 #include <iostream>
 #include <mirte_msgs/ServoPosition.h>
 #include <mirte_msgs/SetServoAngle.h>
 #include <rrbot_control/rrbot_hw_interface.h>
-#include <chrono>
 
 namespace rrbot_control {
 
@@ -104,23 +104,23 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
 
 void RRBotHWInterface::connectServices() {
   ROS_INFO_NAMED("rrbot_hw_interface", "Connecting to the services...");
-  
+
   ros::service::waitForService("/mirte/set_servoRot_servo_angle", -1);
   ros::service::waitForService("/mirte/set_servoShoulder_servo_angle", -1);
   ros::service::waitForService("/mirte/set_servoElbow_servo_angle", -1);
   ros::service::waitForService("/mirte/set_servoWrist_servo_angle", -1);
   { // Only mutex when actually writing to class vars.
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-  client0 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoRot_servo_angle", true);
-  client1 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoShoulder_servo_angle", true);
-  client2 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoElbow_servo_angle", true);
-  client3 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-      "/mirte/set_servoWrist_servo_angle", true);
+    client0 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+        "/mirte/set_servoRot_servo_angle", true);
+    client1 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+        "/mirte/set_servoShoulder_servo_angle", true);
+    client2 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+        "/mirte/set_servoElbow_servo_angle", true);
+    client3 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
+        "/mirte/set_servoWrist_servo_angle", true);
   }
-      ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
+  ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
 }
 
 void RRBotHWInterface::read(ros::Duration &elapsed_time) {
