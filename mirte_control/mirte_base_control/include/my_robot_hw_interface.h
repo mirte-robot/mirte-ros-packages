@@ -34,7 +34,7 @@
 #include <future>
 #include <mutex>
 #include <thread>
-
+#include <control_toolbox/pid.h>
 // const unsigned int NUM_JOINTS = 4;
 const auto service_format = "/mirte/set_%s_speed";
 const auto encoder_format = "/mirte/encoder/%s";
@@ -154,6 +154,7 @@ private:
   std::vector<ros::ServiceClient> service_clients;
   std::vector<mirte_msgs::SetMotorSpeed> service_requests;
   std::vector<std::string> joints;
+  std::vector<control_toolbox::Pid*> pids;
   bool start_callback(std_srvs::Empty::Request & /*req*/,
                       std_srvs::Empty::Response & /*res*/) {
     running_ = true;
@@ -184,6 +185,11 @@ private:
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
+  void init_pids(){
+    using namespace control_toolbox;
+
+    control_toolbox::Pid pid(0.0, 1.0, 0.0, 1.0, -1.0);
+}
 }; // class
 
 void MyRobotHWInterface::init_service_clients() {
@@ -215,6 +221,7 @@ unsigned int detect_joints(ros::NodeHandle &nh) {
   }
 }
 
+
 MyRobotHWInterface::MyRobotHWInterface()
     : private_nh("~"), running_(true),
       start_srv_(nh.advertiseService(
@@ -237,6 +244,7 @@ MyRobotHWInterface::MyRobotHWInterface()
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
     _last_cmd.push_back(0);
+    
     pos.push_back(0);
     vel.push_back(0);
     eff.push_back(0);
@@ -290,6 +298,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   assert(service_requests.size() == NUM_JOINTS);
 
   assert(service_clients.size() == NUM_JOINTS);
+  this->init_pids();
 }
 
 void MyRobotHWInterface ::start_reconnect() {

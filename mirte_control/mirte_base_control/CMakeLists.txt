@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   controller_manager
   hardware_interface
   trajectory_msgs
+  control_toolbox
 )
 
 ## System dependencies are found with CMake's conventions
@@ -105,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   # INCLUDE_DIRS include/
 #  LIBRARIES mirte_ros_package
-  CATKIN_DEPENDS roscpp std_msgs mirte_msgs message_runtime controller_manager hardware_interface trajectory_msgs
+  CATKIN_DEPENDS roscpp std_msgs mirte_msgs message_runtime controller_manager hardware_interface trajectory_msgs control_toolbox
 #  DEPENDS system_lib
 )
 

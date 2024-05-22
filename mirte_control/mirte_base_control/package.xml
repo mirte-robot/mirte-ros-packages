@@ -59,21 +59,7 @@
   <exec_depend>diff_drive_controller</exec_depend>
   <exec_depend>effort_controllers</exec_depend>
   <exec_depend>message_runtime</exec_depend>
-
-    <!-- <depend>roscpp</build_export_depend> -->
-  <!-- <build_export_depend>std_msgs</build_export_depend> -->
-
-  <!-- <exec_depend>roscpp</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>mirte_msgs</exec_depend>
-  <exec_depend>controller_manager</exec_depend>
-  <exec_depend>hardware_interface</exec_depend>
-  
-  <build_export_depend >trajectory_msgs</build_export_depend >
-   -->
-
-
-  <!-- The export tag contains other, unspecified, tags -->
+  <depend>control_toolbox</depend>
   <export>
     <!-- Other tools can request additional information be placed here -->
 
