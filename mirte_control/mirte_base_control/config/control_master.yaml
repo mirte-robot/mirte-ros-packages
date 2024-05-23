@@ -57,6 +57,10 @@ mobile_base_controller:
       max_velocity: 2.0  # rad/s
       has_acceleration_limits: false
       max_acceleration: 1.0  # rad/s^2
+  enable_pid: true
+  p: 1
+  i: 0
+  d: 0
 # ekf_localization:
 #   frequency: 50
 #   two_d_mode: true

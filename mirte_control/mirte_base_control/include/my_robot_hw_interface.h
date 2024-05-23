@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <memory>
 
 #include <boost/format.hpp>
 #include <chrono>
@@ -38,20 +39,40 @@
 // const unsigned int NUM_JOINTS = 4;
 const auto service_format = "/mirte/set_%s_speed";
 const auto encoder_format = "/mirte/encoder/%s";
-const auto max_speed = 80; // Quick fix hopefully for power dip.
+const auto max_speed = 100; // Quick fix hopefully for power dip.
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
 public:
   MyRobotHWInterface();
 
-  bool write_single(int joint, int speed) {
+  double calc_speed_pid(int joint, double target, const ros::Duration& period){
+      if(target == 0) {
+        return 0;
+      }
+      auto pid = this->pids[joint];
+      auto curr_speed = vel[joint];
+      auto err = target-curr_speed;
+      auto pid_cmd = pid->computeCommand(err, period);
+      std::cout << joint << ": " << target << "->" << curr_speed << " e:" << err << " p:" << pid_cmd << " l:" << _last_cmd[joint] << std::endl;
+      
+      return pid_cmd + _last_cmd[joint];
+  }
 
-    int speed_mapped =
+  bool write_single(int joint, double speed, const ros::Duration& period) {
+    double speed_mapped;
+    if(this->enablePID) {
+      speed_mapped = this->calc_speed_pid(joint, speed, period);
+    } else {
+      speed_mapped =
         std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
-    speed_mapped = std::clamp(speed_mapped, -max_speed, max_speed);
-    if (speed_mapped != _last_cmd[joint]) {
-      service_requests[joint].request.speed = speed_mapped;
-      _last_cmd[joint] = speed_mapped;
+    }
+    speed_mapped = std::clamp<double>(speed_mapped, -max_speed, max_speed);
+    auto diff = std::abs(speed_mapped-_last_sent_cmd[joint]);
+    _last_cmd[joint] = speed_mapped;
+    if (diff> 1.0) {
+      _last_sent_cmd[joint] = speed_mapped;
+      std::cout << "send cmd" << joint << "  " << diff << " " << speed_mapped << std::endl;
+      service_requests[joint].request.speed = (int)speed_mapped;
       if (!service_clients[joint].call(service_requests[joint])) {
         this->start_reconnect();
         return false;
@@ -62,7 +83,7 @@ public:
   /*
    *
    */
-  void write() {
+  void write(const ros::Duration &period) {
     if (running_) {
       // make sure the clients don't get overwritten while calling them
       const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
@@ -77,7 +98,7 @@ public:
       // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
       // (6*pi)
       for (size_t i = 0; i < NUM_JOINTS; i++) {
-        if (!write_single(i, cmd[i])) {
+        if (!write_single(i, cmd[i], period)) {
           return;
         }
       }
@@ -90,9 +111,6 @@ public:
     }
   }
 
-  double meter_per_enc_tick() {
-    return (this->_wheel_diameter) * M_PI / this->ticks;
-  }
   double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
   /**
    * Reading encoder values and setting position and velocity of encoders
@@ -141,7 +159,8 @@ private:
   double ticks = 40.0;
 
   std::vector<int> _wheel_encoder;
-  std::vector<int> _last_cmd;
+  std::vector<double> _last_cmd;
+  std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
   std::vector<int> _last_wheel_cmd_direction;
 
@@ -154,7 +173,11 @@ private:
   std::vector<ros::ServiceClient> service_clients;
   std::vector<mirte_msgs::SetMotorSpeed> service_requests;
   std::vector<std::string> joints;
-  std::vector<control_toolbox::Pid*> pids;
+  bool enablePID;
+  std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
+
+
+
   bool start_callback(std_srvs::Empty::Request & /*req*/,
                       std_srvs::Empty::Response & /*res*/) {
     running_ = true;
@@ -244,6 +267,7 @@ MyRobotHWInterface::MyRobotHWInterface()
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
     _last_cmd.push_back(0);
+    _last_sent_cmd.push_back(0);
     
     pos.push_back(0);
     vel.push_back(0);
@@ -284,6 +308,19 @@ MyRobotHWInterface::MyRobotHWInterface()
   }
   registerInterface(&jnt_state_interface);
   registerInterface(&jnt_vel_interface);
+
+  private_nh.param<bool>("/mobile_base_controller/enable_pid",
+                           enablePID, false);
+  enablePID = true;
+  if(enablePID) {
+    for(auto i = 0; i < NUM_JOINTS; i++) {
+      auto pid = std::make_shared< control_toolbox::Pid>(1, 0, 0);
+      // pid->initParam((boost::format("/mobile_base_controller/%s")%this->joints[i]).str(), false);
+      this->pids.push_back(pid);
+
+    }
+  }
+
 
   // Initialize publishers and subscribers
   for (size_t i = 0; i < NUM_JOINTS; i++) {
