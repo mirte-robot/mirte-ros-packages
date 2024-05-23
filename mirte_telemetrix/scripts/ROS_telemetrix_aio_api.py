@@ -150,6 +150,7 @@ class SensorMonitor:
         self.differential = 0
         if "differential" in sensor:
             self.differential = sensor["differential"]
+        get_obj_value(self, sensor, "frame_id")
         self.loop = asyncio.get_event_loop()
         self.last_publish_time = -1
         self.last_publish_value = {}
@@ -163,6 +164,8 @@ class SensorMonitor:
     def get_header(self):
         header = Header()
         header.stamp = rospy.Time.now()
+        # TODO: Is a check for None needed here?
+        header.frame_id = self.frame_id
         return header
 
     # NOTE: although there are no async functions in this
