@@ -22,7 +22,8 @@ except:
 from modules import MPU9250
 
 
-devices = rospy.get_param("/mirte/device")
+# NOTE: This call was unused
+# devices = rospy.get_param("/mirte/device")
 
 
 current_soc = "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
@@ -90,7 +91,8 @@ import mappings.pcb
 
 board_mapping = mappings.default
 
-devices = rospy.get_param("/mirte/device")
+# Moved the board_mapping setting to after intialization or ROS Node, since than relative names can be used.
+devices = rospy.get_param("mirte/device")
 
 if devices["mirte"]["type"] == "pcb":
     board_mapping = mappings.pcb
@@ -121,7 +123,7 @@ if devices["mirte"]["type"] == "breadboard":
 
 
 def get_pin_numbers(component):
-    # devices = rospy.get_param("/mirte/device")
+    # devices = rospy.get_param("mirte/device")
     # device = devices[component["device"]]
     pins = {}
     if "connector" in component:
@@ -193,16 +195,16 @@ class SensorMonitor:
 
 class KeypadMonitor(SensorMonitor):
     def __init__(self, board, sensor):
-        pub = rospy.Publisher("/mirte/keypad/" + sensor["name"], Keypad, queue_size=1)
+        pub = rospy.Publisher("mirte/keypad/" + sensor["name"], Keypad, queue_size=1)
         srv = rospy.Service(
-            "/mirte/get_keypad_" + sensor["name"], GetKeypad, self.get_data
+            "mirte/get_keypad_" + sensor["name"], GetKeypad, self.get_data
         )
         super().__init__(board, sensor, pub)
         self.last_debounce_time = 0
         self.last_key = ""
         self.last_debounced_key = ""
         self.pressed_publisher = rospy.Publisher(
-            "/mirte/keypad/" + sensor["name"] + "_pressed", Keypad, queue_size=1
+            "mirte/keypad/" + sensor["name"] + "_pressed", Keypad, queue_size=1
         )
         self.last_publish_value = Keypad()
 
@@ -263,10 +265,10 @@ class KeypadMonitor(SensorMonitor):
 class DistanceSensorMonitor(SensorMonitor):
     def __init__(self, board, sensor):
         self.pub = rospy.Publisher(
-            "/mirte/distance/" + sensor["name"], Range, queue_size=1, latch=True
+            "mirte/distance/" + sensor["name"], Range, queue_size=1, latch=True
         )
         srv = rospy.Service(
-            "/mirte/get_distance_" + sensor["name"], GetDistance, self.get_data
+            "mirte/get_distance_" + sensor["name"], GetDistance, self.get_data
         )
         super().__init__(board, sensor, self.pub)
         self.last_publish_value = Range()
@@ -310,13 +312,13 @@ class DistanceSensorMonitor(SensorMonitor):
 class DigitalIntensitySensorMonitor(SensorMonitor):
     def __init__(self, board, sensor):
         pub = rospy.Publisher(
-            "/mirte/intensity/" + sensor["name"] + "_digital",
+            "mirte/intensity/" + sensor["name"] + "_digital",
             IntensityDigital,
             queue_size=1,
             latch=True,
         )
         srv = rospy.Service(
-            "/mirte/get_intensity_" + sensor["name"] + "_digital",
+            "mirte/get_intensity_" + sensor["name"] + "_digital",
             GetIntensityDigital,
             self.get_data,
         )
@@ -341,10 +343,10 @@ class DigitalIntensitySensorMonitor(SensorMonitor):
 class AnalogIntensitySensorMonitor(SensorMonitor):
     def __init__(self, board, sensor):
         pub = rospy.Publisher(
-            "/mirte/intensity/" + sensor["name"], Intensity, queue_size=100
+            "mirte/intensity/" + sensor["name"], Intensity, queue_size=100
         )
         srv = rospy.Service(
-            "/mirte/get_intensity_" + sensor["name"], GetIntensity, self.get_data
+            "mirte/get_intensity_" + sensor["name"], GetIntensity, self.get_data
         )
         super().__init__(board, sensor, pub)
         self.last_publish_value = Intensity()
@@ -369,13 +371,13 @@ class AnalogIntensitySensorMonitor(SensorMonitor):
 class EncoderSensorMonitor(SensorMonitor):
     def __init__(self, board, sensor):
         pub = rospy.Publisher(
-            "/mirte/encoder/" + sensor["name"], Encoder, queue_size=1, latch=True
+            "mirte/encoder/" + sensor["name"], Encoder, queue_size=1, latch=True
         )
         srv = rospy.Service(
-            "/mirte/get_encoder_" + sensor["name"], GetEncoder, self.get_data
+            "mirte/get_encoder_" + sensor["name"], GetEncoder, self.get_data
         )
         self.speed_pub = rospy.Publisher(
-            "/mirte/encoder_speed/" + sensor["name"], Encoder, queue_size=1, latch=True
+            "mirte/encoder_speed/" + sensor["name"], Encoder, queue_size=1, latch=True
         )
         super().__init__(board, sensor, pub)
         self.ticks_per_wheel = 20
@@ -439,10 +441,10 @@ class Neopixel:
         get_obj_value(self, neo_obj, "max_intensity", 50)
         get_obj_value(self, neo_obj, "default_color", 0x000000)
         server = rospy.Service(
-            f"/mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service
+            f"mirte/set_{self.name}_color_all", SetLEDValue, self.set_color_all_service
         )
         server = rospy.Service(
-            f"/mirte/set_{self.name}_color_single",
+            f"mirte/set_{self.name}_color_single",
             SetSingleLEDValue,
             self.set_color_single_service,
         )
@@ -507,7 +509,7 @@ class Servo:
     async def start(self):
         await board.set_pin_mode_servo(self.pins["pin"], self.min_pulse, self.max_pulse)
         server = rospy.Service(
-            "/mirte/set_" + self.name + "_servo_angle",
+            "mirte/set_" + self.name + "_servo_angle",
             SetServoAngle,
             self.set_servo_angle_service,
         )
@@ -528,12 +530,12 @@ class Motor:
 
     async def start(self):
         server = rospy.Service(
-            "/mirte/set_" + self.name + "_speed",
+            "mirte/set_" + self.name + "_speed",
             SetMotorSpeed,
             self.set_motor_speed_service,
         )
         sub = rospy.Subscriber(
-            "/mirte/motor_" + self.name + "_speed", Int32, self.callback
+            "mirte/motor_" + self.name + "_speed", Int32, self.callback
         )
 
     def callback(self, data):
@@ -737,7 +739,7 @@ class Oled(_SSD1306):
 
     async def start(self):
         server = rospy.Service(
-            "/mirte/set_" + self.oled_obj["name"] + "_image",
+            "mirte/set_" + self.oled_obj["name"] + "_image",
             SetOLEDImage,
             self.set_oled_image_service,
         )
@@ -938,7 +940,7 @@ class Oled(_SSD1306):
 
 
 async def handle_set_led_value(req):
-    led = rospy.get_param("/mirte/led")
+    led = rospy.get_param("mirte/led")
     await analog_write(
         board,
         get_pin_numbers(led)["pin"],
@@ -1027,8 +1029,8 @@ def handle_set_pin_value(req):
 def actuators(loop, board, device):
     servers = []
 
-    if rospy.has_param("/mirte/oled"):
-        oleds = rospy.get_param("/mirte/oled")
+    if rospy.has_param("mirte/oled"):
+        oleds = rospy.get_param("mirte/oled")
         oleds = {k: v for k, v in oleds.items() if v["device"] == device}
         oled_id = 0
         for oled in oleds:
@@ -1042,18 +1044,18 @@ def actuators(loop, board, device):
             servers.append(loop.create_task(oled_obj.start()))
 
     # TODO: support multiple leds
-    if rospy.has_param("/mirte/led"):
-        led = rospy.get_param("/mirte/led")
+    if rospy.has_param("mirte/led"):
+        led = rospy.get_param("mirte/led")
         loop.run_until_complete(
             set_pin_mode_analog_output(board, get_pin_numbers(led)["pin"])
         )
         server = aiorospy.AsyncService(
-            "/mirte/set_led_value", SetLEDValue, handle_set_led_value
+            "mirte/set_led_value", SetLEDValue, handle_set_led_value
         )
         servers.append(loop.create_task(server.start()))
 
-    if rospy.has_param("/mirte/motor"):
-        motors = rospy.get_param("/mirte/motor")
+    if rospy.has_param("mirte/motor"):
+        motors = rospy.get_param("mirte/motor")
         motors = {k: v for k, v in motors.items() if v["device"] == device}
         for motor in motors:
             motor_obj = {}
@@ -1067,21 +1069,21 @@ def actuators(loop, board, device):
                 rospy.loginfo("Unsupported motor interface (ddp, dp, or pp)")
             servers.append(loop.create_task(motor_obj.start()))
 
-    if rospy.has_param("/mirte/servo"):
-        servos = rospy.get_param("/mirte/servo")
+    if rospy.has_param("mirte/servo"):
+        servos = rospy.get_param("mirte/servo")
         servos = {k: v for k, v in servos.items() if v["device"] == device}
         for servo in servos:
             servo = Servo(board, servos[servo])
             servers.append(loop.create_task(servo.start()))
 
-    if rospy.has_param("/mirte/neopixel"):
-        neopixel = rospy.get_param("/mirte/neopixel")
+    if rospy.has_param("mirte/neopixel"):
+        neopixel = rospy.get_param("mirte/neopixel")
         servers.append(loop.create_task(Neopixel(board, neopixel).start()))
 
-    if rospy.has_param("/mirte/modules"):
-        servers += add_modules(rospy.get_param("/mirte/modules"), device)
+    if rospy.has_param("mirte/modules"):
+        servers += add_modules(rospy.get_param("mirte/modules"), device)
     # Set a raw pin value
-    server = rospy.Service("/mirte/set_pin_value", SetPinValue, handle_set_pin_value)
+    server = rospy.Service("mirte/set_pin_value", SetPinValue, handle_set_pin_value)
 
     return servers
 
@@ -1092,8 +1094,8 @@ def actuators(loop, board, device):
 def sensors(loop, board, device):
     tasks = []
     max_freq = 30
-    if rospy.has_param("/mirte/device/mirte/max_frequency"):
-        max_freq = rospy.get_param("/mirte/device/mirte/max_frequency")
+    if rospy.has_param("mirte/device/mirte/max_frequency"):
+        max_freq = rospy.get_param("mirte/device/mirte/max_frequency")
 
     # For now, we need to set the analog scan interval to teh max_freq. When we set
     # this to 0, we do get the updates from telemetrix as fast as possible. In that
@@ -1122,22 +1124,22 @@ def sensors(loop, board, device):
             )
 
     # initialze distance sensors
-    if rospy.has_param("/mirte/distance"):
-        distance_sensors = rospy.get_param("/mirte/distance")
+    if rospy.has_param("mirte/distance"):
+        distance_sensors = rospy.get_param("mirte/distance")
         distance_sensors = {
             k: v for k, v in distance_sensors.items() if v["device"] == device
         }
         for sensor in distance_sensors:
             distance_sensors[sensor]["max_frequency"] = max_freq
             distance_publisher = rospy.Publisher(
-                "/mirte/" + sensor, Range, queue_size=1, latch=True
+                "mirte/" + sensor, Range, queue_size=1, latch=True
             )
             monitor = DistanceSensorMonitor(board, distance_sensors[sensor])
             tasks.append(loop.create_task(monitor.start()))
 
     # Initialize intensity sensors
-    if rospy.has_param("/mirte/intensity"):
-        intensity_sensors = rospy.get_param("/mirte/intensity")
+    if rospy.has_param("mirte/intensity"):
+        intensity_sensors = rospy.get_param("mirte/intensity")
         intensity_sensors = {
             k: v for k, v in intensity_sensors.items() if v["device"] == device
         }
@@ -1153,8 +1155,8 @@ def sensors(loop, board, device):
                 tasks.append(loop.create_task(monitor.start()))
 
     # Initialize keypad sensors
-    if rospy.has_param("/mirte/keypad"):
-        keypad_sensors = rospy.get_param("/mirte/keypad")
+    if rospy.has_param("mirte/keypad"):
+        keypad_sensors = rospy.get_param("mirte/keypad")
         keypad_sensors = {
             k: v for k, v in keypad_sensors.items() if v["device"] == device
         }
@@ -1164,8 +1166,8 @@ def sensors(loop, board, device):
             tasks.append(loop.create_task(monitor.start()))
 
     # Initialize encoder sensors
-    if rospy.has_param("/mirte/encoder"):
-        encoder_sensors = rospy.get_param("/mirte/encoder")
+    if rospy.has_param("mirte/encoder"):
+        encoder_sensors = rospy.get_param("mirte/encoder")
         encoder_sensors = {
             k: v for k, v in encoder_sensors.items() if v["device"] == device
         }
@@ -1178,8 +1180,8 @@ def sensors(loop, board, device):
     # Get a raw pin value
     # TODO: this still needs to be tested. We are waiting on an implementation of ananlog_read()
     # on the telemetrix side
-    rospy.Service("/mirte/get_pin_value", GetPinValue, handle_get_pin_value)
-    # server = aiorospy.AsyncService('/mirte/get_pin_value', GetPinValue, handle_get_pin_value)
+    rospy.Service("mirte/get_pin_value", GetPinValue, handle_get_pin_value)
+    # server = aiorospy.AsyncService('mirte/get_pin_value', GetPinValue, handle_get_pin_value)
     # tasks.append(loop.create_task(server.start()))
 
     return tasks
@@ -1238,7 +1240,7 @@ class PCA_Servo:
     async def start(self):
         await self.pca_update_func(self.pin, 0, 0)
         server = rospy.Service(
-            "/mirte/set_" + self.name + "_servo_angle",
+            "mirte/set_" + self.name + "_servo_angle",
             SetServoAngle,
             self.set_servo_angle_service,
         )
@@ -1375,14 +1377,14 @@ class INA226:
         self.shutdown_triggered = False
         self.turn_off_trigger_start_time = -1
         self.ina_publisher = rospy.Publisher(
-            "/mirte/power/" + module_name, BatteryState, queue_size=1
+            "mirte/power/" + module_name, BatteryState, queue_size=1
         )
         self.ina_publisher_used = rospy.Publisher(
-            f"/mirte/power/{module_name}/used", Int32, queue_size=1
+            f"mirte/power/{module_name}/used", Int32, queue_size=1
         )
         self.used_energy = 0  # mah
         self.last_used_calc = time.time()
-        server = rospy.Service("/mirte/shutdown", SetBool, self.shutdown_service)
+        server = rospy.Service("mirte/shutdown", SetBool, self.shutdown_service)
 
         self.last_low_voltage = -1
 
@@ -1654,7 +1656,7 @@ class INA226:
             # ]:  # TODO: use the oled obj directly without hard-coded names
             #     try:
             #         set_image = rospy.ServiceProxy(
-            #             f"/mirte/set_{oled_name}_image", SetOLEDImage
+            #             f"mirte/set_{oled_name}_image", SetOLEDImage
             #         )
             # TODO: does not work, as it is async, calling async....
             #         set_image("text", "Shutting down")
@@ -1716,20 +1718,20 @@ class Hiwonder_Servo:
 
     async def start(self):
         server = rospy.Service(
-            "/mirte/set_" + self.name + "_servo_angle",
+            "mirte/set_" + self.name + "_servo_angle",
             SetServoAngle,
             self.set_servo_angle_service,
         )
         rospy.Service(
-            "/mirte/set_" + self.name + "_servo_enable",
+            "mirte/set_" + self.name + "_servo_enable",
             SetBool,
             self.set_servo_enabled_service,
         )
         rospy.Service(
-            f"/mirte/get_{self.name}_servo_range", GetRange, self.get_servo_range
+            f"mirte/get_{self.name}_servo_range", GetRange, self.get_servo_range
         )
         self.publisher = rospy.Publisher(
-            f"/mirte/servos/{self.name}/position",
+            f"mirte/servos/{self.name}/position",
             ServoPosition,
             queue_size=1,
             latch=True,
@@ -1817,7 +1819,7 @@ class Hiwonder_Bus:
         self.set_enabled = updaters["set_enabled"]
         self.set_enabled_all = updaters["set_enabled_all"]
         rospy.Service(
-            "/mirte/set_" + self.name + "_all_servos_enable",
+            "mirte/set_" + self.name + "_all_servos_enable",
             SetBool,
             self.set_all_servos_enabled,
         )
