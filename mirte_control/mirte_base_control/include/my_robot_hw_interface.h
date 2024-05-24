@@ -251,13 +251,13 @@ MyRobotHWInterface::MyRobotHWInterface()
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
-  private_nh.param<double>("mobile_base_controller/wheel_radius",
+  nh.param<double>("mobile_base_controller/wheel_radius",
                            _wheel_diameter, 0.06);
   _wheel_diameter *= 2; // convert from radius to diameter
-  private_nh.param<double>("mobile_base_controller/max_speed", _max_speed,
+  nh.param<double>("mobile_base_controller/max_speed", _max_speed,
                            2.0); // TODO: unused
-  private_nh.param<double>("mobile_base_controller/ticks", ticks, 40.0);
-  this->NUM_JOINTS = detect_joints(private_nh);
+  nh.param<double>("mobile_base_controller/ticks", ticks, 40.0);
+  this->NUM_JOINTS = detect_joints(nh);
   if (this->NUM_JOINTS > 2) {
     this->bidirectional = true;
   }
@@ -309,7 +309,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   registerInterface(&jnt_state_interface);
   registerInterface(&jnt_vel_interface);
 
-  private_nh.param<bool>("mobile_base_controller/enable_pid",
+  nh.param<bool>("mobile_base_controller/enable_pid",
                            enablePID, false);
   enablePID = true;
   if(enablePID) {
