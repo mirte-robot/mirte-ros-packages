@@ -278,7 +278,7 @@ class DistanceSensorMonitor(SensorMonitor):
     async def start(self):
         self.range = Range()
         self.range.radiation_type = self.range.ULTRASOUND
-        self.range.field_of_view = math.pi * 5
+        self.range.field_of_view = math.pi / 6  # 30 Degrees
         self.range.min_range = 2
         self.range.max_range = 1.5
         self.range.header = self.get_header()
@@ -292,7 +292,7 @@ class DistanceSensorMonitor(SensorMonitor):
         # Only on data change
         self.range = Range()
         self.range.radiation_type = self.range.ULTRASOUND
-        self.range.field_of_view = math.pi * 5
+        self.range.field_of_view = math.pi / 6  # 30 Degrees
         self.range.min_range = 0.02
         self.range.max_range = 1.5
         self.range.header = self.get_header()
