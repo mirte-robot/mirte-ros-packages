@@ -37,8 +37,8 @@
 #include <thread>
 #include <control_toolbox/pid.h>
 // const unsigned int NUM_JOINTS = 4;
-const auto service_format = "/mirte/set_%s_speed";
-const auto encoder_format = "/mirte/encoder/%s";
+const auto service_format = "mirte/set_%s_speed";
+const auto encoder_format = "mirte/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
@@ -233,7 +233,7 @@ void MyRobotHWInterface::init_service_clients() {
 
 unsigned int detect_joints(ros::NodeHandle &nh) {
   std::string type;
-  nh.param<std::string>("/mobile_base_controller/type", type, "");
+  nh.param<std::string>("mobile_base_controller/type", type, "");
   if (type.rfind("mecanum", 0) == 0) { // starts with mecanum
     return 4;
   } else if (type.rfind("diff", 0) == 0) { // starts with diff
@@ -251,12 +251,12 @@ MyRobotHWInterface::MyRobotHWInterface()
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
-  private_nh.param<double>("/mobile_base_controller/wheel_radius",
+  private_nh.param<double>("mobile_base_controller/wheel_radius",
                            _wheel_diameter, 0.06);
   _wheel_diameter *= 2; // convert from radius to diameter
-  private_nh.param<double>("/mobile_base_controller/max_speed", _max_speed,
+  private_nh.param<double>("mobile_base_controller/max_speed", _max_speed,
                            2.0); // TODO: unused
-  private_nh.param<double>("/mobile_base_controller/ticks", ticks, 40.0);
+  private_nh.param<double>("mobile_base_controller/ticks", ticks, 40.0);
   this->NUM_JOINTS = detect_joints(private_nh);
   if (this->NUM_JOINTS > 2) {
     this->bidirectional = true;
@@ -309,13 +309,13 @@ MyRobotHWInterface::MyRobotHWInterface()
   registerInterface(&jnt_state_interface);
   registerInterface(&jnt_vel_interface);
 
-  private_nh.param<bool>("/mobile_base_controller/enable_pid",
+  private_nh.param<bool>("mobile_base_controller/enable_pid",
                            enablePID, false);
   enablePID = true;
   if(enablePID) {
     for(auto i = 0; i < NUM_JOINTS; i++) {
       auto pid = std::make_shared< control_toolbox::Pid>(1, 0, 0);
-      // pid->initParam((boost::format("/mobile_base_controller/%s")%this->joints[i]).str(), false);
+      // pid->initParam((boost::format("mobile_base_controller/%s")%this->joints[i]).str(), false);
       this->pids.push_back(pid);
 
     }

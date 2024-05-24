@@ -23,7 +23,7 @@ from modules import MPU9250
 
 
 # NOTE: This call was unused
-# devices = rospy.get_param("/mirte/device")
+# devices = rospy.get_param("mirte/device")
 
 
 current_soc = "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
