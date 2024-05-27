@@ -78,7 +78,7 @@ add_library(generic_hw_interface
 target_link_libraries(generic_hw_interface
   ${catkin_LIBRARIES}
 )
-
+add_dependencies(generic_hw_interface ${catkin_EXPORTED_TARGETS})
 # Simulation Hardware Interface
 add_library(sim_hw_interface
   src/sim_hw_interface.cpp
@@ -144,15 +144,15 @@ add_subdirectory(rrbot_control)
 ## Install ------------------------------------------------------------
 
 # Install libraries
-install(TARGETS
-    controller_to_csv
-    csv_to_controller
-    generic_hw_control_loop
-    generic_hw_interface
-    sim_hw_interface
-  LIBRARY DESTINATION
-    ${CATKIN_PACKAGE_LIB_DESTINATION}
-)
+# install(TARGETS
+#     controller_to_csv
+#     csv_to_controller
+#     generic_hw_control_loop
+#     generic_hw_interface
+#     sim_hw_interface
+#   LIBRARY DESTINATION
+#     ${CATKIN_PACKAGE_LIB_DESTINATION}
+# )
 
 # Install executables
 # install(TARGETS
