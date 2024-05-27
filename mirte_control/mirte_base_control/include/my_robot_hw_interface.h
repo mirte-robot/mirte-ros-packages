@@ -27,51 +27,62 @@
 // ostringstream
 #include <algorithm>
 #include <cmath>
-#include <sstream>
 #include <memory>
+#include <sstream>
 
 #include <boost/format.hpp>
 #include <chrono>
+#include <control_toolbox/pid.h>
 #include <future>
 #include <mutex>
 #include <thread>
-#include <control_toolbox/pid.h>
 // const unsigned int NUM_JOINTS = 4;
 const auto service_format = "mirte/set_%s_speed";
 const auto encoder_format = "mirte/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
+
+bool equal_gains(control_toolbox::Pid::Gains lhs,
+                 control_toolbox::Pid::Gains rhs) {
+  return lhs.p_gain_ == rhs.p_gain_ && lhs.i_gain_ == rhs.i_gain_ &&
+         lhs.d_gain_ == lhs.d_gain_;
+}
+
 /// \brief Hardware interface for a robot
 class MyRobotHWInterface : public hardware_interface::RobotHW {
 public:
   MyRobotHWInterface();
 
-  double calc_speed_pid(int joint, double target, const ros::Duration& period){
-      if(target == 0) {
-        return 0;
+  double calc_speed_pid(int joint, double target, const ros::Duration &period) {
+    auto pid = this->pids[joint];
+    if (target == 0) {
+      pid->reset();
+
+      // Fix for dynamic reconfigure of all 4 PID controllers:
+      auto g = this->reconfig_pid->getGains();
+      if (!equal_gains(pid->getGains(), g)) {
+        pid->setGains(g);
       }
-      auto pid = this->pids[joint];
-      auto curr_speed = vel[joint];
-      auto err = target-curr_speed;
-      auto pid_cmd = pid->computeCommand(err, period);
-      std::cout << joint << ": " << target << "->" << curr_speed << " e:" << err << " p:" << pid_cmd << " l:" << _last_cmd[joint] << std::endl;
-      
-      return pid_cmd + _last_cmd[joint];
+      return 0;
+    }
+    auto curr_speed = vel[joint];
+    auto err = target - curr_speed;
+    auto pid_cmd = pid->computeCommand(err, period);
+    return pid_cmd + _last_cmd[joint];
   }
 
-  bool write_single(int joint, double speed, const ros::Duration& period) {
+  bool write_single(int joint, double speed, const ros::Duration &period) {
     double speed_mapped;
-    if(this->enablePID) {
+    if (this->enablePID) {
       speed_mapped = this->calc_speed_pid(joint, speed, period);
     } else {
       speed_mapped =
-        std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
+          std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
     }
     speed_mapped = std::clamp<double>(speed_mapped, -max_speed, max_speed);
-    auto diff = std::abs(speed_mapped-_last_sent_cmd[joint]);
+    auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
     _last_cmd[joint] = speed_mapped;
-    if (diff> 1.0) {
+    if (diff > 1.0) {
       _last_sent_cmd[joint] = speed_mapped;
-      std::cout << "send cmd" << joint << "  " << diff << " " << speed_mapped << std::endl;
       service_requests[joint].request.speed = (int)speed_mapped;
       if (!service_clients[joint].call(service_requests[joint])) {
         this->start_reconnect();
@@ -175,8 +186,8 @@ private:
   std::vector<std::string> joints;
   bool enablePID;
   std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
-
-
+  std::shared_ptr<control_toolbox::Pid>
+      reconfig_pid; // one dummy pid to use for the dynamic reconfigure
 
   bool start_callback(std_srvs::Empty::Request & /*req*/,
                       std_srvs::Empty::Response & /*res*/) {
@@ -208,11 +219,6 @@ private:
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
-  void init_pids(){
-    using namespace control_toolbox;
-
-    control_toolbox::Pid pid(0.0, 1.0, 0.0, 1.0, -1.0);
-}
 }; // class
 
 void MyRobotHWInterface::init_service_clients() {
@@ -244,18 +250,17 @@ unsigned int detect_joints(ros::NodeHandle &nh) {
   }
 }
 
-
 MyRobotHWInterface::MyRobotHWInterface()
     : private_nh("~"), running_(true),
       start_srv_(nh.advertiseService(
           "start", &MyRobotHWInterface::start_callback, this)),
       stop_srv_(nh.advertiseService("stop", &MyRobotHWInterface::stop_callback,
                                     this)) {
-  nh.param<double>("mobile_base_controller/wheel_radius",
-                           _wheel_diameter, 0.06);
+  nh.param<double>("mobile_base_controller/wheel_radius", _wheel_diameter,
+                   0.06);
   _wheel_diameter *= 2; // convert from radius to diameter
   nh.param<double>("mobile_base_controller/max_speed", _max_speed,
-                           2.0); // TODO: unused
+                   2.0); // TODO: unused
   nh.param<double>("mobile_base_controller/ticks", ticks, 40.0);
   this->NUM_JOINTS = detect_joints(nh);
   if (this->NUM_JOINTS > 2) {
@@ -268,7 +273,7 @@ MyRobotHWInterface::MyRobotHWInterface()
     _last_wheel_cmd_direction.push_back(0);
     _last_cmd.push_back(0);
     _last_sent_cmd.push_back(0);
-    
+
     pos.push_back(0);
     vel.push_back(0);
     eff.push_back(0);
@@ -309,18 +314,18 @@ MyRobotHWInterface::MyRobotHWInterface()
   registerInterface(&jnt_state_interface);
   registerInterface(&jnt_vel_interface);
 
-  nh.param<bool>("mobile_base_controller/enable_pid",
-                           enablePID, false);
-  enablePID = true;
-  if(enablePID) {
-    for(auto i = 0; i < NUM_JOINTS; i++) {
-      auto pid = std::make_shared< control_toolbox::Pid>(1, 0, 0);
-      // pid->initParam((boost::format("mobile_base_controller/%s")%this->joints[i]).str(), false);
+  nh.param<bool>("mobile_base_controller/enable_pid", enablePID, false);
+  if (enablePID) {
+    // dummy pid for dynamic reconfigure.
+    this->reconfig_pid = std::make_shared<control_toolbox::Pid>(1, 0, 0);
+    this->reconfig_pid->initParam("mobile_base_controller/", false);
+    auto gains = this->reconfig_pid->getGains();
+    for (auto i = 0; i < NUM_JOINTS; i++) {
+      auto pid = std::make_shared<control_toolbox::Pid>(1, 1, 1);
+      pid->setGains(gains);
       this->pids.push_back(pid);
-
     }
   }
-
 
   // Initialize publishers and subscribers
   for (size_t i = 0; i < NUM_JOINTS; i++) {
@@ -335,7 +340,6 @@ MyRobotHWInterface::MyRobotHWInterface()
   assert(service_requests.size() == NUM_JOINTS);
 
   assert(service_clients.size() == NUM_JOINTS);
-  this->init_pids();
 }
 
 void MyRobotHWInterface ::start_reconnect() {

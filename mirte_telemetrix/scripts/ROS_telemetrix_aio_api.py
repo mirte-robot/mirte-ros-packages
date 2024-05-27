@@ -60,6 +60,7 @@ def get_obj_value(s, obj, key, def_value=None):
         if def_type == bool:
             out = bool(out)
     setattr(s, key, out)
+    return key in obj  # return if the key was found in the object
 
 
 # Import ROS message types
@@ -142,7 +143,7 @@ def get_pin_numbers(component):
 
 # Abstract Sensor class
 class SensorMonitor:
-    def __init__(self, board, sensor, publisher):
+    def __init__(self, board, sensor, publisher, frame_prefix=""):
         self.board = board
         self.pins = get_pin_numbers(sensor)
         self.publisher = publisher
@@ -152,6 +153,9 @@ class SensorMonitor:
         self.differential = 0
         if "differential" in sensor:
             self.differential = sensor["differential"]
+
+        if not get_obj_value(self, sensor, "frame_id"):
+            self.frame_id = f'{frame_prefix}_{sensor["name"]}'
         self.loop = asyncio.get_event_loop()
         self.last_publish_time = -1
         self.last_publish_value = {}
@@ -165,6 +169,8 @@ class SensorMonitor:
     def get_header(self):
         header = Header()
         header.stamp = rospy.Time.now()
+        # TODO: Is a check for None needed here?
+        header.frame_id = self.frame_id
         return header
 
     # NOTE: although there are no async functions in this
@@ -199,7 +205,7 @@ class KeypadMonitor(SensorMonitor):
         srv = rospy.Service(
             "mirte/get_keypad_" + sensor["name"], GetKeypad, self.get_data
         )
-        super().__init__(board, sensor, pub)
+        super().__init__(board, sensor, pub, "keypad")
         self.last_debounce_time = 0
         self.last_key = ""
         self.last_debounced_key = ""
@@ -270,7 +276,7 @@ class DistanceSensorMonitor(SensorMonitor):
         srv = rospy.Service(
             "mirte/get_distance_" + sensor["name"], GetDistance, self.get_data
         )
-        super().__init__(board, sensor, self.pub)
+        super().__init__(board, sensor, self.pub, "distance")
         self.last_publish_value = Range()
         self.name = sensor["name"]
 
@@ -280,7 +286,7 @@ class DistanceSensorMonitor(SensorMonitor):
     async def start(self):
         self.range = Range()
         self.range.radiation_type = self.range.ULTRASOUND
-        self.range.field_of_view = math.pi * 5
+        self.range.field_of_view = math.pi / 6  # 30 Degrees
         self.range.min_range = 2
         self.range.max_range = 1.5
         self.range.header = self.get_header()
@@ -294,11 +300,12 @@ class DistanceSensorMonitor(SensorMonitor):
         # Only on data change
         self.range = Range()
         self.range.radiation_type = self.range.ULTRASOUND
-        self.range.field_of_view = math.pi * 5
+        self.range.field_of_view = math.pi / 6  # 30 Degrees
         self.range.min_range = 0.02
         self.range.max_range = 1.5
         self.range.header = self.get_header()
         self.range.range = data[2] / 100.0  # convert from cm to m
+        self.range.header = self.get_header()
         self.pub.publish(self.range)
 
     def publish_data(self, event=None):
@@ -322,7 +329,7 @@ class DigitalIntensitySensorMonitor(SensorMonitor):
             GetIntensityDigital,
             self.get_data,
         )
-        super().__init__(board, sensor, pub)
+        super().__init__(board, sensor, pub, "intensity_digital")
         self.last_publish_value = IntensityDigital()
 
     def get_data(self, req):
@@ -348,7 +355,7 @@ class AnalogIntensitySensorMonitor(SensorMonitor):
         srv = rospy.Service(
             "mirte/get_intensity_" + sensor["name"], GetIntensity, self.get_data
         )
-        super().__init__(board, sensor, pub)
+        super().__init__(board, sensor, pub, "intensity")
         self.last_publish_value = Intensity()
 
     def get_data(self, req):
@@ -379,7 +386,7 @@ class EncoderSensorMonitor(SensorMonitor):
         self.speed_pub = rospy.Publisher(
             "mirte/encoder_speed/" + sensor["name"], Encoder, queue_size=1, latch=True
         )
-        super().__init__(board, sensor, pub)
+        super().__init__(board, sensor, pub, "encoder")
         self.ticks_per_wheel = 20
         if "ticks_per_wheel" in sensor:
             self.ticks_per_wheel = sensor["ticks_per_wheel"]
@@ -1715,6 +1722,8 @@ class Hiwonder_Servo:
             self.min_angle_in = -self.max_angle_in
             self.max_angle_in = -t
         print("rad range", self.name, [self.min_angle_in, self.max_angle_in])
+        if not get_obj_value(self, servo_obj, "frame_id"):
+            self.frame_id = f"servo_{self.name}"
 
     async def start(self):
         server = rospy.Service(
@@ -1779,7 +1788,7 @@ class Hiwonder_Servo:
         )
         header = Header()
         header.stamp = rospy.Time.now()
-
+        header.frame_id = self.frame_id
         position = ServoPosition()
         position.header = header
         position.raw = data["angle"]
