@@ -61,7 +61,7 @@
   <exec_depend>usb_cam</exec_depend>
   <exec_depend>image_common</exec_depend>
   <exec_depend>image_transport_plugins</exec_depend>
-
+  <depend>ros_control_boilerplate</depend>
   <exec_depend>rosbridge_server</exec_depend>
   <exec_depend>web_video_server</exec_depend>
 
