@@ -26,7 +26,7 @@ jobs:
           rosdep init || true
           rosdep update || true
           rosdep install -y --from-paths src/ --ignore-src --rosdistro noetic
-          sudo apt-get install python3-catkin-tools
+          apt-get install python3-catkin-tools
           catkin build -j1 -p1
           . devel/setup.sh
       - run: |-
