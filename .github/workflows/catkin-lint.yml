@@ -26,7 +26,7 @@ jobs:
           rosdep init || true
           rosdep update || true
           rosdep install -y --from-paths src/ --ignore-src --rosdistro noetic
-          catkin_make
+          catkin_make -j1 -p1
           . devel/setup.sh
       - run: |-
           . catkin_ws/devel/setup.sh
