@@ -14,7 +14,7 @@ void controlLoop(MyRobotHWInterface &hw,
 
   hw.read(elapsed);
   cm.update(ros::Time::now(), elapsed);
-  hw.write();
+  hw.write(elapsed);
 }
 
 int main(int argc, char **argv) {

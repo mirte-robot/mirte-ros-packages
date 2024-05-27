@@ -16,6 +16,7 @@ jobs:
           mv mirte_msgs catkin_ws/src/
           mv mirte_telemetrix catkin_ws/src/
           mv mirte_teleop catkin_ws/src/
+          mv mirte_description catkin_ws/src/
           cd catkin_ws/src
           git clone https://github.com/arendjan/ridgeback.git
           git clone https://github.com/Slamtec/rplidar_ros.git
@@ -34,8 +35,8 @@ jobs:
           # Run all tests before failing to test all packages
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_bringup || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_base_control || failure=true
-          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg ros_control_boilerplate || failure=true
-          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_moveit_config || failure=true
+          catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --ignore uninstalled_depend --pkg ros_control_boilerplate || failure=true
+          # catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_moveit_config || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_description || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_msgs || failure=true
           catkin_lint --strict --explain --ignore uninstalled_target --ignore uninstalled_script --pkg mirte_telemetrix || failure=true

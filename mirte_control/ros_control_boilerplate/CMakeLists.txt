@@ -78,7 +78,7 @@ add_library(generic_hw_interface
 target_link_libraries(generic_hw_interface
   ${catkin_LIBRARIES}
 )
-
+add_dependencies(generic_hw_interface ${catkin_EXPORTED_TARGETS})
 # Simulation Hardware Interface
 add_library(sim_hw_interface
   src/sim_hw_interface.cpp
