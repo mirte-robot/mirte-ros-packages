@@ -39,14 +39,20 @@ class MPU9250:
         except Exception as e:
             pass
         self.imu_publisher = rospy.Publisher(
-            f"/mirte/{self.name}/imu", Imu, queue_size=1
+            f"mirte/{self.name}/imu", Imu, queue_size=1
         )
+
+        if "frame_id" in self.module:
+            self.frame_id = self.module["frame_id"]
+        else:
+            self.frame_id = f"imu_{self.name}"
+
         # self.i2c_port = 0
         # TODO: no support yet for other addresses than 0x68
         await self.board.sensors.add_mpu9250(self.i2c_port, self.callback)
 
         self.serv = rospy.Service(
-            f"/mirte/{self.name}/get_imu",
+            f"mirte/{self.name}/get_imu",
             GetIMU,
             self.get_imu_service,
         )
@@ -90,6 +96,8 @@ class MPU9250:
             angular_velocity_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
             linear_acceleration_covariance=[-1, 0, 0, 0, 0, 0, 0, 0, 0],
         )
+        self.last_message.header.stamp = rospy.Time.now()
+        self.last_message.header.frame_id = self.frame_id
         self.imu_publisher.publish(self.last_message)
 
     def get_imu_service(self, req):

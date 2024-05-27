@@ -122,24 +122,28 @@ distance:
   left_front:
     name: left_front
     device: mirte
+    frame_id: base_sonar_left_front
     pins:
       trigger: 6
       echo: 7
   left_rear:
     name: left_rear
     device: mirte
+    frame_id: base_sonar_left_rear
     pins:
       trigger: 8
       echo: 9
   right_front:
     name: right_front
     device: mirte
+    frame_id: base_sonar_right_front
     pins:
       trigger: 10
       echo: 11
   right_rear:
     name: right_rear
     device: mirte
+    frame_id: base_sonar_right_rear
     pins:
       trigger: 12
       echo: 13
