@@ -16,6 +16,7 @@ jobs:
           mv mirte_msgs catkin_ws/src/
           mv mirte_telemetrix catkin_ws/src/
           mv mirte_teleop catkin_ws/src/
+          mv mirte_description catkin_ws/src/
           cd catkin_ws/src
           git clone https://github.com/arendjan/ridgeback.git
           git clone https://github.com/Slamtec/rplidar_ros.git
