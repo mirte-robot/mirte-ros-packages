@@ -74,15 +74,15 @@ def talker():
     global set_rot, set_sh, set_el, set_gr
     rospy.init_node("arm_control", anonymous=True)
     rospy.Subscriber("/joy", Joy, callback_joy, queue_size=1)
-    rospy.Subscriber("/mirte/servos/servoRot/position", ServoPosition, cb_rot)
-    rospy.Subscriber("/mirte/servos/servoShoulder/position", ServoPosition, cb_sh)
-    rospy.Subscriber("/mirte/servos/servoElbow/position", ServoPosition, cb_el)
-    rospy.Subscriber("/mirte/servos/servoGripper/position", ServoPosition, cb_gr)
+    rospy.Subscriber("mirte/servos/servoRot/position", ServoPosition, cb_rot)
+    rospy.Subscriber("mirte/servos/servoShoulder/position", ServoPosition, cb_sh)
+    rospy.Subscriber("mirte/servos/servoElbow/position", ServoPosition, cb_el)
+    rospy.Subscriber("mirte/servos/servoGripper/position", ServoPosition, cb_gr)
 
-    set_rot = rospy.ServiceProxy("/mirte/set_servoRot_servo_angle", SetServoAngle)
-    set_sh = rospy.ServiceProxy("/mirte/set_servoShoulder_servo_angle", SetServoAngle)
-    set_el = rospy.ServiceProxy("/mirte/set_servoElbow_servo_angle", SetServoAngle)
-    set_gr = rospy.ServiceProxy("/mirte/set_servoGripper_servo_angle", SetServoAngle)
+    set_rot = rospy.ServiceProxy("mirte/set_servoRot_servo_angle", SetServoAngle)
+    set_sh = rospy.ServiceProxy("mirte/set_servoShoulder_servo_angle", SetServoAngle)
+    set_el = rospy.ServiceProxy("mirte/set_servoElbow_servo_angle", SetServoAngle)
+    set_gr = rospy.ServiceProxy("mirte/set_servoGripper_servo_angle", SetServoAngle)
 
     rate = rospy.Rate(10)  # 10hz
     while not rospy.is_shutdown():
