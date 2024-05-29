@@ -39,7 +39,7 @@ class MPU9250:
         except Exception as e:
             pass
         self.imu_publisher = rospy.Publisher(
-            f"mirte/{self.name}/imu", Imu, queue_size=1
+            f"/mirte/{self.name}/imu", Imu, queue_size=1
         )
 
         if "frame_id" in self.module:
@@ -52,7 +52,7 @@ class MPU9250:
         await self.board.sensors.add_mpu9250(self.i2c_port, self.callback)
 
         self.serv = rospy.Service(
-            f"mirte/{self.name}/get_imu",
+            f"/mirte/{self.name}/get_imu",
             GetIMU,
             self.get_imu_service,
         )
