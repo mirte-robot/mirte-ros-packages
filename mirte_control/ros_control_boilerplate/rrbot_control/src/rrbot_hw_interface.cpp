@@ -90,13 +90,13 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
     : ros_control_boilerplate::GenericHWInterface(nh, urdf_model) {
   this->connectServices();
 
-  sub0 = nh.subscribe("mirte/servos/servoRot/position", 1,
+  sub0 = nh.subscribe("/mirte/servos/servoRot/position", 1,
                       rrbot_control::callbackJoint0);
-  sub1 = nh.subscribe("mirte/servos/servoShoulder/position", 1,
+  sub1 = nh.subscribe("/mirte/servos/servoShoulder/position", 1,
                       rrbot_control::callbackJoint1);
-  sub2 = nh.subscribe("mirte/servos/servoElbow/position", 1,
+  sub2 = nh.subscribe("/mirte/servos/servoElbow/position", 1,
                       rrbot_control::callbackJoint2);
-  sub3 = nh.subscribe("mirte/servos/servoWrist/position", 1,
+  sub3 = nh.subscribe("/mirte/servos/servoWrist/position", 1,
                       rrbot_control::callbackJoint3);
 
   ROS_INFO_NAMED("rrbot_hw_interface", "RRBotHWInterface Ready.");
@@ -105,20 +105,20 @@ RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
 void RRBotHWInterface::connectServices() {
   ROS_INFO_NAMED("rrbot_hw_interface", "Connecting to the services...");
 
-  ros::service::waitForService("mirte/set_servoRot_servo_angle", -1);
-  ros::service::waitForService("mirte/set_servoShoulder_servo_angle", -1);
-  ros::service::waitForService("mirte/set_servoElbow_servo_angle", -1);
-  ros::service::waitForService("mirte/set_servoWrist_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoRot_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoShoulder_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoElbow_servo_angle", -1);
+  ros::service::waitForService("/mirte/set_servoWrist_servo_angle", -1);
   { // Only mutex when actually writing to class vars.
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
     client0 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "mirte/set_servoRot_servo_angle", true);
+        "/mirte/set_servoRot_servo_angle", true);
     client1 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "mirte/set_servoShoulder_servo_angle", true);
+        "/mirte/set_servoShoulder_servo_angle", true);
     client2 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "mirte/set_servoElbow_servo_angle", true);
+        "/mirte/set_servoElbow_servo_angle", true);
     client3 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "mirte/set_servoWrist_servo_angle", true);
+        "/mirte/set_servoWrist_servo_angle", true);
   }
   ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
 }
