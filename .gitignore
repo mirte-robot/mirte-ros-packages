@@ -1,2 +1,6 @@
 __pycache__
 .vscode/
+rb/
+old/
+build/
+ridgeback_control/

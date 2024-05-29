@@ -1,0 +1,132 @@
+device:
+  mirte:
+    type: pcb
+    version: 0.6
+    max_frequency: 50
+modules:
+  motorservocontroller:
+    device: mirte
+    type: PCA9685
+    id: 0x41 # bridged A0
+    connector: I2C1
+    frequency: 1500
+    motors:
+      left_rear:
+        pin_A: 0
+        pin_B: 1
+      left_front:
+        pin_A: 2
+        pin_B: 3
+      right_rear:
+        pin_A: 5
+        pin_B: 4
+      right_front:
+        pin_A: 7
+        pin_B: 6
+  servo_controller:
+    device: mirte
+    type: Hiwonder_Servo
+    uart: 0
+    rx_pin: 0
+    tx_pin: 1
+    servos:
+      servoRot:
+        id: 2
+        home_out: 12000
+        min_angle_out: 3400
+        max_angle_out: 21000
+        invert: true
+      servoShoulder:
+        id: 3
+        home_out: 11450
+        min_angle_out: 11450
+        max_angle_out: 20000
+        invert: true
+      servoElbow:
+        id: 4
+        home_out: 11750
+        min_angle_out: 3000
+        max_angle_out: 21000
+        invert: false
+      servoWrist:
+        id: 5
+        home_out: 12200
+        min_angle_out: 3000
+        max_angle_out: 21000
+        invert: true
+  power_watcher:
+    device: mirte
+    type: INA226
+    connector: I2C1
+    id: 0x40 # default 0x40
+    min_voltage: 10.5
+    max_current: 5
+    max_voltage: 15
+    turn_off_pin: 27
+    turn_off_value: True
+    turn_off_time: 10
+    power_low_time: 20
+  movement:
+    type: MPU9250
+    connector: I2C1
+    device: mirte
+    id: 0x68
+# encoder:
+#   left_front:
+#     name: left_front
+#     device: mirte
+#     pins:
+#       A: 21
+#       B: 20
+#   left_rear:
+#     name: left_rear
+#     device: mirte
+#     pins:
+#       A: 17
+#       B: 16
+#   right_front:
+#     name: right_front
+#     device: mirte
+#     pins:
+#       A: 18
+#       B: 19
+#   right_rear:
+#     name: right_rear
+#     device: mirte
+#     pins:
+#       A: 15
+#       B: 14
+# neopixel:
+#   name: leds
+#   pins:
+#     pin: 27
+#   default_color: 0x123456
+#   max_intensity: 50
+#   pixels: 18
+
+    # servos:
+    #   servo1:
+    #     pin: 1
+  # servo_controller:
+  #   device: mirte
+  #   type: Hiwonder_Servo
+  #   uart: 0
+  #   rx_pin: 0
+  #   tx_pin: 1
+  #   servos:
+  #     servoH1:
+  #       id: 3
+  #       min_angle: 9000
+  #       max_angle: 14000
+  #     servoH2:
+  #       id: 4
+  #       min_angle: 800
+  #       max_angle: 4000
+  # power_watcher:
+  #   device: mirte
+  #   type: INA226
+  #   connector: I2C1
+  #   id: 0x41
+  #   min_voltage: 11
+  #   max_current: 1
+  #   max_voltage: 15

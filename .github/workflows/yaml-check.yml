@@ -1,0 +1,14 @@
+---
+name: test-yaml-format
+on: [push, pull_request]
+jobs:
+  yaml_style_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - run: pip install yamllint
+      - name: check yaml changes
+        run: |-
+          yamllint .

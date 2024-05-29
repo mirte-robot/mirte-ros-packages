@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: mirte_description
+    relative_path: urdf/mirte_arm.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/mearm.srdf
+  CONFIG:
+    author_name: Martin Klomp
+    author_email: m.klomp@tudelft.nl
+    generated_timestamp: 1707314315

@@ -1,0 +1,19 @@
+<launch>
+    <node name="joy"
+          pkg="joy"
+          type="joy_node" output="screen">
+        <param name="dev" value="/dev/input/js0"/>
+        <param name="autorepeat_rate" value="10"/>
+        <param name="coalesce_interval" value="0.01"/>
+    </node>
+    <group ns="teleop_twist_joy">
+    <rosparam command="load" file="$(find mirte_teleop)/config/ps3-holonomic.config.yaml"/>
+</group>
+    <node name="teleop_twist_joy"
+          pkg="teleop_twist_joy"
+          type="teleop_node" output="screen">
+        <!-- <param name="scale_linear" value="2"/>
+        <param name="scale_angular" value="2"/> -->
+        <remap from="/cmd_vel" to="mobile_base_controller/cmd_vel"/>
+    </node>
+</launch>

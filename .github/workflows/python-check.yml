@@ -1,3 +1,4 @@
+---
 name: python style check
 on: [push, pull_request]
 jobs:
@@ -8,4 +9,4 @@ jobs:
       - name: Black Code Formatter
         uses: lgeiger/black-action@master
         with:
-          args: ". --check"
+          args: . --check
