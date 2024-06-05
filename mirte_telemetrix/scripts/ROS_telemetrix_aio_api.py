@@ -1505,7 +1505,6 @@ class Hiwonder_Servo:
             ),
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
-        # print("clamp", angle)
         await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
@@ -1537,12 +1536,19 @@ class Hiwonder_Servo:
         self.publisher.publish(position)
 
 
+async def dummy_func(a=1, b=2, c=3):
+    pass
+
+
 class Hiwonder_Bus:
     def __init__(self, board, module_name, module):
         self.name = module_name
         self.module = module
         self.board = board
         self.servos = {}
+        self.set_single_servo = dummy_func
+        self.set_enabled = dummy_func
+        self.set_enabled_all = dummy_func
 
     async def start(self):
         uart = self.module["uart"]
