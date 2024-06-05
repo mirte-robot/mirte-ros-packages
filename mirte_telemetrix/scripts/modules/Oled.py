@@ -283,7 +283,7 @@ class Oled(_SSD1306, Oled_interface):
                 print("write failed start", self.oled_obj["name"])
                 self.enabled = False
                 return
-        self.start_int()
+        await self.start_int()
         
 
     def show_default(self, event=None):
