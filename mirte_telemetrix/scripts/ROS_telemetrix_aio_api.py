@@ -26,8 +26,9 @@ from modules import Oled
 # devices = rospy.get_param("mirte/device")
 
 global_data = {
-"current_soc" : "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
+    "current_soc": "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
 }
+
 
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
 # we need to add a simple wrapper
@@ -783,9 +784,23 @@ def actuators(loop, board, device):
             if "name" not in oled_settings:
                 oled_settings["name"] = oled
             if "type" in oled_settings and oled_settings["type"] == "module":
-                oled_obj = Oled.Oled_module(board, oled, oleds[oled], board_mapping, global_data=global_data, loop=loop )
+                oled_obj = Oled.Oled_module(
+                    board,
+                    oled,
+                    oleds[oled],
+                    board_mapping,
+                    global_data=global_data,
+                    loop=loop,
+                )
             else:
-                oled_obj = Oled.Oled(board,oled, oleds[oled],board_mapping, global_data=global_data, port=oled_id, loop=loop
+                oled_obj = Oled.Oled(
+                    board,
+                    oled,
+                    oleds[oled],
+                    board_mapping,
+                    global_data=global_data,
+                    port=oled_id,
+                    loop=loop,
                 )  # get_pin_numbers(oleds[oled]))
             oled_id = oled_id + 1
             servers.append(loop.create_task(oled_obj.start()))
