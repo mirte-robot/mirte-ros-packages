@@ -16,19 +16,163 @@ import asyncio
 # Extended adafruit _SSD1306
 
 class Oled_interface:
+   
+    async def show_default_async(self):
+        text = ""
+        if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
+            ips = subprocess.getoutput("hostname -I").split(" ")
+            text += "IPs: " + ", ".join(filter(None, ips))
+        if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
+            text += "\nHn:" + subprocess.getoutput("cat /etc/hostname")
+        if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
+            wifi = subprocess.getoutput("iwgetid -r").strip()
+            if len(wifi) > 0:
+                text += "\nWi-Fi:" + wifi
+        if "show_soc" in self.oled_obj and self.oled_obj["show_soc"]:
+            # TODO: change to soc ros service
+            # print("asdf", self.global_data)
+            text += f"\nSOC: {self.global_data['current_soc']}%"
+        if len(text) > 0:
+            await self.set_oled_image_service_async(
+                SetOLEDImageRequest(type="text", value=text)
+            )
+    async def set_oled_image_service_async(self, req):
+        if req.type =="text":
+            await self.set_oled_text_async(req.value.replace('\\n', '\n'))
+        if req.type == "image":
+            await self.show_png(
+                "/usr/local/src/mirte/mirte-oled-images/images/" + req.value + ".png"
+            )  # open color image
+
+        if req.type == "animation":
+            folder = (
+                "/usr/local/src/mirte/mirte-oled-images/animations/" + req.value + "/"
+            )
+            number_of_images = len(
+                [
+                    name
+                    for name in os.listdir(folder)
+                    if os.path.isfile(os.path.join(folder, name))
+                ]
+            )
+            for i in range(number_of_images):
+                await self.show_png(folder + req.value + "_" + str(i) + ".png")
+
+    async def set_oled_text_async(self, text):
+        print("todo setoled text async")
+    def set_oled_image_service(self, req):
+        self.default_image = False
+        if self.failed:
+            print("oled writing failed")
+            return SetOLEDImageResponse(False)
+
+        try:
+            # the ros service is started on a different thread than the asyncio loop
+            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
+            future = asyncio.run_coroutine_threadsafe(
+                self.set_oled_image_service_async(req), self.loop
+            )
+            future.result()  # wait for it to be done
+        except Exception as e:
+            print(e)
+        return SetOLEDImageResponse(True)
     async def start(self):
         print("todo start")
     def show_default(self, event=None):
-        print ("todo show default")
-    async def show_default_async(self):
+        if not self.default_image:
+            return
+        try:
+            # the ros service is started on a different thread than the asyncio loop
+            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
+            future = asyncio.run_coroutine_threadsafe(
+                self.show_default_async(), self.loop
+            )
+        except Exception as e:
+            print(e)
+    async def show_png(self, file):
+        print("todo show png")
+# class Oled_module:
+
+
+class Oled_module(Oled_interface):
+    def __init__(
+            self,
+            board,
+            module_name,
+            module,
+            board_mapping,
+            loop,
+            global_data, # obj with some shared data, like SOC
+            addr=0x3C, # not yet possible with modules
+            external_vcc=False,
+            reset=None,
+        ):
+        self.board = board
+        self.oled_obj = module
+        self.addr = addr
+        self.failed = False
+        self.loop = loop
+        self.global_data = global_data
+        width = 128 # hardcoded in the pico code
+        height = 64
+        self.init_awaits = []
+        # Add an extra byte to the data buffer to hold an I2C data/command byte
+        # to use hardware-compatible I2C transactions.  A memoryview of the
+        # buffer is used to mask this byte from the framebuffer operations
+        # (without a major memory hit as memoryview doesn't copy to a separate
+        # buffer).
+        if board_mapping.get_mcu() == "pico":
+            if "connector" in self.oled_obj:
+                pins = board_mapping.connector_to_pins(self.oled_obj["connector"])
+            else:
+                pins = self.oled_obj["pins"]
+            pin_numbers = {}
+            for item in pins:
+                pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
+            self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
+            self.init_awaits.append(
+                self.board.set_pin_mode_i2c(
+                    i2c_port=self.i2c_port,
+                    sda_gpio=pin_numbers["sda"],
+                    scl_gpio=pin_numbers["scl"],
+                )
+            )
+        else:
+            self.init_awaits.append(self.board.set_pin_mode_i2c(i2c_port=self.i2c_port))
+        print("done init oledmod")
         
-class Oled_module:
+    async def start(self):
+        for ev in self.init_awaits:
+            try:  # catch set_pin_mode_i2c already for this port
+                z = await ev
+                print("z",z)
+            except Exception as e:
+                print(e)
+                pass
+        await asyncio.sleep(1)
+        print("add")
+        self.update_functions = await self.board.modules.add_tmx_ssd1306(self.i2c_port)
+        await asyncio.sleep(1)
+        print("upd func")
+        await self.update_functions["send_text"]("Starting ROS...")
+        self.default_image = True
+        rospy.Timer(rospy.Duration(10), self.show_default)
+        await self.show_default_async()
 
 
 
+    async def set_oled_text_async(self, text):
+        print("udpate text")
+        await self.update_functions["send_text"](text.replace('\\n', '\n'))
+    def show(self):
+        print("unused?")
+    async def show_async(self):
+        print("todo show async")
+    async def show_png(self, file):
+        print("todo show png")
 
 
-class Oled(_SSD1306):
+class Oled(_SSD1306, Oled_interface):
     def __init__(
         self,
         board,
@@ -128,29 +272,9 @@ class Oled(_SSD1306):
         except Exception as e:
             print(e)
 
-    async def show_default_async(self):
-        text = ""
-        if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
-            ips = subprocess.getoutput("hostname -I").split(" ")
-            text += "IPs: " + ", ".join(filter(None, ips))
-        if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
-            text += "\nHn:" + subprocess.getoutput("cat /etc/hostname")
-        if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
-            wifi = subprocess.getoutput("iwgetid -r").strip()
-            if len(wifi) > 0:
-                text += "\nWi-Fi:" + wifi
-        if "show_soc" in self.oled_obj and self.oled_obj["show_soc"]:
-            # TODO: change to soc ros service
-            # print("asdf", self.global_data)
-            text += f"\nSOC: {self.global_data['current_soc']}%"
-        if len(text) > 0:
-            await self.set_oled_image_service_async(
-                SetOLEDImageRequest(type="text", value=text)
-            )
-
-    async def set_oled_image_service_async(self, req):
-        if req.type == "text":
-            text = req.value.replace("\\n", "\n")
+    
+    async def set_oled_text_async(self, text):
+            text = text.replace("\\n", "\n")
             image = Image.new("1", (128, 64))
             draw = ImageDraw.Draw(image)
             split_text = text.splitlines()
@@ -165,41 +289,8 @@ class Oled(_SSD1306):
                 y_text += height
             self.image(image)
             await self.show_async()
-        if req.type == "image":
-            await self.show_png(
-                "/usr/local/src/mirte/mirte-oled-images/images/" + req.value + ".png"
-            )  # open color image
-
-        if req.type == "animation":
-            folder = (
-                "/usr/local/src/mirte/mirte-oled-images/animations/" + req.value + "/"
-            )
-            number_of_images = len(
-                [
-                    name
-                    for name in os.listdir(folder)
-                    if os.path.isfile(os.path.join(folder, name))
-                ]
-            )
-            for i in range(number_of_images):
-                await self.show_png(folder + req.value + "_" + str(i) + ".png")
-
-    def set_oled_image_service(self, req):
-        self.default_image = False
-        if self.failed:
-            print("oled writing failed")
-            return SetOLEDImageResponse(False)
-
-        try:
-            # the ros service is started on a different thread than the asyncio loop
-            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
-            future = asyncio.run_coroutine_threadsafe(
-                self.set_oled_image_service_async(req), self.loop
-            )
-            future.result()  # wait for it to be done
-        except Exception as e:
-            print(e)
-        return SetOLEDImageResponse(True)
+        
+    
 
     def show(self):
         """Update the display"""

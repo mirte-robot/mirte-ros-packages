@@ -782,8 +782,11 @@ def actuators(loop, board, device):
             oled_settings = oleds[oled]
             if "name" not in oled_settings:
                 oled_settings["name"] = oled
-            oled_obj = Oled.Oled(board,oled, oleds[oled],board_mapping, global_data=global_data, port=oled_id, loop=loop
-            )  # get_pin_numbers(oleds[oled]))
+            if "type" in oled_settings and oled_settings["type"] == "module":
+                oled_obj = Oled.Oled_module(board, oled, oleds[oled], board_mapping, global_data=global_data, loop=loop )
+            else:
+                oled_obj = Oled.Oled(board,oled, oleds[oled],board_mapping, global_data=global_data, port=oled_id, loop=loop
+                )  # get_pin_numbers(oleds[oled]))
             oled_id = oled_id + 1
             servers.append(loop.create_task(oled_obj.start()))
 
