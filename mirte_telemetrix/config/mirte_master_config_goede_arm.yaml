@@ -88,72 +88,13 @@ oled:
   middle:
     name: middle
     device: mirte
+    type: old # module for new rendering method
     connector: I2C1
     show_ip: true
     show_hostname: true
     show_wifi: true
     show_soc: true
-encoder:
-  left_front:
-    name: left_front
-    device: mirte
-    pins:
-      A: 15 #21
-      B: 14 #20
-  left_rear:
-    name: left_rear
-    device: mirte
-    pins:
-      A: 17
-      B: 16
-  right_front:
-    name: right_front
-    device: mirte
-    pins:
-      A: 19
-      B: 18
-  right_rear:
-    name: right_rear
-    device: mirte
-    pins:
-      A: 20
-      B: 21
-distance:
-  left_front:
-    name: left_front
-    device: mirte
-    frame_id: base_sonar_left_front
-    pins:
-      trigger: 6
-      echo: 7
-  left_rear:
-    name: left_rear
-    device: mirte
-    frame_id: base_sonar_left_rear
-    pins:
-      trigger: 8
-      echo: 9
-  right_front:
-    name: right_front
-    device: mirte
-    frame_id: base_sonar_right_front
-    pins:
-      trigger: 10
-      echo: 11
-  right_rear:
-    name: right_rear
-    device: mirte
-    frame_id: base_sonar_right_rear
-    pins:
-      trigger: 12
-      echo: 13
-neopixel:
-  name: leds
-  pins:
-    pin: 22
-  default_color: 0x123456
-  max_intensity: 50
-  pixels: 10
+    show_time: false
 
     # servos:
     #   servo1:

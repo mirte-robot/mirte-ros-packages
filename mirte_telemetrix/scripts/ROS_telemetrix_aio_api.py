@@ -20,13 +20,14 @@ except:
     pass
 
 from modules import MPU9250
-
+from modules import Oled
 
 # NOTE: This call was unused
 # devices = rospy.get_param("mirte/device")
 
-
-current_soc = "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
+global_data = {
+    "current_soc": "???"  # TODO: change to something better, but for now we communicate SOC from the powerwatcher to the Oled using a global
+}
 
 
 # Until we update our own fork of TelemtrixAIO to the renamed pwm calls
@@ -684,268 +685,6 @@ class DDPMotor(Motor):
             self.prev_motor_speed = speed
 
 
-# Extended adafruit _SSD1306
-class Oled(_SSD1306):
-    def __init__(
-        self,
-        width,
-        height,
-        board,
-        oled_obj,
-        port,
-        loop,
-        addr=0x3C,
-        external_vcc=False,
-        reset=None,
-    ):
-        self.board = board
-        self.oled_obj = oled_obj
-        self.addr = addr
-        self.temp = bytearray(2)
-        self.i2c_port = port
-        self.failed = False
-        self.loop = loop
-        self.init_awaits = []
-        self.write_commands = []
-
-        # Add an extra byte to the data buffer to hold an I2C data/command byte
-        # to use hardware-compatible I2C transactions.  A memoryview of the
-        # buffer is used to mask this byte from the framebuffer operations
-        # (without a major memory hit as memoryview doesn't copy to a separate
-        # buffer).
-        self.buffer = bytearray(((height // 8) * width) + 1)
-        # self.buffer = bytearray(16)
-        # self.buffer[0] = 0x40  # Set first byte of data buffer to Co=0, D/C=1
-        if board_mapping.get_mcu() == "pico":
-            if "connector" in oled_obj:
-                pins = board_mapping.connector_to_pins(oled_obj["connector"])
-            else:
-                pins = oled_obj["pins"]
-            pin_numbers = {}
-            for item in pins:
-                pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
-            self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
-            self.init_awaits.append(
-                self.board.set_pin_mode_i2c(
-                    i2c_port=self.i2c_port,
-                    sda_gpio=pin_numbers["sda"],
-                    scl_gpio=pin_numbers["scl"],
-                )
-            )
-        else:
-            self.init_awaits.append(self.board.set_pin_mode_i2c(i2c_port=self.i2c_port))
-        time.sleep(1)
-        super().__init__(
-            memoryview(self.buffer)[1:],
-            width,
-            height,
-            external_vcc=external_vcc,
-            reset=reset,
-            page_addressing=False,
-        )
-
-    async def start(self):
-        server = rospy.Service(
-            "mirte/set_" + self.oled_obj["name"] + "_image",
-            SetOLEDImage,
-            self.set_oled_image_service,
-        )
-        for ev in self.init_awaits:
-            try:  # catch set_pin_mode_i2c already for this port
-                await ev
-            except Exception as e:
-                pass
-        for cmd in self.write_commands:
-            # // TODO: arduino will just stop forwarding i2c write messages after a single failed message. No feedback from it yet.
-            out = await self.board.i2c_write(60, cmd, i2c_port=self.i2c_port)
-            if out is None:
-                await asyncio.sleep(0.05)
-            if (
-                out == False
-            ):  # pico returns true/false, arduino returns always none, only catch false
-                print("write failed start", self.oled_obj["name"])
-                self.failed = True
-                return
-        self.default_image = True
-        rospy.Timer(rospy.Duration(10), self.show_default)
-        await self.show_default_async()
-
-    def show_default(self, event=None):
-        if not self.default_image:
-            return
-        try:
-            # the ros service is started on a different thread than the asyncio loop
-            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
-            future = asyncio.run_coroutine_threadsafe(
-                self.show_default_async(), self.loop
-            )
-        except Exception as e:
-            print(e)
-
-    async def show_default_async(self):
-        text = ""
-        if "show_ip" in self.oled_obj and self.oled_obj["show_ip"]:
-            ips = subprocess.getoutput("hostname -I").split(" ")
-            text += "IPs: " + ", ".join(filter(None, ips))
-        if "show_hostname" in self.oled_obj and self.oled_obj["show_hostname"]:
-            text += "\nHn:" + subprocess.getoutput("cat /etc/hostname")
-        if "show_wifi" in self.oled_obj and self.oled_obj["show_wifi"]:
-            wifi = subprocess.getoutput("iwgetid -r").strip()
-            if len(wifi) > 0:
-                text += "\nWi-Fi:" + wifi
-        if "show_soc" in self.oled_obj and self.oled_obj["show_soc"]:
-            # TODO: change to soc ros service
-            text += f"\nSOC: {current_soc}%"
-        if len(text) > 0:
-            await self.set_oled_image_service_async(
-                SetOLEDImageRequest(type="text", value=text)
-            )
-
-    async def set_oled_image_service_async(self, req):
-        if req.type == "text":
-            text = req.value.replace("\\n", "\n")
-            image = Image.new("1", (128, 64))
-            draw = ImageDraw.Draw(image)
-            split_text = text.splitlines()
-            lines = []
-            for i in split_text:
-                lines.extend(textwrap.wrap(i, width=20))
-
-            y_text = 1
-            for line in lines:
-                width, height = font.getsize(line)
-                draw.text((1, y_text), line, font=font, fill=255)
-                y_text += height
-            self.image(image)
-            await self.show_async()
-        if req.type == "image":
-            await self.show_png(
-                "/usr/local/src/mirte/mirte-oled-images/images/" + req.value + ".png"
-            )  # open color image
-
-        if req.type == "animation":
-            folder = (
-                "/usr/local/src/mirte/mirte-oled-images/animations/" + req.value + "/"
-            )
-            number_of_images = len(
-                [
-                    name
-                    for name in os.listdir(folder)
-                    if os.path.isfile(os.path.join(folder, name))
-                ]
-            )
-            for i in range(number_of_images):
-                await self.show_png(folder + req.value + "_" + str(i) + ".png")
-
-    def set_oled_image_service(self, req):
-        self.default_image = False
-        if self.failed:
-            print("oled writing failed")
-            return SetOLEDImageResponse(False)
-
-        try:
-            # the ros service is started on a different thread than the asyncio loop
-            # When using the normal loop.run_until_complete() function, both threads join in and the oled communication will get broken faster
-            future = asyncio.run_coroutine_threadsafe(
-                self.set_oled_image_service_async(req), self.loop
-            )
-            future.result()  # wait for it to be done
-        except Exception as e:
-            print(e)
-        return SetOLEDImageResponse(True)
-
-    def show(self):
-        """Update the display"""
-        xpos0 = 0
-        xpos1 = self.width - 1
-        if self.width == 64:
-            # displays with width of 64 pixels are shifted by 32
-            xpos0 += 32
-            xpos1 += 32
-        if self.width == 72:
-            # displays with width of 72 pixels are shifted by 28
-            xpos0 += 28
-            xpos1 += 28
-        self.write_cmd(0x21)  # SET_COL_ADDR)
-        self.write_cmd(xpos0)
-        self.write_cmd(xpos1)
-        self.write_cmd(0x22)  # SET_PAGE_ADDR)
-        self.write_cmd(0)
-        self.write_cmd(self.pages - 1)
-        self.write_framebuf()
-
-    def write_cmd(self, cmd):
-        self.temp[0] = 0x80
-        self.temp[1] = cmd
-        self.write_commands.append([0x80, cmd])
-
-    async def write_cmd_async(self, cmd):
-        if self.failed:
-            return
-        self.temp[0] = 0x80
-        self.temp[1] = cmd
-        out = await self.board.i2c_write(60, self.temp, i2c_port=self.i2c_port)
-        if out is None:
-            await asyncio.sleep(0.05)
-        if out == False:
-            print("failed write oled 2")
-            self.failed = True
-
-    async def show_async(self):
-        """Update the display"""
-        # TODO: only update pixels that are changed
-        xpos0 = 0
-        xpos1 = self.width - 1
-        if self.width == 64:
-            # displays with width of 64 pixels are shifted by 32
-            xpos0 += 32
-            xpos1 += 32
-        if self.width == 72:
-            # displays with width of 72 pixels are shifted by 28
-            xpos0 += 28
-            xpos1 += 28
-
-        try:
-            await self.write_cmd_async(0x21)  # SET_COL_ADDR)
-            await self.write_cmd_async(xpos0)
-            await self.write_cmd_async(xpos1)
-            await self.write_cmd_async(0x22)  # SET_PAGE_ADDR)
-            await self.write_cmd_async(0)
-            await self.write_cmd_async(self.pages - 1)
-            await self.write_framebuf_async()
-        except Exception as e:
-            print(e)
-
-    async def write_framebuf_async(self):
-        if self.failed:
-            return
-
-        async def task(self, i):
-            buf = self.buffer[i * 16 : (i + 1) * 16 + 1]
-            buf[0] = 0x40
-            out = await self.board.i2c_write(60, buf, i2c_port=self.i2c_port)
-            if out is None:
-                await asyncio.sleep(0.05)
-            if out == False:
-                print("failed wrcmd")
-                self.failed = True
-
-        for i in range(64):
-            await task(self, i)
-
-    def write_framebuf(self):
-        for i in range(64):
-            buf = self.buffer[i * 16 : (i + 1) * 16 + 1]
-            buf[0] = 0x40
-            self.write_commands.append(buf)
-
-    async def show_png(self, file):
-        image_file = Image.open(file)  # open color image
-        image_file = image_file.convert("1", dither=Image.NONE)
-        self.image(image_file)
-        await self.show_async()
-
-
 async def handle_set_led_value(req):
     led = rospy.get_param("mirte/led")
     await analog_write(
@@ -1044,9 +783,25 @@ def actuators(loop, board, device):
             oled_settings = oleds[oled]
             if "name" not in oled_settings:
                 oled_settings["name"] = oled
-            oled_obj = Oled(
-                128, 64, board, oleds[oled], port=oled_id, loop=loop
-            )  # get_pin_numbers(oleds[oled]))
+            if "type" in oled_settings and oled_settings["type"] == "module":
+                oled_obj = Oled.Oled_module(
+                    board,
+                    oled,
+                    oleds[oled],
+                    board_mapping,
+                    global_data=global_data,
+                    loop=loop,
+                )
+            else:
+                oled_obj = Oled.Oled(
+                    board,
+                    oled,
+                    oleds[oled],
+                    board_mapping,
+                    global_data=global_data,
+                    port=oled_id,
+                    loop=loop,
+                )  # get_pin_numbers(oleds[oled]))
             oled_id = oled_id + 1
             servers.append(loop.create_task(oled_obj.start()))
 
@@ -1594,8 +1349,8 @@ class INA226:
         bs.capacity = math.nan
         bs.design_capacity = math.nan
         bs.percentage = self.calculate_percentage() / 100
-        global current_soc
-        current_soc = int(self.calculate_percentage())
+        global global_data
+        global_data["current_soc"] = int(self.calculate_percentage())
         # uint8   power_supply_health     # The battery health metric. Values defined above
         # uint8   power_supply_technology # The battery chemistry. Values defined above
         bs.power_supply_status = 0  # uint8 POWER_SUPPLY_STATUS_UNKNOWN = 0
@@ -1765,7 +1520,6 @@ class Hiwonder_Servo:
             ),
         )
         angle = int(max(self.min_angle_out, min(angle, self.max_angle_out)))  # clamp
-        # print("clamp", angle)
         await self.bus.set_single_servo(self.id, angle, 0)
 
     def set_servo_angle_service(self, req):
@@ -1797,12 +1551,19 @@ class Hiwonder_Servo:
         self.publisher.publish(position)
 
 
+async def dummy_func(a=1, b=2, c=3):
+    pass
+
+
 class Hiwonder_Bus:
     def __init__(self, board, module_name, module):
         self.name = module_name
         self.module = module
         self.board = board
         self.servos = {}
+        self.set_single_servo = dummy_func
+        self.set_enabled = dummy_func
+        self.set_enabled_all = dummy_func
 
     async def start(self):
         uart = self.module["uart"]

@@ -45,87 +45,73 @@
 #include <rrbot_control/rrbot_hw_interface.h>
 
 namespace rrbot_control {
-
-double data[4] = {0.0, 0.0, 0.0, 0.0};
-bool servo_init[4] = {false, false, false, false};
+const std::string servo_names[] = {"Rot", "Shoulder", "Elbow", "Wrist"};
+const auto NUM_SERVOS = std::size(servo_names);
+struct Servo_data {
+  double data;
+  bool init = false;
+  bool moved = false;
+  double last_move_update = -100;
+};
+std::array<Servo_data, NUM_SERVOS> servo_data;
 bool initialized = false;
 int init_steps = 0;
 
-ros::Subscriber sub0;
-ros::Subscriber sub1;
-ros::Subscriber sub2;
-ros::Subscriber sub3;
+std::vector<ros::Subscriber> subs;
+std::vector<ros::ServiceClient> clients;
+std::vector<mirte_msgs::SetServoAngle> srvs;
 
-ros::ServiceClient client0;
-ros::ServiceClient client1;
-ros::ServiceClient client2;
-ros::ServiceClient client3;
-
-mirte_msgs::SetServoAngle srv0;
-mirte_msgs::SetServoAngle srv1;
-mirte_msgs::SetServoAngle srv2;
-mirte_msgs::SetServoAngle srv3;
-
-void callbackJoint0(const mirte_msgs::ServoPosition::ConstPtr &msg) {
-  data[0] = msg->angle;
-  servo_init[0] = true;
+void callbackJoint(const mirte_msgs::ServoPosition::ConstPtr &msg, int joint) {
+  auto &servo = servo_data[joint];
+  servo.data = msg->angle;
+  servo.init = true;
+  // the servo should only be written to iff the servo gets a new location or
+  // when it's moved by gravity, then it needs the command again this will check
+  // that the servo is moved
+  if (std::abs(servo.last_move_update - servo.data) >
+      0.01) { // 0.57deg, bit more than the 24 centidegrees/LSB
+    servo.last_move_update = servo.data;
+    servo.moved = true;
+  }
 }
 
-void callbackJoint1(const mirte_msgs::ServoPosition::ConstPtr &msg) {
-  data[1] = msg->angle;
-  servo_init[1] = true;
-}
-
-void callbackJoint2(const mirte_msgs::ServoPosition::ConstPtr &msg) {
-  data[2] = msg->angle;
-  servo_init[2] = true;
-}
-
-void callbackJoint3(const mirte_msgs::ServoPosition::ConstPtr &msg) {
-  data[3] = msg->angle;
-  servo_init[3] = true;
-}
+const auto topic_format = "/mirte/servos/servo%s/position";
 
 RRBotHWInterface::RRBotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
     : ros_control_boilerplate::GenericHWInterface(nh, urdf_model) {
   this->connectServices();
-
-  sub0 = nh.subscribe("/mirte/servos/servoRot/position", 1,
-                      rrbot_control::callbackJoint0);
-  sub1 = nh.subscribe("/mirte/servos/servoShoulder/position", 1,
-                      rrbot_control::callbackJoint1);
-  sub2 = nh.subscribe("/mirte/servos/servoElbow/position", 1,
-                      rrbot_control::callbackJoint2);
-  sub3 = nh.subscribe("/mirte/servos/servoWrist/position", 1,
-                      rrbot_control::callbackJoint3);
-
+  for (auto i = 0; i < NUM_SERVOS; i++) {
+    auto topic = (boost::format(topic_format) % servo_names[i]).str();
+    subs.push_back(nh.subscribe<mirte_msgs::ServoPosition>(
+        topic, 1, boost::bind(&rrbot_control::callbackJoint, _1, i)));
+    srvs.push_back(mirte_msgs::SetServoAngle());
+  }
   ROS_INFO_NAMED("rrbot_hw_interface", "RRBotHWInterface Ready.");
 }
 
+const auto service_format = "/mirte/set_servo%s_servo_angle";
 void RRBotHWInterface::connectServices() {
   ROS_INFO_NAMED("rrbot_hw_interface", "Connecting to the services...");
+  for (auto i = 0; i < NUM_SERVOS; i++) {
+    auto service = (boost::format(service_format) % servo_names[i]).str();
 
-  ros::service::waitForService("/mirte/set_servoRot_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoShoulder_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoElbow_servo_angle", -1);
-  ros::service::waitForService("/mirte/set_servoWrist_servo_angle", -1);
+    ros::service::waitForService(service, -1);
+  }
   { // Only mutex when actually writing to class vars.
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    client0 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "/mirte/set_servoRot_servo_angle", true);
-    client1 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "/mirte/set_servoShoulder_servo_angle", true);
-    client2 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "/mirte/set_servoElbow_servo_angle", true);
-    client3 = nh_.serviceClient<mirte_msgs::SetServoAngle>(
-        "/mirte/set_servoWrist_servo_angle", true);
-  }
-  ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
-}
+    for (auto i = 0; i < NUM_SERVOS; i++) {
+      auto service = (boost::format(service_format) % servo_names[i]).str();
 
+      clients.push_back(
+          nh_.serviceClient<mirte_msgs::SetServoAngle>(service, true));
+    }
+
+    ROS_INFO_NAMED("rrbot_hw_interface", "Connected to the services");
+  }
+}
 void RRBotHWInterface::read(ros::Duration &elapsed_time) {
   for (std::size_t joint_id = 0; joint_id < num_joints_; ++joint_id) {
-    joint_position_[joint_id] = data[joint_id];
+    joint_position_[joint_id] = servo_data[joint_id].data;
   }
 }
 void RRBotHWInterface ::start_reconnect() {
@@ -152,58 +138,48 @@ void RRBotHWInterface ::start_reconnect() {
 void RRBotHWInterface::write(ros::Duration &elapsed_time) {
   // Safety
   enforceLimits(elapsed_time);
-
   if (initialized) {
-    srv0.request.angle = (float)(joint_position_command_[0]);
-    srv1.request.angle = (float)(joint_position_command_[1]);
-    srv2.request.angle = (float)(joint_position_command_[2]);
-    srv3.request.angle = (float)(joint_position_command_[3]);
+    for (auto i = 0; i < NUM_SERVOS; i++) {
+      srvs[i].request.angle = (float)(joint_position_command_[i]);
+    }
   } else {
-    if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]) {
+    if (std::all_of(std::begin(servo_data), std::end(servo_data),
+                    [](Servo_data &x) { return x.init; })) {
+
       // TOOD: why do we get a segfault when we
       // set joint_positino_command_ in the contructor?
-      srv0.request.angle = data[0];
-      srv1.request.angle = data[1];
-      srv2.request.angle = data[2];
-      srv3.request.angle = data[3];
+      for (auto i = 0; i < NUM_SERVOS; i++) {
+        srvs[i].request.angle = servo_data[i].data;
+      }
       ++init_steps;
-
-      joint_position_command_[0] = data[0];
-      joint_position_command_[1] = data[1];
-      joint_position_command_[2] = data[2];
-      joint_position_command_[3] = data[3];
-
+      for (auto i = 0; i < NUM_SERVOS; i++) {
+        joint_position_command_[i] = servo_data[i].data;
+      }
       if (init_steps == 50) {
         initialized = true;
         ROS_INFO_NAMED("rrbot_hw_interface", "Initialized arm");
       }
     }
   }
-
-  if (servo_init[0] && servo_init[1] && servo_init[2] && servo_init[3]) {
+  // all initialized?
+  if (std::all_of(std::begin(servo_data), std::end(servo_data),
+                  [](auto x) { return x.init; })) {
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    if (!client0.call(srv0)) {
-      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
-      this->start_reconnect();
-      return;
-    }
+    static float last_req[NUM_SERVOS] = {-100.0};
+    for (auto i = 0; i < NUM_SERVOS; i++) {
 
-    if (!client1.call(srv1)) {
-      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 1 error");
-      this->start_reconnect();
-      return;
-    }
+      // Only set the servo when there is a new command or the servo is moved by
+      // hand or gravity.
+      if (last_req[i] != srvs[i].request.angle || servo_data[i].moved) {
+        last_req[i] = srvs[i].request.angle;
+        servo_data[i].moved = false;
+        if (!clients[i].call(srvs[i])) {
+          //   // ROS_INFO_NAMED("rrbot_hw_interface", "Motor 0 error");
 
-    if (!client2.call(srv2)) {
-      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 2 error");
-      this->start_reconnect();
-      return;
-    }
-
-    if (!client3.call(srv3)) {
-      ROS_INFO_NAMED("rrbot_hw_interface", "Motor 3 error");
-      this->start_reconnect();
-      return;
+          this->start_reconnect();
+          return;
+        }
+      }
     }
   }
 }

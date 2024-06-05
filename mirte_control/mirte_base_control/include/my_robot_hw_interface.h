@@ -229,6 +229,8 @@ void MyRobotHWInterface::init_service_clients() {
   }
   {
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
+    service_clients.clear();
+    service_requests.clear();
     for (size_t i = 0; i < NUM_JOINTS; i++) {
       service_clients.push_back(nh.serviceClient<mirte_msgs::SetMotorSpeed>(
           (boost::format(service_format) % this->joints[i]).str(), true));
