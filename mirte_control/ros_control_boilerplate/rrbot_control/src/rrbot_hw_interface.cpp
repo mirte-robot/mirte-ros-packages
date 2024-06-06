@@ -98,6 +98,7 @@ void RRBotHWInterface::connectServices() {
     ros::service::waitForService(service, -1);
   }
   { // Only mutex when actually writing to class vars.
+  clients.clear();
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
     for (auto i = 0; i < NUM_SERVOS; i++) {
       auto service = (boost::format(service_format) % servo_names[i]).str();
