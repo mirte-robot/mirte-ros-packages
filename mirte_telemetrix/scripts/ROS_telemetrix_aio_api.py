@@ -21,6 +21,7 @@ except:
 
 from modules import MPU9250
 from modules import Oled
+from modules import HMC5883L
 
 # NOTE: This call was unused
 # devices = rospy.get_param("mirte/device")
@@ -968,7 +969,16 @@ def add_modules(modules: dict, device: dict) -> []:
         if module["type"].lower() == "mpu9250":
             imu_module = MPU9250.MPU9250(board, module_name, module, board_mapping)
             tasks.append(loop.create_task(imu_module.start()))
-
+        if module["type"].lower().startswith("hmc5883"):
+            hmc_module = HMC5883L.HMC5883(
+                board,
+                module_name,
+                module,
+                board_mapping,
+                global_data=global_data,
+                loop=loop,
+            )
+            tasks.append(loop.create_task(hmc_module.start()))
     return tasks
 
 
