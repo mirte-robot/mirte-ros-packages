@@ -53,7 +53,10 @@ public:
   MyRobotHWInterface();
 
   double calc_speed_pid(int joint, double target, const ros::Duration &period) {
-    static bool start[4] = {true}; // if moving from 0 to something else, don't wait for the PID to catch up, but use the mapping function to immediately give it a kinda okay value  
+
+    // if moving from 0 to something else, don't wait for the PID to catch up,
+    // but use the mapping function to immediately give it a kinda okay value
+    static bool start[4] = {true};
     auto pid = this->pids[joint];
     if (target == 0) {
       pid->reset();
@@ -66,14 +69,20 @@ public:
       return 0;
     }
 
-    if(start[joint]) {
+    if (start[joint]) {
       start[joint] = false;
       return calc_speed_map(joint, target, period);
     }
 
-    auto diff_enc_time_upd = ros::Time::now() - _wheel_encoder_update_time[joint];
-    if(diff_enc_time_upd > ros::Duration(1,0) && _last_cmd[joint] > 30) { // if the motors don't move, no need to fall back yet
-      ROS_WARN_STREAM("Encoder " << joint << " not reporting data, falling back to mapping calculation");
+    auto diff_enc_time_upd =
+        ros::Time::now() - _wheel_encoder_update_time[joint];
+    if (diff_enc_time_upd > ros::Duration(1, 0) &&
+        _last_cmd[joint] >
+            30) { // if the motors don't move, no need to fall back yet
+      ROS_WARN_STREAM(
+          "Encoder "
+          << joint
+          << " not reporting data, falling back to mapping calculation");
       return calc_speed_map(joint, target, period);
     }
     auto curr_speed = vel[joint];
@@ -82,7 +91,7 @@ public:
     return pid_cmd + _last_cmd[joint];
   }
 
-  double calc_speed_map(int joint, double target, const ros::Duration & period) {
+  double calc_speed_map(int joint, double target, const ros::Duration &period) {
     return std::max(std::min(int(target / (6.0 * M_PI) * 100), 100), -100);
   }
 
