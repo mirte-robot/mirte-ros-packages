@@ -58,6 +58,7 @@ add_message_files(
    IntensityDigital.msg
    Keypad.msg
    ServoPosition.msg
+   Heading.msg
 )
 
 ## Generate services in the 'srv' folder

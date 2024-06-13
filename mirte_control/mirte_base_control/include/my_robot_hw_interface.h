@@ -53,10 +53,14 @@ public:
   MyRobotHWInterface();
 
   double calc_speed_pid(int joint, double target, const ros::Duration &period) {
+
+    // if moving from 0 to something else, don't wait for the PID to catch up,
+    // but use the mapping function to immediately give it a kinda okay value
+    static bool start[4] = {true};
     auto pid = this->pids[joint];
     if (target == 0) {
       pid->reset();
-
+      start[joint] = true;
       // Fix for dynamic reconfigure of all 4 PID controllers:
       auto g = this->reconfig_pid->getGains();
       if (!equal_gains(pid->getGains(), g)) {
@@ -64,10 +68,31 @@ public:
       }
       return 0;
     }
+
+    if (start[joint]) {
+      start[joint] = false;
+      return calc_speed_map(joint, target, period);
+    }
+
+    auto diff_enc_time_upd =
+        ros::Time::now() - _wheel_encoder_update_time[joint];
+    if (diff_enc_time_upd > ros::Duration(1, 0) &&
+        _last_cmd[joint] >
+            30) { // if the motors don't move, no need to fall back yet
+      ROS_WARN_STREAM(
+          "Encoder "
+          << joint
+          << " not reporting data, falling back to mapping calculation");
+      return calc_speed_map(joint, target, period);
+    }
     auto curr_speed = vel[joint];
     auto err = target - curr_speed;
     auto pid_cmd = pid->computeCommand(err, period);
     return pid_cmd + _last_cmd[joint];
+  }
+
+  double calc_speed_map(int joint, double target, const ros::Duration &period) {
+    return std::max(std::min(int(target / (6.0 * M_PI) * 100), 100), -100);
   }
 
   bool write_single(int joint, double speed, const ros::Duration &period) {
@@ -75,8 +100,7 @@ public:
     if (this->enablePID) {
       speed_mapped = this->calc_speed_pid(joint, speed, period);
     } else {
-      speed_mapped =
-          std::max(std::min(int(speed / (6 * M_PI) * 100), 100), -100);
+      speed_mapped = this->calc_speed_map(joint, speed, period);
     }
     speed_mapped = std::clamp<double>(speed_mapped, -max_speed, max_speed);
     auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
@@ -170,6 +194,7 @@ private:
   double ticks = 40.0;
 
   std::vector<int> _wheel_encoder;
+  std::vector<ros::Time> _wheel_encoder_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
@@ -207,6 +232,7 @@ private:
       bidirectional = true;
     }
     _wheel_encoder[joint] = msg->value;
+    _wheel_encoder_update_time[joint] = msg->header.stamp;
   }
 
   // Thread and function to restart service clients when the service server has
@@ -271,6 +297,7 @@ MyRobotHWInterface::MyRobotHWInterface()
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     _wheel_encoder.push_back(0);
+    _wheel_encoder_update_time.push_back(ros::Time::now());
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
     _last_cmd.push_back(0);
