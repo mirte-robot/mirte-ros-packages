@@ -1,8 +1,8 @@
 ---
 mobile_base_controller:
   type: diff_drive_controller/DiffDriveController
-  left_wheel: wheel_0_joint
-  right_wheel: wheel_1_joint
+  left_wheel: wheel_left_joint
+  right_wheel: wheel_right_joint
   publish_rate: 50.0  # default: 50
   pose_covariance_diagonal:
     - 0.001
