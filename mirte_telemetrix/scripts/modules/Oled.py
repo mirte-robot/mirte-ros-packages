@@ -13,6 +13,7 @@ import rospy
 from mirte_msgs.srv import SetOLEDImage, SetOLEDImageRequest, SetOLEDImageResponse
 import subprocess
 import asyncio
+import os
 
 # Extended adafruit _SSD1306
 
