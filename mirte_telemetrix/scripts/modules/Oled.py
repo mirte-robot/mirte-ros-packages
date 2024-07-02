@@ -13,6 +13,7 @@ import rospy
 from mirte_msgs.srv import SetOLEDImage, SetOLEDImageRequest, SetOLEDImageResponse
 import subprocess
 import asyncio
+import os
 
 # Extended adafruit _SSD1306
 
@@ -26,6 +27,7 @@ class Oled_interface:
         )
         self.default_image = True
         self.default_timer = rospy.Timer(rospy.Duration(10), self.show_default)
+        self.last_text = ""
         await self.show_default_async()
 
     async def show_default_async(self):
@@ -71,7 +73,11 @@ class Oled_interface:
 
     async def set_oled_image_service_async(self, req):
         if req.type == "text":
-            return await self.set_oled_text_async(req.value.replace("\\n", "\n"))
+            text = req.value.replace("\\n", "\n")
+            if text == self.last_text:
+                return True
+            self.last_text = text
+            return await self.set_oled_text_async(text)
         if req.type == "image":
             return await self.show_png(
                 "/usr/local/src/mirte/mirte-oled-images/images/" + req.value + ".png"
