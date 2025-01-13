@@ -10,7 +10,7 @@ ADXL345Data::ADXL345Data(
     std::string name, std::map<std::string, rclcpp::ParameterValue> parameters,
     std::set<std::string> &unused_keys)
     : I2CModuleData(parser, board, name, insert_default_frame_id(parameters),
-                    insert_default_frame_id(unused_keys)) {
+                    insert_default_frame_id(unused_keys), get_module_type()) {
   auto logger = parser->logger;
 
   // Set default for address

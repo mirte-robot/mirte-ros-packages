@@ -7,20 +7,28 @@
 I2CModuleData::I2CModuleData(
     std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
     std::string name, std::map<std::string, rclcpp::ParameterValue> parameters,
-    std::set<std::string> &unused_keys, std::optional<DeviceDuration> duration)
+    std::set<std::string> &unused_keys, std::string module_type, std::optional<DeviceDuration> duration)
     : ModuleData(parser, board, name, parameters, unused_keys, duration) {
   if (unused_keys.erase("connector")) {
     auto connector = get_string(parameters["connector"]);
     auto pins = board->resolveConnector(connector);
     this->scl = pins["scl"];
     this->sda = pins["sda"];
-  } else {
-    // TODO: Add pin parsing
+  } else if(unused_keys.erase("pins")) {
+    auto subkeys =
+        parser->get_params_keys(parser->build_param_name(module_type + "." + this->name, "pins"));
+
+    if (subkeys.erase("scl")) {
+      this->scl = board->resolvePin(get_string(parameters["pins.scl"]));
+    }
+    if (subkeys.erase("sda")) {
+      this->sda = board->resolvePin(get_string(parameters["pins.sda"]));
+    }
+  }else{
     rcpputils::require_true(
         false,
         (boost::format(
-             "No connector tag was supplied to %1% module '%2%' [Direct pin "
-             "configuration not supported yet.]") %
+             "No connector or pins tag was supplied to %1% module '%2%'.") %
          get_module_type() % name)
             .str());
   }

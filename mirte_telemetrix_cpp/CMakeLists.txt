@@ -173,7 +173,7 @@ install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 # EXPORTS ament_export_targets( ${PROJECT_NAME}_node HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
+# install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME}/)
 
 if(BUILD_TESTING)

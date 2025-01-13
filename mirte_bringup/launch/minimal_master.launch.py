@@ -54,9 +54,9 @@ def generate_launch_description():
         launch_arguments={
             "config_path": PathJoinSubstitution(
                 [
-                    FindPackageShare("mirte_telemetrix_cpp"),
-                    "config",
-                    "mirte_user_config.yaml",
+                    FindPackageShare("mirte_bringup"),
+                    "telemetrix_config",
+                    "mirte_master_config.yaml",
                 ]
             ),
             "hardware_namespace": hardware_namespace,
