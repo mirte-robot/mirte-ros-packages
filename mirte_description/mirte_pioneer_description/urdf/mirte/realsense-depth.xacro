@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!--Develped by Daniel Ordonez 22.05.2018 - daniels.ordonez@gmail.com
+    INFORMATION:
+        This xacro file a URDF representation of the intel real sense RS200 with the
+        virtual links representing the position of:
+            * The RGB color camera
+            * Infrared 1 camera
+            * Infrared 2 camera
+            * Virtual depth coordinate frame
+        Configured to work with Gazebo if desired.
+    Modified by Arend-Jan van Hilten to not use the other sensors and change depth cam to gazebo depth cam, copied from
+https://github.com/SyrianSpock/realsense_gazebo_plugin
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="realsense-depth" params="prefix parent *origin">
+    <!-- Camera link -->
+    <link name="${prefix}rs200_camera">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find mirte_pioneer_description)/models/realsense_camera/meshes/realsense.dae"/>
+        </geometry>
+      </visual>
+      <collision name="realsense_collision">
+        <geometry>
+          <box size="0.0078 0.130 0.0192"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.0615752"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <inertia ixx="9.108e-05" ixy="0" ixz="0" iyy="2.51e-06" iyz="0" izz="8.931e-05"/>
+      </inertial>
+    </link>
+    <!-- Connect camera to parent frame-->
+    <joint name="${prefix}realsense_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${prefix}rs200_camera"/>
+      <xacro:insert_block name="origin"/>
+    </joint>
+    <!-- Virtual links representing the cameras positons and orientations-->
+    <link name="${prefix}depth_cam"/>
+    <!-- Joints positioning the virtual links with respect to the camera main link-->
+    <joint name="${prefix}depth_joint" type="fixed">
+      <parent link="${prefix}rs200_camera"/>
+      <child link="${prefix}depth_cam"/>
+      <origin xyz="0 -0 0.004" rpy="0 0 0"/>
+    </joint>
+    <!-- Optical links representing the cameras positons and orientations-->
+    <link name="${prefix}depth_cloud"/>
+    <!-- Joints positioning the virtual links with respect to the camera main link-->
+    <joint name="${prefix}optical_joint" type="fixed">
+      <parent link="${prefix}depth_cam"/>
+      <child link="${prefix}depth_cloud"/>
+      <origin xyz="0.0 0.0 -0.04" rpy="-1.57 0 -1.57"/>
+    </joint>
+    <gazebo reference="${prefix}rs200_camera">
+      <sensor name="realsense_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>30.0</update_rate>
+        <contact>
+          <xacro:property name="lidar" value="$(arg lidar_enable)"/>
+          <xacro:property name="ir" value="$(arg intensity_enable)"/>
+          <test2 name="lidar" value="$(arg lidar_enable)"/>
+          <test2 name="ir" value="$(arg intensity_enable)"/>
+          <arg val="2 + 2xir + lidar"/>
+          <!-- See https://github.com/gazebosim/sdformat/issues/333 for why the strange naming. Get the correct name by running xacro mirte.xacro > test.xml && gz sdf -p test.xml > robot.xml and look for the name-->
+          <!-- This strange calculation should make sure that when adding/removing lidar and ir sensors, the collision name still is correct -->
+          <collision>base_link_fixed_joint_lump__realsense_collision_collision_${lidar + 2*ir + 2}</collision>
+        </contact>
+        <plugin name="gripper_bumper2" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>realsense_contact</bumperTopicName>
+          <frameName>${prefix}rs200_camera</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+    <gazebo reference="${prefix}depth_cam">
+      <sensor type="depth" name="${prefix}camera_depth">
+        <update_rate>5</update_rate>
+        <always_on>true</always_on>
+        <camera name="camera_depth">
+          <horizontal_fov>2.0</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>B8G8R8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>30</far>
+          </clip>
+        </camera>
+        <plugin name="camera_controller_depth" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/mirte</namespace>
+            <remapping>camera_depth/image_raw:=camera_rgb/image_raw</remapping>
+            <remapping>camera_depth/camera_info:=camera_rgb/camera_info</remapping>
+            <remapping>camera_depth/depth/image_raw:=camera_depth/depth_image_raw</remapping>
+            <remapping>camera_depth/depth/camera_info:=camera_depth/camera_depth_info</remapping>
+          </ros>
+          <camera_name>camera_depth</camera_name>
+          <frame_name>${prefix}depth_cloud</frame_name>
+          <hack_baseline>0.07</hack_baseline>
+          <min_depth>0.1</min_depth>
+          <max_depth>30.0</max_depth>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="ns_1" default="mirte"/>
+  <arg name="jsp_gui" default="True"/>
+  <arg name="camera_enable" default="True"/>
+  <arg name="intensity_enable" default="True"/>
+  <arg name="sonar_enable" default="True"/>
+  <arg name="lidar_enable" default="True"/>
+  <arg name="realsense_enable" default="True"/>
+  <arg name="robot_xacro_path" default="$(find-pkg-share mirte_pioneer_description)/urdf/mirte/mirte.xacro"/>
+
+  <group>
+    <push_ros_namespace namespace="$(var ns_1)"/>
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+      <param name="robot_description" type="str" value="$(command 'xacro $(var robot_xacro_path) sonar_enable:=$(var sonar_enable) camera_enable:=$(var camera_enable) intensity_enable:=$(var intensity_enable) lidar_enable:=$(var lidar_enable) realsense_enable:=$(var realsense_enable)')"/>
+      <param name="use_sim_time" value="true"/>
+    </node>
+    <node pkg="joint_state_publisher" exec="joint_state_publisher" unless="$(var jsp_gui)">
+      <param name="use_sim_time" value="true"/>
+    </node>
+    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" if="$(var jsp_gui)">
+      <!-- This will break the location of the wheels for some reason
+      <param name="use_sim_time" value="true"/>  -->
+    </node>
+  </group>
+
+  <node pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share mirte_pioneer_description)/rviz/urdf.rviz">
+    <param name="use_sim_time" value="true"/>
+  </node>
+
+</launch>

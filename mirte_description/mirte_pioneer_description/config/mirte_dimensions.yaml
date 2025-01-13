@@ -1,0 +1,15 @@
+base_width: 0.14
+base_len: 0.21081
+base_height: 0.05
+base_mass: 1
+wheel_radius: 0.034
+wheel_mass: 0.1
+wheel_center_x_offset: 0.010305 # eyeballed offsets
+wheel_center_y_offset: 0.06385 # eyeballed offsets
+wheel_center_z_offset: 0.015
+caster_wheel_radius: 0.005
+caster_wheel_center_x_offset: -0.085715
+caster_wheel_center_y_offset: 0
+caster_wheel_center_z_offset: -0.0125 # TODO: base is not perfectly level
+caster_wheel_mass: .12 # to fix realsense weight
+cmd_vel_timeout: 0.5

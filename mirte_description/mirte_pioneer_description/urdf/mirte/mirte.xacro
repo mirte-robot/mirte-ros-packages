@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mirte">
+  <xacro:arg name="sonar_enable" default="true"/>
+  <xacro:arg name="intensity_enable" default="true"/>
+  <xacro:arg name="camera_enable" default="true"/>
+  <xacro:arg name="lidar_enable" default="true"/>
+  <xacro:arg name="realsense_enable" default="true"/>
+  <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/materials.xacro"/>
+  <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/macros.xacro"/>
+  <test value="$(arg sonar_enable)" name="sonar_enable"/>
+  <test value="$(arg intensity_enable)" name="intensity_enable"/>
+  <test value="$(arg camera_enable)" name="camera_enable"/>
+  <test value="$(arg lidar_enable)" name="lidar_enable"/>
+  <xacro:if value="$(arg lidar_enable)">
+    <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/lidar.xacro"/>
+  </xacro:if>
+  <xacro:if value="$(arg intensity_enable)">
+    <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/ir.xacro"/>
+  </xacro:if>
+  <xacro:if value="$(arg camera_enable)">
+    <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/camera.xacro"/>
+  </xacro:if>
+  <xacro:if value="$(arg sonar_enable)">
+    <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/ultrasonic.xacro"/>
+  </xacro:if>
+  <xacro:if value="$(arg realsense_enable)">
+    <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/realsense.xacro"/>
+  </xacro:if>
+  <xacro:property name="yaml_param_file" value="$(find mirte_pioneer_description)/config/mirte_dimensions.yaml"/>
+  <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
+  <link name="link_chassis">
+    <!-- pose and inertial -->
+    <pose>0 0 0.015 0 0 0</pose>
+    <xacro:inertia_box x="${params['base_len']}" y="${params['base_width']}" z="${params['base_height']}" mass="${params['base_mass']}">
+      <origin rpy="0 0 0" xyz="-0.05 0 0.015"/>
+    </xacro:inertia_box>
+    <!-- body -->
+    <collision name="collision_chassis">
+      <geometry>
+        <mesh filename="file://$(find mirte_pioneer_description)/meshes/mirte_base.stl" scale="0.001 0.001 0.001" rpy="0 0 1.57079633"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="file://$(find mirte_pioneer_description)/meshes/mirte_base.stl" scale="0.001 0.001 0.001" rpy="0 0 1.57079633"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <gazebo reference="link_chassis">
+  </gazebo>
+  <gazebo reference="link_chassis">
+    <sensor name="chassis_contact_sensor" type="contact">
+      <always_on>true</always_on>
+      <update_rate>30.0</update_rate>
+      <contact>
+        <collision>base_link_fixed_joint_lump__collision_chassis_collision</collision>
+        <!-- See https://github.com/gazebosim/sdformat/issues/333 for why the strange naming. Get the correct name by running xacro mirte.xacro > test.txt && gz sdf -p test.txt > robot.xml and look for the name-->
+      </contact>
+      <plugin name="gripper_bumper" filename="libgazebo_ros_bumper.so">
+        <bumperTopicName>contact</bumperTopicName>
+        <frameName>link_chassis</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.018"/>
+  </joint>
+  <link name="base_link"/>
+  <gazebo reference="base_link">
+  </gazebo>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="link_chassis"/>
+  </joint>
+  <xacro:caster name="caster_wheel_back" parent="link_chassis" radius="${params['caster_wheel_radius']}" mass="${params['caster_wheel_mass']}">
+    <origin rpy="0 0 0" xyz="${params['caster_wheel_center_x_offset']} ${params['caster_wheel_center_y_offset']} ${params['caster_wheel_center_z_offset']}"/>
+  </xacro:caster>
+  <!-- NOTE: xacro parser adds joint_ -->
+  <xacro:wheel name="left_wheel" parent="link_chassis" radius="${params['wheel_radius']}" visualRot="1" mass="${params['wheel_mass']}">
+    <origin rpy="0 0 0" xyz="${params['wheel_center_x_offset']} ${params['wheel_center_y_offset']} ${params['wheel_center_z_offset']}"/>
+    <joint_options>
+    </joint_options>
+  </xacro:wheel>
+  <!-- NOTE: xacro parser adds joint_ -->
+  <xacro:wheel name="right_wheel" parent="link_chassis" radius="${params['wheel_radius']}" mass="${params['wheel_mass']}" visualRot="0">
+    <origin rpy="0 0 0" xyz="${params['wheel_center_x_offset']} ${-1*params['wheel_center_y_offset']} ${params['wheel_center_z_offset']}"/>
+    <joint_options>
+    </joint_options>
+  </xacro:wheel>
+  <xacro:if value="$(arg sonar_enable)">
+    <xacro:ultrasonic_sensor name="left">
+      <origin rpy="0 0 .45" xyz="0.085 0.04 0.022"/>
+    </xacro:ultrasonic_sensor>
+    <xacro:ultrasonic_sensor name="right">
+      <origin rpy="0 0 -0.45" xyz="0.085 -0.04 0.022"/>
+    </xacro:ultrasonic_sensor>
+  </xacro:if>
+  <xacro:if value="$(arg intensity_enable)">
+    <xacro:ir_sensor name="left">
+      <origin rpy="0 ${radians(90)} 0" xyz="0.0785 0.022 0.002"/>
+    </xacro:ir_sensor>
+    <xacro:ir_sensor name="right">
+      <origin rpy="0 ${radians(90)} 0" xyz="0.0785 -0.022 0.002"/>
+    </xacro:ir_sensor>
+  </xacro:if>
+  <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/diffdrive.xacro"/>
+  <gazebo>
+    <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+      <ros>
+        <!-- Add namespace and remap the default topic -->
+        <namespace>/mirte</namespace>
+        <remapping>odom:=pos</remapping>
+      </ros>
+      <!-- Replace camelCase elements with camel_case ones -->
+      <body_name>base_footprint</body_name>
+      <frame_name>world</frame_name>
+      <update_rate>1</update_rate>
+      <xyz_offset>0 0 0</xyz_offset>
+      <rpy_offset>0.0 0.0 0.0</rpy_offset>
+      <gaussian_noise>0.01</gaussian_noise>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_joint_state_publisher.so" name="joint_state_publisher">
+      <ros>
+        <namespace>/mirte</namespace>
+      </ros>
+      <update_rate>20</update_rate>
+      <joint_name>joint_right_wheel</joint_name>
+      <joint_name>joint_left_wheel</joint_name>
+    </plugin>
+  </gazebo>
+</robot>

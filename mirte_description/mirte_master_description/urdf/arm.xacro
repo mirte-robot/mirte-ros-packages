@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link
+        name="arm_Rot">
+        <inertial>
+            <origin
+                xyz="-1.27894101951934E-05 0.0208058767653727 0.00585680210359747"
+                rpy="0 0 0" />
+            <mass
+                value="0.0689676051678483" />
+            <inertia
+                ixx="1.10736817655159E-05"
+                ixy="-9.06572517495388E-09"
+                ixz="-2.13237951815141E-10"
+                iyy="2.24480121987499E-05"
+                iyz="-4.10984989642458E-07"
+                izz="1.70252517510809E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Rot.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Rot.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="arm_Rot_joint"
+        type="revolute">
+        <origin
+            xyz="0 -0.079274 0.06"
+            rpy="1.5708 0 3.1416" />
+        <parent
+            link="frame_link" />
+        <child
+            link="arm_Rot" />
+        <axis
+            xyz="0 1 0" />
+        <limit
+            lower="${pi/-2}"
+            upper="${pi/2}"
+            effort="2"
+            velocity="2"
+        />
+    </joint>
+    <link
+        name="arm_Shoulder">
+        <inertial>
+            <origin
+                xyz="0.0764974362945755 0.000442680770353329 -4.93690401059954E-09"
+                rpy="0 0 0" />
+            <mass
+                value="0.104616018825837" />
+            <inertia
+                ixx="3.85677839717214E-05"
+                ixy="1.84827309047044E-08"
+                ixz="1.42612941509626E-12"
+                iyy="2.54245117502168E-05"
+                iyz="-2.05142765424474E-12"
+                izz="5.51611966703411E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Shoulder.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Shoulder.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="arm_Shoulder_joint"
+        type="revolute">
+        <origin
+            xyz="0 0.0281 -0.00625"
+            rpy="3.1416 0 1.5708" />
+        <parent
+            link="arm_Rot" />
+        <child
+            link="arm_Shoulder" />
+        <axis
+            xyz="0 1 0" />
+        <limit
+            lower="${pi/-2}"
+            upper="${pi/2}"
+            effort="2"
+            velocity="2"
+        />
+    </joint>
+    <link
+        name="arm_Elbow">
+        <inertial>
+            <origin
+                xyz="0.000768647609078278 0.0642294520091309 -2.34835863116567E-08"
+                rpy="0 0 0" />
+            <mass
+                value="0.0709795960901316" />
+            <inertia
+                ixx="2.06491501981418E-05"
+                ixy="1.76077623308388E-08"
+                ixz="-6.06300089698489E-13"
+                iyy="2.45686930201746E-05"
+                iyz="3.04033870141042E-12"
+                izz="3.79131240892547E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Elbow.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Elbow.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="arm_Elbow_joint"
+        type="revolute">
+        <origin
+            xyz="0.1378 0 0"
+            rpy="-3.1416 0 1.5708" />
+        <parent
+            link="arm_Shoulder" />
+        <child
+            link="arm_Elbow" />
+        <axis
+            xyz="1 0 0" />
+        <limit
+            lower="${pi/-2}"
+            upper="${pi/2}"
+            effort="2"
+            velocity="2"
+        />
+    </joint>
+    <link
+        name="arm_Wrist">
+        <inertial>
+            <origin
+                xyz="0.0225315136140379 0.000488092971965825 -2.74405760168628E-06"
+                rpy="0 0 0" />
+            <mass
+                value="0.0464803878756425" />
+            <inertia
+                ixx="1.36228105923869E-05"
+                ixy="-2.7486243117372E-08"
+                ixz="-2.82180089490711E-08"
+                iyy="7.22412070962973E-06"
+                iyz="3.4652740053439E-09"
+                izz="1.75204377049058E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Wrist.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/arm_Wrist.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="arm_Wrist_joint"
+        type="revolute">
+        <origin
+            xyz="-0.00014 0.14265 0"
+            rpy="3.1416 0 1.5708" />
+        <parent
+            link="arm_Elbow" />
+        <child
+            link="arm_Wrist" />
+        <axis
+            xyz="0 1 0" />
+        <limit
+            lower="${pi/-2}"
+            upper="${pi/2}"
+            effort="2"
+            velocity="2"
+        />
+    </joint>
+    <link
+        name="Gripper">
+        <inertial>
+            <origin
+                xyz="0.0128439388984141 0.00467107677719844 -0.023531822516204"
+                rpy="0 0 0" />
+            <mass
+                value="0.0109603788959771" />
+            <inertia
+                ixx="1.64287457972505E-06"
+                ixy="-2.54915969005551E-10"
+                ixz="-3.17766452649769E-07"
+                iyy="2.96639543247368E-06"
+                iyz="-7.8877045337556E-08"
+                izz="1.49193844890504E-06" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/Gripper.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/Gripper.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="Gripper_joint"
+        type="revolute">
+        <origin
+            xyz="0.0435 -0.012 0.0045"
+            rpy="-1.5708 0 0" />
+        <parent
+            link="arm_Wrist" />
+        <child
+            link="Gripper" />
+        <axis
+            xyz="0 -1 0" />
+        <limit
+            lower="0"
+            upper="${pi/2}"
+            effort="2"
+            velocity="2"
+        />
+    </joint>
+    <link
+        name="_gripper_link_r">
+        <inertial>
+            <origin
+                xyz="-1.28017477174502E-08 0.00327806945611438 -0.015628977594268"
+                rpy="0 0 0" />
+            <mass
+                value="0.00257857268754656" />
+            <inertia
+                ixx="4.78055533789155E-07"
+                ixy="-5.230783542464E-14"
+                ixz="-2.66258471113313E-13"
+                iyy="4.85504704619794E-07"
+                iyz="-3.012555423281E-08"
+                izz="3.42900323604584E-08" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_r.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_r.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="_gripper_link_joint_r"
+        type="revolute">
+        <origin
+            xyz="0.0605 0.0205 -0.0055"
+            rpy="1.5708 0 -1.3641" />
+        <parent
+            link="arm_Wrist" />
+        <child
+            link="_gripper_link_r" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+    <link
+        name="gripper_finger_r">
+        <inertial>
+            <origin
+                xyz="0.0053582194655247 0.00456985538673528 -0.0146658643393019"
+                rpy="0 0 0" />
+            <mass
+                value="0.00531205810762776" />
+            <inertia
+                ixx="6.56191216382328E-07"
+                ixy="4.9417968242523E-09"
+                ixz="-1.23756532787867E-07"
+                iyy="7.67327744037516E-07"
+                iyz="3.35637410041389E-08"
+                izz="1.97644006824673E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_r.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_r.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="gripper_finger_joint_r"
+        type="revolute">
+        <origin
+            xyz="0 0.01 -0.037"
+            rpy="0 0.20667 3.1416" />
+        <parent
+            link="_gripper_link_r" />
+        <child
+            link="gripper_finger_r" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+    <link
+        name="_gripper_link_l">
+        <inertial>
+            <origin
+                xyz="-2.05686406795635E-09 0.00327805387383495 -0.0156289677422455"
+                rpy="0 0 0" />
+            <mass
+                value="0.0025785751096632" />
+            <inertia
+                ixx="4.78055731035803E-07"
+                ixy="1.11114248069431E-14"
+                ixz="5.45978048241403E-14"
+                iyy="4.85504889003676E-07"
+                iyz="-3.01256260104972E-08"
+                izz="3.4290092499709E-08" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_l.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_l.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="_gripper_link_joint_l"
+        type="revolute">
+        <origin
+            xyz="0.0605 -0.0205 -0.0055"
+            rpy="1.5708 0 -1.7775" />
+        <parent
+            link="arm_Wrist" />
+        <child
+            link="_gripper_link_l" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+    <link
+        name="gripper_finger_l">
+        <inertial>
+            <origin
+                xyz="0.00535821399237165 0.00543015238565805 -0.0146658496889369"
+                rpy="0 0 0" />
+            <mass
+                value="0.00531205810762777" />
+            <inertia
+                ixx="6.56191216382329E-07"
+                ixy="-4.94179682425222E-09"
+                ixz="-1.23756532787868E-07"
+                iyy="7.67327744037519E-07"
+                iyz="-3.35637410041387E-08"
+                izz="1.97644006824674E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_l.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_l.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="gripper_finger_joint_l"
+        type="revolute">
+        <origin
+            xyz="0 0 -0.037"
+            rpy="0 0.20667 0" />
+        <parent
+            link="_gripper_link_l" />
+        <child
+            link="gripper_finger_l" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+    <link
+        name="_Gripper_r">
+        <inertial>
+            <origin
+                xyz="-0.011058953981311 0.00572378908343621 -0.0203029402870159"
+                rpy="0 0 0" />
+            <mass
+                value="0.0127576574866818" />
+            <inertia
+                ixx="1.91784274511554E-06"
+                ixy="-2.13316668505462E-10"
+                ixz="3.18097729104346E-07"
+                iyy="3.19294602407598E-06"
+                iyz="-1.86219200901589E-07"
+                izz="1.63755141963222E-06" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_Gripper_r.STL" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find mirte_master_description)/meshes/_Gripper_r.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint
+        name="_Gripper_joint_r"
+        type="revolute">
+        <origin
+            xyz="0.0435 0.012 0.0045"
+            rpy="-1.5708 0 -3.1416" />
+        <parent
+            link="arm_Wrist" />
+        <child
+            link="_Gripper_r" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+</robot>

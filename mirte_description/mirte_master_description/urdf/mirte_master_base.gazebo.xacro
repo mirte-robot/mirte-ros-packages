@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <gazebo>
+
+    <xacro:if value="$(arg imu_enable)">
+      <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+        <robotNamespace>/${tf_namespace}mirte</robotNamespace>
+        <updateRate>50.0</updateRate>
+        <bodyName>imu_link</bodyName>
+        <topicName>movement/imu</topicName>
+        <frameId>base_link</frameId>
+        <accelDrift>0.005 0.005 0.005</accelDrift>
+        <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
+        <rateDrift>0.00005 0.00005 0.00005</rateDrift>
+        <rateGaussianNoise>0.00005 0.00005 0.00005</rateGaussianNoise>
+        <headingDrift>0.005</headingDrift>
+        <headingGaussianNoise>0.005</headingGaussianNoise>
+      </plugin>
+    </xacro:if>
+
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/White</material>
+    <gravity>true</gravity>
+  </gazebo>
+
+  <xacro:include filename="$(find mirte_master_description)/urdf/wheel.gazebo.xacro" />
+
+  <xacro:wheel_gazebo id="left_front" />
+  <xacro:wheel_gazebo id="left_rear" />
+  <xacro:wheel_gazebo id="right_front" />
+  <xacro:wheel_gazebo id="right_rear" />
+
+  <xacro:include filename="$(find mirte_master_description)/urdf/ros2_control.xacro"/>  
+
+</robot>

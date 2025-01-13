@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="ir_sensor" params="name *origin">
+    <!-- <xacro:property name="ir_angle_max" value="${radians(15)}"/> -->
+    <joint name="ir_${name}" type="fixed">
+      <axis xyz="0 1 0"/>
+      <xacro:insert_block name="origin"/>
+      <parent link="link_chassis"/>
+      <child link="base_ir_${name}"/>
+    </joint>
+    <link name="base_ir_${name}">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.05 0.037"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="yellow"/>
+      </visual>
+      <inertial>
+        <mass value="0.0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      </inertial>
+    </link>
+    <gazebo reference="base_ir_${name}">
+      <sensor type="camera" name="camera_ir_${name}">
+        <update_rate>50</update_rate>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <topic>camera_${name}/image_raw</topic>
+        <ros>
+          <imageTopicName>camera_${name}/image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_${name}/cam_info</cameraInfoTopicName>
+          <!-- <depthImageTopicName>[your depth image topic]</depthImageTopicName>
+        <pointCloudTopicName>[your point cloud topic]</pointCloudTopicName> -->
+        </ros>
+        <camera name="head">
+          <horizontal_fov>1.2</horizontal_fov>
+          <image>
+            <width>1</width>
+            <height>1</height>
+            <format>L8</format>
+          </image>
+          <clip>
+            <near>0.0001</near>
+            <far>1</far>
+          </clip>
+        </camera>
+        <plugin name="camera_controller_ir_${name}" filename="libgazebo_ros_camera.so">
+          <camera_name>camera_ir_${name}</camera_name>
+          <frame_name>base_ir_${name}</frame_name>
+          <frameName>base_ir_${name}</frameName>
+          <cameraName>camera_ir_${name}</cameraName>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

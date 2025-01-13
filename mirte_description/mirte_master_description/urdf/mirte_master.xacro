@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot
+  name="mirte_master" xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+  <xacro:arg name="flag_enable" default="False" />
+  <xacro:arg name="arm_enable" default="True" />
+  <xacro:arg name="screen_enable" default="False" />
+  <xacro:arg name="front_camera_enable" default="False" />
+  <xacro:arg name="sonar_enable" default="False" />
+  <xacro:arg name="lidar_enable" default="False" />
+  <xacro:arg name="depth_camera_enable" default="False" />
+  <xacro:arg name="imu_enable" default="False" />
+
+  <xacro:arg name="use_namespace" default="False"/>
+  <xacro:arg name="namespace_name" default="" />
+  <xacro:if value="$(arg use_namespace)" >
+    <xacro:property name="camera_name" value="$(arg namespace_name)/camera" lazy_eval="False"/>
+    <xacro:property name="namespace" value="$(arg namespace_name)" scope="global" lazy_eval="False"/>
+    <xacro:property name="tf_namespace" value="$(arg namespace_name)/" scope="global" lazy_eval="False"/>
+  </xacro:if>
+  <xacro:unless value="$(arg use_namespace)">
+    <xacro:property name="camera_name" value="camera" lazy_eval="False"/>
+    <xacro:property name="namespace" value="" scope="global" lazy_eval="False"/>
+    <xacro:property name="tf_namespace" value="" scope="global" lazy_eval="False"/>
+  </xacro:unless>
+
+  <xacro:arg name="use_correct_laser_frame" default="True" />
+
+  <xacro:property name="wheel_radius" value="0.050" />
+  <xacro:property name="wheel_length" value="0.055" />
+  <xacro:property name="wheel_mass" value="2.15" /> 
+
+  <xacro:property name="wheel_velocity" value="8" />
+  <xacro:property name="wheel_effort" value="5" />
+
+  <xacro:property name="base_mass" value="5.0" /> 
+
+  <material name="blue">
+    <color rgba="0.203125 0.23828125 0.28515625 1.0" />
+  </material>
+
+  <xacro:include filename="$(find mirte_master_description)/urdf/mirte_master_base.gazebo.xacro" />
+
+  <xacro:if value="$(arg depth_camera_enable)">
+    <xacro:sensor_orbbec_astra_pro_plus name="${camera_name}" parent="frame_link" color="black">
+      <origin xyz="0.01 -0.146658788505756 0.0427" rpy="0 0 ${radians(-90)}" />
+    </xacro:sensor_orbbec_astra_pro_plus>
+  </xacro:if>
+
+  <xacro:if value="$(arg imu_enable)">
+    <link name="imu_link" />
+
+    <joint name="imu_joint" type="fixed">
+      <origin xyz="0 0 0.10" />
+      <parent link="base_link" />
+      <child link="imu_link" />
+    </joint>
+  </xacro:if>
+
+  <link name="base_link" />
+
+  <joint name="frame_base_joint" type="fixed">
+    <origin xyz="0 0 0.10" rpy="0 0 ${radians(90)}" />
+    <parent link="base_link" />
+    <child link="frame_link" />
+  </joint>
+
+
+  <link
+    name="frame_link">
+    <inertial>
+      <origin xyz="-0.00024285 0.0082178 ${-0.0037661 - 0.04}" />
+      <mass value="${base_mass}" />
+      <inertia
+        ixx="${base_mass * (0.06**2 + 0.28**2) / 12}"
+        iyy="${base_mass * (0.19**2 + 0.06**2) / 12}"
+        izz="${base_mass * (0.19**2 + 0.28**2) / 12}"
+        ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh
+          filename="file://$(find mirte_master_description)/meshes/frame_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.52941 0.54902 0.54902 1" />
+      </material>
+    </visual>
+
+    <visual>
+      <origin
+        xyz="0.05297775289576 -0.120282421780502 -0.031"
+        rpy="3.14159265358979 0 0.296705972839036" />
+      <geometry>
+        <mesh filename="file://$(find mirte_master_description)/meshes/ultrasonic_fl.STL" />
+      </geometry>
+      <material name="blue" />
+    </visual>
+    <visual>
+      <origin
+        xyz="-0.05297775289576 -0.120282421780502 -0.031"
+        rpy="3.14159265358979 0 -0.296705972839036" />
+      <geometry>
+        <mesh filename="file://$(find mirte_master_description)/meshes/ultrasonic_fr.STL" />
+      </geometry>
+      <material name="blue" />
+    </visual>
+    <visual>
+      <origin
+        xyz="0.0565606470918482 0.119187021096338 -0.031"
+        rpy="3.14159265358979 0 2.84488668075076" />
+      <geometry>
+        <mesh filename="file://$(find mirte_master_description)/meshes/ultrasonic_bl.STL" />
+      </geometry>
+      <material name="blue" />
+    </visual>
+    <visual>
+      <origin
+        xyz="-0.0565606470918482 0.119187021096338 -0.031"
+        rpy="3.14159265358979 0 -2.84488668075076" />
+      <geometry>
+        <mesh filename="file://$(find mirte_master_description)/meshes/ultrasonic_br.STL" />
+      </geometry>
+      <material name="blue" />
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.03" />
+      <geometry>
+        <box size="0.19 0.28 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0.05 0.045" />
+      <geometry>
+        <box size="0.18 0.16 0.05" />
+      </geometry>
+    </collision>
+
+    <collision>
+      <origin xyz="-0.062156 -0.002558 0.0125" rpy="0 0 ${radians(32.5)}" />
+      <geometry>
+        <box size="0.013 0.03 0.025" />
+      </geometry>
+    </collision>
+
+    <collision>
+      <origin xyz="0.064835 0.001664 0.0125" rpy="0 0 ${radians(-32.5)}" />
+      <geometry>
+        <box size="0.013 0.04 0.025" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link
+    name="wheel_left_front">
+    <inertial>
+      <origin xyz="0 0 0.025" />
+      <mass value="${wheel_mass}" />
+      <inertia
+        ixx="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        iyy="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        izz="${wheel_mass * (wheel_radius **2) / 2}"
+        ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh
+          filename="file://$(find mirte_master_description)/meshes/wheel_left_front.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.025" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_left_front_joint"
+    type="continuous">
+    <origin
+      xyz="0.153 -0.085 -0.0455"
+      rpy="1.5708 0 -1.5708" />
+    <parent link="frame_link" />
+    <child link="wheel_left_front" />
+    <axis xyz="0 0 -1" />
+  </joint>
+
+  <transmission name="wheel_left_front_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_left_front_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wheel_left_front_actuator">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link
+    name="wheel_left_rear">
+    <inertial>
+      <origin xyz="0 0 0.025" />
+      <mass value="${wheel_mass}" />
+      <inertia
+        ixx="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        iyy="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        izz="${wheel_mass * (wheel_radius **2) / 2}"
+        ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh
+          filename="file://$(find mirte_master_description)/meshes/wheel_left_rear.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.025" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_left_rear_joint"
+    type="continuous">
+    <origin
+      xyz="0.153 0.085 -0.0455"
+      rpy="1.5708 0 -1.5708" />
+    <parent link="frame_link" />
+    <child link="wheel_left_rear" />
+    <axis xyz="0 0 -1" />
+  </joint>
+
+  <transmission name="wheel_left_rear_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_left_rear_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wheel_left_rear_actuator">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link
+    name="wheel_right_front">
+    <inertial>
+      <origin xyz="0 0 -0.025" />
+      <mass value="${wheel_mass}" />
+      <inertia
+        ixx="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        iyy="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        izz="${wheel_mass * (wheel_radius **2) / 2}"
+        ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh
+          filename="file://$(find mirte_master_description)/meshes/wheel_right_front.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.025" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_right_front_joint"
+    type="continuous">
+    <origin
+      xyz="-0.153 -0.085 -0.0455"
+      rpy="1.5708 0 -1.5708" />
+    <parent link="frame_link" />
+    <child link="wheel_right_front" />
+    <axis xyz="0 0 -1" />
+  </joint>
+
+  <transmission name="wheel_right_front_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_right_front_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wheel_right_front_actuator">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link
+    name="wheel_right_rear">
+    <inertial>
+      <origin xyz="0 0 -0.025" />
+      <mass value="${wheel_mass}" />
+      <inertia
+        ixx="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        iyy="${wheel_mass * (3 * (wheel_radius**2) + (wheel_length**2)) / 12}"
+        izz="${wheel_mass * (wheel_radius **2) / 2}"
+        ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh
+          filename="file://$(find mirte_master_description)/meshes/wheel_right_rear.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.025" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_right_rear_joint"
+    type="continuous">
+    <origin
+      xyz="-0.153 0.085 -0.0455"
+      rpy="1.5708 0 -1.5708" />
+    <parent link="frame_link" />
+    <child link="wheel_right_rear" />
+    <axis xyz="0 0 -1" />
+  </joint>
+
+  <transmission name="wheel_right_rear_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_right_rear_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wheel_right_rear_actuator">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <xacro:if value="$(arg front_camera_enable)">
+    <link
+      name="cam_front">
+      <inertial>
+        <origin
+          xyz="-0.00010069 -0.00018452 0.0033961"
+          rpy="0 0 0" />
+        <mass
+          value="0.0022023" />
+        <inertia
+          ixx="7.901E-08"
+          ixy="-1.4438E-25"
+          ixz="5.502E-24"
+          iyy="1.049E-07"
+          iyz="-1.0016E-23"
+          izz="1.3983E-07" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find mirte_master_description)/meshes/cam_front.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79608 0.82353 0.93725 1" />
+        </material>
+      </visual>
+    </link>
+    <joint
+      name="cam_joint_front"
+      type="fixed">
+      <origin
+        xyz="0 -0.1325 -0.0285"
+        rpy="1.5708 0 0" />
+      <parent link="frame_link" />
+      <child link="cam_front" />
+      <axis xyz="0 0 0" />
+    </joint>
+  </xacro:if>
+
+  <xacro:if value="$(arg sonar_enable)">
+    <xacro:include filename="$(find mirte_master_description)/urdf/ultrasonic.xacro" />
+
+
+    <joint name="chassis_base_joint" type="fixed">
+      <parent link="frame_link" />
+      <child link="link_chassis" />
+    </joint>
+
+
+    <link name="link_chassis" />
+    <xacro:ultrasonic_sensor name="left_front">
+      <origin
+        xyz="0.05297775289576 -0.120282421780502 -0.031"
+        rpy="0 0 ${-pi/2+0.296705972839036}" />
+    </xacro:ultrasonic_sensor>
+
+    <xacro:ultrasonic_sensor name="right_front">
+      <origin
+        xyz="-0.05297775289576 -0.120282421780502 -0.031"
+        rpy="0 0 ${-pi/2-0.296705972839036}" />
+    </xacro:ultrasonic_sensor>
+
+    <xacro:ultrasonic_sensor name="left_rear">
+      <origin
+        xyz="0.0565606470918482 0.119187021096338 -0.031"
+        rpy="0 0 ${-pi/2 + 2.84488668075076}" />
+    </xacro:ultrasonic_sensor>
+
+
+    <xacro:ultrasonic_sensor name="right_rear">
+      <origin
+        xyz="-0.0565606470918482 0.119187021096338 -0.031"
+        rpy="0 0 ${-pi/2 -2.84488668075076}" />
+    </xacro:ultrasonic_sensor>
+  </xacro:if>
+
+  <xacro:if value="$(arg lidar_enable)">
+    <xacro:include filename="$(find mirte_master_description)/urdf/lidar.xacro" />
+  </xacro:if>
+
+  <xacro:if value="$(arg screen_enable)">
+    <link
+      name="screen">
+      <inertial>
+        <origin
+          xyz="-1.24638847975239E-07 0.0013371323974908 0.00160606068028191"
+          rpy="0 0 0" />
+        <mass
+          value="0.00357270774970056" />
+        <inertia
+          ixx="1.29976980207027E-07"
+          ixy="-1.78182996362165E-11"
+          ixz="-4.24689246841474E-13"
+          iyy="2.09902246549457E-07"
+          iyz="1.92672613573332E-09"
+          izz="3.37075734369407E-07" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find mirte_master_description)/meshes/screen.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.768627450980392 0.768627450980392 0.768627450980392 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find mirte_master_description)/meshes/screen.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="screen_joint"
+      type="fixed">
+      <origin
+        xyz="0 0.121521156261136 0.0540000000000046"
+        rpy="1.5707963267949 0 -3.14159265358979" />
+      <parent
+        link="frame_link" />
+      <child
+        link="screen" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+  </xacro:if>
+
+  <xacro:if value="$(arg flag_enable)">
+    <xacro:include filename="$(find mirte_master_description)/urdf/flag.xacro" />
+  </xacro:if>
+
+  <xacro:if value="$(arg arm_enable)">
+    <xacro:include filename="$(find mirte_master_description)/urdf/arm.xacro" />
+  </xacro:if>
+
+
+</robot>

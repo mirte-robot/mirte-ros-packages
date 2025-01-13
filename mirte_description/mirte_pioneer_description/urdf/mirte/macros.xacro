@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mirte">
+  <xacro:macro name="inertia_box" params="x y z mass *origin">
+    <inertial>
+      <mass value="${mass}"/>
+      <xacro:insert_block name="origin"/>
+      <inertia ixx="${mass / 12.0 * (y*y + z*z)}" ixy="0.0" ixz="0.0" iyy="${mass / 12.0 * (z*z + x*x)}" iyz="0.0" izz="${mass / 12.0 * (y*y + x*x)}"/>
+    </inertial>
+  </xacro:macro>
+  <xacro:macro name="inertia_cylinder" params="r h mass *origin">
+    <inertial>
+      <mass value="${mass}"/>
+      <xacro:insert_block name="origin"/>
+      <inertia ixx="${mass / 12 * (3*r*r + h*h)}" ixy="0" ixz="0" iyy="${mass / 12 * (3*r*r + h*h)}" iyz="0" izz="${mass / 2 * r * r}"/>
+    </inertial>
+  </xacro:macro>
+  <xacro:macro name="inertia_sphere" params="r mass *origin">
+    <inertial>
+      <mass value="${mass}"/>
+      <xacro:insert_block name="origin"/>
+      <inertia ixx="${2/5 * mass * r*r}" ixy="0" ixz="0" iyy="${2/5 * mass * r*r}" iyz="0" izz="${2/5 * mass * r*r}"/>
+      <!-- <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/> -->
+    </inertial>
+  </xacro:macro>
+  <xacro:macro name="wheel" params="name parent radius mass visualRot *origin **content">
+    <link name="link_${name}">
+      <xacro:inertia_sphere r="${radius}" mass="${mass}">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      </xacro:inertia_sphere>
+      <collision name="link_${name}_collision">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <sphere radius="${radius}"/>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+        <!-- <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface> -->
+      </collision>
+      <!-- <visual name="link_${name}_visual">
+        <origin rpy="0 1.5707 1.5707"  xyz="-0 0 0" />
+        <geometry>
+
+          <cylinder color="pink" length="0.015" radius="${radius}"/>
+               
+
+        </geometry>
+        <material name="red" />
+      </visual> -->
+      <visual name="link_${name}_visual">
+        <origin rpy="0 1.5707 ${1.5707 + visualRot*pi}" xyz="-0 0.0 0"/>
+        <geometry>
+          <mesh filename="file://$(find mirte_pioneer_description)/meshes/wheel.stl" scale="1 1 1" rpy="0 0 ${pi*0 + visualRot*pi}"/>
+        </geometry>
+        <!-- <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.015" radius="${radius}"/>
+        </geometry> -->
+      </visual>
+    </link>
+    <gazebo reference="link_${name}">
+      <mu1>1.00</mu1>
+      <mu2>1.00</mu2>
+    </gazebo>
+    <joint name="joint_${name}" type="continuous">
+      <xacro:insert_block name="origin"/>
+      <child link="link_${name}"/>
+      <parent link="${parent}"/>
+      <axis rpy="0 0 0" xyz="0 1 0"/>
+      <!-- max wheel speed is around 2 rot/s = 4 rad -->
+      <limit effort="100" velocity="4"/>
+      <xacro:insert_block name="content"/>
+    </joint>
+    <transmission name="trans_${name}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_${name}">
+        <hardwareInterface>
+          hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_${name}">
+        <hardwareInterface>
+          hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+  <xacro:macro name="caster" params="name parent radius mass *origin">
+    <link name="link_${name}">
+      <collision>
+        <xacro:insert_block name="origin"/>
+        <geometry>
+          <sphere radius="${radius}"/>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.00</mu>
+              <mu2>0.00</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual>
+        <xacro:insert_block name="origin"/>
+        <geometry>
+          <sphere radius="${radius}"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+      <xacro:inertia_sphere r="${radius}" mass="${mass}">
+        <xacro:insert_block name="origin"/>
+      </xacro:inertia_sphere>
+    </link>
+    <gazebo reference="link_${name}">
+      <mu1>0.00</mu1>
+      <mu2>0.00</mu2>
+    </gazebo>
+    <joint name="fixed" type="fixed">
+      <parent link="${parent}"/>
+      <child link="link_${name}"/>
+    </joint>
+  </xacro:macro>
+</robot>
