@@ -6,7 +6,7 @@ permissions:
   contents: write
 jobs:
   build_testing:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
         matrix:
                 ros_distro: [humble]
@@ -16,7 +16,7 @@ jobs:
                     arm64, 
                     # armhf
                     ]
-
+        fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
