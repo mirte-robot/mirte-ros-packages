@@ -91,3 +91,7 @@
         pins:
           A: 20
           B: 21
+    oled:
+      oled:
+        device: mirte
+        connector: I2C1
