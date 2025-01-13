@@ -4,7 +4,8 @@ INA226Data::INA226Data(std::shared_ptr<Parser> parser,
                        std::shared_ptr<Mirte_Board> board, std::string name,
                        std::map<std::string, rclcpp::ParameterValue> parameters,
                        std::set<std::string> &unused_keys)
-    : I2CModuleData(parser, board, name, parameters, unused_keys, get_module_type()) {
+    : I2CModuleData(parser, board, name, parameters, unused_keys,
+                    get_module_type()) {
   auto logger =
       parser->logger.get_child(get_device_class()).get_child(this->name);
 
