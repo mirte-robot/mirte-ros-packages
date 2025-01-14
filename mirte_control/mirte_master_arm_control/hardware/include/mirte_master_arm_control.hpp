@@ -13,9 +13,8 @@
 #define _USE_MATH_DEFINES
 
 // ROS
-#include <mirte_msgs/msg/encoder.hpp>
-#include <mirte_msgs/srv/set_motor_speed.hpp>
-#include <mirte_msgs/srv/set_speed_multiple.hpp>
+#include <mirte_msgs/srv/set_servo_angle.hpp>
+#include <mirte_msgs/msg/servo_position.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
 // ros_control
@@ -41,9 +40,9 @@
 #include <mutex>
 #include <thread>
 // const unsigned int NUM_JOINTS = 4;
-const auto service_format = "io/motor/%s/set_speed";
-const auto encoder_format = "io/encoder/%s";
-const auto max_speed = 100; // Quick fix hopefully for power dip.
+// const auto service_format = "io/motor/%s/set_speed";
+// const auto encoder_format = "io/encoder/%s";
+// const auto max_speed = 100; // Quick fix hopefully for power dip.
 
 namespace mirte_master_arm_control {
 
@@ -78,24 +77,13 @@ public:
   std::vector<hardware_interface::CommandInterface>
   export_command_interfaces() override;
 
-  double calc_speed_pid(int joint, double target,
-                        const rclcpp::Duration &period);
-
-  double calc_speed_map(int joint, double target,
-                        const rclcpp::Duration &period);
-
-  bool write_single(int joint, double speed, const rclcpp::Duration &period,
-                    bool &updated);
-
-  int calculate_single_speed(int joint, double speed,
-                             const rclcpp::Duration &period);
 
   /*
    *
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
+  // double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -109,41 +97,40 @@ public:
   // rclcpp::Node private_nh;
 
 private:
-  // hardware_interface::JointStateInterface jnt_state_interface;
-  // hardware_interface::VelocityJointInterface jnt_vel_interface;
   std::vector<double> cmd;
   std::vector<double> pos;
-  std::vector<double> vel;
-  std::vector<double> eff;
+  // std::vector<double> vel;
+  // std::vector<double> eff;
 
   bool running_ = true;
-  double _wheel_diameter;
-  double _max_speed;
-  double ticks = 40.0;
+  // double _wheel_diameter;
+  // double _max_speed;
+  // double ticks = 40.0;
 
-  std::vector<int> _wheel_encoder;
-  std::vector<rclcpp::Time> _wheel_encoder_update_time;
+  std::vector<double> _servo_position;
+  std::vector<rclcpp::Time> _servo_position_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
-  std::vector<int> _last_wheel_cmd_direction;
+  // std::vector<int> _last_wheel_cmd_direction;
+  std::vector<double> position;
 
   rclcpp::Time curr_update_time, prev_update_time;
 
-  std::vector<std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::Encoder>>>
-      wheel_encoder_subs_;
+  std::vector<std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
+      servo_pos_subs_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> start_srv_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
 
   bool use_single_client = true;
-  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetMotorSpeed>>>
+  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
       service_clients;
-  std::vector<std::shared_ptr<mirte_msgs::srv::SetMotorSpeed::Request>>
+  std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
       service_requests;
-  std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
-      set_speed_multiple_client;
-  std::shared_ptr<mirte_msgs::srv::SetSpeedMultiple::Request>
-      set_speed_multiple_request;
+  // std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
+  //     set_speed_multiple_client;
+  // std::shared_ptr<mirte_msgs::srv::SetSpeedMultiple::Request>
+  //     set_speed_multiple_request;
   std::vector<std::string> joints;
   bool enablePID = false;
   std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
@@ -162,14 +149,10 @@ private:
     // return true;
   }
 
-  void WheelEncoderCallback(std::shared_ptr<mirte_msgs::msg::Encoder> msg,
+  void ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
                             int joint) {
-    if (msg->value < 0) {
-      bidirectional = true;
-    }
-    // std::cout << "Encoder value: " << msg->value << std::endl;
-    _wheel_encoder[joint] = msg->value;
-    _wheel_encoder_update_time[joint] = msg->header.stamp;
+    _servo_position[joint] = msg->angle;
+    _servo_position_update_time[joint] = msg->header.stamp;
   }
 
   // Thread and function to restart service clients when the service server has
@@ -183,9 +166,7 @@ private:
   std::jthread ros_thread;
   void ros_spin();
 
-  bool bidirectional = false; // assume it is one direction, when receiving any
-                              // negative value, it will be set to true
-  unsigned int NUM_JOINTS = 2;
+  unsigned int NUM_JOINTS = 4;
 }; // class
 
 } // namespace mirte_base_control

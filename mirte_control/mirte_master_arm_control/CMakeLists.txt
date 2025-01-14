@@ -1,169 +1,75 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(ros_control_boilerplate)
+cmake_minimum_required(VERSION 3.9)
+project(mirte_master_arm_control)
+add_compile_options(-g)
 
-# C++ 11
-if(NOT "${CMAKE_CXX_STANDARD}")
-  set(CMAKE_CXX_STANDARD 11)
-endif()
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-find_package(catkin REQUIRED COMPONENTS
-  actionlib
-  cmake_modules
-  control_msgs
-  control_toolbox
-  controller_manager
-  hardware_interface
-  joint_limits_interface
-  mirte_msgs
-  roscpp
-  rosparam_shortcuts
-  sensor_msgs
-  std_msgs
-  trajectory_msgs
-  transmission_interface
-  urdf
-)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Gflags REQUIRED)
-
-catkin_package(
-  INCLUDE_DIRS
-    include
-  CATKIN_DEPENDS
-    actionlib
-    control_msgs
-    control_toolbox
-    controller_manager
+set(CMAKE_CXX_STANDARD 20)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(mirte_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+# find dependencies
+set(THIS_PACKAGE_INCLUDE_DEPENDS
     hardware_interface
-    joint_limits_interface
-    roscpp
-    rosparam_shortcuts
-    sensor_msgs
-    std_msgs
+    pluginlib
+    rclcpp
+    rclcpp_lifecycle
     mirte_msgs
-    trajectory_msgs
-    transmission_interface
-    urdf
-  LIBRARIES
-    generic_hw_control_loop
-    generic_hw_interface
-    sim_hw_interface
-)
+    std_srvs
+    std_msgs
+    control_toolbox
+    yaml_cpp_vendor)
 
-###########
-## Build ##
-###########
+# find dependencies
+find_package(ament_cmake REQUIRED)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 
-include_directories(
-  include/
-  ${catkin_INCLUDE_DIRS}
-  ${Gflags_INCLUDE_DIRS}
-)
+include_directories(hardware/include/ ${catkin_INCLUDE_DIRS})
+# COMPILE
+add_library(${PROJECT_NAME} SHARED hardware/mirte_master_arm_control.cpp
+                                   hardware/params.cpp)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/hardware/include>
+         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+ament_target_dependencies(${PROJECT_NAME} PUBLIC
+                          ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-# Control loop
-add_library(generic_hw_control_loop
-  src/generic_hw_control_loop.cpp
-)
-target_link_libraries(generic_hw_control_loop
-  ${catkin_LIBRARIES}
-)
+# Causes the visibility macros to use dllexport rather than dllimport, which is
+# appropriate when building the dll but not consuming it.
+target_compile_definitions(${PROJECT_NAME}
+                           PRIVATE "${PROJECT_NAME}_BUILDING_DLL")
 
-# Generic Hardware Interface
-add_library(generic_hw_interface
-  src/generic_hw_interface.cpp
-)
-target_link_libraries(generic_hw_interface
-  ${catkin_LIBRARIES}
-)
-add_dependencies(generic_hw_interface ${catkin_EXPORTED_TARGETS})
-# Simulation Hardware Interface
-add_library(sim_hw_interface
-  src/sim_hw_interface.cpp
-)
-target_link_libraries(sim_hw_interface
-  generic_hw_interface
-  ${catkin_LIBRARIES}
-)
+# Export hardware plugins
+pluginlib_export_plugin_description_file(hardware_interface ${PROJECT_NAME}.xml)
 
-# Main control executable
-add_executable(${PROJECT_NAME}_sim_hw_main src/sim_hw_main.cpp)
-set_target_properties(${PROJECT_NAME}_sim_hw_main PROPERTIES OUTPUT_NAME sim_hw_main PREFIX "")
-target_link_libraries(${PROJECT_NAME}_sim_hw_main
-  sim_hw_interface
-  generic_hw_control_loop
-  ${catkin_LIBRARIES}
-)
+# INSTALL
+install(DIRECTORY hardware/include/ DESTINATION include/${PROJECT_NAME})
+# install( DIRECTORY description/launch description/ros2_control
+# description/urdf description/rviz DESTINATION share/${PROJECT_NAME} )
+install(DIRECTORY bringup/launch bringup/config 
+bringup/urdf
+        DESTINATION share/${PROJECT_NAME})
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
-# Test trajectory generator node
-add_executable(${PROJECT_NAME}_test_trajectory src/tools/test_trajectory.cpp)
-set_target_properties(${PROJECT_NAME}_test_trajectory PROPERTIES OUTPUT_NAME test_trajectory PREFIX "")
-target_link_libraries(${PROJECT_NAME}_test_trajectory
-  ${catkin_LIBRARIES}
-)
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+endif()
 
-## TOOLS ------------------------------------------------------
-
-# Tool for analyzing controller performance
-add_library(controller_to_csv src/tools/controller_to_csv.cpp)
-target_link_libraries(controller_to_csv
-  ${catkin_LIBRARIES}
-)
-add_executable(${PROJECT_NAME}_controller_to_csv_main src/tools/controller_to_csv_main.cpp)
-set_target_properties(${PROJECT_NAME}_controller_to_csv_main PROPERTIES OUTPUT_NAME controller_to_csv_main PREFIX "")
-target_link_libraries(${PROJECT_NAME}_controller_to_csv_main
-  controller_to_csv
-  ${Gflags_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
-
-# Tool for analyzing controller performance
-add_library(csv_to_controller src/tools/csv_to_controller.cpp)
-target_link_libraries(csv_to_controller
-  ${catkin_LIBRARIES}
-)
-add_executable(${PROJECT_NAME}_csv_to_controller_main src/tools/csv_to_controller_main.cpp)
-set_target_properties(${PROJECT_NAME}_csv_to_controller_main PROPERTIES OUTPUT_NAME csv_to_controller_main PREFIX "")
-target_link_libraries(${PROJECT_NAME}_csv_to_controller_main
-  csv_to_controller
-  ${Gflags_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
-
-# Tool for controlling a robot from keyboard
-add_executable(${PROJECT_NAME}_keyboard_teleop src/tools/keyboard_teleop.cpp)
-set_target_properties(${PROJECT_NAME}_keyboard_teleop PROPERTIES OUTPUT_NAME keyboard_teleop PREFIX "")
-target_link_libraries(${PROJECT_NAME}_keyboard_teleop
-  ${catkin_LIBRARIES}
-)
-
-add_subdirectory(rrbot_control)
-
-## Install ------------------------------------------------------------
-
-# Install libraries
-install(TARGETS
-    controller_to_csv
-    csv_to_controller
-    generic_hw_control_loop
-    generic_hw_interface
-    sim_hw_interface
-  LIBRARY DESTINATION
-    ${CATKIN_PACKAGE_LIB_DESTINATION}
-)
-
-# Install executables
-install(TARGETS
-    ${PROJECT_NAME}_controller_to_csv_main
-    ${PROJECT_NAME}_csv_to_controller_main
-    ${PROJECT_NAME}_keyboard_teleop
-    ${PROJECT_NAME}_sim_hw_main
-    ${PROJECT_NAME}_test_trajectory
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-# Install header files
-install(DIRECTORY include/${PROJECT_NAME}/   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+# EXPORTS
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_package()

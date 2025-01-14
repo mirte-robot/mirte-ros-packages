@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<package>
-  <name>ros_control_boilerplate</name>
+<package format="3">
+  <name>mirte_master_arm_control</name>
   <version>0.6.1</version>
   <description>Simple simulation interface and template for setting up a hardware interface for ros_control</description>
 
@@ -13,49 +13,34 @@
   <url type="repository">https://github.com/davetcoleman/ros_control_boilerplate/</url>
 
   <author email="davetcoleman@gmail.com">Dave Coleman</author>
+  <depend>backward_ros</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>std_srvs</depend>
+  <depend>std_msgs</depend>
+  <depend>mirte_msgs</depend>
+  <depend>controller_manager</depend>
+  <depend>trajectory_msgs</depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <depend>yaml_cpp_vendor</depend>
 
-  <build_depend>hardware_interface</build_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>control_msgs</build_depend>
-  <build_depend>trajectory_msgs</build_depend>
-  <build_depend>actionlib</build_depend>
-  <build_depend>urdf</build_depend>
-  <build_depend>joint_limits_interface</build_depend>
-  <build_depend>transmission_interface</build_depend>
-  <build_depend>control_toolbox</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>mirte_msgs</build_depend>
-  <build_depend>cmake_modules</build_depend>
-  <build_depend>libgflags-dev</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>rosparam_shortcuts</build_depend>
+  <depend>control_toolbox</depend>
 
-  <run_depend>hardware_interface</run_depend>
-  <run_depend>controller_manager</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>actionlib</run_depend>
-  <run_depend>urdf</run_depend>
-  <run_depend>joint_limits_interface</run_depend>
-  <run_depend>transmission_interface</run_depend>
-  <run_depend>joint_trajectory_controller</run_depend>
-  <run_depend>position_controllers</run_depend>
-  <run_depend>control_toolbox</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>mirte_msgs</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>rosparam_shortcuts</run_depend>
-
-  <!-- These are needed if you want to run the rrbot simulation demo -->
-  <!--<run_depend>xacro</run_depend>-->
-  <run_depend>robot_state_publisher</run_depend>
-  <!--<run_depend>rrbot_description</run_depend>-->
-  <!--<run_depend>rviz</run_depend>-->
-
+  <exec_depend>forward_command_controller</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2controlcli</exec_depend>
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>ros2_controllers</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>effort_controllers</exec_depend>
+  <exec_depend>twist_stamper</exec_depend>
+  <exec_depend>mirte_master_description</exec_depend>
   <export>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
