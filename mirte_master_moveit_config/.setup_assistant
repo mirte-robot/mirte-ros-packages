@@ -1,0 +1,23 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mirte_master_description
+    relative_path: urdf/mirte_master.xacro
+  srdf:
+    relative_path: config/mirte_master.srdf
+  package_settings:
+    author_name: Martin Klomp
+    author_email: m.klomp@tudelft.nl
+    generated_timestamp: 1736851663
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position

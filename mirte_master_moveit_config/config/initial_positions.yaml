@@ -1,0 +1,8 @@
+# Default initial positions for mirte_master's ros2_control fake system
+
+initial_positions:
+  Gripper_joint: 0
+  arm_Elbow_joint: 0
+  arm_Rot_joint: 0
+  arm_Shoulder_joint: 0
+  arm_Wrist_joint: 0
