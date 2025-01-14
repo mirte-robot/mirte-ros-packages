@@ -12,7 +12,7 @@ bool equal_gains(control_toolbox::Pid::Gains lhs,
 
 double MirteBaseHWInterface::calc_speed_pid(int joint, double target,
                                             const rclcpp::Duration &period) {
-
+  // WARN: this is unused as the PID of ros-control is used.
   // if moving from 0 to something else, don't wait for the PID to catch up,
   // but use the mapping function to immediately give it a kinda okay value
   static bool start[4] = {true};
