@@ -6,7 +6,7 @@ permissions:
   contents: write
 jobs:
   build_testing:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.arch == 'amd64' && "ubuntu-22.04" || "ubuntu-20.04-arm" }}
     strategy:
         matrix:
                 ros_distro: [humble]
