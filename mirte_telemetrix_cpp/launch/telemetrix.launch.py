@@ -7,7 +7,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 DEBUG = True
-DEBUGGER = True
+DEBUGGER = False
 
 
 def generate_launch_description():
