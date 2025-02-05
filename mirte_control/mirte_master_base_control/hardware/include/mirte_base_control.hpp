@@ -45,12 +45,12 @@ const auto service_format = "io/motor/%s/set_speed";
 const auto encoder_format = "io/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
 
-namespace mirte_master_arm_control {
+namespace mirte_base_control {
 
-class MirteMasterArmHWInterface : public hardware_interface::SystemInterface {
+class MirteBaseHWInterface : public hardware_interface::SystemInterface {
 public:
-  MirteMasterArmHWInterface();
-  RCLCPP_SHARED_PTR_DEFINITIONS(MirteMasterArmHWInterface);
+  MirteBaseHWInterface();
+  RCLCPP_SHARED_PTR_DEFINITIONS(MirteBaseHWInterface);
 
   hardware_interface::CallbackReturn
   on_init(const hardware_interface::HardwareInfo &info) override;
