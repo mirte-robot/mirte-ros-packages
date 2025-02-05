@@ -13,8 +13,8 @@
 #define _USE_MATH_DEFINES
 
 // ROS
-#include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <mirte_msgs/msg/servo_position.hpp>
+#include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
 // ros_control
@@ -77,7 +77,6 @@ public:
   std::vector<hardware_interface::CommandInterface>
   export_command_interfaces() override;
 
-
   /*
    *
    */
@@ -117,7 +116,8 @@ private:
 
   rclcpp::Time curr_update_time, prev_update_time;
 
-  std::vector<std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
+  std::vector<
+      std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
       servo_pos_subs_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> start_srv_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
@@ -149,8 +149,9 @@ private:
     // return true;
   }
 
-  void ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
-                            int joint) {
+  void
+  ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
+                        int joint) {
     _servo_position[joint] = msg->angle;
     _servo_position_update_time[joint] = msg->header.stamp;
   }
@@ -169,4 +170,4 @@ private:
   unsigned int NUM_JOINTS = 4;
 }; // class
 
-} // namespace mirte_base_control
+} // namespace mirte_master_arm_control

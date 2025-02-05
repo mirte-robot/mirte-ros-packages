@@ -72,7 +72,8 @@ Parser::get_params_name(std::string name) {
 
 std::set<std::string> Parser::get_params_keys(std::string name) {
   std::set<std::string> out_params;
-  name += "."; // add dot to ensure we only take objects with exactly the same name, not oledTest.. when oled.. is requested
+  name += "."; // add dot to ensure we only take objects with exactly the same
+               // name, not oledTest.. when oled.. is requested
   for (auto &servo_it : this->params) {
     if (starts_with(servo_it.first, name)) {
       std::string key = servo_it.first.substr(name.length());

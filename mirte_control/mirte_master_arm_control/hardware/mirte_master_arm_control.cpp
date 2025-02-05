@@ -4,10 +4,9 @@
 #include <mirte_master_arm_control.hpp>
 namespace mirte_master_arm_control {
 
-
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
-                            const rclcpp::Duration &period) {
+                                 const rclcpp::Duration &period) {
   if (running_) {
     // make sure the clients don't get overwritten while calling them
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
@@ -43,10 +42,11 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 }
 
 void MirteMasterArmHWInterface::read_single(int joint,
-                                       const rclcpp::Duration &period) {
+                                            const rclcpp::Duration &period) {
   // if (_last_value[joint] == 0) {
   //   _last_value[joint] = _wheel_encoder[joint];
-  //   // when starting, the encoders dont have to be at 0. Without this, the odom
+  //   // when starting, the encoders dont have to be at 0. Without this, the
+  //   odom
   //   // can jump at the first loop
   // }
   // auto diff_ticks = _wheel_encoder[joint] - _last_value[joint];
@@ -60,7 +60,8 @@ void MirteMasterArmHWInterface::read_single(int joint,
   //   distance_rad = diff_ticks * radPerEncoderTick * 1.0;
   // } else {
   //   distance_rad =
-  //       diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
+  //       diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint]
+  //       * 1.0;
   // }
   // pos[joint] += distance_rad;
   // vel[joint] = distance_rad / period.seconds(); // WHY: was this turned off?
@@ -96,7 +97,7 @@ MirteMasterArmHWInterface::export_command_interfaces() {
 
 hardware_interface::return_type
 MirteMasterArmHWInterface::read(const rclcpp::Time &time,
-                           const rclcpp::Duration &period) {
+                                const rclcpp::Duration &period) {
   // std::cout << "read" << std::endl;
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     this->read_single(i, period);
@@ -170,7 +171,6 @@ void MirteMasterArmHWInterface::init_service_clients() {
   }
 }
 
-
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
   // BEGIN: This part here is for exemplary purposes - Please do not copy to
@@ -182,8 +182,8 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
   // {
   //   rclcpp::sleep_for(std::chrono::seconds(1));
   //   RCLCPP_INFO(
-  //     rclcpp::get_logger("MirteMasterArmHWInterface"), "%.1f seconds left...",
-  //     2 - i);
+  //     rclcpp::get_logger("MirteMasterArmHWInterface"), "%.1f seconds
+  //     left...", 2 - i);
   // }
   // END: This part here is for exemplary purposes - Please do not copy to your
   // production code
@@ -232,8 +232,8 @@ void MirteMasterArmHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 using namespace std::placeholders;
 MirteMasterArmHWInterface::MirteMasterArmHWInterface(){};
-hardware_interface::CallbackReturn
-MirteMasterArmHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
+hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
+    const hardware_interface::HardwareInfo &info) {
   if (hardware_interface::SystemInterface::on_init(info) !=
       hardware_interface::CallbackReturn::SUCCESS) {
     return hardware_interface::CallbackReturn::ERROR;
@@ -245,10 +245,12 @@ MirteMasterArmHWInterface::on_init(const hardware_interface::HardwareInfo &info)
   std::cout << "on_init" << __LINE__ << std::endl;
   running_ = true;
   start_srv_ = nh->create_service<std_srvs::srv::Empty>(
-      "start", std::bind(&MirteMasterArmHWInterface::start_callback, this, _1, _2));
+      "start",
+      std::bind(&MirteMasterArmHWInterface::start_callback, this, _1, _2));
   std::cout << "on_init" << __LINE__ << std::endl;
   stop_srv_ = nh->create_service<std_srvs::srv::Empty>(
-      "stop", std::bind(&MirteMasterArmHWInterface::stop_callback, this, _1, _2));
+      "stop",
+      std::bind(&MirteMasterArmHWInterface::stop_callback, this, _1, _2));
   std::cout << "on_init" << __LINE__ << std::endl;
   std::cout << "Initializing MirteMasterArmHWInterface" << std::endl;
   std::cout << "on_init" << __LINE__ << std::endl;
@@ -342,7 +344,6 @@ MirteMasterArmHWInterface::on_init(const hardware_interface::HardwareInfo &info)
           hardware_interface::HW_IF_POSITION);
       return hardware_interface::CallbackReturn::ERROR;
     }
-
   }
 
   // // connect and register the joint state and velocity interfaces
@@ -422,7 +423,7 @@ void MirteMasterArmHWInterface::start_reconnect() {
       std::async(std::launch::async, [this] { this->init_service_clients(); });
 }
 
-}
+} // namespace mirte_master_arm_control
 
 #include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(mirte_master_arm_control::MirteMasterArmHWInterface,
