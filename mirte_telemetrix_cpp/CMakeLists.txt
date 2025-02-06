@@ -174,7 +174,7 @@ install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 # install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
-install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME}/)
+install(PROGRAMS scripts/default_screen.sh DESTINATION share/${PROJECT_NAME}/scripts/default_screen.sh)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
