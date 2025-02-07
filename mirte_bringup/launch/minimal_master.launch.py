@@ -93,7 +93,7 @@ def generate_launch_description():
                     [
                         FindPackageShare("astra_camera"),
                         "launch",
-                        "astro_pro_plus.launch.xml",
+                        "astra_pro_plus.launch.xml",
                     ]
                 )
             ]
