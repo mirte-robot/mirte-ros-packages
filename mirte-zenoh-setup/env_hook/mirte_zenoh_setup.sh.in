@@ -1,0 +1,46 @@
+#!/bin/bash
+# set -xe
+
+SCRIPT_DIR=$(dirname "$0")
+export PKG_HOME=$(realpath "$SCRIPT_DIR/../")
+echo $PKG_HOME
+
+if [ -v MIRTE_ZENOH ]; then
+        echo "USING Zenoh"
+        echo "ZH $MIRTE_ZENOH"
+        export RMW_IMPLEMENTATION=rmw_zenoh_cpp 
+        #   if MIRTE_ZENOH is true, then set router and ip vars
+        if [ "$MIRTE_ZENOH" = "true" ]; then
+                echo "MIRTE_ZENOH is true"
+                export ZENOH_ROUTER_CONFIG_URI="$PKG_HOME/config/router_robot_config.json5"
+                export ZENOH_SESSION_CONFIG_URI="$PKG_HOME/config/session_config.json5"
+        else
+                echo "MIRTE_ZENOH client mode"
+                # replace IP in config with $MIRTE_ZENOH
+                sed "s/IP/\"tcp\/$MIRTE_ZENOH:7447\"/g" "$PKG_HOME/config/router_client_config.json5.in" > "$PKG_HOME/config/router_client_config.json5"
+                export ZENOH_ROUTER_CONFIG_URI="$PKG_HOME/config/router_client_config.json5"
+                export ZENOH_SESSION_CONFIG_URI="$PKG_HOME/config/session_config.json5"
+                echo "ZENOH_ROUTER_CONFIG_URI $ZENOH_ROUTER_CONFIG_URI"
+        fi
+
+        # check if zenoh router is running on port 7447
+        if [ -z "$(ss | grep -w "7447")" ]; then
+                echo "Zenoh router is not running on port 7447"
+                echo "Please start Zenoh router on port 7447 with the following command:"
+                echo "ros2 run rmw_zenoh_cpp rmw_zenohd"
+        fi
+else
+        echo "Not using Zenoh, resetting all variables."
+        echo "To use MIRTE_ZENOH, set MIRTE_ZENOH to true on robot and to robot_ip/robot_hostname on other devices"
+        unset RMW_IMPLEMENTATION
+        unset ZENOH_ROUTER_CONFIG_URI
+        unset ZENOH_SESSION_CONFIG_URI
+fi
+
+# if [ -v k ];then
+#     echo "Variable is set"
+# else
+#     echo "Variable is not set"
+# fi
+
+# echo ""
