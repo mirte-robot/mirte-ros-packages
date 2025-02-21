@@ -48,13 +48,43 @@
           tx: 1
         servos:
           servoH1:
-            id: 3
-            min_angle: 9000
-            max_angle: 14000
+            id: 2
+            home_out: 12000
+            min_angle_out: 3400
+            max_angle_out: 21000
+            invert: true
           servoH2:
+            id: 3
+            home_out: 11450
+            min_angle_out: 2832
+            max_angle_out: 20000
+            invert: false
+          servoH3:
             id: 4
-            min_angle: 800
-            max_angle: 4000
+            home_out: 11750
+            min_angle_out: 120
+            max_angle_out: 21000
+            invert: false
+          servoH4:
+            id: 5
+            home_out: 12200
+            min_angle_out: 1128
+            max_angle_out: 21000
+            invert: false
+          servoH5:
+            id: 6
+            home_out: 10524
+            min_angle_out: 6168
+            max_angle_out: 14224
+            invert: true
+#          servoH1:
+#            id: 3
+#            min_angle: 9000
+#            max_angle: 14000
+#          servoH2:
+#            id: 4
+#            min_angle: 800
+#            max_angle: 4000
       power_watcher:
         device: mirte
         type: INA226

@@ -44,9 +44,9 @@ def generate_launch_description():
             " ",
             PathJoinSubstitution(
                 [
-                    FindPackageShare("mirte_master_arm_control"),
+                    FindPackageShare("mirte_master_description"),
                     "urdf",
-                    "arm.urdf.xacro",
+                    "mirte_master.xacro",
                 ]
             ),
         ]
@@ -93,8 +93,8 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=[
-            "pid_wheels_controller",
-            "mirte_base_controller",
+#            "mirte_master_arm_controller",
+            "mirte_master_gripper_controller"
         ],
         # prefix=["xterm -e gdb -ex run --args"],
     )
@@ -130,7 +130,7 @@ def generate_launch_description():
         robot_state_pub_node,
         robot_controller_spawner,
         joint_state_broadcaster_spawner,
-        twist_stamper,
+#        twist_stamper,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

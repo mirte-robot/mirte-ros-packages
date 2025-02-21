@@ -79,6 +79,22 @@ def generate_launch_description():
         launch_arguments={"frame_prefix": frame_prefix}.items(),
     )
 
+
+    arm_control = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_master_arm_control"),
+                        "launch",
+                        "mirte_master_arm_control.launch.py",
+                    ]
+                )
+            ]
+        ),
+        launch_arguments={"frame_prefix": frame_prefix}.items(),
+    )
+
     web_video_server = Node(
         package="web_video_server",
         executable="web_video_server",
@@ -93,7 +109,7 @@ def generate_launch_description():
                     [
                         FindPackageShare("astra_camera"),
                         "launch",
-                        "astro_pro_plus.launch.xml",
+                        "astra_pro_plus.launch.xml",
                     ]
                 )
             ]
@@ -120,6 +136,8 @@ def generate_launch_description():
                 web_video_server,
                 lidar,
                 depth_cam,
+                arm_control
+
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)

@@ -54,6 +54,9 @@ public:
   hardware_interface::CallbackReturn
   on_init(const hardware_interface::HardwareInfo &info) override;
 
+  hardware_interface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State &previous_state) override;
+
   // on_configure
   // on_cleanup
   // on_shutdown
@@ -115,6 +118,8 @@ private:
   std::vector<double> position;
 
   rclcpp::Time curr_update_time, prev_update_time;
+  rclcpp::Subscription<mirte_msgs::msg::ServoPosition>::SharedPtr subscriber_;
+
 
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
@@ -151,10 +156,7 @@ private:
 
   void
   ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
-                        int joint) {
-    _servo_position[joint] = msg->angle;
-    _servo_position_update_time[joint] = msg->header.stamp;
-  }
+                        int joint);
 
   // Thread and function to restart service clients when the service server has
   // restarted
@@ -163,11 +165,37 @@ private:
   void start_reconnect();
   std::mutex service_clients_mutex;
 
+  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
+      set_servo_angle_service_clients;
+
+  rclcpp::Logger get_logger() const { return *logger_; }
+
+  rclcpp::Clock::SharedPtr get_clock() const { return clock_; }
+
+
   // thread for ros spinning
   std::jthread ros_thread;
   void ros_spin();
 
   unsigned int NUM_JOINTS = 4;
+  bool received_servo_data_ = false;
+
+  // Parameters for the RRBot simulation
+  double hw_start_sec_;
+  double hw_stop_sec_;
+  double hw_slowdown_;
+
+  // Objects for logging
+  std::shared_ptr<rclcpp::Logger> logger_;
+  rclcpp::Clock::SharedPtr clock_;
+
+  // Store the command for the simulated robot
+  std::vector<double> hw_states_velocities_;
+  std::vector<double> hw_commands_;
+  std::vector<double> hw_states_;
+
+  void connectServices();
+
 }; // class
 
 } // namespace mirte_master_arm_control

@@ -1,70 +1,41 @@
----
-/**:
+/**/controller_manager:
   ros__parameters:
+    update_rate: 10  # Hz
 
-    # TODO: configs cleanup
-    # ros_control_boilerplate Settings -----------------------
-    # Settings for ros_control control loop
-    generic_hw_control_loop:
-      loop_hz: 300
-      cycle_time_error_threshold: 0.04
-    # Settings for ros_control hardware interface
-    hardware_interface:
-      joints: [shoulder, arm, arm2, gripper_joint]
-      sim_control_mode: 0  # 0: position, 1: velocity
-    # Publish all joint states ----------------------------------
-    # Creates the /joint_states topic necessary in ROS
-    joint_state_controller:
-      type: joint_state_controller/JointStateController
-      publish_rate: 50
-    # Joint Trajectory Controller -------------------------------
-    # For detailed explanations of parameter see http://wiki.ros.org/joint_trajectory_controller
-    position_trajectory_controller:
-      type: position_controllers/JointTrajectoryController
-      # These joints can likely just be copied from the hardware_interface list above
-      joints: [shoulder, arm, arm2, gripper_joint]
-      constraints:
-        goal_time: 5.0
-          # stopped_position_tolerance: 0.4  #  Defaults to 0.01
-        shoulder:
-          trajectory: 0.60
-          goal: 0.0
-        arm:
-          trajectory: 0.60
-          goal: 0.0
-        arm2:
-          trajectory: 0.60
-          goal: 0.0
-        gripper_joint:
-          trajectory: 0.60
-          goal: 0.0
-      # gains:
-      #     joint1: {p: 2.0,  i: 0.0, d: 0.01, i_clamp: 1}
-      #     joint2: {p: 2.0,  i: 0.0, d: 0.01, i_clamp: 1}
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
 
-        # state_publish_rate:  50  # Defaults to 50
-        # action_monitor_rate: 20  # Defaults to 20
-        # hold_trajectory_duration: 0  #  Defaults to 0.5
-    # Individual Position Controllers ---------------------------------------
-    # Allows to send individual ROS msg of Float64 to each joint separately
-    shoulder_position_controller:
-      type: position_controllers/JointPositionController
-      joint: shoulder
-      pid: {p: 100.0, i: 0.01, d: 10.0}
-    arm_position_controller:
-      type: position_controllers/JointPositionController
-      joint: arm
-      pid: {p: 100.0, i: 0.01, d: 10.0}
-    arm2_position_controller:
-      type: position_controllers/JointPositionController
-      joint: arm2
-      pid: {p: 100.0, i: 0.01, d: 10.0}
-    gripper_joint_position_controller:
-      type: position_controllers/JointPositionController
-      joint: gripper_joint
-      pid: {p: 100.0, i: 0.01, d: 10.0}
-    # Group Position Controllers ---------------------------------------
-    # Allows to send single ROS msg of Float64MultiArray to all joints
-    joint_position_controller:
-      type: position_controllers/JointGroupPositionController
-      joints: [shoulder, arm, arm2, gripper_joint]
+    mirte_master_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    mirte_master_gripper_controller:
+      type: position_controllers/GripperActionController
+
+#/**/mirte_master_arm_controller:
+#  ros__parameters:
+#    joints:
+#      - arm_Rot_joint
+#      - arm_Shoulder_joint
+#      - arm_Elbow_joint
+#      - arm_Wrist_joint
+#
+#    command_interfaces:
+#      - position
+#
+#    state_interfaces:
+#      - position
+#      - velocity
+#
+#    state_publish_rate: 200.0 # Defaults to 50
+#    action_monitor_rate: 20.0 # Defaults to 20
+#
+#    allow_partial_joints_goal: false # Defaults to false
+#    open_loop_control: true
+#    allow_integration_in_goal_trajectories: true
+#    constraints:
+#      stopped_velocity_tolerance: 0.01 # Defaults to 0.01
+#      goal_time: 0.0 # Defaults to 0.0 (start immediately)
+
+/**/mirte_master_gripper_controller:
+  ros__parameters:
+    joint: Gripper_joint
