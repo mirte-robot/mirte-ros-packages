@@ -21,7 +21,8 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "machine_namespace",
                 default_value=TextSubstitution(
-                    text=platform.node().replace("-", "_").lower()
+                    text="" #platform.node().replace("-", "_").lower()
+                    # currently disabled, should refactor for multi-robot situations
                 ),
                 description="The namespace containing all Robot specific ROS communication",
             ),
