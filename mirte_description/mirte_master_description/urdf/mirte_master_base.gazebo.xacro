@@ -1,24 +1,28 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <gazebo>
 
-    <xacro:if value="$(arg imu_enable)">
-      <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
-        <robotNamespace>/${tf_namespace}mirte</robotNamespace>
-        <updateRate>50.0</updateRate>
+ <xacro:if value="$(arg imu_enable)">
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu</topicName>
         <bodyName>imu_link</bodyName>
-        <topicName>movement/imu</topicName>
-        <frameId>base_link</frameId>
-        <accelDrift>0.005 0.005 0.005</accelDrift>
-        <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
-        <rateDrift>0.00005 0.00005 0.00005</rateDrift>
-        <rateGaussianNoise>0.00005 0.00005 0.00005</rateGaussianNoise>
-        <headingDrift>0.005</headingDrift>
-        <headingGaussianNoise>0.005</headingGaussianNoise>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
       </plugin>
-    </xacro:if>
-
-  </gazebo>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+   </gazebo>
+  </xacro:if>
 
   <gazebo reference="base_link">
     <material>Gazebo/White</material>
