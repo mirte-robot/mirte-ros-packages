@@ -11,13 +11,13 @@
         <param name="example_param_hw_slowdown">1</param>
       </hardware>
 
-   <joint name="arm_Rot_joint">
+   <joint name="arm_shoulder_pan_joint">
         <command_interface name="position"/>
         <state_interface name="position"/>
         <state_interface name="velocity" />
    </joint>
 
-    <joint name="arm_Shoulder_joint">
+    <joint name="arm_shoulder_lift_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">-1.56</param>
@@ -25,7 +25,7 @@
         <state_interface name="velocity" />
     </joint>
 
-    <joint name="arm_Elbow_joint">
+    <joint name="arm_elbow_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">-1.56</param>
@@ -33,7 +33,7 @@
         <state_interface name="velocity" />
     </joint>
 
-    <joint name="arm_Wrist_joint">
+    <joint name="arm_wrist_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">1.56</param>
@@ -52,7 +52,7 @@
         <param name="example_param_hw_slowdown">2</param>
       </hardware>
 
-    <joint name="Gripper_joint">
+    <joint name="gripper_joint">
         <command_interface name="position"/>
         <state_interface name="position" />
         <state_interface name="velocity" />

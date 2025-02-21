@@ -14,12 +14,13 @@ bool initialized = false;
 int init_steps = 0;
 
 //const std::string servo_names[] = {"arm_Rot_joint", "arm_Shoulder_joint", "arm_Elbow_joint", "arm_Wrist_joint"};
-const std::string servo_names[] = {"Gripper_joint"};
+// TOOD: this can be removed and use info_.joints
+const std::string servo_names[] = {"gripper_joint"};
 
 const auto NUM_SERVOS = std::size(servo_names);
 std::array<Servo_data, NUM_SERVOS> servo_data;
 // TODO: should we rename the servoH to servo_<name>?
-const auto topic_format = "io/servo/hiwonder/servoH%s/position";
+const auto topic_format = "io/servo/hiwonder/%s/position";
 
 
 hardware_interface::return_type
@@ -87,15 +88,16 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 }
 
 using namespace std::chrono_literals;
-const auto service_format = "io/servo/hiwonder/servoH%s/set_angle";
+const auto service_format = "io/servo/hiwonder/%s/set_angle";
 void MirteMasterArmHWInterface::connectServices() {
 
 //  for (auto i = 0; i < NUM_SERVOS; i++) {
       //const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
       service_clients.clear();
       for (size_t i = 0; i < NUM_SERVOS; i++) {
+        std::string servo_name = servo_names[i].substr(0, servo_names[i].size() - 6);
         auto client = nh->create_client<mirte_msgs::srv::SetServoAngle>(
-            (boost::format(service_format) % (i + 1))
+            (boost::format(service_format) % servo_name)
                 .str()); // TODO: add persistent connection
         while (!client->wait_for_service(1s)) {
           if (!rclcpp::ok()) {
@@ -103,9 +105,9 @@ void MirteMasterArmHWInterface::connectServices() {
                          "Interrupted while waiting for the service. Exiting.");
             return;
           }
-          std::cout << boost::format(service_format) % i << std::endl;
+          std::cout << boost::format(service_format) % servo_names[i] << std::endl;
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-                      "service not available, waiting again...");
+                      "service not available, waiting again..."); 
         }
         service_clients.push_back(client);
 
@@ -276,7 +278,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
 
   std::cout << "starting on_init" << std::endl;
 
-  // Create a ROS node to interface with
 
   // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
   hw_start_sec_ = stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
@@ -288,12 +289,13 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   std::stringstream ss;
   ss << "mirte_arm_control" << hw_slowdown_;
 
+  // TODO: can we just use the node of the controller istself?
   nh = rclcpp::Node::make_shared(ss.str());
   this->ros_thread = std::jthread([this] { this->ros_spin(); });
 
 
   // Initialize raw data
-  for (size_t i = 0; i < NUM_JOINTS; i++) {
+  for (size_t i = 0; i < NUM_SERVOS; i++) {
     _servo_position.push_back(0);
     _servo_position_update_time.push_back(nh->now());
 
@@ -359,9 +361,10 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 {
 
   // Initialize the servo topics
-  for (size_t i = 0; i < NUM_JOINTS; i++) {
+  for (size_t i = 0; i < NUM_SERVOS; i++) {
+    std::string servo_name = servo_names[i].substr(0, servo_names[i].size() - 6);
     auto servo_topic =
-        (boost::format(topic_format) % (i+1)).str();
+        (boost::format(topic_format) % servo_name).str();
 
     std::cout << "add servo topic: " << servo_topic << std::endl;
     servo_pos_subs_.push_back(

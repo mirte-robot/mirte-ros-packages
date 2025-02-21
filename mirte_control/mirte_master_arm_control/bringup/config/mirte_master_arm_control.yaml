@@ -14,10 +14,10 @@
 #/**/mirte_master_arm_controller:
 #  ros__parameters:
 #    joints:
-#      - arm_Rot_joint
-#      - arm_Shoulder_joint
-#      - arm_Elbow_joint
-#      - arm_Wrist_joint
+#      - arm_shoulder_pan_joint
+#      - arm_shoulder_lift_joint
+#      - arm_elbow_joint
+#      - arm_wrist_joint
 #
 #    command_interfaces:
 #      - position
@@ -38,4 +38,4 @@
 
 /**/mirte_master_gripper_controller:
   ros__parameters:
-    joint: Gripper_joint
+    joint: gripper_joint
