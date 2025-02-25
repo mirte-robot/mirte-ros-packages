@@ -11,30 +11,30 @@
     mirte_master_gripper_controller:
       type: position_controllers/GripperActionController
 
-#/**/mirte_master_arm_controller:
-#  ros__parameters:
-#    joints:
-#      - arm_shoulder_pan_joint
-#      - arm_shoulder_lift_joint
-#      - arm_elbow_joint
-#      - arm_wrist_joint
-#
-#    command_interfaces:
-#      - position
-#
-#    state_interfaces:
-#      - position
-#      - velocity
-#
-#    state_publish_rate: 200.0 # Defaults to 50
-#    action_monitor_rate: 20.0 # Defaults to 20
-#
-#    allow_partial_joints_goal: false # Defaults to false
-#    open_loop_control: true
-#    allow_integration_in_goal_trajectories: true
-#    constraints:
-#      stopped_velocity_tolerance: 0.01 # Defaults to 0.01
-#      goal_time: 0.0 # Defaults to 0.0 (start immediately)
+/**/mirte_master_arm_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pan_joint
+      - shoulder_lift_joint
+      - elbow_joint
+      - wrist_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+
+    state_publish_rate: 200.0 # Defaults to 50
+    action_monitor_rate: 20.0 # Defaults to 20
+
+    allow_partial_joints_goal: false # Defaults to false
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+    constraints:
+      stopped_velocity_tolerance: 0.01 # Defaults to 0.01
+      goal_time: 0.0 # Defaults to 0.0 (start immediately)
 
 /**/mirte_master_gripper_controller:
   ros__parameters:

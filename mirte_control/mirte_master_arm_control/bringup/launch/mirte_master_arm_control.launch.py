@@ -93,7 +93,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=[
-#            "mirte_master_arm_controller",
+            "mirte_master_arm_controller",
             "mirte_master_gripper_controller"
         ],
         # prefix=["xterm -e gdb -ex run --args"],

@@ -5,20 +5,24 @@
 
 namespace mirte_master_arm_control {
 
- struct Servo_data {
-    double data;
-    bool init = false;
-    bool moved = false;
-    double last_move_update = -100;
-    double last_request = -100;
-  };
+struct Servo_data {
+  double data;
+  bool init = false;
+  bool moved = false;
+  double last_move_update = -100;
+  double last_request = -100;
+};
+
+//std::vector<Servo_data> servo_data;
+std::map<std::string, std::vector<Servo_data>> servo_data;
+//std::vector<Servo_data> servo_data;
+
 bool initialized = false;
 int init_steps = 0;
-std::vector<Servo_data> servo_data;
 
 //const std::string servo_names[] = {"arm_Rot_joint", "arm_Shoulder_joint", "arm_Elbow_joint", "arm_Wrist_joint"};
 // TOOD: this can be removed and use info_.joints
-const std::string servo_names[] = {"gripper_joint"};
+//const std::string servo_names[] = {"gripper_joint"};
 
 //const auto NUM_SERVOS = std::size(servo_names);
 //std::array<Servo_data, NUM_SERVOS> servo_data;
@@ -31,40 +35,59 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
   // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
 
+//  std::cout << " fggfgfgfgf " << std::endl;
+
   if (initialized) {
     for (auto i = 0; i < NUM_SERVOS; i++) {
       service_requests[i]->angle = hw_commands_[i];
     }
   } else {
-    if (std::all_of(std::begin(servo_data), std::end(servo_data),
+    if (std::all_of(std::begin(servo_data.find(info_.name)->second), std::end(servo_data.find(info_.name)->second),
                     [](Servo_data &x) { return x.init; })) {
 
       for (auto i = 0; i < NUM_SERVOS; i++) {
-        service_requests[i]->angle = servo_data[i].data;
+        service_requests[i]->angle = (servo_data.find(info_.name)->second)[i].data;
       }
       ++init_steps;
       for (auto i = 0; i < NUM_SERVOS; i++) {
-        hw_commands_[i] = servo_data[i].data;
+        hw_commands_[i] = (servo_data.find(info_.name)->second)[i].data;
       }
       if (init_steps == 50) {
         initialized = true;
       }
     }
   }
+
+  for (auto i = 0; i < NUM_SERVOS; i++) {
+
+//    std::cout << "init: "  << i << "   "  << servo_data[i].init << std::endl;
+  }
+//  std::cout << "len:" <<  std::size(servo_data) << std::endl;
+
+
   // all initialized?
-  if (std::all_of(std::begin(servo_data), std::end(servo_data),
+//  std::cout << (std::all_of(std::begin(servo_data), std::end(servo_data), [](auto x) { return x.init; })) << std::endl;
+
+  for (auto i = 0; i < size(servo_data) ; i++) {
+    std::cout << (servo_data.find(info_.name)->second)[i].init << std::endl;
+
+  }
+
+
+  if (std::all_of(std::begin(servo_data.find(info_.name)->second), std::end(servo_data.find(info_.name)->second),
                   [](auto x) { return x.init; })) {
+    std::cout << "  bladiebla" << std::endl;
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
     //float last_req[NUM_SERVOS] = {-100.0};
     for (auto i = 0; i < NUM_SERVOS; i++) {
 
       // Only set the servo when there is a new command or the servo is moved by
       // hand or gravity.
- //     std::cout << i << "   "  << (last_req[i] != service_requests[i]->angle) << "    " << servo_data[i].moved << std::endl;
-      if (servo_data[i].last_request != service_requests[i]->angle || servo_data[i].moved) {
+      std::cout << i << " hier    " << (servo_data.find(info_.name)->second)[i].moved << std::endl;
+      if ((servo_data.find(info_.name)->second)[i].last_request != service_requests[i]->angle || (servo_data.find(info_.name)->second)[i].moved) {
         //last_req[i] = service_requests[i]->angle;
-        servo_data[i].moved = false;
-        servo_data[i].last_request = service_requests[i]->angle;
+        (servo_data.find(info_.name)->second)[i].moved = false;
+        (servo_data.find(info_.name)->second)[i].last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
         service_clients[i]->async_send_request(service_requests[i]);
@@ -99,7 +122,8 @@ void MirteMasterArmHWInterface::connectServices() {
       //const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
       service_clients.clear();
       for (size_t i = 0; i < NUM_SERVOS; i++) {
-        std::string servo_name = servo_names[i].substr(0, servo_names[i].size() - 6);
+        std::string joint_name = info_.joints[i].name;
+        std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
         auto client = nh->create_client<mirte_msgs::srv::SetServoAngle>(
             (boost::format(service_format) % servo_name)
                 .str()); // TODO: add persistent connection
@@ -109,7 +133,7 @@ void MirteMasterArmHWInterface::connectServices() {
                          "Interrupted while waiting for the service. Exiting.");
             return;
           }
-          std::cout << boost::format(service_format) % servo_names[i] << std::endl;
+          std::cout << servo_name << std::endl;
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
                       "service not available, waiting again..."); 
         }
@@ -145,7 +169,7 @@ MirteMasterArmHWInterface::ServoPositionCallback(std::shared_ptr<mirte_msgs::msg
                         int joint) {
 
 //    std::cout << "got data ............................"  << std::endl;
-    auto &servo = servo_data[joint];
+    auto &servo = (servo_data.find(info_.name)->second)[joint];
     servo.data = msg->angle;
     servo.init = true;
 //    std::cout << servo.data << std::endl;
@@ -207,8 +231,8 @@ MirteMasterArmHWInterface::read(const rclcpp::Time &time,
                                 const rclcpp::Duration &period) {
 
   for (std::size_t joint_id = 0; joint_id < NUM_SERVOS; ++joint_id) {
-    if (servo_data[joint_id].init){
-      hw_states_[joint_id] = servo_data[joint_id].data;
+    if ((servo_data.find(info_.name)->second)[joint_id].init){
+      hw_states_[joint_id] = (servo_data.find(info_.name)->second)[joint_id].data;
      // std::cout << joint_id << "     "  << servo_data[joint_id].data << std::endl;
     }
   }
@@ -280,9 +304,9 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  NUM_SERVOS = info_.joints.size();
 
-  std::cout << "starting on_init" << std::endl;
+
+  NUM_SERVOS = info_.joints.size();
 
 
   // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
@@ -290,10 +314,13 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   hw_stop_sec_ = stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
   hw_slowdown_ = stod(info_.hardware_parameters["example_param_hw_slowdown"]);
 
-
-  std::cout << "hirrrrr" << std::endl;
   std::stringstream ss;
   ss << "mirte_arm_control" << hw_slowdown_;
+
+  std::cout << "Starting " << ss.str() << " with " << NUM_SERVOS << " servos" << std::endl;
+  //std::cout << "Already having " << servo_data.size() << " servo's in memory" << std::endl;
+  std::cout << "name: " << info_.name << std::endl;
+
 
   // TODO: can we just use the node of the controller istself?
   nh = rclcpp::Node::make_shared(ss.str());
@@ -301,19 +328,24 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
 
 
   // Initialize raw data
+  std::vector<Servo_data> sd_vector;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     Servo_data sd;
 
-    servo_data.push_back(sd);
+    sd_vector.push_back(sd);
     _servo_position.push_back(0);
     _servo_position_update_time.push_back(nh->now());
-    
+
     pos.push_back(0);
 //    vel.push_back(0);
 //    eff.push_back(0);
     service_requests.push_back(std::make_shared<mirte_msgs::srv::SetServoAngle::Request>());
     cmd.push_back(0);
   }
+  servo_data.insert({info_.name, sd_vector});
+
+  std::cout << hw_slowdown_ <<  " servo_data size: "  << std::size(servo_data) << std::endl;
+
 
   logger_ = std::make_shared<rclcpp::Logger>(
     rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system.RRBot"));
@@ -370,9 +402,10 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 {
 
   // Initialize the servo topics
-  std::cout << "number of servos: "  << NUM_SERVOS << std::endl;
+ // std::cout << "number of servos: "  << NUM_SERVOS << std::endl;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
-    std::string servo_name = servo_names[i].substr(0, servo_names[i].size() - 6);
+    std::string joint_name = info_.joints[i].name;
+    std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
     auto servo_topic =
         (boost::format(topic_format) % servo_name).str();
 

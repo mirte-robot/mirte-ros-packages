@@ -52,7 +52,7 @@
             home_out: 12000
             min_angle_out: 3400
             max_angle_out: 21000
-            invert: true
+            invert: false
           shoulder_lift:
             id: 3
             home_out: 11450
@@ -76,7 +76,7 @@
             home_out: 10524
             min_angle_out: 6168
             max_angle_out: 14224
-            invert: true
+            invert: false
 #          servoH1:
 #            id: 3
 #            min_angle: 9000
