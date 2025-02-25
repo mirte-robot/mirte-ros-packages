@@ -99,6 +99,16 @@ public:
   // rclcpp::Node private_nh;
 
 private:
+
+/*  struct Servo_data {
+    double data;
+    bool init = false;
+    bool moved = false;
+    double last_move_update = -100;
+  };
+*/
+  int NUM_SERVOS;
+
   std::vector<double> cmd;
   std::vector<double> pos;
   // std::vector<double> vel;

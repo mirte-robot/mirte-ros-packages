@@ -2,6 +2,7 @@
 #include "params.hpp"
 #include <algorithm>
 #include <mirte_master_arm_control.hpp>
+
 namespace mirte_master_arm_control {
 
  struct Servo_data {
@@ -9,16 +10,18 @@ namespace mirte_master_arm_control {
     bool init = false;
     bool moved = false;
     double last_move_update = -100;
+    double last_request = -100;
   };
 bool initialized = false;
 int init_steps = 0;
+std::vector<Servo_data> servo_data;
 
 //const std::string servo_names[] = {"arm_Rot_joint", "arm_Shoulder_joint", "arm_Elbow_joint", "arm_Wrist_joint"};
 // TOOD: this can be removed and use info_.joints
 const std::string servo_names[] = {"gripper_joint"};
 
-const auto NUM_SERVOS = std::size(servo_names);
-std::array<Servo_data, NUM_SERVOS> servo_data;
+//const auto NUM_SERVOS = std::size(servo_names);
+//std::array<Servo_data, NUM_SERVOS> servo_data;
 // TODO: should we rename the servoH to servo_<name>?
 const auto topic_format = "io/servo/hiwonder/%s/position";
 
@@ -52,15 +55,16 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
   if (std::all_of(std::begin(servo_data), std::end(servo_data),
                   [](auto x) { return x.init; })) {
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    static float last_req[NUM_SERVOS] = {-100.0};
+    //float last_req[NUM_SERVOS] = {-100.0};
     for (auto i = 0; i < NUM_SERVOS; i++) {
 
       // Only set the servo when there is a new command or the servo is moved by
       // hand or gravity.
  //     std::cout << i << "   "  << (last_req[i] != service_requests[i]->angle) << "    " << servo_data[i].moved << std::endl;
-      if (last_req[i] != service_requests[i]->angle || servo_data[i].moved) {
-        last_req[i] = service_requests[i]->angle;
+      if (servo_data[i].last_request != service_requests[i]->angle || servo_data[i].moved) {
+        //last_req[i] = service_requests[i]->angle;
         servo_data[i].moved = false;
+        servo_data[i].last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
         service_clients[i]->async_send_request(service_requests[i]);
@@ -276,6 +280,8 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
+  NUM_SERVOS = info_.joints.size();
+
   std::cout << "starting on_init" << std::endl;
 
 
@@ -296,9 +302,12 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
 
   // Initialize raw data
   for (size_t i = 0; i < NUM_SERVOS; i++) {
+    Servo_data sd;
+
+    servo_data.push_back(sd);
     _servo_position.push_back(0);
     _servo_position_update_time.push_back(nh->now());
-
+    
     pos.push_back(0);
 //    vel.push_back(0);
 //    eff.push_back(0);
@@ -361,6 +370,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 {
 
   // Initialize the servo topics
+  std::cout << "number of servos: "  << NUM_SERVOS << std::endl;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string servo_name = servo_names[i].substr(0, servo_names[i].size() - 6);
     auto servo_topic =
