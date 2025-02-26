@@ -36,9 +36,7 @@
         <xacro:wheel name="right_rear" prefix="$(arg prefix)" />
         <xacro:wheel name="right_front" prefix="$(arg prefix)" />
 
-
-
-            <ros2_control name="mecanumdrive" type="system">
+   <ros2_control name="mecanumdrive" type="system">
       <hardware>
         <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
         <param name="ticks">${params['ticks']}</param>
@@ -53,26 +51,6 @@
         <xacro:joint prefix="$(arg prefix)" name="right_front"  />
         <xacro:joint prefix="$(arg prefix)" name="left_rear"  />
         <xacro:joint prefix="$(arg prefix)" name="right_rear"  />
-      <!-- <joint name="${prefix}right_wheel_joint">
-        <command_interface name="velocity"/>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
-      </joint> -->
     </ros2_control>
-
-  <!-- <xacro:include filename="$(find mirte_control)/urdf/diffbot_description.urdf.xacro" />
-
-  <!- -  Import Rviz colors - ->
-  <xacro:include filename="$(find mirte_control)/urdf/diffbot.materials.xacro" />
-
-  <!- - Import diffbot ros2_control description - ->
-  <xacro:include filename="$(find mirte_control)/ros2_control/diffbot.ros2_control.xacro" />
-
-  <xacro:diffbot prefix="$(arg prefix)" />
-
-  <xacro:diffbot_ros2_control
-    name="DiffBot" prefix="$(arg prefix)" /> -->
-
-
 
 </robot>

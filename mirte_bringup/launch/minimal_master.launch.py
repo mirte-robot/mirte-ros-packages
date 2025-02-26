@@ -39,6 +39,13 @@ def generate_launch_description():
     frame_prefix = LaunchConfiguration(
         "_frame_prefix", default=[machine_namespace, "/"]
     )
+    start_controller_manager = LaunchConfiguration(
+        "_start_controller_manager", default="false"
+    )
+    start_state_publishers = LaunchConfiguration(
+        "_start_state_publishers", default="false"
+    )
+
 
     telemetrix = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -65,6 +72,36 @@ def generate_launch_description():
         }.items(),
     )
 
+    ros2_control = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "launch",
+                        "ros2_control.launch.py",
+                    ]
+                )
+            ]
+        ),
+        launch_arguments={"frame_prefix": frame_prefix}.items(),
+    )
+
+    state_publishers = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "launch",
+                        "state_publishers.launch.py",
+                    ]
+                )
+            ]
+        ),
+        launch_arguments={"frame_prefix": frame_prefix}.items(),
+    )
+
     mecanum_drive_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -77,9 +114,11 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
+        launch_arguments={"frame_prefix": frame_prefix,
+                          "start_controller_manager":  start_controller_manager,
+                          "start_state_publishers": start_state_publishers,
+        }.items(),
     )
-
 
     arm_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -93,7 +132,10 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
+        launch_arguments={"frame_prefix": frame_prefix,
+                          "start_controller_manager":  start_controller_manager,
+                          "start_state_publishers": start_state_publishers,
+        }.items(),
     )
 
     web_video_server = Node(
@@ -133,12 +175,13 @@ def generate_launch_description():
             [
                 PushRosNamespace(machine_namespace),
                 telemetrix,
-                mecanum_drive_control,
+                ros2_control,
+                state_publishers,
                 web_video_server,
                 lidar,
                 depth_cam,
-                arm_control
-
+                arm_control,
+                mecanum_drive_control
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)

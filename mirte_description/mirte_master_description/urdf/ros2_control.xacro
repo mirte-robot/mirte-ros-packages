@@ -1,7 +1,58 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<!--
+   <xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
+    <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
+
+<xacro:arg name="prefix" default="" />
+
+
+<xacro:macro name="wheel" params="name prefix">
+
+        <joint name="${prefix}${name}_wheel_joint" type="continuous">
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}${name}_wheel"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.2"/>
+    </joint>
+
+    <!-- left wheel Link -->
+    <link name="${prefix}${name}_wheel">
+</link>
+</xacro:macro>
+
+<xacro:macro name="joint" params="name prefix">
+      <joint name="${prefix}${name}_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+</xacro:macro>
+
+
+
+
+   <ros2_control name="mecanumdrive" type="system">
+      <hardware>
+        <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
+        <param name="ticks">${params['ticks']}</param>
+        <param name="enable_pid">${params['enable_pid']}</param>
+        <param name="kp">${params['kp']}</param>
+        <param name="ki">${params['ki']}</param>
+        <param name="kd">${params['kd']}</param>
+        <param name="i_clamp">${params['i_clamp']}</param>
+        <param name="antiwindup">${params['antiwindup']}</param>
+      </hardware>
+      <xacro:joint prefix="$(arg prefix)" name="left_front"  />
+        <xacro:joint prefix="$(arg prefix)" name="right_front"  />
+        <xacro:joint prefix="$(arg prefix)" name="left_rear"  />
+        <xacro:joint prefix="$(arg prefix)" name="right_rear"  />
+    </ros2_control>
+
+
+
+
 
 <ros2_control name="ros2_arm_control" type="system">
       <hardware>
@@ -11,13 +62,13 @@
         <param name="example_param_hw_slowdown">1</param>
       </hardware>
 
-   <joint name="arm_shoulder_pan_joint">
+   <joint name="shoulder_pan_joint">
         <command_interface name="position"/>
         <state_interface name="position"/>
         <state_interface name="velocity" />
    </joint>
 
-    <joint name="arm_shoulder_lift_joint">
+    <joint name="shoulder_lift_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">-1.56</param>
@@ -25,7 +76,7 @@
         <state_interface name="velocity" />
     </joint>
 
-    <joint name="arm_elbow_joint">
+    <joint name="elbow_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">-1.56</param>
@@ -33,7 +84,7 @@
         <state_interface name="velocity" />
     </joint>
 
-    <joint name="arm_wrist_joint">
+    <joint name="wrist_joint">
         <command_interface name="position"/>
         <state_interface name="position">
           <param name="initial_value">1.56</param>
@@ -41,7 +92,6 @@
         <state_interface name="velocity" />
     </joint>
 </ros2_control>
--->
 
 
 <ros2_control name="ros2_gripper_control" type="system">
@@ -100,7 +150,6 @@
 
 </ros2_control>
 
-
 <!--
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
@@ -143,80 +192,8 @@
         <state_interface name="effort" />
     </joint>
 
-
-    <xacro:if value="$(arg arm_enable)">
-
-    <joint name="arm_Rot_joint">
-        <command_interface name="position"/>
-        <state_interface name="position"/>
-   </joint>
-
-    <joint name="arm_Shoulder_joint">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">-1.56</param>
-        </state_interface>
-    </joint>
-
-    <joint name="arm_Elbow_joint">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">-1.56</param>
-        </state_interface>
-    </joint>
-
-    <joint name="arm_Wrist_joint">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">1.56</param>
-        </state_interface>
-    </joint>
-
-    <joint name="Gripper_joint">
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-
-    <joint name="_Gripper_joint_r">
-        <param name="mimic">Gripper_joint</param>
-        <param name="multiplier">-1</param>
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-    <joint name="_gripper_link_joint_l">
-        <param name="mimic">Gripper_joint</param>
-        <param name="multiplier">-1.4</param> 
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-    <joint name="_gripper_link_joint_r">
-        <param name="mimic">Gripper_joint</param>
-        <param name="multiplier">1.4</param>  
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-    <joint name="gripper_finger_joint_l">
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-    <joint name="gripper_finger_joint_r">
-        <command_interface name="position"/>
-        <state_interface name="position" />
-    </joint>
-
-
-    </xacro:if>
-
-
-  </ros2_control>
+</ros2_control>
 -->
-
-
 
 
 <gazebo>

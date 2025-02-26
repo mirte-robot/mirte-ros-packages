@@ -39,10 +39,6 @@
 #include <future>
 #include <mutex>
 #include <thread>
-// const unsigned int NUM_JOINTS = 4;
-// const auto service_format = "io/motor/%s/set_speed";
-// const auto encoder_format = "io/encoder/%s";
-// const auto max_speed = 100; // Quick fix hopefully for power dip.
 
 namespace mirte_master_arm_control {
 
@@ -99,32 +95,15 @@ public:
   // rclcpp::Node private_nh;
 
 private:
-
-/*  struct Servo_data {
-    double data;
-    bool init = false;
-    bool moved = false;
-    double last_move_update = -100;
-  };
-*/
   int NUM_SERVOS;
 
-  std::vector<double> cmd;
-  std::vector<double> pos;
-  // std::vector<double> vel;
-  // std::vector<double> eff;
-
   bool running_ = true;
-  // double _wheel_diameter;
-  // double _max_speed;
-  // double ticks = 40.0;
 
   std::vector<double> _servo_position;
   std::vector<rclcpp::Time> _servo_position_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
-  // std::vector<int> _last_wheel_cmd_direction;
   std::vector<double> position;
 
   rclcpp::Time curr_update_time, prev_update_time;
@@ -142,27 +121,6 @@ private:
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
       service_requests;
-  // std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
-  //     set_speed_multiple_client;
-  // std::shared_ptr<mirte_msgs::srv::SetSpeedMultiple::Request>
-  //     set_speed_multiple_request;
-  std::vector<std::string> joints;
-  bool enablePID = false;
-  std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
-  std::shared_ptr<control_toolbox::Pid>
-      reconfig_pid; // one dummy pid to use for the dynamic reconfigure
-
-  void start_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
-                      std::shared_ptr<std_srvs::srv::Empty::Response> res) {
-    running_ = true;
-    // return true;
-  }
-
-  void stop_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
-                     std::shared_ptr<std_srvs::srv::Empty::Response> res) {
-    running_ = false;
-    // return true;
-  }
 
   void
   ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
@@ -170,9 +128,7 @@ private:
 
   // Thread and function to restart service clients when the service server has
   // restarted
-  std::future<void> reconnect_thread;
   void init_service_clients();
-  void start_reconnect();
   std::mutex service_clients_mutex;
 
   std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
@@ -187,7 +143,6 @@ private:
   std::jthread ros_thread;
   void ros_spin();
 
-  unsigned int NUM_JOINTS = 4;
   bool received_servo_data_ = false;
 
   // Parameters for the RRBot simulation

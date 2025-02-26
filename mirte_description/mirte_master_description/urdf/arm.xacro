@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <link
-        name="arm_shoulder_pan">
+        name="shoulder_pan">
         <inertial>
             <origin
                 xyz="-1.27894101951934E-05 0.0208058767653727 0.00585680210359747"
@@ -41,7 +41,7 @@
         </collision>
     </link>
     <joint
-        name="arm_shoulder_pan_joint"
+        name="shoulder_pan_joint"
         type="revolute">
         <origin
             xyz="0 -0.079274 0.06"
@@ -49,7 +49,7 @@
         <parent
             link="frame_link" />
         <child
-            link="arm_shoulder_pan" />
+            link="shoulder_pan" />
         <axis
             xyz="0 1 0" />
         <limit
@@ -60,7 +60,7 @@
         />
     </joint>
     <link
-        name="arm_shoulder_lift">
+        name="shoulder_lift">
         <inertial>
             <origin
                 xyz="0.0764974362945755 0.000442680770353329 -4.93690401059954E-09"
@@ -100,15 +100,15 @@
         </collision>
     </link>
     <joint
-        name="arm_shoulder_lift_joint"
+        name="shoulder_lift_joint"
         type="revolute">
         <origin
             xyz="0 0.0281 -0.00625"
             rpy="3.1416 0 1.5708" />
         <parent
-            link="arm_shoulder_pan" />
+            link="shoulder_pan" />
         <child
-            link="arm_shoulder_lift" />
+            link="shoulder_lift" />
         <axis
             xyz="0 1 0" />
         <limit
@@ -119,7 +119,7 @@
         />
     </joint>
     <link
-        name="arm_elbow">
+        name="elbow">
         <inertial>
             <origin
                 xyz="0.000768647609078278 0.0642294520091309 -2.34835863116567E-08"
@@ -159,15 +159,15 @@
         </collision>
     </link>
     <joint
-        name="arm_elbow_joint"
+        name="elbow_joint"
         type="revolute">
         <origin
             xyz="0.1378 0 0"
             rpy="-3.1416 0 1.5708" />
         <parent
-            link="arm_shoulder_lift" />
+            link="shoulder_lift" />
         <child
-            link="arm_elbow" />
+            link="elbow" />
         <axis
             xyz="1 0 0" />
         <limit
@@ -178,7 +178,7 @@
         />
     </joint>
     <link
-        name="arm_wrist">
+        name="wrist">
         <inertial>
             <origin
                 xyz="0.0225315136140379 0.000488092971965825 -2.74405760168628E-06"
@@ -218,15 +218,15 @@
         </collision>
     </link>
     <joint
-        name="arm_wrist_joint"
+        name="wrist_joint"
         type="revolute">
         <origin
             xyz="-0.00014 0.14265 0"
             rpy="3.1416 0 1.5708" />
         <parent
-            link="arm_elbow" />
+            link="elbow" />
         <child
-            link="arm_wrist" />
+            link="wrist" />
         <axis
             xyz="0 1 0" />
         <limit
@@ -283,7 +283,7 @@
             xyz="0.0435 -0.012 0.0045"
             rpy="-1.5708 0 0" />
         <parent
-            link="arm_wrist" />
+            link="wrist" />
         <child
             link="gripper" />
         <axis
@@ -343,7 +343,7 @@
             xyz="0.0605 0.0205 -0.0055"
             rpy="1.5708 0 -1.3641" />
         <parent
-            link="arm_wrist" />
+            link="wrist" />
         <child
             link="_gripper_link_r" />
         <axis
@@ -353,7 +353,7 @@
             upper="3.14"
             effort="0.0"
             velocity="0.0" />
-        <mimic joint="Gripper_joint" multiplier="1.4"/>
+        <mimic joint="gripper_joint" multiplier="1.4"/>
     </joint>
 
     <link
@@ -461,7 +461,7 @@
             xyz="0.0605 -0.0205 -0.0055"
             rpy="1.5708 0 -1.7775" />
         <parent
-            link="arm_wrist" />
+            link="wrist" />
         <child
             link="_gripper_link_l" />
         <axis
@@ -471,7 +471,7 @@
             upper="3.14"
             effort="0.0"
             velocity="0.0" />
-        <mimic joint="Gripper_joint" multiplier="-1.4"/>
+        <mimic joint="gripper_joint" multiplier="-1.4"/>
     </joint>
     <link
         name="gripper_finger_l">
@@ -578,7 +578,7 @@
             xyz="0.0435 0.012 0.0045"
             rpy="-1.5708 0 -3.1416" />
         <parent
-            link="arm_wrist" />
+            link="wrist" />
         <child
             link="_Gripper_r" />
         <axis
@@ -598,7 +598,7 @@
     <plugin filename="libgazebo_grasp_fix.so" name="gazebo_grasp_fix">
        <arm>
           <arm_name>finger_gripper</arm_name>
-          <palm_link>arm_wrist</palm_link>
+          <palm_link>wrist</palm_link>
           <gripper_link>gripper</gripper_link>
           <gripper_link>_Gripper_r</gripper_link>
           <gripper_link>_gripper_link_l</gripper_link>
