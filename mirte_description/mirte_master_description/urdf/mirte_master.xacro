@@ -119,28 +119,28 @@
   <xacro:include filename="$(find mirte_master_description)/urdf/wheel.xacro" />
    <!-- 0.025   -1 -->
 
-    <xacro:mecanum_wheel name="left_front" wheel_type="left" link_origin="0.025">
+    <xacro:mecanum_wheel name="front_left" wheel_type="left" link_origin="0.025">
       <origin
         xyz="${0.153 - 0} -0.085 -0.0455"
         rpy="1.5708 0 -1.5708" />
     </xacro:mecanum_wheel>
 
    <!-- 0.025   -1 -->
-    <xacro:mecanum_wheel name="left_rear" wheel_type="right" link_origin="0.025">
+    <xacro:mecanum_wheel name="rear_left" wheel_type="right" link_origin="0.025">
       <origin
         xyz="${0.153 - 0} 0.085 -0.0455"
         rpy="1.5708 0 -1.5708" />
     </xacro:mecanum_wheel>
 
    <!-- -0.025   -1 -->
-    <xacro:mecanum_wheel name="right_front" wheel_type="right" link_origin="-0.025">
+    <xacro:mecanum_wheel name="front_right" wheel_type="right" link_origin="-0.025">
       <origin
         xyz="${-0.153 + wheel_length} -0.085 -0.0455"
         rpy="1.5708 0 -1.5708" />
     </xacro:mecanum_wheel>
 
    <!-- -0.025   -1 -->
-    <xacro:mecanum_wheel name="right_rear" wheel_type="left" link_origin="-0.025">
+    <xacro:mecanum_wheel name="rear_right" wheel_type="left" link_origin="-0.025">
       <origin
         xyz="${-0.153 + wheel_length} 0.085 -0.0455"
         rpy="1.5708 0 -1.5708" />

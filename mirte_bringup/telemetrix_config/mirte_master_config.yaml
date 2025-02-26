@@ -13,33 +13,18 @@
         connector: I2C1
         frequency: 100
         motors: # TODO: No Idea which motor configuration is correct.
-          left_rear:
+          rear_left:
             pin_A: 6 #0
             pin_B: 7 #1
-          left_front:
+          front_left:
             pin_A: 2
             pin_B: 3
-          right_rear:
+          rear_right:
             pin_A: 5
             pin_B: 4
-          right_front:
+          front_right:
             pin_A: 1
             pin_B: 0
-          # left_front:
-          #   pin_A: 8
-          #   pin_B: 9
-          # left_rear:
-          #   pin_A: 10
-          #   pin_B: 11
-          # right_front:
-          #   pin_A: 12
-          #   pin_B: 13
-          # right_rear:
-          #   pin_A: 14
-          #   pin_B: 15
-        # servos:
-        #   servo1:
-        #     pin: 1
       servo_controller:
         device: mirte
         type: Hiwonder_Servo

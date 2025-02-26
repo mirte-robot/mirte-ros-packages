@@ -31,10 +31,10 @@
     <link name="base_link">
 </link>
 <!-- same ordering as the mecanum drive controller -->
-        <xacro:wheel name="left_front" prefix="$(arg prefix)" />
-        <xacro:wheel name="left_rear" prefix="$(arg prefix)" />
-        <xacro:wheel name="right_rear" prefix="$(arg prefix)" />
-        <xacro:wheel name="right_front" prefix="$(arg prefix)" />
+        <xacro:wheel name="front_left" prefix="$(arg prefix)" />
+        <xacro:wheel name="rear_left" prefix="$(arg prefix)" />
+        <xacro:wheel name="rear_right" prefix="$(arg prefix)" />
+        <xacro:wheel name="front_right" prefix="$(arg prefix)" />
 
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
@@ -47,10 +47,10 @@
         <param name="i_clamp">${params['i_clamp']}</param>
         <param name="antiwindup">${params['antiwindup']}</param>
       </hardware>
-      <xacro:joint prefix="$(arg prefix)" name="left_front"  />
-        <xacro:joint prefix="$(arg prefix)" name="right_front"  />
-        <xacro:joint prefix="$(arg prefix)" name="left_rear"  />
-        <xacro:joint prefix="$(arg prefix)" name="right_rear"  />
+      <xacro:joint prefix="$(arg prefix)" name="front_left"  />
+        <xacro:joint prefix="$(arg prefix)" name="front_right"  />
+        <xacro:joint prefix="$(arg prefix)" name="rear_left"  />
+        <xacro:joint prefix="$(arg prefix)" name="rear_right"  />
     </ros2_control>
 
 </robot>

@@ -404,9 +404,9 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
                           // normal mirte as well
                   "right"};
   if (NUM_JOINTS == 4) {
-    this->joints = {"left_front", "right_front",
-                    "left_rear", // TODO: check ordering
-                    "right_rear"};
+    this->joints = {"front_left", "front_right",
+                    "rear_left", // TODO: check ordering
+                    "rear_right"};
   }
   std::cout << "Initializing MirteBaseHWInterface with " << NUM_JOINTS
             << " joints" << std::endl;

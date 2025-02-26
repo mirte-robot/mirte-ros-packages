@@ -5,7 +5,7 @@
   <xacro:macro name="mecanum_wheel" params="name *origin link_origin wheel_type">
 
   <link
-    name="wheel_${name}">
+    name="${name}_wheel">
     <inertial>
       <origin xyz="0 0 ${link_origin}" />
       <mass value="${wheel_mass}" />
@@ -33,20 +33,20 @@
   </link>
 
   <joint
-    name="wheel_${name}_joint"
+    name="${name}_wheel_joint"
     type="continuous">
     <xacro:insert_block name="origin"/>
     <parent link="frame_link" />
-    <child link="wheel_${name}" />
+    <child link="${name}_wheel" />
     <axis xyz="0 0 -1" />
   </joint>
 
-  <transmission name="wheel_${name}_transmission">
+  <transmission name="${name}_wheel_transmission">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="wheel_${name}_joint">
+    <joint name="${name}_wheel_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
-    <actuator name="wheel_${name}_actuator">
+    <actuator name="${name}_wheel_actuator">
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>

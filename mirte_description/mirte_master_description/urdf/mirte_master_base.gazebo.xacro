@@ -31,10 +31,10 @@
 
   <xacro:include filename="$(find mirte_master_description)/urdf/wheel.gazebo.xacro" />
 
-  <xacro:wheel_gazebo id="left_front" />
-  <xacro:wheel_gazebo id="left_rear" />
-  <xacro:wheel_gazebo id="right_front" />
-  <xacro:wheel_gazebo id="right_rear" />
+  <xacro:wheel_gazebo id="front_left" />
+  <xacro:wheel_gazebo id="rear_left" />
+  <xacro:wheel_gazebo id="front_right" />
+  <xacro:wheel_gazebo id="rear_right" />
 
   <xacro:include filename="$(find mirte_master_description)/urdf/ros2_control.xacro"/>  
 
