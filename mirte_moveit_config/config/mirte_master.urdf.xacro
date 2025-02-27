@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mirte_master">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import mirte_master urdf file -->
+    <xacro:include filename="$(find mirte_master_description)/urdf/mirte_master.xacro" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="mirte_master.ros2_control.xacro" />
+
+
+    <xacro:mirte_master_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>
