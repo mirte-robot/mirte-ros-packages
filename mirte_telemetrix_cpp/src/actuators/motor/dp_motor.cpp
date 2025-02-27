@@ -11,13 +11,13 @@ DPMotor::DPMotor(NodeData node_data, MotorData motor_data)
 void DPMotor::set_speed(int speed) {
   int32_t speed_ = (int32_t)((float)speed * (this->max_pwm) / 100.0);
 
-  // FIXME: ADD INVERTED
-  // if (inverted) speed_ = -speed_;
+  if (inverted)
+    speed_ = -speed_;
 
-  tmx->pwmWrite(this->pwm_pin, speed > 0 ? speed_ : -speed_);
-  std::cout << "1:" << std::dec << speed << std::endl;
-  tmx->digitalWrite(this->dir_pin, speed > 0 ? 1 : 0);
-  std::cout << "2:" << std::dec << (speed > 0 ? 1 : 0) << std::endl;
+  tmx->pwmWrite(this->pwm_pin, speed_ > 0 ? speed_ : -speed_);
+  // std::cout << "1:" << std::dec << speed_ << std::endl
+  tmx->digitalWrite(this->dir_pin, speed_ > 0 ? 1 : 0);
+  // std::cout << "2:" << std::dec << (speed_ > 0 ? 1 : 0) << std::endl;
   std::cout << "Setting speed to " << std::dec << speed << std::endl;
   // tmx->set_digital_pwm(pins[0], speed);
 }
