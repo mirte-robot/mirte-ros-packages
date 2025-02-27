@@ -35,7 +35,7 @@ def generate_launch_description():
 
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
-    frame_prefix = '' # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
+    frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
     #     "_frame_prefix", default=[machine_namespace, "/"]
     # )
 
@@ -52,20 +52,16 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            
             "hardware_namespace": hardware_namespace,
             "frame_prefix": frame_prefix,
         }.items(),
     )
 
-
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
         GroupAction(
-            [
-                minimal_master_launch
-            ],
+            [minimal_master_launch],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
                 for arg in ld.get_launch_arguments()

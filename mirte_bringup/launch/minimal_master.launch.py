@@ -33,7 +33,7 @@ def generate_launch_description():
 
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
-    frame_prefix = '' # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
+    frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
     #     "_frame_prefix", default=[machine_namespace, "/"]
     # )
 
