@@ -50,7 +50,6 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       }
       if (init_steps[info_.name] == 50) {
         initialized[info_.name] = true;
-        RCLCPP_INFO(get_logger(), "------------------------------------------All servo's initialized for %s", info_.name.c_str());
       }
     }
   }
@@ -58,23 +57,17 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 
   if (std::all_of(std::begin(servo_data[info_.name]), std::end(servo_data[info_.name]),
                   [](auto x) { return x.init; })) {
-   // std::cout << "  bladiebla" << std::endl;
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-    //float last_req[NUM_SERVOS] = {-100.0};
     for (auto i = 0; i < NUM_SERVOS; i++) {
 
       // Only set the servo when there is a new command or the servo is moved by
       // hand or gravity.
-    //  std::cout << i << " hier    " << (servo_data.find(info_.name)->second)[i].moved << std::endl;
       if (servo_data[info_.name][i].last_request != service_requests[i]->angle || servo_data[info_.name][i].moved) {
-        //last_req[i] = service_requests[i]->angle;
         servo_data[info_.name][i].moved = false;
         servo_data[info_.name][i].last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
         service_clients[i]->async_send_request(service_requests[i]);
-        std::cout << info_.joints[i].name << " sending radians: " << service_requests[i]->angle << std::endl;
-
      }
     }
   }
@@ -110,12 +103,6 @@ MirteMasterArmHWInterface::ServoPositionCallback(std::shared_ptr<mirte_msgs::msg
                         int joint) {
 
     auto &servo = servo_data[info_.name][joint];
-    if (!servo.init){
-   //    std::cout << info_.joints[joint].name << " initial timestamp: " << msg->header.stamp.sec << std::endl;
-   //    std::cout << info_.joints[joint].name << " data read initially as: " << msg->angle << std::endl;
-    } else {
-   //    std::cout << info_.joints[joint].name << " updated to: " << msg->angle << std::endl;
-    }
     servo.data = msg->angle;
     servo.init = true;
     // The servo should only be written to iff the servo gets a new location or
@@ -143,7 +130,6 @@ MirteMasterArmHWInterface::export_state_interfaces() {
       info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_[i]));
     state_interfaces.emplace_back(hardware_interface::StateInterface(
       info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_states_velocities_[i]));
-    std::cout << info_.joints[i].name << std::endl;
   }
 
   return state_interfaces;
@@ -184,16 +170,6 @@ void MirteMasterArmHWInterface::init_service_clients() {
 
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  RCLCPP_INFO(get_logger(), "Activating ...please wait...");
-
-  for (int i = 0; i < hw_start_sec_; i++)
-  {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(get_logger(), "%.1f seconds left...", hw_start_sec_ - i);
-  }
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
-
   // command and state should be equal when starting
   for (uint i = 0; i < hw_states_.size(); i++)
   {
@@ -209,17 +185,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
 
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_deactivate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
-
-  RCLCPP_INFO(get_logger(), "Deactivating ...please wait...");
-
-  for (int i = 0; i < hw_stop_sec_; i++)
-  {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(get_logger(), "%.1f seconds left...", hw_stop_sec_ - i);
-  }
-
-  RCLCPP_INFO(get_logger(), "Successfully deactivated!");
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
 
   return hardware_interface::CallbackReturn::SUCCESS;
 
@@ -244,12 +209,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   NUM_SERVOS = info_.joints.size();
   initialized.insert({info_.name, false});
   init_steps.insert({info_.name, 0});
-
-
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  hw_start_sec_ = stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
-  hw_stop_sec_ = stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
-  hw_slowdown_ = stod(info_.hardware_parameters["example_param_hw_slowdown"]);
 
   // TODO: As far as I know we are not able to get the nodehandle
   // from the plugin, so we need to start one ourselves.
@@ -327,19 +286,16 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 {
 
   // Initialize the servo topics
- // std::cout << "number of servos: "  << NUM_SERVOS << std::endl;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string joint_name = info_.joints[i].name;
     std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
     auto servo_topic =
         (boost::format(topic_format) % servo_name).str();
 
-    std::cout << "add servo topic: " << servo_topic << std::endl;
     servo_pos_subs_.push_back(
         nh->create_subscription<mirte_msgs::msg::ServoPosition>(
             servo_topic, 1,
             [this, i](std::shared_ptr<mirte_msgs::msg::ServoPosition> msg) {
-               //std::cout << "Servo position: " << msg->angle << std::endl;
               this->ServoPositionCallback(msg, i);
             }));
   }

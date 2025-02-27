@@ -58,9 +58,6 @@
 <ros2_control name="ros2_arm_control" type="system">
       <hardware>
         <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
-        <param name="example_param_hw_start_duration_sec">0</param>
-        <param name="example_param_hw_stop_duration_sec">3.0</param>
-        <param name="example_param_hw_slowdown">1</param>
       </hardware>
 
    <joint name="shoulder_pan_joint">
@@ -98,9 +95,6 @@
 <ros2_control name="ros2_gripper_control" type="system">
      <hardware>
         <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
-        <param name="example_param_hw_start_duration_sec">0</param>
-        <param name="example_param_hw_stop_duration_sec">3.0</param>
-        <param name="example_param_hw_slowdown">2</param>
       </hardware>
 
     <joint name="gripper_joint">
