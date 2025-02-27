@@ -202,26 +202,26 @@
 
 
     <link name="link_chassis" />
-    <xacro:ultrasonic_sensor name="left_front">
+    <xacro:ultrasonic_sensor name="front_left">
       <origin
         xyz="0.05297775289576 -0.120282421780502 -0.031"
         rpy="0 0 ${-pi/2+0.296705972839036}" />
     </xacro:ultrasonic_sensor>
 
-    <xacro:ultrasonic_sensor name="right_front">
+    <xacro:ultrasonic_sensor name="front_right">
       <origin
         xyz="-0.05297775289576 -0.120282421780502 -0.031"
         rpy="0 0 ${-pi/2-0.296705972839036}" />
     </xacro:ultrasonic_sensor>
 
-    <xacro:ultrasonic_sensor name="left_rear">
+    <xacro:ultrasonic_sensor name="rear_left">
       <origin
         xyz="0.0565606470918482 0.119187021096338 -0.031"
         rpy="0 0 ${-pi/2 + 2.84488668075076}" />
     </xacro:ultrasonic_sensor>
 
 
-    <xacro:ultrasonic_sensor name="right_rear">
+    <xacro:ultrasonic_sensor name="rear_right">
       <origin
         xyz="-0.0565606470918482 0.119187021096338 -0.031"
         rpy="0 0 ${-pi/2 -2.84488668075076}" />

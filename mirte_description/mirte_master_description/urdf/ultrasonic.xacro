@@ -9,10 +9,10 @@
       <axis xyz="0 1 0"/>
       <xacro:insert_block name="origin"/>
       <parent link="link_chassis"/>
-      <child link="base_sonar_${name}"/>
+      <child link="${name}_sonar"/>
     </joint>
 
-    <link name="base_sonar_${name}">
+    <link name="${name}_sonar">
       <visual>
         <origin rpy="0 0 ${radians(-90)}" />
         <geometry>
@@ -20,9 +20,15 @@
         </geometry>
         <material name="blue" />
       </visual>
+      <collision>
+        <origin rpy="0 0 ${radians(-90)}" />
+        <geometry>
+          <box size=".045 .025 .02" />
+        </geometry>
+      </collision>
     </link>
 
-    <gazebo reference="base_sonar_${name}">        
+    <gazebo reference="${name}_sonar">
       <sensor type="ray" name="range_sensor_${name}">
         <visualize>${visualize_sensors}</visualize>
           <ray>

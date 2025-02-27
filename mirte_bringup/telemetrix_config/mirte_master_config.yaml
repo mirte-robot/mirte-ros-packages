@@ -98,6 +98,35 @@
         pins:
           A: 20
           B: 21
+    distance:
+      front_left:
+        name: front_left
+        device: mirte
+        frame_id: front_left_sonar
+        pins:
+          trigger: 6
+          echo: 7
+      rear_left:
+        name: rear_left
+        device: mirte
+        frame_id: rear_left_sonar
+        pins:
+          trigger: 8
+          echo: 9
+      front_right:
+        name: front_right
+        device: mirte
+        frame_id: front_right_sonar
+        pins:
+          trigger: 10
+          echo: 11
+      rear_right:
+        name: rear_right
+        device: mirte
+        frame_id: rear_right_sonar
+        pins:
+          trigger: 12
+          echo: 13
     oled:
       oled:
         device: mirte
