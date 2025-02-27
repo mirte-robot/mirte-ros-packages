@@ -24,8 +24,8 @@ std::tuple<uint32_t, uint32_t> PPMotor::calc_pwm_speed(int speed) {
   if (inverted)
     speed_ = -speed_;
 
-  auto speedA = speed > 0 ? speed_ : 0;
-  auto speedB = speed < 0 ? -speed_ : 0;
+  auto speedA = speed_ > 0 ? speed_ : 0;
+  auto speedB = speed_ < 0 ? -speed_ : 0;
 
   return std::make_tuple(speedA, speedB);
 }
