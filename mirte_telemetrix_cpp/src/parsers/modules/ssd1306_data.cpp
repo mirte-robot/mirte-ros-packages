@@ -15,6 +15,7 @@ SSD1306Data::SSD1306Data(
                     insert_default_param(parameters, "type",
                                          rclcpp::ParameterValue("ssd1306")),
                     insert_default_param(unused_keys, "type"),
+                    get_device_class(),
                     std::chrono::duration_cast<DeviceDuration>(10s)) {
   // Set default for address
   if ((!parameters.count("addr")) && this->addr == 0xFF)

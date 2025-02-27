@@ -9,7 +9,8 @@ PCAData::PCAData(std::shared_ptr<Parser> parser,
                  std::shared_ptr<Mirte_Board> board, std::string name,
                  std::map<std::string, rclcpp::ParameterValue> parameters,
                  std::set<std::string> &unused_keys)
-    : I2CModuleData(parser, board, name, parameters, unused_keys) {
+    : I2CModuleData(parser, board, name, parameters, unused_keys,
+                    get_module_type()) {
   auto key = get_device_key(this);
   // This logger is only used for DEBUG, so it is a child logger.
   auto logger = parser->logger.get_child(key);

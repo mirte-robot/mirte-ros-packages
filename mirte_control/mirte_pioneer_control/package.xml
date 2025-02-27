@@ -5,14 +5,15 @@
   <version>0.0.0</version>
 
   <!-- TODO: CHANGE INFORMATION BUT IT WAS BASED ON THE FOLLOWING -->
-  <description>Demo package of `ros2_control` hardware for DiffBot.</description>
+  <!-- <description>Demo package of `ros2_control` hardware for DiffBot.</description>
 
   <maintainer email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</maintainer>
   <maintainer email="bence.magyar.robotics@gmail.com">Bence Magyar</maintainer>
   <maintainer email="christoph.froehlich@ait.ac.at">Christoph Froehlich</maintainer>
 
-  <author email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</author>
-
+  <author email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</author> -->
+  <description>Mirte Pioneer Hardware interface</description>
+  <maintainer email="m.klomp@tudelft.nl">Martin Klomp</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

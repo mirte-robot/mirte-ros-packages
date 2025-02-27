@@ -20,7 +20,9 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "machine_namespace",
-                default_value="mirte",
+                default_value=TextSubstitution(
+                    text=platform.node().replace("-", "_").lower()
+                ),
                 description="The namespace containing all Robot specific ROS communication",
             ),
             DeclareLaunchArgument(
@@ -37,88 +39,29 @@ def generate_launch_description():
     #     "_frame_prefix", default=[machine_namespace, "/"]
     # )
 
-    telemetrix = IncludeLaunchDescription(
+    minimal_master_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution(
                     [
-                        FindPackageShare("mirte_telemetrix_cpp"),
+                        FindPackageShare("mirte_bringup"),
                         "launch",
-                        "telemetrix.launch.py",
+                        "minimal_master.launch.py",
                     ]
                 )
             ]
         ),
         launch_arguments={
-            "config_path": PathJoinSubstitution(
-                [
-                    FindPackageShare("mirte_bringup"),
-                    "telemetrix_config",
-                    "mirte_master_config.yaml",
-                ]
-            ),
             "hardware_namespace": hardware_namespace,
             "frame_prefix": frame_prefix,
         }.items(),
-    )
-
-    mecanum_drive_control = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("mirte_base_control"),
-                        "launch",
-                        "mirte_base.launch.py",
-                    ]
-                )
-            ]
-        ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
-    )
-
-    web_video_server = Node(
-        package="web_video_server",
-        executable="web_video_server",
-        parameters=[{"default_transport": "theora", "port": 8181}],
-        output="screen",
-    )
-
-    depth_cam = IncludeLaunchDescription(
-        XMLLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("astra_camera"),
-                        "launch",
-                        "astra_pro_plus.launch.xml",
-                    ]
-                )
-            ]
-        )
-    )
-    lidar = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [FindPackageShare("rplidar_ros"), "launch", "rplidar_c1_launch.py"]
-                )
-            ]
-        )
     )
 
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
         GroupAction(
-            [
-                PushRosNamespace(machine_namespace),
-                telemetrix,
-                mecanum_drive_control,
-                web_video_server,
-                lidar,
-                depth_cam,
-            ],
+            [minimal_master_launch],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
                 for arg in ld.get_launch_arguments()

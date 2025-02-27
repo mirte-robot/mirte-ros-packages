@@ -19,8 +19,9 @@ def generate_launch_description():
         if DEBUG
         else []
     )
-    prefix = ["gdbserver localhost:3000"] if DEBUGGER else []
-
+    prefix = ["gdbserver localhost:8012"] if DEBUGGER else []
+    # run:
+    # gdb -ex "file '$(ros2 pkg prefix mirte_telemetrix_cpp)/bin/mirte_telemetrix_cpp_node'" -ex "target remote localhost:8012" -ex c
     launch_arguments: list[DeclareLaunchArgument] = [
         DeclareLaunchArgument(
             "config_path",

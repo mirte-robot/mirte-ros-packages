@@ -34,6 +34,7 @@
         pins:
           analog: GP26
           digital: GP16
+    # modules:
     oled:
       left:
         name: left
@@ -91,10 +92,10 @@
         pins:
           p1: GP20
           p2: GP21
-    oled:
-      oled:
-        device: mirte
-        connector: I2C1
+    # oled:
+    #   oled:
+    #     device: mirte
+    #     connector: I2C1
     # encoder:
     #   left:
     #     name: left

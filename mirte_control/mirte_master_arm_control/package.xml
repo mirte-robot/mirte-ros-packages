@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mirte_master_arm_control</name>
+  <version>0.6.1</version>
+  <description>Simple simulation interface and template for setting up a hardware interface for ros_control</description>
+
+  <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">https://github.com/davetcoleman/ros_control_boilerplate</url>
+  <url type="bugtracker">https://github.com/davetcoleman/ros_control_boilerplate/issues</url>
+  <url type="repository">https://github.com/davetcoleman/ros_control_boilerplate/</url>
+
+  <author email="davetcoleman@gmail.com">Dave Coleman</author>
+  <depend>backward_ros</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>std_srvs</depend>
+  <depend>std_msgs</depend>
+  <depend>mirte_msgs</depend>
+  <depend>controller_manager</depend>
+  <depend>trajectory_msgs</depend>
+
+  <depend>yaml_cpp_vendor</depend>
+
+  <depend>control_toolbox</depend>
+
+  <exec_depend>forward_command_controller</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2controlcli</exec_depend>
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>ros2_controllers</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>effort_controllers</exec_depend>
+  <exec_depend>twist_stamper</exec_depend>
+  <exec_depend>mirte_master_description</exec_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

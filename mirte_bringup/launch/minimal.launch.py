@@ -31,9 +31,9 @@ def generate_launch_description():
 
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
-    frame_prefix = LaunchConfiguration(
-        "_frame_prefix", default=[machine_namespace, "/"]
-    )
+    frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
+    #     "_frame_prefix", default=[machine_namespace, "/"]
+    # )
 
     # Make configurable
     telemetrix = IncludeLaunchDescription(
@@ -47,8 +47,8 @@ def generate_launch_description():
         launch_arguments={
             "config_path": PathJoinSubstitution(
                 [
-                    FindPackageShare("mirte_telemetrix_cpp"),
-                    "config",
+                    FindPackageShare("mirte_bringup"),
+                    "telemetrix_config",
                     "mirte_user_config.yaml",
                 ]
             ),
