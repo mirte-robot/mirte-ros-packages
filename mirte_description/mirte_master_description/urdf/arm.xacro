@@ -398,7 +398,7 @@
     </link>
     <joint
         name="gripper_finger_joint_r"
-        type="revolute">
+        type="fixed">
         <origin
             xyz="0 0.01 -0.037"
             rpy="0 0.20667 3.1416" />
@@ -408,11 +408,6 @@
             link="gripper_finger_r" />
         <axis
             xyz="0 0 1" />
-        <limit
-            lower="0.0"
-            upper="0.0"
-            effort="0.0"
-            velocity="0.0" />
     </joint>
     <link
         name="_gripper_link_l">
@@ -515,7 +510,7 @@
     </link>
     <joint
         name="gripper_finger_joint_l"
-        type="revolute">
+        type="fixed">
         <origin
             xyz="0 0 -0.037"
             rpy="0 0.20667 0" />
@@ -525,11 +520,6 @@
             link="gripper_finger_l" />
         <axis
             xyz="0 0 1" />
-        <limit
-            lower="0.0"
-            upper="0.0"
-            effort="0.0"
-            velocity="0.0" />
     </joint>
     <link
         name="_Gripper_r">
