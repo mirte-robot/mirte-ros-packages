@@ -62,14 +62,6 @@
             min_angle_out: 6168
             max_angle_out: 14224
             invert: false
-#          servoH1:
-#            id: 3
-#            min_angle: 9000
-#            max_angle: 14000
-#          servoH2:
-#            id: 4
-#            min_angle: 800
-#            max_angle: 4000
       power_watcher:
         device: mirte
         type: INA226
@@ -82,26 +74,26 @@
         power_low_time: 20
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
     encoder:
-      left_front:
-        name: left_front
+      front_left:
+        name: front_left
         device: mirte
         pins:
           A: 15 #21
           B: 14 #20
-      left_rear:
-        name: left_rear
+      rear_left:
+        name: rear_left
         device: mirte
         pins:
           A: 17
           B: 16
-      right_front:
-        name: right_front
+      front_right:
+        name: front_right
         device: mirte
         pins:
           A: 19
           B: 18
-      right_rear:
-        name: right_rear
+      rear_right:
+        name: rear_right
         device: mirte
         pins:
           A: 20
