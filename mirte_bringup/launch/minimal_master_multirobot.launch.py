@@ -1,14 +1,18 @@
 import platform
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction
 from launch.substitutions import (
-    LaunchConfiguration,
     PathJoinSubstitution,
     TextSubstitution,
+    LaunchConfiguration,
 )
-from launch_ros.actions import PushRosNamespace
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
+
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node, PushRosNamespace
 
 
 def generate_launch_description():
@@ -35,40 +39,29 @@ def generate_launch_description():
     #     "_frame_prefix", default=[machine_namespace, "/"]
     # )
 
-    # Make configurable
-    telemetrix = IncludeLaunchDescription(
-        PathJoinSubstitution(
+    minimal_master_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
             [
-                FindPackageShare("mirte_telemetrix_cpp"),
-                "launch",
-                "telemetrix.launch.py",
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "launch",
+                        "minimal_master.launch.py",
+                    ]
+                )
             ]
         ),
         launch_arguments={
-            "config_path": PathJoinSubstitution(
-                [
-                    FindPackageShare("mirte_bringup"),
-                    "telemetrix_config",
-                    "mirte_user_config.yaml",
-                ]
-            ),
             "hardware_namespace": hardware_namespace,
             "frame_prefix": frame_prefix,
         }.items(),
-    )
-
-    diff_drive_control = IncludeLaunchDescription(
-        PathJoinSubstitution(
-            [FindPackageShare("mirte_control"), "launch", "mirte.launch.py"]
-        ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
     )
 
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
         GroupAction(
-            [PushRosNamespace(machine_namespace), telemetrix, diff_drive_control],
+            [minimal_master_launch],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
                 for arg in ld.get_launch_arguments()

@@ -20,10 +20,7 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "machine_namespace",
-                default_value=TextSubstitution(
-                    text="" #platform.node().replace("-", "_").lower()
-                    # currently disabled, should refactor for multi-robot situations
-                ),
+                default_value="",
                 description="The namespace containing all Robot specific ROS communication",
             ),
             DeclareLaunchArgument(
@@ -36,16 +33,15 @@ def generate_launch_description():
 
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
-    frame_prefix = LaunchConfiguration(
-        "_frame_prefix", default=[machine_namespace, "/"]
-    )
+    frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
+    #     "_frame_prefix", default=[machine_namespace, "/"]
+    # )
     start_controller_manager = LaunchConfiguration(
         "_start_controller_manager", default="false"
     )
     start_state_publishers = LaunchConfiguration(
         "_start_state_publishers", default="false"
     )
-
 
     telemetrix = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mirte_zenoh_setup</name>
+  <version>0.0.0</version>
+  <description>The mirte_zenoh_setup package</description>
+  <maintainer email="m.klomp@tudelft.nl">root</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <!-- <exec_depend>rmw_zenoh</exec_depend>  -->
+  <!-- Somehow rosdep doesn't find it, even though it is in the humble distribution.yaml -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
