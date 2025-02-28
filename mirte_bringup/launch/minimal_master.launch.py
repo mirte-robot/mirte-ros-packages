@@ -110,9 +110,10 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix,
-                          "start_controller_manager":  start_controller_manager,
-                          "start_state_publishers": start_state_publishers,
+        launch_arguments={
+            "frame_prefix": frame_prefix,
+            "start_controller_manager": start_controller_manager,
+            "start_state_publishers": start_state_publishers,
         }.items(),
     )
 
@@ -128,9 +129,10 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix,
-                          "start_controller_manager":  start_controller_manager,
-                          "start_state_publishers": start_state_publishers,
+        launch_arguments={
+            "frame_prefix": frame_prefix,
+            "start_controller_manager": start_controller_manager,
+            "start_state_publishers": start_state_publishers,
         }.items(),
     )
 
@@ -177,7 +179,7 @@ def generate_launch_description():
                 lidar,
                 depth_cam,
                 arm_control,
-                mecanum_drive_control
+                mecanum_drive_control,
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
