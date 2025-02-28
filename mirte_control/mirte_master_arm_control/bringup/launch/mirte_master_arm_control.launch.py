@@ -30,8 +30,8 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     # Declare arguments
-    start_controller_manager = LaunchConfiguration('start_controller_manager')
-    start_state_publishers = LaunchConfiguration('start_state_publishers')
+    start_controller_manager = LaunchConfiguration("start_controller_manager")
+    start_state_publishers = LaunchConfiguration("start_state_publishers")
 
     declared_arguments = [
         DeclareLaunchArgument(
@@ -41,12 +41,12 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "start_ros2_control",
-            default_value='true',
+            default_value="true",
             description="A boolean whether this launchfile needs to start the ros2 controller manager. Defaults to true.",
         ),
         DeclareLaunchArgument(
             "start_state_publishers",
-            default_value='true',
+            default_value="true",
             description="A boolean whether this launchfile needs to start the state publisher and joint boardcaster. Defaults to true.",
         ),
     ]
@@ -108,10 +108,7 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=[
-            "mirte_master_arm_controller",
-            "mirte_master_gripper_controller"
-        ],
+        arguments=["mirte_master_arm_controller", "mirte_master_gripper_controller"],
     )
 
     nodes = [

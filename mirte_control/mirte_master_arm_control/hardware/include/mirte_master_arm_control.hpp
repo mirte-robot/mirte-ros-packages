@@ -109,7 +109,6 @@ private:
   rclcpp::Time curr_update_time, prev_update_time;
   rclcpp::Subscription<mirte_msgs::msg::ServoPosition>::SharedPtr subscriber_;
 
-
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
       servo_pos_subs_;
@@ -137,7 +136,6 @@ private:
   rclcpp::Logger get_logger() const { return *logger_; }
 
   rclcpp::Clock::SharedPtr get_clock() const { return clock_; }
-
 
   // thread for ros spinning
   std::jthread ros_thread;
