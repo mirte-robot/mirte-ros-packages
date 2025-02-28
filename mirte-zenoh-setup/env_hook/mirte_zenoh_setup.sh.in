@@ -1,8 +1,8 @@
 #!/bin/bash
 # set -xe
 
-SCRIPT_DIR=$(dirname "$0")
-export PKG_HOME=$(realpath "$SCRIPT_DIR/../")
+SCRIPT_DIR="@CMAKE_INSTALL_PREFIX@/share/mirte_zenoh_setup"
+export PKG_HOME=$(realpath "$SCRIPT_DIR/")
 
 # if MIRTE_ZENOH is set and it is not false, then use Zenoh
 
