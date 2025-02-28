@@ -24,7 +24,7 @@ if [ -v MIRTE_ZENOH ] && [ "$MIRTE_ZENOH" != "false" ]; then
         fi
 
         # check if zenoh router is running on port 7447
-        if [ -z "$(ss | grep -w "7447")" ]; then
+        if [ -z "$(ss -l | grep -w "7447")" ]; then
                 echo "Zenoh router is not running on port 7447"
                 echo "Please run a Zenoh router on port 7447 with the following command:"
                 echo "ros2 run rmw_zenoh_cpp rmw_zenohd"
