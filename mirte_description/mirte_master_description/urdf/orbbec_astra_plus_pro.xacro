@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<robot name="sensor_orbbec_astra_pro_plus" xmlns:xacro="http://ros.org/wiki/xacro">
+
+     <xacro:property name="orbbec_astra_pro_plus_scale" value="1.0" />
+     <!-- RGB sensor - cam -->
+     <!-- THESE MIGHT NEED TO CHANGE IF THE RESOLUTION IS NOT 640x480 -->
+     <xacro:property name="orbbec_astra_pro_plus_rel_rgb_px" value="0.0" />
+     <xacro:property name="orbbec_astra_pro_plus_rel_rgb_py" value="-0.0125" />
+     <xacro:property name="orbbec_astra_pro_plus_rel_rgb_pz" value="-0.0150" />
+
+
+     <!-- IR sensor - depth -->
+     <xacro:property name="orbbec_astra_pro_plus_depth_rel_rgb_px" value="0.0" />
+     <xacro:property name="orbbec_astra_pro_plus_depth_rel_rgb_py" value="0.0250" />
+     <xacro:property name="orbbec_astra_pro_plus_depth_rel_rgb_pz" value="0.0" />
+     <xacro:property name="M_PI" value="3.1415926535897931" />
+
+     <xacro:macro name="sensor_orbbec_astra_pro_plus"
+          params="name parent *origin color rgb_w:=640 rgb_h:=480 stddev:=0.5">
+
+          <joint name="${name}_rgb_joint" type="fixed">
+               <xacro:insert_block name="origin" />
+               <parent link="${parent}" />
+               <child link="${name}_rgb_frame" />
+          </joint>
+
+          <link name="${name}_rgb_frame">
+               <inertial>
+                    <mass value="0.001" />
+                    <origin xyz="0 0 0" />
+                    <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
+               </inertial>
+          </link>
+
+          <joint name="${name}_rgb_optical_joint" type="fixed">
+               <origin xyz="0.0 0.0 0.0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+               <parent link="${name}_rgb_frame" />
+               <child link="${name}_rgb_optical_frame" />
+          </joint>
+
+          <link name="${name}_rgb_optical_frame">
+               <!--inertial>
+                    <mass value="0.001" />
+                    <origin xyz="0 0 0" />
+                    <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
+               </inertial-->
+          </link>
+
+          <joint name="${name}_joint" type="fixed">
+               <origin
+                    xyz="${orbbec_astra_pro_plus_rel_rgb_px} ${orbbec_astra_pro_plus_rel_rgb_py} ${orbbec_astra_pro_plus_rel_rgb_pz}"
+                    rpy="0.0 0 0" />
+               <parent link="${name}_rgb_frame" />
+               <child link="${name}_link" />
+          </joint>
+
+          <link name="${name}_link">
+               <visual>
+                    <origin xyz="0 0 0" rpy="0 0 0" />
+                    <geometry>
+                         <mesh
+                              filename="package://mirte_master_description/meshes/orbbec_astra.stl" />
+                    </geometry>
+                    <material name="${color}" />
+               </visual>
+               <collision>
+                    <origin xyz="-0.0183 0.0 0.0165" rpy="0 0 0" />
+                    <geometry>
+                         <box size="0.0370 .1650 0.0350" />
+                    </geometry>
+               </collision>
+               <inertial>
+                    <mass value="0.564" />
+                    <origin xyz="0 0 0" />
+                    <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0"
+                         izz="0.003879257" />
+               </inertial>
+          </link>
+
+          <joint name="${name}_depth_joint" type="fixed">
+               <origin
+                    xyz="${orbbec_astra_pro_plus_depth_rel_rgb_px} ${orbbec_astra_pro_plus_depth_rel_rgb_py} ${orbbec_astra_pro_plus_depth_rel_rgb_pz}"
+                    rpy="0 0 0" />
+               <parent link="${name}_rgb_frame" />
+               <child link="${name}_depth_frame" />
+          </joint>
+
+          <link name="${name}_depth_frame">
+               <!--inertial>
+                    <mass value="0.01" />
+                    <origin xyz="0 0 0" />
+                    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+               </inertial-->
+          </link>
+
+          <joint name="${name}_depth_optical_joint" type="fixed">
+               <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+               <parent link="${name}_depth_frame" />
+               <child link="${name}_depth_optical_frame" />
+          </joint>
+
+          <link name="${name}_depth_optical_frame">
+               <!--inertial>
+                    <mass value="0.001" />
+                    <origin xyz="0 0 0" />
+                    <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
+               </inertial-->
+          </link>
+
+          <!-- RGBD sensor for simulation, same as Kinect -->
+          <xacro:sensor_orbbec_astra_pro_plus_gazebo />
+
+     </xacro:macro>
+
+     <!-- ====================================================
+                           Gazebo
+     ========================================================= -->
+
+     <xacro:macro name="sensor_orbbec_astra_pro_plus_gazebo">
+          <gazebo reference="${name}_link">
+             <sensor name="${name}" type="depth">
+                <visualize>true</visualize>
+                <update_rate>60.0</update_rate>
+                <camera name="RS_D455">
+                    <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
+                    <image>
+                        <width>${rgb_w}</width>
+                        <height>${rgb_h}</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.05</near>
+                        <far>10.0</far>
+                    </clip>
+                </camera>
+                <plugin name="${name}_controller" filename="libgazebo_ros_camera.so">
+                    <baseline>0.1</baseline>
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>30</updateRate>
+                    <frame_name>${name}_depth_optical_frame</frame_name>
+                    <pointCloudCutoff>0.6</pointCloudCutoff>
+                    <pointCloudCutoffMax>8.0</pointCloudCutoffMax>
+                    <distortionK1>0</distortionK1>
+                    <distortionK2>0</distortionK2>
+                    <distortionK3>0</distortionK3>
+                    <distortionT1>0</distortionT1>
+                    <distortionT2>0</distortionT2>
+                    <CxPrime>0</CxPrime>
+                    <Cx>0</Cx>
+                    <Cy>0</Cy>
+                    <focalLength>0</focalLength>
+                    <hackBaseline>0</hackBaseline>
+                </plugin>
+            </sensor>
+         </gazebo>
+     </xacro:macro>
+
+</robot>

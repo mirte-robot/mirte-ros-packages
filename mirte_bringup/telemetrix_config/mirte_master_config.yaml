@@ -13,33 +13,18 @@
         connector: I2C1
         frequency: 100
         motors: # TODO: No Idea which motor configuration is correct.
-          left_rear:
+          rear_left:
             pin_A: 6 #0
             pin_B: 7 #1
-          left_front:
+          front_left:
             pin_A: 2
             pin_B: 3
-          right_rear:
+          rear_right:
             pin_A: 5
             pin_B: 4
-          right_front:
+          front_right:
             pin_A: 1
             pin_B: 0
-          # left_front:
-          #   pin_A: 8
-          #   pin_B: 9
-          # left_rear:
-          #   pin_A: 10
-          #   pin_B: 11
-          # right_front:
-          #   pin_A: 12
-          #   pin_B: 13
-          # right_rear:
-          #   pin_A: 14
-          #   pin_B: 15
-        # servos:
-        #   servo1:
-        #     pin: 1
       servo_controller:
         device: mirte
         type: Hiwonder_Servo
@@ -47,14 +32,36 @@
           rx: 0
           tx: 1
         servos:
-          servoH1:
+          shoulder_pan:
+            id: 2
+            home_out: 12000
+            min_angle_out: 3400
+            max_angle_out: 21000
+            invert: false
+          shoulder_lift:
             id: 3
-            min_angle: 9000
-            max_angle: 14000
-          servoH2:
+            home_out: 11450
+            min_angle_out: 2832
+            max_angle_out: 20000
+            invert: false
+          elbow:
             id: 4
-            min_angle: 800
-            max_angle: 4000
+            home_out: 11750
+            min_angle_out: 120
+            max_angle_out: 21000
+            invert: false
+          wrist:
+            id: 5
+            home_out: 12200
+            min_angle_out: 1128
+            max_angle_out: 21000
+            invert: false
+          gripper:
+            id: 6
+            home_out: 10524
+            min_angle_out: 6168
+            max_angle_out: 14224
+            invert: false
       power_watcher:
         device: mirte
         type: INA226
@@ -67,30 +74,59 @@
         power_low_time: 20
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
     encoder:
-      left_front:
-        name: left_front
+      front_left:
+        name: front_left
         device: mirte
         pins:
           A: 15 #21
           B: 14 #20
-      left_rear:
-        name: left_rear
+      rear_left:
+        name: rear_left
         device: mirte
         pins:
           A: 17
           B: 16
-      right_front:
-        name: right_front
+      front_right:
+        name: front_right
         device: mirte
         pins:
           A: 19
           B: 18
-      right_rear:
-        name: right_rear
+      rear_right:
+        name: rear_right
         device: mirte
         pins:
           A: 20
           B: 21
+    distance:
+      front_left:
+        name: front_left
+        device: mirte
+        frame_id: front_left_sonar
+        pins:
+          trigger: 6
+          echo: 7
+      rear_left:
+        name: rear_left
+        device: mirte
+        frame_id: rear_left_sonar
+        pins:
+          trigger: 8
+          echo: 9
+      front_right:
+        name: front_right
+        device: mirte
+        frame_id: front_right_sonar
+        pins:
+          trigger: 10
+          echo: 11
+      rear_right:
+        name: rear_right
+        device: mirte
+        frame_id: rear_right_sonar
+        pins:
+          trigger: 12
+          echo: 13
     oled:
       oled:
         device: mirte

@@ -30,12 +30,25 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     # Declare arguments
+    start_controller_manager = LaunchConfiguration('start_controller_manager')
+    start_state_publishers = LaunchConfiguration('start_state_publishers')
+
     declared_arguments = [
         DeclareLaunchArgument(
             "frame_prefix",
             default_value="",
             description="An arbitrary prefix to add to the published tf2 frames. Defaults to the empty string.",
-        )
+        ),
+        DeclareLaunchArgument(
+            "start_ros2_control",
+            default_value='true',
+            description="A boolean whether this launchfile needs to start the ros2 controller manager. Defaults to true.",
+        ),
+        DeclareLaunchArgument(
+            "start_state_publishers",
+            default_value='true',
+            description="A boolean whether this launchfile needs to start the state publisher and joint boardcaster. Defaults to true.",
+        ),
     ]
 
     robot_description_content = Command(
@@ -44,9 +57,9 @@ def generate_launch_description():
             " ",
             PathJoinSubstitution(
                 [
-                    FindPackageShare("mirte_master_arm_control"),
+                    FindPackageShare("mirte_master_description"),
                     "urdf",
-                    "arm.urdf.xacro",
+                    "mirte_master.xacro",
                 ]
             ),
         ]
@@ -74,6 +87,7 @@ def generate_launch_description():
             ("~/robot_description", "robot_description"),
             ("~/tf_odometry", "/tf"),
         ],
+        condition=IfCondition(start_controller_manager),
     )
 
     robot_state_pub_node = Node(
@@ -81,47 +95,22 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="both",
         parameters=[robot_description],
+        condition=IfCondition(start_state_publishers),
     )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster"],
+        condition=IfCondition(start_state_publishers),
     )
 
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
-            "pid_wheels_controller",
-            "mirte_base_controller",
-        ],
-        # prefix=["xterm -e gdb -ex run --args"],
-    )
-
-    # # Delay start of joint_state_broadcaster after `robot_controller`
-    # delay_joint_state_broadcaster_after_robot_controller_spawner = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=joint_state_broadcaster_spawner,
-    #         on_exit=[robot_controller_spawner],
-    #     )
-    # )
-
-    twist_stamper = Node(
-        package="twist_stamper",
-        executable="twist_stamper",
-        namespace="mirte_base_controller",
-        remappings=[
-            ("cmd_vel_out", "cmd_vel"),
-            ("cmd_vel_in", "cmd_vel_unstamped"),
-        ],
-        parameters=[
-            {
-                "frame_id": (
-                    LaunchConfiguration("frame_prefix"),
-                    TextSubstitution(text="base_link"),
-                )
-            }
+            "mirte_master_arm_controller",
+            "mirte_master_gripper_controller"
         ],
     )
 
@@ -130,7 +119,6 @@ def generate_launch_description():
         robot_state_pub_node,
         robot_controller_spawner,
         joint_state_broadcaster_spawner,
-        twist_stamper,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

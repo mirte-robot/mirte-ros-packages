@@ -39,10 +39,6 @@
 #include <future>
 #include <mutex>
 #include <thread>
-// const unsigned int NUM_JOINTS = 4;
-// const auto service_format = "io/motor/%s/set_speed";
-// const auto encoder_format = "io/encoder/%s";
-// const auto max_speed = 100; // Quick fix hopefully for power dip.
 
 namespace mirte_master_arm_control {
 
@@ -53,6 +49,9 @@ public:
 
   hardware_interface::CallbackReturn
   on_init(const hardware_interface::HardwareInfo &info) override;
+
+  hardware_interface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State &previous_state) override;
 
   // on_configure
   // on_cleanup
@@ -96,25 +95,20 @@ public:
   // rclcpp::Node private_nh;
 
 private:
-  std::vector<double> cmd;
-  std::vector<double> pos;
-  // std::vector<double> vel;
-  // std::vector<double> eff;
+  int NUM_SERVOS;
 
   bool running_ = true;
-  // double _wheel_diameter;
-  // double _max_speed;
-  // double ticks = 40.0;
 
   std::vector<double> _servo_position;
   std::vector<rclcpp::Time> _servo_position_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
-  // std::vector<int> _last_wheel_cmd_direction;
   std::vector<double> position;
 
   rclcpp::Time curr_update_time, prev_update_time;
+  rclcpp::Subscription<mirte_msgs::msg::ServoPosition>::SharedPtr subscriber_;
+
 
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
@@ -127,47 +121,46 @@ private:
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
       service_requests;
-  // std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
-  //     set_speed_multiple_client;
-  // std::shared_ptr<mirte_msgs::srv::SetSpeedMultiple::Request>
-  //     set_speed_multiple_request;
-  std::vector<std::string> joints;
-  bool enablePID = false;
-  std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
-  std::shared_ptr<control_toolbox::Pid>
-      reconfig_pid; // one dummy pid to use for the dynamic reconfigure
-
-  void start_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
-                      std::shared_ptr<std_srvs::srv::Empty::Response> res) {
-    running_ = true;
-    // return true;
-  }
-
-  void stop_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
-                     std::shared_ptr<std_srvs::srv::Empty::Response> res) {
-    running_ = false;
-    // return true;
-  }
 
   void
   ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,
-                        int joint) {
-    _servo_position[joint] = msg->angle;
-    _servo_position_update_time[joint] = msg->header.stamp;
-  }
+                        int joint);
 
   // Thread and function to restart service clients when the service server has
   // restarted
-  std::future<void> reconnect_thread;
   void init_service_clients();
-  void start_reconnect();
   std::mutex service_clients_mutex;
+
+  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
+      set_servo_angle_service_clients;
+
+  rclcpp::Logger get_logger() const { return *logger_; }
+
+  rclcpp::Clock::SharedPtr get_clock() const { return clock_; }
+
 
   // thread for ros spinning
   std::jthread ros_thread;
   void ros_spin();
 
-  unsigned int NUM_JOINTS = 4;
+  bool received_servo_data_ = false;
+
+  // Parameters for the RRBot simulation
+  double hw_start_sec_;
+  double hw_stop_sec_;
+  double hw_slowdown_;
+
+  // Objects for logging
+  std::shared_ptr<rclcpp::Logger> logger_;
+  rclcpp::Clock::SharedPtr clock_;
+
+  // Store the command for the simulated robot
+  std::vector<double> hw_states_velocities_;
+  std::vector<double> hw_commands_;
+  std::vector<double> hw_states_;
+
+  void connectServices();
+
 }; // class
 
 } // namespace mirte_master_arm_control

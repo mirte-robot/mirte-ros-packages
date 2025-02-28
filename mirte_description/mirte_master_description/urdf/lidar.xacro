@@ -21,7 +21,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find mirte_master_description)/meshes/lidar.STL" />
+          filename="package://mirte_master_description/meshes/lidar.STL" />
       </geometry>
       <material
         name="">
@@ -35,7 +35,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find mirte_master_description)/meshes/lidar.STL" />
+          filename="package://mirte_master_description/meshes/lidar.STL" />
       </geometry>
     </collision>
   </link>
@@ -76,51 +76,10 @@
     <xacro:property name="lidar_sensor_link" value="lidar_link" />
   </xacro:unless>
 
-<!--
-  <gazebo reference="lidar_link">
-    <sensor type="ray" name="lidar">
-      <xacro:if value="$(arg use_correct_laser_frame)">
-        <pose>0 0 0 0 0 0</pose>
-      </xacro:if>
-      <xacro:unless value="$(arg use_correct_laser_frame)">
-        <pose>0 0 0 0 0 0</pose>
-      </xacro:unless>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>500</samples>
-            <resolution>1</resolution>
-            <min_angle>${-pi}</min_angle>
-            <max_angle>${pi}</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.05</min>
-          <max>10.0</max>
-          <resolution>0.015</resolution>
-        </range>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
-      </ray>
-      <plugin name="gazebo_lidar" filename="libgazebo_ros_laser.so">
-        <ros>
-          <remapping>~/out:=scan</remapping>
-        </ros>
-        <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>${lidar_sensor_link}</frame_name>
-      </plugin>
-    </sensor>
-  </gazebo>
--->
   <gazebo reference="lidar_link">
         <sensor name="lidar" type="ray">
             <pose> 0 0 0 0 0 0 </pose>
-            <visualize>false</visualize>
+            <visualize>${visualize_sensors}</visualize>
             <update_rate>10</update_rate>
             <ray>
                 <scan>
@@ -132,7 +91,7 @@
                     </horizontal>
                 </scan>
                 <range>
-                    <min>0.02</min>
+                    <min>0.03</min>
                     <max>12</max>
                     <resolution>0.01</resolution>
                 </range>

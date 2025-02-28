@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <link
-        name="arm_Rot">
+        name="shoulder_pan">
         <inertial>
             <origin
                 xyz="-1.27894101951934E-05 0.0208058767653727 0.00585680210359747"
@@ -22,7 +22,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Rot.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Rot.STL" />
             </geometry>
             <material
                 name="">
@@ -36,12 +36,12 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Rot.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Rot.STL" />
             </geometry>
         </collision>
     </link>
     <joint
-        name="arm_Rot_joint"
+        name="shoulder_pan_joint"
         type="revolute">
         <origin
             xyz="0 -0.079274 0.06"
@@ -49,18 +49,18 @@
         <parent
             link="frame_link" />
         <child
-            link="arm_Rot" />
+            link="shoulder_pan" />
         <axis
             xyz="0 1 0" />
         <limit
             lower="${pi/-2}"
             upper="${pi/2}"
-            effort="2"
-            velocity="2"
+            effort="2.0"
+            velocity="2.0"
         />
     </joint>
     <link
-        name="arm_Shoulder">
+        name="shoulder_lift">
         <inertial>
             <origin
                 xyz="0.0764974362945755 0.000442680770353329 -4.93690401059954E-09"
@@ -81,7 +81,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Shoulder.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Shoulder.STL" />
             </geometry>
             <material
                 name="">
@@ -95,31 +95,31 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Shoulder.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Shoulder.STL" />
             </geometry>
         </collision>
     </link>
     <joint
-        name="arm_Shoulder_joint"
+        name="shoulder_lift_joint"
         type="revolute">
         <origin
             xyz="0 0.0281 -0.00625"
             rpy="3.1416 0 1.5708" />
         <parent
-            link="arm_Rot" />
+            link="shoulder_pan" />
         <child
-            link="arm_Shoulder" />
+            link="shoulder_lift" />
         <axis
             xyz="0 1 0" />
         <limit
             lower="${pi/-2}"
             upper="${pi/2}"
-            effort="2"
-            velocity="2"
+            effort="2.0"
+            velocity="2.0"
         />
     </joint>
     <link
-        name="arm_Elbow">
+        name="elbow">
         <inertial>
             <origin
                 xyz="0.000768647609078278 0.0642294520091309 -2.34835863116567E-08"
@@ -140,7 +140,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Elbow.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Elbow.STL" />
             </geometry>
             <material
                 name="">
@@ -154,31 +154,31 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Elbow.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Elbow.STL" />
             </geometry>
         </collision>
     </link>
     <joint
-        name="arm_Elbow_joint"
+        name="elbow_joint"
         type="revolute">
         <origin
             xyz="0.1378 0 0"
             rpy="-3.1416 0 1.5708" />
         <parent
-            link="arm_Shoulder" />
+            link="shoulder_lift" />
         <child
-            link="arm_Elbow" />
+            link="elbow" />
         <axis
             xyz="1 0 0" />
         <limit
             lower="${pi/-2}"
             upper="${pi/2}"
-            effort="2"
-            velocity="2"
+            effort="2.0"
+            velocity="2.0"
         />
     </joint>
     <link
-        name="arm_Wrist">
+        name="wrist">
         <inertial>
             <origin
                 xyz="0.0225315136140379 0.000488092971965825 -2.74405760168628E-06"
@@ -199,7 +199,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Wrist.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Wrist.STL" />
             </geometry>
             <material
                 name="">
@@ -213,31 +213,31 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/arm_Wrist.STL" />
+                    filename="package://mirte_master_description/meshes/arm_Wrist.STL" />
             </geometry>
         </collision>
     </link>
     <joint
-        name="arm_Wrist_joint"
+        name="wrist_joint"
         type="revolute">
         <origin
             xyz="-0.00014 0.14265 0"
             rpy="3.1416 0 1.5708" />
         <parent
-            link="arm_Elbow" />
+            link="elbow" />
         <child
-            link="arm_Wrist" />
+            link="wrist" />
         <axis
             xyz="0 1 0" />
         <limit
             lower="${pi/-2}"
             upper="${pi/2}"
-            effort="2"
-            velocity="2"
+            effort="2.0"
+            velocity="2.0"
         />
     </joint>
     <link
-        name="Gripper">
+        name="gripper">
         <inertial>
             <origin
                 xyz="0.0128439388984141 0.00467107677719844 -0.023531822516204"
@@ -258,7 +258,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/Gripper.STL" />
+                    filename="package://mirte_master_description/meshes/Gripper.STL" />
             </geometry>
             <material
                 name="">
@@ -272,30 +272,31 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/Gripper.STL" />
+                    filename="package://mirte_master_description/meshes/Gripper.STL" />
             </geometry>
         </collision>
     </link>
     <joint
-        name="Gripper_joint"
+        name="gripper_joint"
         type="revolute">
         <origin
             xyz="0.0435 -0.012 0.0045"
             rpy="-1.5708 0 0" />
         <parent
-            link="arm_Wrist" />
+            link="wrist" />
         <child
-            link="Gripper" />
+            link="gripper" />
         <axis
             xyz="0 -1 0" />
         <limit
-            lower="0"
-            upper="${pi/2}"
-            effort="2"
-            velocity="2"
+            lower="-.20"
+            upper="0.25"
+            effort="2.0"
+            velocity="2.0"
         />
     </joint>
-    <link
+
+   <link
         name="_gripper_link_r">
         <inertial>
             <origin
@@ -317,7 +318,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_r.STL" />
+                    filename="package://mirte_master_description/meshes/_gripper_link_r.STL" />
             </geometry>
             <material
                 name="">
@@ -331,7 +332,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_r.STL" />
+                    filename="package://mirte_master_description/meshes/_gripper_link_r.STL" />
             </geometry>
         </collision>
     </link>
@@ -342,17 +343,19 @@
             xyz="0.0605 0.0205 -0.0055"
             rpy="1.5708 0 -1.3641" />
         <parent
-            link="arm_Wrist" />
+            link="wrist" />
         <child
             link="_gripper_link_r" />
         <axis
-            xyz="0 0 1" />
+            xyz="0 -1 0" />
         <limit
-            lower="0"
-            upper="0"
-            effort="0"
-            velocity="0" />
+            lower="-3.14"
+            upper="3.14"
+            effort="0.0"
+            velocity="0.0" />
+        <mimic joint="gripper_joint" multiplier="1.4"/>
     </joint>
+
     <link
         name="gripper_finger_r">
         <inertial>
@@ -375,7 +378,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_r.STL" />
+                    filename="package://mirte_master_description/meshes/gripper_finger_r.STL" />
             </geometry>
             <material
                 name="">
@@ -389,13 +392,13 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_r.STL" />
+                    filename="package://mirte_master_description/meshes/gripper_finger_r.STL" />
             </geometry>
         </collision>
     </link>
     <joint
         name="gripper_finger_joint_r"
-        type="revolute">
+        type="fixed">
         <origin
             xyz="0 0.01 -0.037"
             rpy="0 0.20667 3.1416" />
@@ -405,11 +408,6 @@
             link="gripper_finger_r" />
         <axis
             xyz="0 0 1" />
-        <limit
-            lower="0"
-            upper="0"
-            effort="0"
-            velocity="0" />
     </joint>
     <link
         name="_gripper_link_l">
@@ -433,7 +431,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_l.STL" />
+                    filename="package://mirte_master_description/meshes/_gripper_link_l.STL" />
             </geometry>
             <material
                 name="">
@@ -447,7 +445,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_gripper_link_l.STL" />
+                    filename="package://mirte_master_description/meshes/_gripper_link_l.STL" />
             </geometry>
         </collision>
     </link>
@@ -458,16 +456,17 @@
             xyz="0.0605 -0.0205 -0.0055"
             rpy="1.5708 0 -1.7775" />
         <parent
-            link="arm_Wrist" />
+            link="wrist" />
         <child
             link="_gripper_link_l" />
         <axis
-            xyz="0 0 1" />
+            xyz="0 -1 0" />
         <limit
-            lower="0"
-            upper="0"
-            effort="0"
-            velocity="0" />
+            lower="-3.14"
+            upper="3.14"
+            effort="0.0"
+            velocity="0.0" />
+        <mimic joint="gripper_joint" multiplier="-1.4"/>
     </joint>
     <link
         name="gripper_finger_l">
@@ -491,7 +490,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_l.STL" />
+                    filename="package://mirte_master_description/meshes/gripper_finger_l.STL" />
             </geometry>
             <material
                 name="">
@@ -505,13 +504,13 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/gripper_finger_l.STL" />
+                    filename="package://mirte_master_description/meshes/gripper_finger_l.STL" />
             </geometry>
         </collision>
     </link>
     <joint
         name="gripper_finger_joint_l"
-        type="revolute">
+        type="fixed">
         <origin
             xyz="0 0 -0.037"
             rpy="0 0.20667 0" />
@@ -521,11 +520,6 @@
             link="gripper_finger_l" />
         <axis
             xyz="0 0 1" />
-        <limit
-            lower="0"
-            upper="0"
-            effort="0"
-            velocity="0" />
     </joint>
     <link
         name="_Gripper_r">
@@ -549,7 +543,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_Gripper_r.STL" />
+                    filename="package://mirte_master_description/meshes/_Gripper_r.STL" />
             </geometry>
             <material
                 name="">
@@ -563,7 +557,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file://$(find mirte_master_description)/meshes/_Gripper_r.STL" />
+                    filename="package://mirte_master_description/meshes/_Gripper_r.STL" />
             </geometry>
         </collision>
     </link>
@@ -574,15 +568,42 @@
             xyz="0.0435 0.012 0.0045"
             rpy="-1.5708 0 -3.1416" />
         <parent
-            link="arm_Wrist" />
+            link="wrist" />
         <child
             link="_Gripper_r" />
         <axis
-            xyz="0 0 1" />
+            xyz="0 -1 0" />
         <limit
-            lower="0"
-            upper="0"
-            effort="0"
-            velocity="0" />
+            lower="-.25"
+            upper="0.20"
+            effort="2.0"
+            velocity="2.0"
+        />
+        <mimic joint="gripper_joint" multiplier="-1"/>
     </joint>
+
+
+
+<gazebo>
+    <plugin filename="libgazebo_grasp_fix.so" name="gazebo_grasp_fix">
+       <arm>
+          <arm_name>finger_gripper</arm_name>
+          <palm_link>wrist</palm_link>
+          <gripper_link>gripper</gripper_link>
+          <gripper_link>_Gripper_r</gripper_link>
+          <gripper_link>_gripper_link_l</gripper_link>
+          <gripper_link>gripper_finger_l</gripper_link>
+          <gripper_link>_gripper_link_r</gripper_link>
+          <gripper_link>gripper_finger_r</gripper_link>
+       </arm>
+       <forces_angle_tolerance>100</forces_angle_tolerance>
+       <update_rate>4</update_rate>
+       <grip_count_threshold>4</grip_count_threshold>
+       <max_grip_count>8</max_grip_count>
+       <release_tolerance>0.005</release_tolerance>
+       <disable_collisions_on_attach>false</disable_collisions_on_attach>
+    </plugin>
+</gazebo>
+
+
 </robot>

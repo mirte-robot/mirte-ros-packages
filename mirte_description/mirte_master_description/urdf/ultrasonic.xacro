@@ -4,71 +4,75 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:macro name="ultrasonic_sensor" params="name *origin">
     <xacro:property name="sonar_angle_max" value="${radians(15)}"/>
+
     <joint name="sonar_${name}" type="fixed">
       <axis xyz="0 1 0"/>
       <xacro:insert_block name="origin"/>
       <parent link="link_chassis"/>
-      <child link="base_sonar_${name}"/>
+      <child link="${name}_sonar"/>
     </joint>
-    <link name="base_sonar_${name}">
-      <!-- <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <box size="0.01 0.05 0.037"/>
-        </geometry>
-      </collision> -->
+
+    <link name="${name}_sonar">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin rpy="0 0 ${radians(-90)}" />
         <geometry>
-          <box size="0.01 0.05 0.037"/>
+          <mesh filename="package://mirte_master_description/meshes/ultrasonic_fl.STL" />
         </geometry>
-        <material name="blue"/>
+        <material name="blue" />
       </visual>
-      <!-- <inertial>
-        <mass value="0.0"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-      </inertial> -->
+      <collision>
+        <origin rpy="0 0 ${radians(-90)}" />
+        <geometry>
+          <box size=".045 .025 .02" />
+        </geometry>
+      </collision>
     </link>
-<!--
-    <gazebo reference="base_sonar_${name}">
+
+    <gazebo reference="${name}_sonar">
       <sensor type="ray" name="range_sensor_${name}">
-        <visualize>false</visualize>
-        <ray>
-          <scan>
-            <horizontal>
-              <samples>4</samples>
-              <resolution>1</resolution>
-              <min_angle>${-sonar_angle_max/2}</min_angle>
-              <max_angle>${sonar_angle_max/2}</max_angle>
-            </horizontal>
+        <visualize>${visualize_sensors}</visualize>
+          <ray>
+            <scan>
+              <horizontal>
+                <!-- for some reason 1 does not work, we neex 2x2 -->
+                <samples>2</samples>
+                <resolution>1</resolution> 
+                <min_angle>-0.26</min_angle>
+                <max_angle>0.26</max_angle>
+              </horizontal>
             <vertical>
-              <samples>4</samples>
-              <resolution>1</resolution>
-              <min_angle>0</min_angle>
-              <max_angle>${sonar_angle_max/4}</max_angle>
+              <samples>2</samples>
+              <resolution>1</resolution> 
+              <min_angle>-0.014835</min_angle>
+              <max_angle>0.014835</max_angle> 
             </vertical>
-          </scan>
-          <range>
-            <min>0.025</min>
-            <max>5</max>
-            <resolution>0.01</resolution>
-          </range>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
-        </ray>
-        <update_rate>30</update_rate>
-        <plugin name="laser_controller_sonar${name}" filename="libgazebo_ros_laser.so">
-          <topicName>mirte/scanSonar${name}</topicName>
-          <output_type>sensor_msgs/Range</output_type>
-          <radiation_type>ultrasound</radiation_type>
-          <frameName>base_sonar_${name}</frameName>
-        </plugin>
-      </sensor>
-    </gazebo>
- -->
+         </scan>
+         <range>
+           <min>0.03</min>
+           <max>4</max>
+           <resolution>0.01</resolution>
+         </range>
+         <!-- Using gazebo's noise instead of plugin's -->
+         <noise>
+           <type>gaussian</type>
+           <mean>0.0</mean>
+           <stddev>0.01</stddev>
+         </noise>
+       </ray>
+       <!-- Using gazebo's update rate instead of plugin's -->
+       <update_rate>30</update_rate>
+
+       <plugin name="gazebo_ros_range_controller_${name}" filename="libgazebo_ros_ray_sensor.so">
+         <ros>
+           <namespace>/mirte</namespace>
+           <remapping>~/out:=distance/${name}</remapping>
+         </ros>
+         <output_type>sensor_msgs/Range</output_type>
+         <radiation_type>ultrasound</radiation_type>
+       </plugin>
+
+     </sensor>
+   </gazebo>
+
   </xacro:macro>
 </robot>
