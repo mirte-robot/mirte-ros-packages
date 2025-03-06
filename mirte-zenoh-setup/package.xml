@@ -7,8 +7,7 @@
   <license>BSD-3-Clause</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <!-- <exec_depend>rmw_zenoh</exec_depend>  -->
-  <!-- Somehow rosdep doesn't find it, even though it is in the humble distribution.yaml -->
+  <exec_depend>rmw_zenoh_cpp</exec_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
