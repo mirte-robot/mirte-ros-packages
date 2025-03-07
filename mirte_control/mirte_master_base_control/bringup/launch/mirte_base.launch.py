@@ -100,30 +100,11 @@ def generate_launch_description():
         ],
     )
 
-    twist_stamper = Node(
-        package="twist_stamper",
-        executable="twist_stamper",
-        namespace="mirte_base_controller",
-        remappings=[
-            ("cmd_vel_out", "cmd_vel"),
-            ("cmd_vel_in", "cmd_vel_unstamped"),
-        ],
-        parameters=[
-            {
-                "frame_id": (
-                    LaunchConfiguration("frame_prefix"),
-                    TextSubstitution(text="base_link"),
-                )
-            }
-        ],
-    )
-
     nodes = [
         control_node,
         robot_state_pub_node,
         robot_controller_spawner,
         joint_state_broadcaster_spawner,
-        twist_stamper,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

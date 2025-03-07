@@ -15,7 +15,7 @@
   ros__parameters:
     # hardware_parameters:
     # ticks: 1320
-    use_stamped_vel: true # This will become the default in the future
+    use_stamped_vel: false  # Stamped will be the future default
     reference_timeout: 0.25
     command_timeout: 0.25
     command_joint_names: ["pid_wheels_controller/front_left_wheel_joint", "pid_wheels_controller/rear_left_wheel_joint", "pid_wheels_controller/rear_right_wheel_joint", "pid_wheels_controller/front_right_wheel_joint"]
@@ -65,4 +65,4 @@
       front_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
       rear_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
       rear_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
-      front_right_wheel_joint: {p: 1.0,i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
+      front_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
