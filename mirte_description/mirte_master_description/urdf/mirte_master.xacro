@@ -12,6 +12,7 @@
   <xacro:arg name="lidar_enable" default="True" />
   <xacro:arg name="depth_camera_enable" default="True" />
   <xacro:arg name="imu_enable" default="True" />
+  <xacro:arg name="sim" default="False" />
 
   <xacro:property name="camera_name" value="camera" lazy_eval="False"/>
   <xacro:property name="namespace" value="" scope="global" lazy_eval="False"/>
