@@ -33,9 +33,9 @@
       </hardware>
 
         <xacro:joint prefix="$(arg prefix)" name="front_left" />
-        <xacro:joint prefix="$(arg prefix)" name="front_right" />
-        <xacro:joint prefix="$(arg prefix)" name="rear_right" />
         <xacro:joint prefix="$(arg prefix)" name="rear_left" />
+        <xacro:joint prefix="$(arg prefix)" name="rear_right" />
+        <xacro:joint prefix="$(arg prefix)" name="front_right" />
 
 
 
