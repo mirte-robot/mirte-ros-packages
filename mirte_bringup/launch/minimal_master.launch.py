@@ -33,7 +33,6 @@ def generate_launch_description():
                 default_value="true",
                 description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
             ),
-            
         ],
     )
 
@@ -89,7 +88,10 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix, "use_base_pid_control": use_base_pid_control}.items(),
+        launch_arguments={
+            "frame_prefix": frame_prefix,
+            "use_base_pid_control": use_base_pid_control,
+        }.items(),
     )
 
     state_publishers = IncludeLaunchDescription(

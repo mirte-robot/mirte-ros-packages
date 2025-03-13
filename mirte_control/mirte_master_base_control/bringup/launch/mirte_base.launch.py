@@ -1,13 +1,18 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
-from launch.conditions import IfCondition, LaunchConfigurationNotEquals, LaunchConfigurationEquals, UnlessCondition
+from launch.conditions import (
+    IfCondition,
+    LaunchConfigurationNotEquals,
+    LaunchConfigurationEquals,
+    UnlessCondition,
+)
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
     FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
-    PythonExpression
+    PythonExpression,
 )
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
@@ -66,8 +71,13 @@ def generate_launch_description():
         [
             FindPackageShare("mirte_base_control"),
             "config",
-            PythonExpression(['"mirte_base_control.yaml" if "', use_pid_control,
-                                           '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"'])
+            PythonExpression(
+                [
+                    '"mirte_base_control.yaml" if "',
+                    use_pid_control,
+                    '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"',
+                ]
+            ),
         ],
     )
 
@@ -97,14 +107,14 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster"],
         condition=IfCondition(start_state_publishers),
     )
-    
+
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "pid_wheels_controller",
             "mirte_base_controller",
-        ], 
+        ],
         # TODO: In later versions, there is an IfElseSubstitution class, then we only need one without the condition
         condition=IfCondition(use_pid_control),
     )
@@ -113,7 +123,7 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "mirte_base_controller",
-        ], 
+        ],
         condition=UnlessCondition(use_pid_control),
     )
 
