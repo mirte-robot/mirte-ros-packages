@@ -9,13 +9,21 @@ jobs:
     runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-22.04' || 'ubuntu-22.04-arm' }}
     strategy:
         matrix:
-                ros_distro: [humble]
-                deb_distro: [jammy]
+                ros_distro: [humble, jazzy]
+                deb_distro: [jammy, noble]
                 arch: [
                     amd64, 
                     arm64, 
                     # armhf
                     ]
+                exclude:
+                  - ros_distro: humble
+                    deb_distro: noble
+                    # arch: arm64
+                  - ros_distro: jazzy
+                    deb_distro: jammy
+                    # arch: arm64
+
         fail-fast: false
     steps:
       - uses: actions/checkout@v4
