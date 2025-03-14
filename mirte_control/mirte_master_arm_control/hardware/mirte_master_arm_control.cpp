@@ -28,7 +28,8 @@ std::map<std::string, int> init_steps;
 const auto topic_format = "io/servo/hiwonder/%s/position";
 const auto service_format = "io/servo/hiwonder/%s/set_angle";
 const auto SERVO_COMMAND_DIFF = 0.05; // 2.9 degrees
-const auto SERVO_MOVED_DIFF = 0.05;   // 0.01 = 0.57 degrees ~= 1 LSB, but it is too sensitive for that.
+const auto SERVO_MOVED_DIFF =
+    0.05; // 0.01 = 0.57 degrees ~= 1 LSB, but it is too sensitive for that.
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
@@ -64,10 +65,10 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       // Only set the servo when there is a new command or the servo is moved by
       // hand or gravity.
       auto diff = std::abs(servo.last_request - service_requests[i]->angle);
-      
-      if (  diff > SERVO_COMMAND_DIFF || servo.moved) {
-                servo.moved = false;
-                servo.last_request = service_requests[i]->angle;
+
+      if (diff > SERVO_COMMAND_DIFF || servo.moved) {
+        servo.moved = false;
+        servo.last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
         service_clients[i]->async_send_request(service_requests[i]);
@@ -109,8 +110,7 @@ void MirteMasterArmHWInterface::ServoPositionCallback(
   // The servo should only be written to iff the servo gets a new location or
   // when it's moved by gravity, then it needs the command again this will check
   // that the servo is moved
-  if (std::abs(servo.last_move_update - servo.data) >
-      SERVO_MOVED_DIFF) {
+  if (std::abs(servo.last_move_update - servo.data) > SERVO_MOVED_DIFF) {
     servo.last_move_update = servo.data;
     servo.moved = true;
   }

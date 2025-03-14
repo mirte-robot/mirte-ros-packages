@@ -4,51 +4,7 @@
 #include <mirte_base_control.hpp>
 namespace mirte_base_control {
 
-bool equal_gains(control_toolbox::Pid::Gains lhs,
-                 control_toolbox::Pid::Gains rhs) {
-  return lhs.p_gain_ == rhs.p_gain_ && lhs.i_gain_ == rhs.i_gain_ &&
-         lhs.d_gain_ == lhs.d_gain_;
-}
-
-double MirteBaseHWInterface::calc_speed_pid(int joint, double target,
-                                            const rclcpp::Duration &period) {
-  // WARN: this is unused as the PID of ros-control is used.
-  // if moving from 0 to something else, don't wait for the PID to catch up,
-  // but use the mapping function to immediately give it a kinda okay value
-  static bool start[4] = {true};
-  auto pid = this->pids[joint];
-  if (target == 0) {
-    pid->reset();
-    start[joint] = true;
-    // Fix for dynamic reconfigure of all 4 PID controllers:
-    auto g = this->reconfig_pid->getGains();
-    if (!equal_gains(pid->getGains(), g)) {
-      pid->setGains(g);
-    }
-    return 0;
-  }
-
-  if (start[joint]) {
-    start[joint] = false;
-    return calc_speed_map(joint, target, period);
-  }
-
-  auto diff_enc_time_upd = nh->now() - _wheel_encoder_update_time[joint];
-  if (diff_enc_time_upd > rclcpp::Duration(1, 0) &&
-      _last_cmd[joint] >
-          30) { // if the motors don't move, no need to fall back yet
-    RCLCPP_WARN_STREAM(
-        rclcpp::get_logger("rclcpp"),
-        "Encoder "
-            << joint
-            << " not reporting data, falling back to mapping calculation");
-    return calc_speed_map(joint, target, period);
-  }
-  auto curr_speed = vel[joint];
-  auto err = target - curr_speed;
-  auto pid_cmd = pid->computeCommand(err, period.nanoseconds());
-  return pid_cmd + _last_cmd[joint];
-}
+const auto SPEED_CMD_DIFF = 3; // 3% difference before sending new command.
 
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
@@ -58,11 +14,8 @@ double MirteBaseHWInterface::calc_speed_map(int joint, double target,
 int MirteBaseHWInterface::calculate_single_speed(
     int joint, double speed, const rclcpp::Duration &period) {
   double speed_mapped;
-  if (this->enablePID && false) {
-    speed_mapped = this->calc_speed_pid(joint, speed, period);
-  } else {
-    speed_mapped = this->calc_speed_map(joint, speed, period);
-  }
+
+  speed_mapped = this->calc_speed_map(joint, speed, period);
   speed_mapped = std::clamp<double>(speed_mapped, -max_speed, max_speed);
 
   return speed_mapped;
@@ -74,24 +27,35 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
   // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
-  _last_cmd[joint] = speed_mapped;
-  if (diff > 1.0) {
-    updated = true;
-    _last_sent_cmd[joint] = speed_mapped;
-    if (!this->use_single_client) {
+  // _last_cmd[joint] = speed_mapped;
+  // if (diff > SPEED_CMD_DIFF) {
+  //   updated = true;
+  if (!this->use_single_client) {
+    if (diff > SPEED_CMD_DIFF) {
+      updated = true;
+      _last_sent_cmd[joint] = speed_mapped;
+
       service_requests[joint]->speed = (int)speed_mapped;
       service_clients[joint]->async_send_request(service_requests[joint]);
       //     TODO: loop until response is received
 
-      if (!true) {
-        this->start_reconnect();
-        return false;
-      }
-
-    } else {
-      this->set_speed_multiple_request->speeds[joint].speed = speed_mapped;
+      // if (!true) { // When persistent connection is implemented, this should
+      // be
+      //               // changed
+      //   this->start_reconnect();
+      //   return false;
+      // }
     }
+  } else {
+    if (diff > SPEED_CMD_DIFF) {
+      updated = true;
+      _last_sent_cmd[joint] = speed_mapped;
+    }
+    // if another joint is sending an update, then just send all joints,
+    // otherwise wait for the next loop.
+    this->set_speed_multiple_request->speeds[joint].speed = speed_mapped;
   }
+
   return true;
 }
 
