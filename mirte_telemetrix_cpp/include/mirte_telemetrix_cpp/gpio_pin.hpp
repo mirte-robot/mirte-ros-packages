@@ -23,6 +23,7 @@ public:
 
 private:
   bool configured = false;
+  bool enabled = false;
   gpiod::chip chip;
   gpiod::line gpio_line;
 };
