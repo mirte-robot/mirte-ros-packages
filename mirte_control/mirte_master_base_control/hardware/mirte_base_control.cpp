@@ -5,7 +5,7 @@
 namespace mirte_base_control {
 
 const auto SPEED_CMD_DIFF = 3; // 3% difference before sending new command.
-
+const auto SPEED_CMD_DEADZONE = 10;
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
   return std::max(std::min(int(target / (6.0 * M_PI) * 100), 100), -100);
@@ -26,6 +26,9 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         bool &updated) {
   // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
+  if(std::abs(speed_mapped) < SPEED_CMD_DEADZONE) {
+    speed_mapped = 0;
+  }
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
   // _last_cmd[joint] = speed_mapped;
   // if (diff > SPEED_CMD_DIFF) {
@@ -47,7 +50,7 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
       // }
     }
   } else {
-    if (diff > SPEED_CMD_DIFF) {
+    if (diff > SPEED_CMD_DIFF || (speed_mapped == 0 && _last_sent_cmd[joint]!=0) ) {
       updated = true;
       _last_sent_cmd[joint] = speed_mapped;
     }
