@@ -151,7 +151,7 @@ def generate_launch_description():
     web_video_server = Node(
         package="web_video_server",
         executable="web_video_server",
-        parameters=[{"default_transport": "theora", "port": 8181}],
+        parameters=[{"default_transport": "theora", "port": 8181, "default_stream_type": "ros_compressed"}],
         output="screen",
     )
 

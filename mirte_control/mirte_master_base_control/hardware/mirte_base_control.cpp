@@ -106,7 +106,7 @@ void MirteBaseHWInterface::read_single(int joint,
     // when starting, the encoders dont have to be at 0. Without this, the odom
     // can jump at the first loop
   }
-  auto diff_ticks = _wheel_encoder[joint] - _last_value[joint];
+  int16_t diff_ticks = _wheel_encoder[joint] - _last_value[joint];
 
   _last_value[joint] = _wheel_encoder[joint];
   double radPerEncoderTick = rad_per_enc_tick();
