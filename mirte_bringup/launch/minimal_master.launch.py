@@ -28,6 +28,11 @@ def generate_launch_description():
                 default_value="io",
                 description="The namespace for the Telemetrix Node and the hardware peripherals",
             ),
+            DeclareLaunchArgument(
+                "use_base_pid_control",
+                default_value="true",
+                description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
+            ),
         ],
     )
 
@@ -41,6 +46,9 @@ def generate_launch_description():
     )
     start_state_publishers = LaunchConfiguration(
         "_start_state_publishers", default="false"
+    )
+    use_base_pid_control = LaunchConfiguration(
+        "use_base_pid_control",
     )
 
     telemetrix = IncludeLaunchDescription(
@@ -80,7 +88,10 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
+        launch_arguments={
+            "frame_prefix": frame_prefix,
+            "use_base_pid_control": use_base_pid_control,
+        }.items(),
     )
 
     state_publishers = IncludeLaunchDescription(
@@ -114,6 +125,7 @@ def generate_launch_description():
             "frame_prefix": frame_prefix,
             "start_controller_manager": start_controller_manager,
             "start_state_publishers": start_state_publishers,
+            "use_pid_control": use_base_pid_control,
         }.items(),
     )
 

@@ -1,5 +1,5 @@
 ---
-
+# CHECK: is this even used?
 ticks: 1320  # TODO: check 11pps*30reduction *4
 enable_pid: true
 kp: 1

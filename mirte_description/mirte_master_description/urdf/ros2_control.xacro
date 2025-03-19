@@ -1,26 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-   <xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
-    <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
-
+<xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
+<xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
 <xacro:arg name="prefix" default="" />
-
-
-<xacro:macro name="wheel" params="name prefix">
-
-    <joint name="${prefix}${name}_wheel_joint" type="continuous">
-      <parent link="${prefix}base_link"/>
-      <child link="${prefix}${name}_wheel"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <axis xyz="0 1 0"/>
-      <dynamics damping="0.2"/>
-    </joint>
-
-    <!-- left wheel Link -->
-    <link name="${prefix}${name}_wheel">
-</link>
-</xacro:macro>
 
 <xacro:macro name="joint" params="name prefix">
       <joint name="${prefix}${name}_wheel_joint">
@@ -28,36 +11,46 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>
+
 </xacro:macro>
 
 
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
-        <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-        <param name="ticks">${params['ticks']}</param>
-        <param name="enable_pid">${params['enable_pid']}</param>
-        <param name="kp">${params['kp']}</param>
-        <param name="ki">${params['ki']}</param>
-        <param name="kd">${params['kd']}</param>
-        <param name="i_clamp">${params['i_clamp']}</param>
-        <param name="antiwindup">${params['antiwindup']}</param>
+        <xacro:if value="$(arg sim)">
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </xacro:if>
+        <xacro:unless value="$(arg sim)">
+          <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
+          <param name="ticks">${params['ticks']}</param>
+          <param name="enable_pid">${params['enable_pid']}</param>
+          <param name="kp">${params['kp']}</param>
+          <param name="ki">${params['ki']}</param>
+          <param name="kd">${params['kd']}</param>
+          <param name="i_clamp">${params['i_clamp']}</param>
+          <param name="antiwindup">${params['antiwindup']}</param>
+        </xacro:unless>
       </hardware>
 
-      <xacro:joint prefix="$(arg prefix)" name="front_left"  />
-        <xacro:joint prefix="$(arg prefix)" name="front_right"  />
-        <xacro:joint prefix="$(arg prefix)" name="rear_right"  />
-        <xacro:joint prefix="$(arg prefix)" name="rear_left"  />
+        <xacro:joint prefix="$(arg prefix)" name="front_left" />
+        <xacro:joint prefix="$(arg prefix)" name="rear_left" />
+        <xacro:joint prefix="$(arg prefix)" name="rear_right" />
+        <xacro:joint prefix="$(arg prefix)" name="front_right" />
+
 
 
     </ros2_control>
 
 
 
-
-
 <ros2_control name="ros2_arm_control" type="system">
       <hardware>
-        <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
+        <xacro:if value="$(arg sim)">
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </xacro:if>
+        <xacro:unless value="$(arg sim)">
+          <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
+        </xacro:unless>
       </hardware>
 
    <joint name="shoulder_pan_joint">
@@ -94,62 +87,55 @@
 
 <ros2_control name="ros2_gripper_control" type="system">
      <hardware>
-        <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
+        <xacro:if value="$(arg sim)">
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </xacro:if>
+        <xacro:unless value="$(arg sim)">
+          <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
+        </xacro:unless>
       </hardware>
 
     <joint name="gripper_joint">
-        <command_interface name="position"/>
+        <command_interface name="position" />
         <state_interface name="position" />
         <state_interface name="velocity" />
     </joint>
 
-<!-- These are only needed in the simulation! -->
+    <xacro:if value="$(arg sim)">
 
-<!--
-    <joint name="_Gripper_joint_r">
-        <param name="mimic">Gripper_joint</param>
+      <joint name="_Gripper_joint_r">
+        <param name="mimic">gripper_joint</param>
         <param name="multiplier">-1</param>
         <command_interface name="position"/>
         <state_interface name="position" />
         <state_interface name="velocity" />
-    </joint>
+      </joint>
 
-    <joint name="_gripper_link_joint_l">
-        <param name="mimic">Gripper_joint</param>
+      <joint name="_gripper_link_joint_l">
+        <param name="mimic">gripper_joint</param>
         <param name="multiplier">-1.4</param> 
         <command_interface name="position"/>
         <state_interface name="position" />
         <state_interface name="velocity" />
-    </joint>
+      </joint>
 
-    <joint name="_gripper_link_joint_r">
-        <param name="mimic">Gripper_joint</param>
+      <joint name="_gripper_link_joint_r">
+        <param name="mimic">gripper_joint</param>
         <param name="multiplier">1.4</param>  
         <command_interface name="position"/>
         <state_interface name="position" />
         <state_interface name="velocity" />
-    </joint>
+      </joint>
 
-    <joint name="gripper_finger_joint_l">
-        <command_interface name="position"/>
-        <state_interface name="position" />
-        <state_interface name="velocity" />
-    </joint>
-
-    <joint name="gripper_finger_joint_r">
-        <command_interface name="position"/>
-        <state_interface name="position" />
-        <state_interface name="velocity" />
-    </joint>
--->
+    </xacro:if>
 
 </ros2_control>
 
 <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-       <parameters>$(find mirte_master_description)/config/mirte_base_control.yaml</parameters>
+       <parameters>$(find mirte_base_control)/config/mirte_base_control.yaml</parameters>
        <xacro:if value="$(arg arm_enable)">
-          <parameters>$(find mirte_master_description)/config/mirte_arm_control.yaml</parameters>
+          <parameters>$(find mirte_master_arm_control)/config/mirte_master_arm_control.yaml</parameters>
        </xacro:if>
     </plugin>
     <plugin filename="libgazebo_ros_planar_move.so" name="gazebo_planar_move">

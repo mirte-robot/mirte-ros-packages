@@ -1,13 +1,18 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
-from launch.conditions import IfCondition
+from launch.conditions import (
+    IfCondition,
+    LaunchConfigurationNotEquals,
+    LaunchConfigurationEquals,
+    UnlessCondition,
+)
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
     FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
-    TextSubstitution,
+    PythonExpression,
 )
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
@@ -35,7 +40,13 @@ def generate_launch_description():
             default_value="true",
             description="A boolean whether this launchfile needs to start the state publisher and joint boardcaster. Defaults to true.",
         ),
+        DeclareLaunchArgument(
+            "use_pid_control",
+            default_value="true",
+            description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
+        ),
     ]
+    use_pid_control = LaunchConfiguration("use_pid_control")
 
     robot_description_content = Command(
         [
@@ -60,8 +71,14 @@ def generate_launch_description():
         [
             FindPackageShare("mirte_base_control"),
             "config",
-            "mirte_base_control.yaml",
-        ]
+            PythonExpression(
+                [
+                    '"mirte_base_control.yaml" if "',
+                    use_pid_control,
+                    '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"',
+                ]
+            ),
+        ],
     )
 
     control_node = Node(
@@ -98,32 +115,24 @@ def generate_launch_description():
             "pid_wheels_controller",
             "mirte_base_controller",
         ],
+        # TODO: In later versions, there is an IfElseSubstitution class, then we only need one without the condition
+        condition=IfCondition(use_pid_control),
     )
-
-    twist_stamper = Node(
-        package="twist_stamper",
-        executable="twist_stamper",
-        namespace="mirte_base_controller",
-        remappings=[
-            ("cmd_vel_out", "cmd_vel"),
-            ("cmd_vel_in", "cmd_vel_unstamped"),
+    robot_controller_spawner_no_pid = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "mirte_base_controller",
         ],
-        parameters=[
-            {
-                "frame_id": (
-                    LaunchConfiguration("frame_prefix"),
-                    TextSubstitution(text="base_link"),
-                )
-            }
-        ],
+        condition=UnlessCondition(use_pid_control),
     )
 
     nodes = [
         control_node,
         robot_state_pub_node,
         robot_controller_spawner,
+        robot_controller_spawner_no_pid,
         joint_state_broadcaster_spawner,
-        twist_stamper,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

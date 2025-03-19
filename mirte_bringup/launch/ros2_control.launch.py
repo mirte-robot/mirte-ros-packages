@@ -8,6 +8,7 @@ from launch.substitutions import (
     LaunchConfiguration,
     PathJoinSubstitution,
     TextSubstitution,
+    PythonExpression,
 )
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
@@ -21,9 +22,14 @@ def generate_launch_description():
             "frame_prefix",
             default_value="",
             description="An arbitrary prefix to add to the published tf2 frames. Defaults to the empty string.",
-        )
+        ),
+        DeclareLaunchArgument(
+            "use_base_pid_control",
+            default_value="true",
+            description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
+        ),
     ]
-
+    use_base_pid_control = LaunchConfiguration("use_base_pid_control")
     arm_controller_yaml = PathJoinSubstitution(
         [
             FindPackageShare("mirte_master_arm_control"),
@@ -36,7 +42,13 @@ def generate_launch_description():
         [
             FindPackageShare("mirte_base_control"),
             "config",
-            "mirte_base_control.yaml",
+            PythonExpression(
+                [
+                    '"mirte_base_control.yaml" if "',
+                    use_base_pid_control,
+                    '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"',
+                ]
+            ),
         ]
     )
 
