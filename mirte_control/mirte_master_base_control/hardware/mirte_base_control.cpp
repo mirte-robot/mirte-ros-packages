@@ -26,7 +26,7 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         bool &updated) {
   // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
-  if(std::abs(speed_mapped) < SPEED_CMD_DEADZONE) {
+  if (std::abs(speed_mapped) < SPEED_CMD_DEADZONE) {
     speed_mapped = 0;
   }
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
@@ -50,7 +50,8 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
       // }
     }
   } else {
-    if (diff > SPEED_CMD_DIFF || (speed_mapped == 0 && _last_sent_cmd[joint]!=0) ) {
+    if (diff > SPEED_CMD_DIFF ||
+        (speed_mapped == 0 && _last_sent_cmd[joint] != 0)) {
       updated = true;
       _last_sent_cmd[joint] = speed_mapped;
     }

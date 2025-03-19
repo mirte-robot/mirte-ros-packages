@@ -9,8 +9,12 @@ jobs:
     runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-22.04' || 'ubuntu-22.04-arm' }}
     strategy:
         matrix:
-                ros_distro: [humble, jazzy]
-                deb_distro: [jammy, noble]
+                ros_distro: [humble, 
+                  # jazzy
+                  ]
+                deb_distro: [jammy, 
+                  # noble
+                  ]
                 arch: [
                     amd64, 
                     arm64, 
