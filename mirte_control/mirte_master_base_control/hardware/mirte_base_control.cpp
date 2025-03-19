@@ -121,7 +121,17 @@ void MirteBaseHWInterface::read_single(int joint,
         diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
   }
   pos[joint] += distance_rad;
-  vel[joint] = distance_rad / period.seconds(); // WHY: was this turned off?
+  if (period.seconds() < 0.01) {
+    vel[joint] = 0;
+    return;
+  }
+  auto velo = distance_rad / period.seconds();
+  if (std::abs(velo) > 1000.0) { // if velocity is way too high, assume error in
+                                 // encoder. More than 1000rad/s is not possible
+    vel[joint] = 0;
+  } else {
+    vel[joint] = velo;
+  }
 }
 std::vector<hardware_interface::StateInterface>
 MirteBaseHWInterface::export_state_interfaces() {
