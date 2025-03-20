@@ -183,7 +183,11 @@ def generate_launch_description():
             ]
         )
     )
-
+    rosbridge = IncludeLaunchDescription(
+        PathJoinSubstitution(
+            [FindPackageShare("rosbridge_server"), "launch", "rosbridge_websocket_launch.xml"]
+        ),
+    )
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
@@ -198,6 +202,7 @@ def generate_launch_description():
                 depth_cam,
                 arm_control,
                 mecanum_drive_control,
+                rosbridge,
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)

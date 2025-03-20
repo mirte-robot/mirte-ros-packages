@@ -63,12 +63,16 @@ def generate_launch_description():
         ),
         launch_arguments={"frame_prefix": frame_prefix}.items(),
     )
-
+    rosbridge =  = IncludeLaunchDescription(
+        PathJoinSubstitution(
+            [FindPackageShare("rosbridge_server"), "launch", "rosbridge_websocket_launch.xml"]
+        ),
+    )
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
         GroupAction(
-            [PushRosNamespace(machine_namespace), telemetrix, diff_drive_control],
+            [PushRosNamespace(machine_namespace), telemetrix, diff_drive_control, rosbridge],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
                 for arg in ld.get_launch_arguments()
