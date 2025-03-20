@@ -12,7 +12,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import Node, PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace,SetRemap
 
 
 def generate_launch_description():
@@ -75,23 +75,44 @@ def generate_launch_description():
             "frame_prefix": frame_prefix,
         }.items(),
     )
+    ros2_control = GroupAction(
+        actions=[
 
-    ros2_control = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("mirte_bringup"),
-                        "launch",
-                        "ros2_control.launch.py",
-                    ]
-                )
-            ]
-        ),
-        launch_arguments={
-            "frame_prefix": frame_prefix,
-            "use_base_pid_control": use_base_pid_control,
-        }.items(),
+            SetRemap(dst='/mirte_base_controller/cmd_vel',src='/mirte_base_controller/cmd_vel_unstamped'),
+        IncludeLaunchDescription(
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("mirte_bringup"),
+                            "launch",
+                            "ros2_control.launch.py",
+                        ]
+                    ),
+             launch_arguments = {
+                     "frame_prefix": frame_prefix,
+                "use_base_pid_control": use_base_pid_control,
+
+             }.items(),
+
+        )
+
+            # IncludeLaunchDescription(
+            #     [
+            #         PathJoinSubstitution(
+            #             [
+            #                 FindPackageShare("mirte_bringup"),
+            #                 "launch",
+            #                 "ros2_control.launch.py",
+            #             ]
+            #         )
+            #     ]
+            # # ),
+            # # remappings=[{"/mirte_base_control/cmd_vel", "/mirte_base_control/cmd_vel_unstamped"}],
+            # launch_arguments={
+            #     "frame_prefix": frame_prefix,
+            #     "use_base_pid_control": use_base_pid_control,
+            # }.items(),
+            # )
+        ]
     )
 
     state_publishers = IncludeLaunchDescription(

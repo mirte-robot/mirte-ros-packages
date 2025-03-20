@@ -21,7 +21,7 @@ sys.exit(
             "/opt/ros/humble/lib/teleop_twist_keyboard/teleop_twist_keyboard",
             "--ros-args",
             "-r",
-            f"cmd_vel:=/mirte_base_controller/cmd_vel_unstamped",
+            f"cmd_vel:=/mirte_base_controller/cmd_vel",
         ]
     )
 )

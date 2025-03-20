@@ -84,7 +84,7 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["diff_drive_controller"],
+        arguments=["mirte_base_controller"],
     )
 
     # # Delay start of robot_controller after `joint_state_broadcaster`
@@ -97,23 +97,23 @@ def generate_launch_description():
     #     )
     # )
 
-    twist_stamper = Node(
-        package="twist_stamper",
-        executable="twist_stamper",
-        namespace="diff_drive_controller",
-        remappings=[
-            ("cmd_vel_out", "cmd_vel"),
-            ("cmd_vel_in", "cmd_vel_unstamped"),
-        ],
-        parameters=[
-            {
-                "frame_id": (
-                    LaunchConfiguration("frame_prefix"),
-                    TextSubstitution(text="base_link"),
-                )
-            }
-        ],
-    )
+    # twist_stamper = Node(
+    #     package="twist_stamper",
+    #     executable="twist_stamper",
+    #     namespace="mirte_base_controller",
+    #     remappings=[
+    #         ("cmd_vel_out", "cmd_vel"),
+    #         ("cmd_vel_in", "cmd_vel_unstamped"),
+    #     ],
+    #     parameters=[
+    #         {
+    #             "frame_id": (
+    #                 LaunchConfiguration("frame_prefix"),
+    #                 TextSubstitution(text="base_link"),
+    #             )
+    #         }
+    #     ],
+    # )
 
     nodes = [
         frame_prefix_launch_arg,
@@ -122,7 +122,7 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
         # delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        twist_stamper,
+        # twist_stamper,
     ]
 
     return LaunchDescription(nodes)
