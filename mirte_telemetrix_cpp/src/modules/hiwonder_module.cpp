@@ -28,8 +28,9 @@ HiWonderBus_module::HiWonderBus_module(
 
   // Create a list of ID's
   std::vector<uint8_t> servo_ids;
-  for (auto servo : this->data.servos)
-    servo_ids.push_back(servo->id);
+  // Don't pre-add ids since it can cause errors on missing servos
+  // for (auto servo : this->data.servos)
+  //   servo_ids.push_back(servo->id);
 
   this->bus = std::make_shared<tmx_cpp::HiwonderServo_module>(
       this->data.uart_port, this->data.rx_pin, this->data.tx_pin, servo_ids,
