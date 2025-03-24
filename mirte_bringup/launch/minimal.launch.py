@@ -7,7 +7,7 @@ from launch.substitutions import (
     PathJoinSubstitution,
     TextSubstitution,
 )
-from launch_ros.actions import PushRosNamespace
+from launch_ros.actions import PushRosNamespace, SetRemap
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -57,11 +57,16 @@ def generate_launch_description():
         }.items(),
     )
 
-    diff_drive_control = IncludeLaunchDescription(
-        PathJoinSubstitution(
-            [FindPackageShare("mirte_control"), "launch", "mirte.launch.py"]
-        ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
+    diff_drive_control = GroupAction(
+        actions=[
+            SetRemap(dst='/mirte_base_controller/cmd_vel',src='/mirte_base_controller/cmd_vel_unstamped'),
+            IncludeLaunchDescription(
+                PathJoinSubstitution(
+                    [FindPackageShare("mirte_control"), "launch", "mirte.launch.py"]
+                ),
+                launch_arguments={"frame_prefix": frame_prefix}.items(),
+            )
+        ]
     )
 
     rosbridge = IncludeLaunchDescription(
