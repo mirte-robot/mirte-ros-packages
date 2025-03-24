@@ -17,7 +17,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "machine_namespace",
                 default_value=TextSubstitution(
-                    text=platform.node().replace("-", "_").lower()
+                    text="" #platform.node().replace("-", "_").lower()
                 ),
                 description="The namespace containing all Robot specific ROS communication",
             ),
@@ -63,7 +63,8 @@ def generate_launch_description():
         ),
         launch_arguments={"frame_prefix": frame_prefix}.items(),
     )
-    rosbridge =  = IncludeLaunchDescription(
+
+    rosbridge = IncludeLaunchDescription(
         PathJoinSubstitution(
             [FindPackageShare("rosbridge_server"), "launch", "rosbridge_websocket_launch.xml"]
         ),
