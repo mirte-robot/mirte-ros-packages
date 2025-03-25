@@ -71,10 +71,11 @@ parse_all(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board) {
       devices.push_back(data);
       RCLCPP_INFO(logger, "Added device %s.%s (kind: %s)", device_class.c_str(),
                   name.c_str(), device_class.c_str());
-    } else
+    } else {
       RCLCPP_ERROR(logger,
                    "%s device \"%s\" is invalid, skipping configuration.",
                    device_class.c_str(), name.c_str());
+    }
   }
 
   return devices;

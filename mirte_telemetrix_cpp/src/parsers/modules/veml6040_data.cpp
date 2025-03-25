@@ -6,7 +6,7 @@ VEML6040Data::VEML6040Data(
     std::set<std::string> &unused_keys)
     : I2CModuleData(parser, board, name,
                     insert_default_param(parameters, "type",
-                                         rclcpp::ParameterValue("veml6040")),
+                                         rclcpp::ParameterValue("color")),
                     insert_default_param(unused_keys, "type"),
                     get_module_type()) {
   auto logger = parser->logger;
