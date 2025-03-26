@@ -54,7 +54,7 @@ public:
   void data_callback(uint16_t value);
 
 private:
-  std::atomic<float> value;
+  std::atomic<int32_t> value;
 
   // Publisher: intensity/NAME
   rclcpp::Publisher<mirte_msgs::msg::Intensity>::SharedPtr intensity_pub;
