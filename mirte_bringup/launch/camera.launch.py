@@ -8,7 +8,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    video_devices =[
+    video_devices = [
         device
         for device in Path("/dev").glob("video*")
         if (Path("/sys/class/video4linux") / device.name / "name").read_text().strip()
