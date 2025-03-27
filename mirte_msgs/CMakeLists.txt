@@ -47,7 +47,11 @@ set(srv_files
     "srv/SetPWMPinValue.srv"
     "srv/SetServoAngle.srv"
     "srv/SetServoAngleWithSpeed.srv"
-    "srv/SetSpeedMultiple.srv")
+    "srv/SetSpeedMultiple.srv"
+    "srv/GetServoOffset.srv"
+    "srv/SetServoOffset.srv"
+    "srv/AddHiwonderServo.srv"
+    )
 
 rosidl_generate_interfaces(
   ${PROJECT_NAME}

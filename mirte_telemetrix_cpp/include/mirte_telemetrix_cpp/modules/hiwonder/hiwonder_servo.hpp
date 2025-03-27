@@ -19,6 +19,8 @@
 #include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <mirte_msgs/srv/set_servo_angle_with_speed.hpp>
+#include <mirte_msgs/srv/set_servo_offset.hpp>
+#include <mirte_msgs/srv/get_servo_offset.hpp>
 #include <std_msgs/msg/header.hpp>
 #include <std_srvs/srv/set_bool.hpp>
 
@@ -67,6 +69,8 @@ private:
   // Service: servo/GROUP/NAME/set_motor_speed
   rclcpp::Service<mirte_msgs::srv::SetMotorSpeed>::SharedPtr
       motor_speed_service;
+    rclcpp::Service<mirte_msgs::srv::GetServoOffset>::SharedPtr offset_service;
+    rclcpp::Service<mirte_msgs::srv::SetServoOffset>::SharedPtr set_offset_service;
 
   void enable_service_callback(
       const std_srvs::srv::SetBool::Request::ConstSharedPtr req,
