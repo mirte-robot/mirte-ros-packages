@@ -93,4 +93,13 @@ private:
   void set_motor_speed_service_callback(
       const mirte_msgs::srv::SetMotorSpeed::Request::ConstSharedPtr req,
       mirte_msgs::srv::SetMotorSpeed::Response::SharedPtr res);
+
+  void get_offset_service_callback(
+    const mirte_msgs::srv::GetServoOffset::Request::ConstSharedPtr req,
+    mirte_msgs::srv::GetServoOffset::Response::SharedPtr res
+  );
+  void set_offset_service_callback(
+    const mirte_msgs::srv::SetServoOffset::Request::ConstSharedPtr req,
+    mirte_msgs::srv::SetServoOffset::Response::SharedPtr res
+  );
 };
