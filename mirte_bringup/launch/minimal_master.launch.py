@@ -12,7 +12,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import Node, PushRosNamespace,SetRemap
+from launch_ros.actions import Node, PushRosNamespace, SetRemap
 
 
 def generate_launch_description():
@@ -77,24 +77,23 @@ def generate_launch_description():
     )
     ros2_control = GroupAction(
         actions=[
-
-            SetRemap(dst='/mirte_base_controller/cmd_vel',src='/mirte_base_controller/cmd_vel_unstamped'),
-        IncludeLaunchDescription(
-                    PathJoinSubstitution(
-                        [
-                            FindPackageShare("mirte_bringup"),
-                            "launch",
-                            "ros2_control.launch.py",
-                        ]
-                    ),
-             launch_arguments = {
-                     "frame_prefix": frame_prefix,
-                "use_base_pid_control": use_base_pid_control,
-
-             }.items(),
-
-        )
-
+            SetRemap(
+                dst="/mirte_base_controller/cmd_vel",
+                src="/mirte_base_controller/cmd_vel_unstamped",
+            ),
+            IncludeLaunchDescription(
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "launch",
+                        "ros2_control.launch.py",
+                    ]
+                ),
+                launch_arguments={
+                    "frame_prefix": frame_prefix,
+                    "use_base_pid_control": use_base_pid_control,
+                }.items(),
+            ),
             # IncludeLaunchDescription(
             #     [
             #         PathJoinSubstitution(
@@ -206,7 +205,11 @@ def generate_launch_description():
     )
     rosbridge = IncludeLaunchDescription(
         PathJoinSubstitution(
-            [FindPackageShare("rosbridge_server"), "launch", "rosbridge_websocket_launch.xml"]
+            [
+                FindPackageShare("rosbridge_server"),
+                "launch",
+                "rosbridge_websocket_launch.xml",
+            ]
         ),
     )
     # Instead of this, we could add a conditional to the launch argument declarations

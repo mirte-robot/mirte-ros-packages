@@ -12,6 +12,6 @@ public:
   virtual bool check() override;
   using I2CModuleData::check;
 
-  static std::string get_module_type() { return "veml6040"; };
+  static std::string get_module_type() { return "color"; };
   static std::string get_device_class() { return "color"; };
 };

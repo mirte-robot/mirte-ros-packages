@@ -7,12 +7,16 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    video_device = next(
+
+    video_devices = [
         device
         for device in Path("/dev").glob("video*")
         if (Path("/sys/class/video4linux") / device.name / "name").read_text().strip()
         != "cedrus"
-    )
+    ]
+    if len(video_devices) < 1:
+        return LaunchDescription()
+    video_device = video_devices[0]
 
     return LaunchDescription(
         [

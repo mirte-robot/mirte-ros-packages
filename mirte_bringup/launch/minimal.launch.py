@@ -17,7 +17,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "machine_namespace",
                 default_value=TextSubstitution(
-                    text="" #platform.node().replace("-", "_").lower()
+                    text=""  # platform.node().replace("-", "_").lower()
                 ),
                 description="The namespace containing all Robot specific ROS communication",
             ),
@@ -59,26 +59,45 @@ def generate_launch_description():
 
     diff_drive_control = GroupAction(
         actions=[
-            SetRemap(dst='/mirte_base_controller/cmd_vel',src='/mirte_base_controller/cmd_vel_unstamped'),
+            SetRemap(
+                dst="/mirte_base_controller/cmd_vel",
+                src="/mirte_base_controller/cmd_vel_unstamped",
+            ),
             IncludeLaunchDescription(
                 PathJoinSubstitution(
                     [FindPackageShare("mirte_control"), "launch", "mirte.launch.py"]
                 ),
                 launch_arguments={"frame_prefix": frame_prefix}.items(),
-            )
+            ),
         ]
+    )
+
+    usb_cam = IncludeLaunchDescription(
+        PathJoinSubstitution(
+            [FindPackageShare("mirte_bringup"), "launch", "camera.launch.py"]
+        ),
     )
 
     rosbridge = IncludeLaunchDescription(
         PathJoinSubstitution(
-            [FindPackageShare("rosbridge_server"), "launch", "rosbridge_websocket_launch.xml"]
+            [
+                FindPackageShare("rosbridge_server"),
+                "launch",
+                "rosbridge_websocket_launch.xml",
+            ]
         ),
     )
     # Instead of this, we could add a conditional to the launch argument declarations
     # to only launch when the condition is not set. By means of LaunchConfigurationEquals
     ld.add_action(
         GroupAction(
-            [PushRosNamespace(machine_namespace), telemetrix, diff_drive_control, rosbridge],
+            [
+                PushRosNamespace(machine_namespace),
+                telemetrix,
+                diff_drive_control,
+                rosbridge,
+                usb_cam,
+            ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)
                 for arg in ld.get_launch_arguments()
