@@ -21,11 +21,11 @@ Hiwonder_servo::Hiwonder_servo(
                  "not found]",
                  this->servo_data->name.c_str(), this->servo_data->id);
 
-  if (this->bus_mod->register_servo_id(this->servo_data->id))
-    RCLCPP_ERROR(logger,
-                 "HiWonder Servo '%s' ID is out of range [Requesed ID %d, but "
-                 "range is 0-253]",
-                 this->servo_data->name.c_str(), this->servo_data->id);
+  this->bus_mod->register_servo_id(this->servo_data->id); // output of this is just the servo id
+    // RCLCPP_ERROR(logger,
+    //              "HiWonder Servo '%s' ID is out of range [Requesed ID %d, but "
+    //              "range is 0-253]",
+    //              this->servo_data->name.c_str(), this->servo_data->id);
 
   auto range = this->bus_mod->get_range(servo_data->id);
   assert(range.has_value());
