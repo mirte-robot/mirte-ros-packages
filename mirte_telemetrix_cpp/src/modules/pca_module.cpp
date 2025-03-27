@@ -29,12 +29,14 @@ PCA_Module::PCA_Module(NodeData node_data, PCAData pca_data,
   this->pca9685 = std::make_shared<tmx_cpp::PCA9685_module>(
       pca_data.port, pca_data.addr, pca_data.frequency);
 
-  for (auto motor : pca_data.motors)
+  for (auto motor : pca_data.motors) {
     this->motors.push_back(
         std::make_shared<PCAMotor>(node_data, motor, pca9685));
-  for (auto servo : pca_data.servos)
+  }
+  for (auto servo : pca_data.servos) {
     this->servos.push_back(
         std::make_shared<PCAServo>(node_data, servo, pca9685));
+  }
 
   motor_service = nh->create_service<mirte_msgs::srv::SetSpeedMultiple>(
       "motor/" + this->name + "/set_multiple_speeds",
@@ -72,8 +74,9 @@ void PCA_Module::set_multi_speed_service_callback(
                     motor_pwm_vals.end());
   }
 
-  if (pwm_vals.size() > 0)
+  if (pwm_vals.size() > 0) {
     pca9685->set_multiple_pwm(pwm_vals);
+  }
 
   res->success = true;
 }

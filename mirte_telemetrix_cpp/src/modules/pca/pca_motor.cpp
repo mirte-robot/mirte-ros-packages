@@ -15,13 +15,15 @@ PCAMotor::PCAMotor(NodeData node_data,
 }
 
 void PCAMotor::set_speed(int speed) {
-  if (this->last_speed == speed)
+  if (this->last_speed == speed) {
     return;
+  }
 
   bool reverse = false;
   // TODO: Could also do (last_speed*speed) < 0
-  if ((last_speed < 0 && speed > 0) or (last_speed > 0 && speed < 0))
+  if ((last_speed < 0 && speed > 0) or (last_speed > 0 && speed < 0)) {
     reverse = true;
+  }
 
   if (reverse) {
     pca9685_mod->set_pwm(pwmA_pin, 0);
@@ -39,8 +41,9 @@ void PCAMotor::set_speed(int speed) {
 
 std::vector<tmx_cpp::PCA9685_module::PWM_val>
 PCAMotor::get_multi_speed_pwm(int speed) {
-  if (last_speed == speed)
+  if (last_speed == speed) {
     return {};
+  }
 
   auto [speedA, speedB] = calc_pwm_speed(speed);
 

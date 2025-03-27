@@ -66,12 +66,13 @@ void SonarMonitor::data_callback(uint16_t value) {
     auto raw_distance = value / 100.0;
     RCLCPP_DEBUG(logger, "%d", value);
 
-    if (raw_distance < min_range)
+    if (raw_distance < min_range) {
       this->distance = -INFINITY;
-    else if (raw_distance > max_range)
+    } else if (raw_distance > max_range) {
       this->distance = INFINITY;
-    else
+    } else {
       this->distance = raw_distance;
+    }
   }
   this->update();
   this->device_timer->reset();

@@ -16,13 +16,15 @@ PPMotor::PPMotor(NodeData node_data, pin_t pinA, pin_t pinB, DeviceData data,
 
 // NOTE/TODO: the speed is given as percentages.
 std::tuple<uint32_t, uint32_t> PPMotor::calc_pwm_speed(int speed) {
-  if (speed == 0)
+  if (speed == 0) {
     return {0, 0};
+  }
 
   int32_t speed_ = (int32_t)((float)speed * (max_pwm) / 100.0);
 
-  if (inverted)
+  if (inverted) {
     speed_ = -speed_;
+  }
 
   auto speedA = speed_ > 0 ? speed_ : 0;
   auto speedB = speed_ < 0 ? -speed_ : 0;

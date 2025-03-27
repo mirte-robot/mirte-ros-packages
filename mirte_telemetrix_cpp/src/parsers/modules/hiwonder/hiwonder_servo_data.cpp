@@ -88,28 +88,33 @@ HiWonderServoData::HiWonderServoData(
                  unused_keys) {
   auto logger = parser->logger;
 
-  if (unused_keys.erase("id"))
+  if (unused_keys.erase("id")) {
     this->id = parameters["id"].get<uint8_t>();
-  else
+  } else {
     RCLCPP_ERROR(logger, "HiWonder Servo '%s' is missing an id", name.c_str());
+  }
 
   /* NOTE: In the old implementation, this was required
      TODO: Figure out if that makes sense */
-  if (unused_keys.erase("min_angle_out"))
+  if (unused_keys.erase("min_angle_out")) {
     this->min_angle_out = parameters["min_angle_out"].get<int>();
+  }
 
   /* NOTE: In the old implementation, this was required
      TODO: Figure out if that makes sense */
-  if (unused_keys.erase("max_angle_out"))
+  if (unused_keys.erase("max_angle_out")) {
     this->max_angle_out = parameters["max_angle_out"].get<int>();
+  }
 
   /* NOTE: In the old implementation, this was required
      TODO: Figure out if that makes sense */
-  if (unused_keys.erase("home_out"))
+  if (unused_keys.erase("home_out")) {
     this->home_out = parameters["home_out"].get<int>();
+  }
 
-  if (unused_keys.erase("invert"))
+  if (unused_keys.erase("invert")) {
     this->invert = parameters["invert"].get<bool>();
+  }
 
   /* Calculate the max and min angle_in */
   double diff_min = this->min_angle_out - this->home_out;
@@ -164,16 +169,18 @@ HiWonderServoData::parse_hiwonder_servo_data(std::shared_ptr<Parser> parser,
       auto data = std::make_shared<HiWonderServoData>(
           parser, board, servo_key, servo_config, servo_keys, base_frame_id);
 
-      if (data->check())
+      if (data->check()) {
         servos.push_back(data);
-      else
+      } else {
         RCLCPP_ERROR(logger,
                      "HiWonder Servo '%s' is invalid and will not be active",
                      data->name.c_str());
+      }
 
       auto key_prefix = servo_param_name.substr(bus_name.size() + 1);
-      for (auto subkey : servo_keys)
+      for (auto subkey : servo_keys) {
         unused_keys.insert(parser->build_param_name(key_prefix, subkey));
+      }
     }
   }
 

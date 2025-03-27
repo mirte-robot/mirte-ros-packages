@@ -10,20 +10,25 @@ INA226Data::INA226Data(std::shared_ptr<Parser> parser,
       parser->logger.get_child(get_device_class()).get_child(this->name);
 
   // Set default for address
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x40;
+  }
 
-  if (unused_keys.erase("max_current"))
+  if (unused_keys.erase("max_current")) {
     this->max_current = get_float(parameters["max_current"]);
+  }
 
-  if (unused_keys.erase("max_voltage"))
+  if (unused_keys.erase("max_voltage")) {
     this->max_voltage = get_float(parameters["max_voltage"]);
+  }
 
-  if (unused_keys.erase("min_voltage"))
+  if (unused_keys.erase("min_voltage")) {
     this->min_voltage = get_float(parameters["min_voltage"]);
+  }
 
-  if (unused_keys.erase("power_low_time"))
+  if (unused_keys.erase("power_low_time")) {
     this->power_low_time = get_float(parameters["power_low_time"]);
+  }
 
   if (unused_keys.erase("percentage_led_pin")) {
 #ifdef WITH_GPIO

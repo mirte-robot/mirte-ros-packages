@@ -14,8 +14,9 @@ ADXL345Data::ADXL345Data(
   auto logger = parser->logger;
 
   // Set default for address
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x53;
+  }
   if (this->addr != 0x53 && this->addr != 0x1D) {
     RCLCPP_ERROR(logger,
                  "The ADXL345 IMU module '%s' was defined with the addr(ess) "

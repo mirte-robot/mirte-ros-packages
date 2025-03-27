@@ -16,11 +16,13 @@ PCAData::PCAData(std::shared_ptr<Parser> parser,
   auto logger = parser->logger.get_child(key);
 
   // Set default for address
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x41;
+  }
 
-  if (unused_keys.erase("frequency"))
+  if (unused_keys.erase("frequency")) {
     this->frequency = parameters["frequency"].get<int>();
+  }
 
   if (unused_keys.erase("motors")) {
     RCLCPP_DEBUG(logger, "Attempting to find PCA motors [%s]", key.c_str());

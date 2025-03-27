@@ -17,14 +17,17 @@ KeypadData::KeypadData(std::shared_ptr<Parser> parser,
     auto subkeys =
         parser->get_params_keys(parser->build_param_name(key, "pins"));
 
-    if (subkeys.erase("pin"))
+    if (subkeys.erase("pin")) {
       this->pin = board->resolvePin(get_string(parameters["pins.pin"]));
+    }
 
-    for (auto subkey : subkeys)
+    for (auto subkey : subkeys) {
       unused_keys.insert(parser->build_param_name("pins", subkey));
-  } else
+    }
+  } else {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
+  }
 }
 
 bool KeypadData::check() { return pin != (pin_t)-1 && SensorData::check(); }

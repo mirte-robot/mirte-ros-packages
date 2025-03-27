@@ -35,8 +35,9 @@ I2CModuleData::I2CModuleData(
   }
   this->port = board->resolveI2CPort(this->sda);
 
-  if (unused_keys.erase("addr"))
+  if (unused_keys.erase("addr")) {
     this->addr = parameters["addr"].get<uint8_t>();
+  }
 }
 
 bool I2CModuleData::check(std::string module_type) {

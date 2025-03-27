@@ -1,7 +1,9 @@
 #ifdef WITH_GPIO
 #include <iostream>
-#include <mirte_telemetrix_cpp/gpio_pin.hpp>
+
 #include <rcpputils/asserts.hpp>
+
+#include <mirte_telemetrix_cpp/gpio_pin.hpp>
 
 GPIOPin::GPIOPin(std::string pin_name, std::string gpiod_name)
     : name(pin_name), gpiod_name(gpiod_name) {
@@ -40,8 +42,9 @@ void GPIOPin::write(bool value) {
   if (!enabled) {
     return;
   }
-  if (!configured)
+  if (!configured) {
     setup();
+  }
 
   gpio_line.set_value((int)value);
 }
@@ -50,8 +53,9 @@ bool GPIOPin::read() {
   if (!enabled) {
     return false;
   }
-  if (!configured)
+  if (!configured) {
     setup();
+  }
 
   return (bool)gpio_line.get_value();
 }

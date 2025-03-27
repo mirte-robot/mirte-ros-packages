@@ -93,10 +93,11 @@ int Parser::get_frequency() {
   auto keys = get_params_keys("device.mirte");
   auto values = get_params_name("device.mirte");
 
-  if (keys.erase("max_frequency"))
+  if (keys.erase("max_frequency")) {
     return values["max_frequency"].get<int>();
-  else
+  } else {
     return 50;
+  }
 }
 
 std::string

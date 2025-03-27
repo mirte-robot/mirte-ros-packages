@@ -18,18 +18,23 @@ PCA_Servo_data::parse_pca_servo_data(
       auto servo_keys = parser->get_params_keys(servo_param_name);
       PCA_Servo_data servo_data;
       servo_data.name = servo_key;
-      if (servo_keys.erase("pin"))
+      if (servo_keys.erase("pin")) {
         servo_data.pin = servo_config["pin"].get<pin_t>();
+      }
 
-      if (servo_keys.erase("min_pulse"))
+      if (servo_keys.erase("min_pulse")) {
         servo_data.min_pulse = servo_config["min_pulse"].get<int>();
-      if (servo_keys.erase("max_pulse"))
+      }
+      if (servo_keys.erase("max_pulse")) {
         servo_data.max_pulse = servo_config["max_pulse"].get<int>();
+      }
 
-      if (servo_keys.erase("min_angle"))
+      if (servo_keys.erase("min_angle")) {
         servo_data.min_angle = get_float(servo_config["min_angle"]);
-      if (servo_keys.erase("max_angle"))
+      }
+      if (servo_keys.erase("max_angle")) {
         servo_data.max_angle = get_float(servo_config["max_angle"]);
+      }
 
       if (servo_data.check()) {
         RCLCPP_DEBUG(parser->logger.get_child(pca_key), "Parsed PCA Servo %s",
@@ -38,8 +43,9 @@ PCA_Servo_data::parse_pca_servo_data(
       }
 
       auto key_prefix = servo_param_name.substr(pca_key.size() + 1);
-      for (auto subkey : servo_keys)
+      for (auto subkey : servo_keys) {
         unused_keys.insert(parser->build_param_name(key_prefix, subkey));
+      }
     }
   }
   return servos;

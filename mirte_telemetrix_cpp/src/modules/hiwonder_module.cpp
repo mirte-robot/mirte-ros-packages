@@ -39,20 +39,22 @@ HiWonderBus_module::HiWonderBus_module(
   modules->add_mod(this->bus);
 
   auto servo_group = this->data.group_name;
-  if (!servo_group.ends_with('/'))
+  if (!servo_group.ends_with('/')) {
     servo_group.push_back('/');
+  }
 
   std::this_thread::sleep_for(1.20s);
   for (auto servo_data : this->data.servos) {
-    if (this->bus->verify_id(servo_data->id))
+    if (this->bus->verify_id(servo_data->id)) {
       this->servos.push_back(std::make_shared<Hiwonder_servo>(
           node_data, servo_data, this->bus, servo_group, bus_data.duration,
           this->callback_group));
-    else
+    } else {
       RCLCPP_ERROR(
           this->logger,
           "HiWonder Servo '%s' is ignored as its ID [%d] was not found.",
           servo_data->name.c_str(), servo_data->id);
+    }
   }
 
   // Create Bus ROS services
@@ -96,8 +98,9 @@ void HiWonderBus_module::position_cb(
     std::vector<std::tuple<uint8_t, tmx_cpp::HiwonderServo_module::Servo_pos>>
         pos) {
   for (auto &[idx, p] : pos) {
-    if (idx >= this->servos.size())
+    if (idx >= this->servos.size()) {
       continue;
+    }
     auto servo = this->servos[idx];
     assert(servo->servo_data->id == p.id);
     servo->position_cb(p);

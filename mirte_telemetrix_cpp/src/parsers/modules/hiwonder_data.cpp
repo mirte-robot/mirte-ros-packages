@@ -26,28 +26,34 @@ HiWonderBusData::HiWonderBusData(
     auto subkeys = parser->get_params_keys(
         parser->build_param_name(get_device_key(this), "pins"));
 
-    if (subkeys.erase("rx"))
+    if (subkeys.erase("rx")) {
       this->rx_pin = board->resolvePin(get_string(parameters["pins.rx"]));
-    if (subkeys.erase("tx"))
+    }
+    if (subkeys.erase("tx")) {
       this->tx_pin = board->resolvePin(get_string(parameters["pins.tx"]));
+    }
 
-    for (auto subkey : subkeys)
+    for (auto subkey : subkeys) {
       unused_keys.insert(parser->build_param_name("pins", subkey));
-  } else
+    }
+  } else {
     RCLCPP_ERROR(logger,
                  "Device %s has no a connector or pins specified. (Connector "
                  "not supported yet)",
                  key.c_str());
+  }
 
   this->uart_port = board->resolveUARTPort(this->rx_pin);
 
   // TODO: Maybe use group_name in frame_id
-  if (unused_keys.erase("group_name"))
+  if (unused_keys.erase("group_name")) {
     this->group_name = get_string(parameters["group_name"]);
+  }
 
-  if (unused_keys.erase("servos"))
+  if (unused_keys.erase("servos")) {
     this->servos = HiWonderServoData::parse_hiwonder_servo_data(
         parser, board, key, unused_keys, this->frame_id);
+  }
 }
 
 bool HiWonderBusData::check() {

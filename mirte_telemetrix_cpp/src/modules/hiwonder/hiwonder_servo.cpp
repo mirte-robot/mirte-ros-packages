@@ -15,34 +15,38 @@ Hiwonder_servo::Hiwonder_servo(
   using namespace std::placeholders;
   auto logger = nh->get_logger();
 
-  if (!this->bus_mod->verify_id(this->servo_data->id))
+  if (!this->bus_mod->verify_id(this->servo_data->id)) {
     RCLCPP_ERROR(logger,
                  "HiWonder Servo '%s' ID not present. [Expected ID %d, but was "
                  "not found]",
                  this->servo_data->name.c_str(), this->servo_data->id);
+  }
 
-  if (this->bus_mod->register_servo_id(this->servo_data->id))
+  if (this->bus_mod->register_servo_id(this->servo_data->id)) {
     RCLCPP_ERROR(logger,
                  "HiWonder Servo '%s' ID is out of range [Requesed ID %d, but "
                  "range is 0-253]",
                  this->servo_data->name.c_str(), this->servo_data->id);
+  }
 
   auto range = this->bus_mod->get_range(servo_data->id);
   assert(range.has_value());
   auto [lower, upper] = range.value();
-  if (lower != this->servo_data->min_angle_out)
+  if (lower != this->servo_data->min_angle_out) {
     RCLCPP_WARN(logger,
                 "HiWonder Servo '%s' lower range does not match the config. "
                 "[Expected %d , Actual %d]",
                 this->servo_data->name.c_str(), this->servo_data->min_angle_out,
                 lower);
+  }
 
-  if (upper != this->servo_data->max_angle_out)
+  if (upper != this->servo_data->max_angle_out) {
     RCLCPP_WARN(logger,
                 "HiWonder Servo '%s' upper range does not match the config. "
                 "[Expected %d , Actual %d]",
                 this->servo_data->name.c_str(), this->servo_data->max_angle_out,
                 upper);
+  }
 
   // create enable service
   this->enable_service = nh->create_service<std_srvs::srv::SetBool>(
