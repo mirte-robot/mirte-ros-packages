@@ -280,7 +280,7 @@ void Hiwonder_servo::get_offset_service_callback(
   auto offset = this->bus_mod->get_offset(this->servo_data->id);
   res->centidegrees = -1;
   if(offset.has_value()) {
-    res->centidegrees = offset.value();
+    res->centidegrees = (int32_t) offset.value();
   }
 }
 void Hiwonder_servo::set_offset_service_callback(
