@@ -18,17 +18,21 @@ SonarData::SonarData(std::shared_ptr<Parser> parser,
     auto subkeys =
         parser->get_params_keys(parser->build_param_name(key, "pins"));
 
-    if (subkeys.erase("trigger"))
+    if (subkeys.erase("trigger")) {
       this->trigger = board->resolvePin(get_string(parameters["pins.trigger"]));
+    }
 
-    if (subkeys.erase("echo"))
+    if (subkeys.erase("echo")) {
       this->echo = board->resolvePin(get_string(parameters["pins.echo"]));
+    }
 
-    for (auto subkey : subkeys)
+    for (auto subkey : subkeys) {
       unused_keys.insert(parser->build_param_name("pins", subkey));
-  } else
+    }
+  } else {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
+  }
 }
 
 bool SonarData::check() {

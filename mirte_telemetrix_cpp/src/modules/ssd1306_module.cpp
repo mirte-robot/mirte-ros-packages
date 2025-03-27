@@ -53,12 +53,13 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
   this->ssd1306 = std::make_shared<tmx_cpp::SSD1306_module>(
       data.port, data.addr, data.width, data.height);
 
-  if (data.legacy)
+  if (data.legacy) {
     this->set_oled_service_legacy =
         nh->create_service<mirte_msgs::srv::SetOLEDImageLegacy>(
             "oled/" + data.name + "/set_image_legacy",
             std::bind(&SSD1306_module::set_oled_callback_legacy, this, _1, _2),
             rmw_qos_profile_services_default, this->callback_group);
+  }
 
   this->set_oled_text_service =
       nh->create_service<mirte_msgs::srv::SetOLEDText>(
@@ -95,8 +96,9 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
 }
 
 bool SSD1306_module::prewrite(bool is_default) {
-  if (!is_default)
+  if (!is_default) {
     device_timer->cancel();
+  }
 
   if (!enabled) {
     RCLCPP_ERROR(logger, "Writing to OLED Module %s failed", data.name.c_str());
@@ -106,24 +108,28 @@ bool SSD1306_module::prewrite(bool is_default) {
 }
 
 bool SSD1306_module::set_text(std::string text) {
-  if (!prewrite())
+  if (!prewrite()) {
     return false;
+  }
 
   auto escaped_text = boost::algorithm::replace_all_copy(text, "\\n", "\n");
-  if (escaped_text == last_text)
+  if (escaped_text == last_text) {
     return true;
+  }
   last_text = escaped_text;
   auto succes = ssd1306->send_text(escaped_text);
-  if (not succes)
+  if (not succes) {
     enabled = false;
+  }
 
   return succes;
 }
 
 bool SSD1306_module::set_image(uint8_t width, uint8_t height,
                                uint8_t img_buffer[]) {
-  if (!prewrite())
+  if (!prewrite()) {
     return false;
+  }
 
   last_text.reset();
 
@@ -135,8 +141,9 @@ bool SSD1306_module::set_image(uint8_t width, uint8_t height,
   }
 
   auto succes = ssd1306->send_image(width, height, img_buffer);
-  if (not succes)
+  if (not succes) {
     enabled = false;
+  }
 
   return succes;
 }
@@ -185,8 +192,9 @@ bool SSD1306_module::set_image_from_path(fs::path path) {
 
     for (auto img_file : fs::directory_iterator(
              path, fs::directory_options::follow_directory_symlink |
-                       fs::directory_options::skip_permission_denied))
+                       fs::directory_options::skip_permission_denied)) {
       paths.insert(img_file);
+    }
 
     RCLCPP_DEBUG(logger, "Loading animation frames from %s", path.c_str());
 
@@ -261,8 +269,9 @@ void SSD1306_module::set_oled_file_callback(
 }
 
 void SSD1306_module::device_timer_callback() {
-  if (!prewrite(true))
+  if (!prewrite(true)) {
     return;
+  }
 
   bool succes;
   if ((fs::status(data.default_screen_script).permissions() &
@@ -271,8 +280,9 @@ void SSD1306_module::device_timer_callback() {
     auto text = exec(data.default_screen_script);
 
     auto escaped_text = boost::algorithm::replace_all_copy(text, "\\n", "\n");
-    if (escaped_text == last_text)
+    if (escaped_text == last_text) {
       return;
+    }
     last_text = escaped_text;
     succes = ssd1306->send_text(escaped_text);
   } else {

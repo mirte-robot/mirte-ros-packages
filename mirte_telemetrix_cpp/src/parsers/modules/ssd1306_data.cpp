@@ -18,23 +18,27 @@ SSD1306Data::SSD1306Data(
                     get_device_class(),
                     std::chrono::duration_cast<DeviceDuration>(10s)) {
   // Set default for address
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x3C;
+  }
 
   // TODO: Read in size [BLOCKED BY FIXED SIZE FIRMWARE]
 
-  if (unused_keys.erase("legacy"))
+  if (unused_keys.erase("legacy")) {
     this->legacy = parameters["legacy"].get<bool>();
+  }
 
-  if (unused_keys.erase("default_image_path"))
+  if (unused_keys.erase("default_image_path")) {
     this->default_image_path =
         parameters["default_image_path"].get<std::string>();
+  }
 
-  if (unused_keys.erase("default_screen_script"))
+  if (unused_keys.erase("default_screen_script")) {
     this->set_default_screen_script(
         parameters["default_screen_script"].get<std::string>());
-  else
+  } else {
     this->set_default_screen_script(default_screen_script);
+  }
 }
 
 bool SSD1306Data::check() { return I2CModuleData::check(get_module_type()); }

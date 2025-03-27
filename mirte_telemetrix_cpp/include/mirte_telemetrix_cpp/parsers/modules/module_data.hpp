@@ -62,19 +62,21 @@ parse_all_modules(std::shared_ptr<Parser> parser,
     if (parameter_keys.size() > 0) {
       RCLCPP_WARN(logger, "%s device \"%s\" has unused parameters!",
                   device_class.c_str(), name.c_str());
-      for (auto &key : parameter_keys)
+      for (auto &key : parameter_keys) {
         RCLCPP_WARN(logger, "Unused key: %s.%s.%s", device_class.c_str(),
                     name.c_str(), key.c_str());
+      }
     }
 
     if (data.check()) {
       devices.push_back(data);
       RCLCPP_INFO(logger, "Added device %s.%s (type: %s)", device_class.c_str(),
                   name.c_str(), module_type.c_str());
-    } else
+    } else {
       RCLCPP_ERROR(logger,
                    "%s device \"%s\" is invalid, skipping configuration.",
                    device_class.c_str(), name.c_str());
+    }
   }
 
   return devices;

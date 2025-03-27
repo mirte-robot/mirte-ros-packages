@@ -46,8 +46,9 @@ TelemetrixNode::TelemetrixNode(const rclcpp::NodeOptions &options)
           rclcpp::NodeOptions(options)
               .allow_undeclared_parameters(true)
               .automatically_declare_parameters_from_overrides(true))) {
-  if (!this->start())
+  if (!this->start()) {
     rclcpp::shutdown();
+  }
 }
 
 TelemetrixNode::~TelemetrixNode() {

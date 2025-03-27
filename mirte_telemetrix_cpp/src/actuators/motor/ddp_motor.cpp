@@ -20,8 +20,9 @@ void DDPMotor::set_speed(int speed) {
   // TODO: Python had a clamp, however none of the C++ Motors clamp
   int32_t speed_ = (int32_t)((float)speed * (this->max_pwm) / 100.0);
 
-  if (inverted)
+  if (inverted) {
     speed_ = -speed_;
+  }
 
   if (speed_ >= 0) {
     /* BEGIN <DDPMotor::set_speed#1> */

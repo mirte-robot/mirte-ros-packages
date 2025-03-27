@@ -8,8 +8,9 @@ MPU9250Data::MPU9250Data(
     : I2CModuleData(parser, board, name, insert_default_frame_id(parameters),
                     insert_default_frame_id(unused_keys), get_module_type()) {
   // Set default for address
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x68;
+  }
 }
 
 std::map<std::string, rclcpp::ParameterValue>

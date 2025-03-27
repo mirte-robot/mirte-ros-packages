@@ -14,8 +14,9 @@ VEML6040Data::VEML6040Data(
   // The address cannot be changed on the hardware, therefor we allow an address
   // to be specified.
   //  If it is not valid, it gets detected in the check function.
-  if ((!parameters.count("addr")) && this->addr == 0xFF)
+  if ((!parameters.count("addr")) && this->addr == 0xFF) {
     this->addr = 0x10;
+  }
   if ((parameters.count("addr")) && this->addr != 0x10) {
     RCLCPP_ERROR(logger,
                  "The color module '%s' was defined with the addr(ess) 0x%X, "

@@ -20,13 +20,16 @@ PCA_Motor_data::parse_pca_motor_data(
       PCA_Motor_data motor_data;
       motor_data.name = motor_key;
 
-      if (motor_keys.erase("pin_A"))
+      if (motor_keys.erase("pin_A")) {
         motor_data.pinA = motor_config["pin_A"].get<pin_t>();
-      if (motor_keys.erase("pin_B"))
+      }
+      if (motor_keys.erase("pin_B")) {
         motor_data.pinB = motor_config["pin_B"].get<pin_t>();
+      }
 
-      if (motor_keys.erase("invert"))
+      if (motor_keys.erase("invert")) {
         motor_data.invert = motor_config["invert"].get<bool>();
+      }
 
       if (motor_data.check()) {
         RCLCPP_DEBUG(parser->logger.get_child(pca_key), "Parsed PCA Motor %s",
@@ -35,8 +38,9 @@ PCA_Motor_data::parse_pca_motor_data(
       }
 
       auto key_prefix = motor_param_name.substr(pca_key.size() + 1);
-      for (auto subkey : motor_keys)
+      for (auto subkey : motor_keys) {
         unused_keys.insert(parser->build_param_name(key_prefix, subkey));
+      }
     }
   }
   return motors;

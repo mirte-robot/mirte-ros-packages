@@ -1,64 +1,65 @@
 ---
 Language: Cpp
-BasedOnStyle: Google
+BasedOnStyle: LLVM
 
-AccessModifierOffset: -2
-AlignAfterOpenBracket: AlwaysBreak
-BraceWrapping:
-  AfterClass: false
-  AfterFunction: true
-  AfterNamespace: false
-  AfterStruct: false
-  AfterEnum: false
-BreakBeforeBraces: Custom
-IndentAccessModifiers: true
-ColumnLimit: 100
-ConstructorInitializerIndentWidth: 0
-ContinuationIndentWidth: 2
-DerivePointerAlignment: false
-PointerAlignment: Middle
-ReflowComments: false
-IncludeBlocks: Regroup
-IncludeCategories:
-  # - Regex: '^<.*/(msg|srv|action)/.*\.hpp>'
-  #   Priority:  3
-  - Regex: ^<.*/msg/.*\.hpp>
-    Priority: 6
-    SortPriority: 6
-    CaseSensitive: false
-  - Regex: ^<.*/srv/.*\.hpp>
-    Priority: 6
-    SortPriority: 7
-    CaseSensitive: false
-  - Regex: ^<.*/action/.*\.hpp>
-    Priority: 6
-    SortPriority: 8
-    CaseSensitive: false
-  - Regex: ^<rclcpp/.*\.hpp>
-    Priority: 3
-    CaseSensitive: false
-    SortPriority: 3
-  - Regex: ^[<"]tmx_cpp/.*\.hpp[>"]
-    SortPriority: 4
-  - Regex: ^<mirte_telemetrix_cpp/parsers/.*\.hpp>
-    SortPriority: 5
-    Priority: 5
-  - Regex: ^[<"]mirte_telemetrix_cpp/.*\.hpp[">]
-    SortPriority: 5
-    Priority: 4
-  - Regex: ^<boost/.*\.hpp>
-    Priority: 99
-    SortPriority: 2
-  - Regex: ^<opencv2/.*\.hpp>
-    Priority: 98
-    SortPriority: 3
-    CaseSensitive: false
-  - Regex: ^<.*\.hpp>
-    Priority: 10
-    SortPriority: 4
-  - Regex: ^<.*>
-    Priority: 100
-    CaseSensitive: false
-    SortPriority: 1
+# AccessModifierOffset: -2
+# AlignAfterOpenBracket: AlwaysBreak
+# BraceWrapping:
+#   AfterClass: false
+#   AfterFunction: true
+#   AfterNamespace: false
+#   AfterStruct: false
+#   AfterEnum: false
+# BreakBeforeBraces: Custom
+# IndentAccessModifiers: true
+# ColumnLimit: 100
+# ConstructorInitializerIndentWidth: 0
+# ContinuationIndentWidth: 2
+# DerivePointerAlignment: false
+# PointerAlignment: Middle
+# ReflowComments: false
+# IncludeBlocks: Regroup
+InsertBraces: true
+# IncludeCategories:
+#   # - Regex: '^<.*/(msg|srv|action)/.*\.hpp>'
+#   #   Priority:  3
+#   - Regex: ^<.*/msg/.*\.hpp>
+#     Priority: 6
+#     SortPriority: 6
+#     CaseSensitive: false
+#   - Regex: ^<.*/srv/.*\.hpp>
+#     Priority: 6
+#     SortPriority: 7
+#     CaseSensitive: false
+#   - Regex: ^<.*/action/.*\.hpp>
+#     Priority: 6
+#     SortPriority: 8
+#     CaseSensitive: false
+#   - Regex: ^<rclcpp/.*\.hpp>
+#     Priority: 3
+#     CaseSensitive: false
+#     SortPriority: 3
+#   - Regex: ^[<"]tmx_cpp/.*\.hpp[>"]
+#     SortPriority: 4
+#   - Regex: ^<mirte_telemetrix_cpp/parsers/.*\.hpp>
+#     SortPriority: 5
+#     Priority: 5
+#   - Regex: ^[<"]mirte_telemetrix_cpp/.*\.hpp[">]
+#     SortPriority: 5
+#     Priority: 4
+#   - Regex: ^<boost/.*\.hpp>
+#     Priority: 99
+#     SortPriority: 2
+#   - Regex: ^<opencv2/.*\.hpp>
+#     Priority: 98
+#     SortPriority: 3
+#     CaseSensitive: false
+#   - Regex: ^<.*\.hpp>
+#     Priority: 10
+#     SortPriority: 4
+#   - Regex: ^<.*>
+#     Priority: 100
+#     CaseSensitive: false
+#     SortPriority: 1
   
-...
+# ...

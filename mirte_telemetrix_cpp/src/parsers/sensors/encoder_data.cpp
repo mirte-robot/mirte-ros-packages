@@ -22,22 +22,26 @@ EncoderData::EncoderData(
     auto subkeys =
         parser->get_params_keys(parser->build_param_name(key, "pins"));
     // FIXME: Maybe restructure to test if pin A and B or only pin is set.
-    if (subkeys.erase("A"))
+    if (subkeys.erase("A")) {
       this->pinA = board->resolvePin(get_string(parameters["pins.A"]));
+    }
 
-    if (subkeys.erase("B"))
+    if (subkeys.erase("B")) {
       this->pinB = board->resolvePin(get_string(parameters["pins.B"]));
+    }
 
     if (subkeys.erase("pin")) {
       this->pinA = board->resolvePin(get_string(parameters["pins.pin"]));
       this->pinB = (pin_t)-1;
     }
 
-    for (auto subkey : subkeys)
+    for (auto subkey : subkeys) {
       unused_keys.insert(parser->build_param_name("pins", subkey));
-  } else
+    }
+  } else {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
+  }
 }
 
 bool EncoderData::check() {

@@ -12,13 +12,14 @@ DeviceData::DeviceData(std::shared_ptr<Parser> parser,
                        std::set<std::string> &unused_keys,
                        std::optional<DeviceDuration> duration)
     : name(name) {
-  if (unused_keys.erase("name"))
+  if (unused_keys.erase("name")) {
     rcpputils::require_true(
         this->name.compare(get_string(parameters["name"])) == 0,
         (boost::format("The optional name parameter does not match it's key. [ "
                        "%1% != %2% ]") %
          name % get_string(parameters["name"]))
             .str());
+  }
 
   std::string frame_prefix =
       (parser->params.count("frame_prefix") &&

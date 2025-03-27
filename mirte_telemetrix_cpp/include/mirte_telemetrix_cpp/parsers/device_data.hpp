@@ -62,9 +62,10 @@ parse_all(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board) {
     if (parameter_keys.size() > 0) {
       RCLCPP_WARN(logger, "%s device \"%s\" has unused parameters!",
                   device_class.c_str(), name.c_str());
-      for (auto &key : parameter_keys)
+      for (auto &key : parameter_keys) {
         RCLCPP_WARN(logger, "Unused key: %s.%s.%s", device_class.c_str(),
                     name.c_str(), key.c_str());
+      }
     }
 
     if (data.check()) {

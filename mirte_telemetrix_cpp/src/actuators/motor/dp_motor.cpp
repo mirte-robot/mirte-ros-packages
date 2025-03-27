@@ -11,8 +11,9 @@ DPMotor::DPMotor(NodeData node_data, MotorData motor_data)
 void DPMotor::set_speed(int speed) {
   int32_t speed_ = (int32_t)((float)speed * (this->max_pwm) / 100.0);
 
-  if (inverted)
+  if (inverted) {
     speed_ = -speed_;
+  }
 
   tmx->pwmWrite(this->pwm_pin, speed_ > 0 ? speed_ : -speed_);
   // std::cout << "1:" << std::dec << speed_ << std::endl
