@@ -19,7 +19,8 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "mirte_master_calibrate = mirte_test.mirte_master_calibrate:main"
+            "mirte_master_calibrate = mirte_test.mirte_master_calibrate:main",
+            "mirte_master_hw_check = mirte_test.mirte_master_hw_check:main",
         ],
     },
 )
