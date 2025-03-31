@@ -1,10 +1,21 @@
-
 # ids = [2, 3, 4, 5, 6]
 
 # TODO check with the documentation and the config files
 ranges = {
-    2: {"min": 3400, "max": 21000, "home": 12000, "name": "shoulder_pan", "position": 0},
-    3: {"min": 2832, "max": 20000, "home": 11450, "name": "shoulder_lift", "position": 0},
+    2: {
+        "min": 3400,
+        "max": 21000,
+        "home": 12000,
+        "name": "shoulder_pan",
+        "position": 0,
+    },
+    3: {
+        "min": 2832,
+        "max": 20000,
+        "home": 11450,
+        "name": "shoulder_lift",
+        "position": 0,
+    },
     4: {"min": 120, "max": 21000, "home": 11750, "name": "elbow", "position": 0},
     5: {"min": 1128, "max": 21672, "home": 12200, "name": "wrist", "position": 0},
     6: {"min": 6168, "max": 14224, "home": 10524, "name": "gripper", "position": 0},
@@ -20,15 +31,17 @@ from mirte_msgs.srv import GetServoOffset, SetServoOffset, SetServoAngle
 import time
 import sys
 
+
 class CalibrateNode(Node):
 
     def __init__(self):
-        super().__init__('calibrate_node')
+        super().__init__("calibrate_node")
         self.calibrate()
         # stop the node
         self.destroy_node()
         # raise KeyboardInterrupt
         sys.exit(0)
+
     def callback(self, msg, servo_id):
         # print("callback", msg, servo_id)
         if self.on:
@@ -57,7 +70,14 @@ class CalibrateNode(Node):
                 return
             print("subscribiing to topic", topic, "for servo", servo_id)
 
-            self.subscribers.append(self.create_subscription(ServoPosition, topic, lambda msg,  s=servo_id: self.callback(msg, s), 1))
+            self.subscribers.append(
+                self.create_subscription(
+                    ServoPosition,
+                    topic,
+                    lambda msg, s=servo_id: self.callback(msg, s),
+                    1,
+                )
+            )
 
             # set offset to 0
             # topic = "/io/servo/hiwonder/%s/_offset" % ranges[servo_id]["name"]
@@ -72,14 +92,16 @@ class CalibrateNode(Node):
             topic = "/io/servo/hiwonder/%s/set_angle" % servo_data["name"]
             set_pos = self.create_client(SetServoAngle, topic)
             req = SetServoAngle.Request()
-            req.angle =0.0
+            req.angle = 0.0
             req.degrees = False
             fut = set_pos.call_async(req)
             out = rclpy.spin_until_future_complete(self, fut)
             # time.sleep(1)
         print("servos do exist")
         print("disabling servos")
-        enable_client = self.create_client(SetBool, "/io/servo/hiwonder/enable_all_servos")
+        enable_client = self.create_client(
+            SetBool, "/io/servo/hiwonder/enable_all_servos"
+        )
         req = SetBool.Request()
         req.data = False
         fut = enable_client.call_async(req)
@@ -95,15 +117,17 @@ class CalibrateNode(Node):
             return
         print("reading positions...")
         # spin for 2 sec
-        start_time  = time.time()
+        start_time = time.time()
         while time.time() - start_time < 2:
             rclpy.spin_once(self)
             time.sleep(0.1)
-            
+
         print("done reading")
 
         # get offset and current position
-        self.on = False # no more reading curr position to not influence it from movement.
+        self.on = (
+            False  # no more reading curr position to not influence it from movement.
+        )
 
         for servo_id in ranges:
             servo_data = ranges[servo_id]
@@ -115,10 +139,23 @@ class CalibrateNode(Node):
             curr_offset = fut.result().centidegrees
             diff = servo_data["position"] - servo_data["home"]
             totalDiff = diff + curr_offset
-            print("diff of", servo_id, " diff: ", diff, " totaldiff: ", totalDiff, " home: ", servo_data["home"], " currpos: ", servo_data["position"],  " curr_off: ",curr_offset)
+            print(
+                "diff of",
+                servo_id,
+                " diff: ",
+                diff,
+                " totaldiff: ",
+                totalDiff,
+                " home: ",
+                servo_data["home"],
+                " currpos: ",
+                servo_data["position"],
+                " curr_off: ",
+                curr_offset,
+            )
             if abs(totalDiff) > 200:
                 print("setting offset:", totalDiff)
-                if abs(totalDiff/24) > 125:
+                if abs(totalDiff / 24) > 125:
                     print("servo too much off, need to fix the servo")
                     continue
                 topic = "/io/servo/hiwonder/%s/_set_offset" % servo_data["name"]
@@ -127,14 +164,14 @@ class CalibrateNode(Node):
                 req.centidegrees = totalDiff
                 fut = set_pos.call_async(req)
                 rclpy.spin_until_future_complete(self, fut)
-            
+
             # time.sleep(2)
         for servo_id in ranges:
             servo_data = ranges[servo_id]
             topic = "/io/servo/hiwonder/%s/set_angle" % servo_data["name"]
             set_pos = self.create_client(SetServoAngle, topic)
             req = SetServoAngle.Request()
-            req.angle =0.0
+            req.angle = 0.0
             req.degrees = False
             fut = set_pos.call_async(req)
             out = rclpy.spin_until_future_complete(self, fut)
@@ -145,16 +182,12 @@ class CalibrateNode(Node):
         # save offset to servos
         print("done calibrating, should be in the home position!")
 
-
-
     def timer_callback(self):
         msg = String()
-        msg.data = 'Hello World: %d' % self.i
+        msg.data = "Hello World: %d" % self.i
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1
-
-
 
 
 def main(args=None):
@@ -171,5 +204,5 @@ def main(args=None):
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

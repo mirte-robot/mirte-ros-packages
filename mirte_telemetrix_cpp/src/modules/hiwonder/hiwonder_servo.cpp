@@ -22,16 +22,20 @@ Hiwonder_servo::Hiwonder_servo(
                  this->servo_data->name.c_str(), this->servo_data->id);
   }
 
-  this->bus_mod->register_servo_id(this->servo_data->id); // output of this is just the servo id
-    // RCLCPP_ERROR(logger,
-    //              "HiWonder Servo '%s' ID is out of range [Requesed ID %d, but "
-    //              "range is 0-253]",
-    //              this->servo_data->name.c_str(), this->servo_data->id);
+  this->bus_mod->register_servo_id(
+      this->servo_data
+          ->id); // output of this is just the servo id
+                 // RCLCPP_ERROR(logger,
+                 //              "HiWonder Servo '%s' ID is out of range
+                 //              [Requesed ID %d, but " "range is 0-253]",
+                 //              this->servo_data->name.c_str(),
+                 //              this->servo_data->id);
 
   auto range = this->bus_mod->get_range(servo_data->id);
   assert(range.has_value());
   auto [lower, upper] = range.value();
-  if (std::abs(lower - this->servo_data->min_angle_out) > 24) { // servo works in steps of 24 centidegrees
+  if (std::abs(lower - this->servo_data->min_angle_out) >
+      24) { // servo works in steps of 24 centidegrees
     RCLCPP_WARN(logger,
                 "HiWonder Servo '%s' lower range does not match the config. "
                 "[Expected %d , Actual %d]",
@@ -80,14 +84,16 @@ Hiwonder_servo::Hiwonder_servo(
       "servo/" + servo_group + this->servo_data->name + "/position",
       rclcpp::SystemDefaultsQoS());
 
-
   this->offset_service = nh->create_service<mirte_msgs::srv::GetServoOffset>(
-    "servo/" + servo_group + this->servo_data->name + "/_offset", // hidden service
-    std::bind(&Hiwonder_servo::get_offset_service_callback, this, _1, _2),
+      "servo/" + servo_group + this->servo_data->name +
+          "/_offset", // hidden service
+      std::bind(&Hiwonder_servo::get_offset_service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
-  this->set_offset_service = nh->create_service<mirte_msgs::srv::SetServoOffset>(
-        "servo/" + servo_group + this->servo_data->name + "/_set_offset", // hidden service
-        std::bind(&Hiwonder_servo::set_offset_service_callback, this, _1, _2),
+  this->set_offset_service =
+      nh->create_service<mirte_msgs::srv::SetServoOffset>(
+          "servo/" + servo_group + this->servo_data->name +
+              "/_set_offset", // hidden service
+          std::bind(&Hiwonder_servo::set_offset_service_callback, this, _1, _2),
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
   // TODO: Maybe add to a separate callbackgroup?
   // Currently overpublishing slightly
@@ -272,21 +278,18 @@ void Hiwonder_servo::set_motor_speed_service_callback(
   res->status = this->bus_mod->motor_mode_write(this->servo_data->id, speed);
 }
 
-
 void Hiwonder_servo::get_offset_service_callback(
-  const mirte_msgs::srv::GetServoOffset::Request::ConstSharedPtr req,
-  mirte_msgs::srv::GetServoOffset::Response::SharedPtr res
-) {
+    const mirte_msgs::srv::GetServoOffset::Request::ConstSharedPtr req,
+    mirte_msgs::srv::GetServoOffset::Response::SharedPtr res) {
   auto offset = this->bus_mod->get_offset(this->servo_data->id);
   res->centidegrees = -1;
-  if(offset.has_value()) {
-    res->centidegrees = (int32_t) offset.value();
+  if (offset.has_value()) {
+    res->centidegrees = (int32_t)offset.value();
   }
 }
 void Hiwonder_servo::set_offset_service_callback(
-  const mirte_msgs::srv::SetServoOffset::Request::ConstSharedPtr req,
-  mirte_msgs::srv::SetServoOffset::Response::SharedPtr res
-) {
+    const mirte_msgs::srv::SetServoOffset::Request::ConstSharedPtr req,
+    mirte_msgs::srv::SetServoOffset::Response::SharedPtr res) {
   auto offset = req->centidegrees;
   this->bus_mod->set_offset(this->servo_data->id, offset);
 }

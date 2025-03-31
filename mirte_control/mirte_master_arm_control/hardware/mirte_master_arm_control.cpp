@@ -33,7 +33,6 @@ const auto SERVO_MOVED_DIFF =
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
-
   if (initialized[info_.name]) {
     for (auto i = 0; i < NUM_SERVOS; i++) {
       service_requests[i]->angle = hw_commands_[i];
@@ -42,7 +41,6 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
     if (std::all_of(std::begin(servo_data[info_.name]),
                     std::end(servo_data[info_.name]),
                     [](Servo_data &x) { return x.init; })) {
-
       for (auto i = 0; i < NUM_SERVOS; i++) {
         service_requests[i]->angle = servo_data[info_.name][i].data;
       }
@@ -81,7 +79,6 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 
 using namespace std::chrono_literals;
 void MirteMasterArmHWInterface::connectServices() {
-
   service_clients.clear();
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string joint_name = info_.joints[i].name;
@@ -103,7 +100,6 @@ void MirteMasterArmHWInterface::connectServices() {
 
 void MirteMasterArmHWInterface::ServoPositionCallback(
     std::shared_ptr<mirte_msgs::msg::ServoPosition> msg, int joint) {
-
   auto &servo = servo_data[info_.name][joint];
   servo.data = msg->angle;
   servo.init = true;
@@ -121,7 +117,6 @@ void MirteMasterArmHWInterface::read_single(int joint,
 
 std::vector<hardware_interface::StateInterface>
 MirteMasterArmHWInterface::export_state_interfaces() {
-
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (uint i = 0; i < info_.joints.size(); i++) {
     state_interfaces.emplace_back(hardware_interface::StateInterface(
@@ -152,7 +147,6 @@ MirteMasterArmHWInterface::export_command_interfaces() {
 hardware_interface::return_type
 MirteMasterArmHWInterface::read(const rclcpp::Time &time,
                                 const rclcpp::Duration &period) {
-
   for (std::size_t joint_id = 0; joint_id < NUM_SERVOS; ++joint_id) {
     if (servo_data[info_.name][joint_id].init) {
       hw_states_[joint_id] = servo_data[info_.name][joint_id].data;
@@ -180,7 +174,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
 
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_deactivate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
-
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -190,7 +183,6 @@ using namespace std::placeholders;
 MirteMasterArmHWInterface::MirteMasterArmHWInterface(){};
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     const hardware_interface::HardwareInfo &info) {
-
   if (hardware_interface::SystemInterface::on_init(info) !=
       hardware_interface::CallbackReturn::SUCCESS) {
     return hardware_interface::CallbackReturn::ERROR;
@@ -273,7 +265,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
 
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
     const rclcpp_lifecycle::State & /*previous_state*/) {
-
   // Initialize the servo topics
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string joint_name = info_.joints[i].name;
