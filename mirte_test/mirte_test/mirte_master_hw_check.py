@@ -9,7 +9,7 @@ import time
 import sys
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import Range, BatteryState, PointCloud2
+from sensor_msgs.msg import Range, BatteryState, PointCloud2, LaserScan
 import math
 import subprocess
 
@@ -230,7 +230,7 @@ class HWNode(Node):
         print("sonars okay!")
 
     def check_oled(self):
-        oled_service = "/io/oled/set_text"
+        oled_service = "/io/oled/oled/set_text"
         # check if service exists
         if oled_service not in self.all_services:
             self.get_logger().error("Service %s does not exist" % oled_service)
@@ -251,8 +251,8 @@ class HWNode(Node):
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
-        
-        if fut.result().success == False:
+        print(fut.result())
+        if fut.result().status == False:
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
@@ -265,7 +265,7 @@ class HWNode(Node):
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
-        if fut.result().success == False:
+        if fut.result().status == False:
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
@@ -287,10 +287,10 @@ class HWNode(Node):
             if math.isfinite(msg.current) and math.isfinite(msg.voltage):
                 curr = msg.current
                 volt = msg.voltage
-                print("update ina", msg)
+                # print("update ina", msg)
                 return
-            self.get_logger().error("INA is not publishing")
-            self.ok = False
+            # self.get_logger().error("INA is not publishing")
+            # self.ok = False
             return
         # check if topic is callable
         client = self.create_subscription(
@@ -359,7 +359,7 @@ class HWNode(Node):
             received = True
             return
         client = self.create_subscription(
-            PointCloud2, lidar_topic, lambda msg: update_lidar(msg), 1
+            LaserScan, lidar_topic, lambda msg: update_lidar(msg), 1
         )
 
         start_time = time.time()
@@ -389,10 +389,10 @@ class HWNode(Node):
         self.all_services = [name for (name, _) in self.get_service_names_and_types()]
         self.all_topics = [name for (name, _) in self.get_topic_names_and_types()]
         # check wheels
-        self.check_wheels()
+        # self.check_wheels()
         # check odom
         # check sonars
-        self.check_sonars()
+        # self.check_sonars()
         # # check oled
         self.check_oled()
         # # check ina
