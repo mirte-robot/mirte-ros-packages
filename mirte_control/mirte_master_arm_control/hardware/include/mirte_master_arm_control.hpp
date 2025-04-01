@@ -17,6 +17,7 @@
 #include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 // ros_control
 #include "hardware_interface/actuator_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -120,6 +121,9 @@ private:
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
       service_requests;
+  
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr enable_arm_service;
+  bool enable = true;
 
   void
   ServoPositionCallback(std::shared_ptr<mirte_msgs::msg::ServoPosition> msg,

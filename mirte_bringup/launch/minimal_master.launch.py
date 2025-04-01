@@ -219,14 +219,14 @@ def generate_launch_description():
             [
                 PushRosNamespace(machine_namespace),
                 telemetrix,
-                # ros2_control,
-                # state_publishers,
-                # web_video_server,
-                # lidar,
-                # depth_cam,
-                # arm_control,
-                # mecanum_drive_control,
-                # rosbridge,
+                ros2_control,
+                state_publishers,
+                web_video_server,
+                lidar,
+                depth_cam,
+                arm_control,
+                mecanum_drive_control,
+                rosbridge,
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)

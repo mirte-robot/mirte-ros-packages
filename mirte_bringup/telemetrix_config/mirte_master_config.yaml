@@ -73,6 +73,10 @@
         turn_off_time: 10
         power_low_time: 20
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
+      movement:
+        device: mirte
+        type: MPU9250
+        connector: I2C1
     encoder:
       front_left:
         name: front_left

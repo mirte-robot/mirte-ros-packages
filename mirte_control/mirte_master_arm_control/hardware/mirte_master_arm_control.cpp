@@ -27,6 +27,7 @@ std::map<std::string, int> init_steps;
 // Format of the topics and services
 const auto topic_format = "io/servo/hiwonder/%s/position";
 const auto service_format = "io/servo/hiwonder/%s/set_angle";
+const auto enable_format = "enable_arm_control";
 const auto SERVO_COMMAND_DIFF = 0.05; // 2.9 degrees
 const auto SERVO_MOVED_DIFF =
     0.05; // 0.01 = 0.57 degrees ~= 1 LSB, but it is too sensitive for that.
@@ -69,7 +70,10 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         servo.last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
-        service_clients[i]->async_send_request(service_requests[i]);
+        if(this->enable) {
+          service_clients[i]->async_send_request(service_requests[i]);
+        }
+        
       }
     }
   }
@@ -96,6 +100,14 @@ void MirteMasterArmHWInterface::connectServices() {
     }
     service_clients.push_back(client);
   }
+  this->enable_arm_service = nh->create_service<std_srvs::srv::SetBool>(
+      enable_format,
+      [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+             std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+        this->enable = request->data;
+        response->success = true;
+        response->message = this->enable? "Arm control enabled": "Arm control disabled";
+      });
 }
 
 void MirteMasterArmHWInterface::ServoPositionCallback(
