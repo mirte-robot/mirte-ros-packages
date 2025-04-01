@@ -9,9 +9,11 @@ import time
 import sys
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import Range, BatteryState, PointCloud2, LaserScan
+from sensor_msgs.msg import Range, BatteryState, PointCloud2, LaserScan, Imu
 import math
 import subprocess
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+
 
 
 class HWNode(Node):
@@ -251,7 +253,6 @@ class HWNode(Node):
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
-        print(fut.result())
         if fut.result().status == False:
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
@@ -374,11 +375,202 @@ class HWNode(Node):
 
 
     def check_imu(self):
-        pass
+        topic = "/io/imu/movement/data"
+        # check if topic exists
+        if topic not in self.all_topics:
+            self.get_logger().error("Topic %s does not exist" % topic)
+            self.ok = False
+            return
+        # check if topic is callable
+        received = False
+        lastmsg = None
+        def update_imu(msg):
+            nonlocal received, lastmsg
+            if(msg.linear_acceleration.x == 0 and msg.linear_acceleration.y == 0 and msg.linear_acceleration.z == 0): # if sensor is not connected, then it publishes 0.
+                return
+            if lastmsg is None:
+                lastmsg = msg
+                return
+            if(lastmsg is not None and lastmsg.linear_acceleration.x == msg.linear_acceleration.x and lastmsg.linear_acceleration.y == msg.linear_acceleration.y and lastmsg.linear_acceleration.z == msg.linear_acceleration.z):
+                # data should always be changing
+                print("imu data is not changing")
+                return
+            received = True
+            return
+        client = self.create_subscription(
+            Imu, topic, lambda msg: update_imu(msg), 1
+        )
+        start_time = time.time()
+        while time.time() - start_time < 5 and not received:
+            time.sleep(0.1)
+            rclpy.spin_once(self, timeout_sec=0.1)
+        if not received:
+            self.get_logger().error("IMU is not publishing")
+            self.ok = False
+            return
+        print("imu okay!")
+
+    def check_servos(self):
+        # check if servos are connected
+        servos = [ "shoulder_pan", "shoulder_lift", "elbow", "wrist", 
+                #   "gripper"
+                  ]
+        # check if service exists
+        # call /enable_arm_control
+        enable_service = "/enable_arm_control"
+        # check if service exists
+        if enable_service not in self.all_services:
+            self.get_logger().error("Service %s does not exist" % enable_service)
+            self.ok = False
+            return
+        # check if service is callable
+        enable_client = self.create_client(SetBool, enable_service)
+        if not enable_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error("Service %s is not callable" % enable_service)
+            self.ok = False
+            return
+        # set to true
+        enable_req = SetBool.Request()
+        enable_req.data = False
+        fut = enable_client.call_async(enable_req)
+        rclpy.spin_until_future_complete(self, fut)
+        if fut.result() is None:
+            self.get_logger().error("Service %s failed" % service)
+            self.ok = False
+            return
+        
+        for servo in servos:
+            print("testing servo", servo)
+            service = "/io/servo/hiwonder/%s/set_angle" % servo
+            # check if service exists
+            if service not in self.all_services:
+                self.get_logger().error("Service %s does not exist" % service)
+                self.ok = False
+                continue
+            # check if service is callable
+            client = self.create_client(SetServoAngle, service)
+            if not client.wait_for_service(timeout_sec=1.0):
+                self.get_logger().error("Service %s is not callable" % service)
+                self.ok = False
+                continue
+            # set to 0 degrees
+            req = SetServoAngle.Request()
+            req.angle = 0.0
+            req.degrees = False
+            fut = client.call_async(req)
+            rclpy.spin_until_future_complete(self, fut)
+            if fut.result() is None:
+                self.get_logger().error("Service %s failed" % service)
+                self.ok = False
+                continue
+            print("set to 0 degrees", fut.result())
+
+            time.sleep(0.5)
+            # set to 0.2 rad
+            req.angle = 0.2
+            req.degrees = False
+            fut = client.call_async(req)
+            rclpy.spin_until_future_complete(self, fut)
+            if fut.result() is None:
+                self.get_logger().error("Service %s failed" % service)
+                self.ok = False
+                continue
+            print("set to 0.5 degrees", fut.result())
+            time.sleep(0.5)
+            # set to 0 degrees
+            req.angle = 0.3
+            req.degrees = False
+            fut = client.call_async(req)
+            rclpy.spin_until_future_complete(self, fut)
+            if fut.result() is None:
+                self.get_logger().error("Service %s failed" % service)
+                self.ok = False
+                continue
+            print("set to 0 degrees", fut.result())
+
+            # check if servo is updating
+            topic = "/io/servo/hiwonder/%s/position" % servo
+            # check if topic exists
+            if topic not in self.all_topics:
+                self.get_logger().error("Topic %s does not exist" % topic)
+                self.ok = False
+                continue
+            # check if topic is callable
+            last_position = None
+            def update_position(msg, s):
+                nonlocal last_position
+                if s != servo:
+                    return
+                if msg.raw == 0:
+                    return
+                last_position = msg.angle
+                # print("update position", msg, s)
+            self.create_subscription(
+                ServoPosition,
+                topic,
+                lambda msg, s=servo: update_position(msg, s),
+                1,
+            )
+            start_time = time.time()
+            while last_position is None and time.time() - start_time < 5:
+                time.sleep(0.1)
+                rclpy.spin_once(self)
+            if last_position is None:
+                self.get_logger().error("Servo %s is not publishing" % topic)
+                self.ok = False
+                continue
+            print("last_position", last_position)
+        
+        enable_req.data = True
+        fut = enable_client.call_async(enable_req)
+        rclpy.spin_until_future_complete(self, fut)
+        if fut.result() is None:
+            self.get_logger().error("Service %s failed" % service)
+            self.ok = False
+            return
+        
+        # publish to /mirte_master_arm_controller/joint_trajectory
+        arm_cmd_topic = "/mirte_master_arm_controller/joint_trajectory"
+        # check if topic exists
+        if arm_cmd_topic not in self.all_topics:
+            self.get_logger().error("Topic %s does not exist" % arm_cmd_topic)
+            self.ok = False
+            return
+        # check if topic is callable
+        client = self.create_publisher(JointTrajectory, arm_cmd_topic, 1)
+        if not client:
+            self.get_logger().error("Topic %s is not callable" % arm_cmd_topic)
+            self.ok = False
+            return
+        # ros2 topic pub --once /mirte_master_arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "{joint_names: ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_joint'], points: [{positions: [0.0, 0.0, 0.0, 0.0], time_from_start:{ sec: 3, nanosec: 0}}]}"
+
+        traj = JointTrajectory()
+        traj.joint_names = [
+            "shoulder_pan_joint",
+            "shoulder_lift_joint",
+            "elbow_joint",
+            "wrist_joint",
+        ]
+        traj.points = []
+        point = JointTrajectoryPoint()
+        point.positions = [0.0, 0.0, 0.0,0.0]
+        point.time_from_start.sec = 3
+        point.time_from_start.nanosec = 0
+        traj.points.append(point)
+        # publish to /mirte_master_arm_controller/joint_trajectory
+        count = client.get_subscription_count()
+        print("count", count)
+        client.publish(traj)
+        rclpy.spin_once(self)
+        client.wait_for_all_acked() #TODO: doesnt work all the time
+        # check if arm is moving
+        
+        print("done servos")
+
 
     def report_mac(self):
         # print MAC address of WiFi
-        command = "ifconfig wlan0 | grep ether | awk '{print $2}'"
+        command = "ip link show wlan0 | grep ether | awk '{print $2}'"
         # run command
         mac = subprocess.check_output(command, shell=True).decode("utf-8").strip()
         self.get_logger().info("MAC address: %s" % mac)
@@ -390,21 +582,21 @@ class HWNode(Node):
         self.all_topics = [name for (name, _) in self.get_topic_names_and_types()]
         # check wheels
         # self.check_wheels()
-        # check odom
-        # check sonars
+        # # check odom
+        # # check sonars
         # self.check_sonars()
-        # # check oled
-        self.check_oled()
-        # # check ina
-        self.check_ina()
+        # # # check oled
+        # self.check_oled()
+        # # # check ina
+        # self.check_ina()
         # # check servos
-        # self.check_servos()
+        self.check_servos()
         # # check camera
         self.check_camera()
         # # check lidar
         self.check_lidar()
         # # check imu optionally
-        # self.check_imu()
+        self.check_imu()
         # report MAC
         self.report_mac()
         if self.ok:
