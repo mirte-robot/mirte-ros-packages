@@ -4,13 +4,14 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from std_srvs.srv import SetBool
 from mirte_msgs.msg import ServoPosition, Encoder
-from mirte_msgs.srv import GetServoOffset, SetServoOffset, SetServoAngle, SetMotorSpeed
+from mirte_msgs.srv import GetServoOffset, SetServoOffset, SetServoAngle, SetMotorSpeed, SetOLEDText
 import time
 import sys
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import Range
+from sensor_msgs.msg import Range, BatteryState, PointCloud2
 import math
+import subprocess
 
 
 class HWNode(Node):
@@ -228,29 +229,184 @@ class HWNode(Node):
             return
         print("sonars okay!")
 
+    def check_oled(self):
+        oled_service = "/io/oled/set_text"
+        # check if service exists
+        if oled_service not in self.all_services:
+            self.get_logger().error("Service %s does not exist" % oled_service)
+            self.ok = False
+            return
+        # check if service is callable
+        client = self.create_client(SetOLEDText, oled_service)
+        if not client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error("Service %s is not callable" % oled_service)
+            self.ok = False
+            return
+        
+        req = SetOLEDText.Request()
+        req.text = "Hello World"
+        fut = client.call_async(req)
+        rclpy.spin_until_future_complete(self, fut)
+        if fut.result() is None:    
+            self.get_logger().error("Service %s failed" % oled_service)
+            self.ok = False
+            return
+        
+        if fut.result().success == False:
+            self.get_logger().error("Service %s failed" % oled_service)
+            self.ok = False
+            return
+        
+        time.sleep(2)
+        req.text = "Hello World 2"
+        fut = client.call_async(req)
+        rclpy.spin_until_future_complete(self, fut)
+        if fut.result() is None:
+            self.get_logger().error("Service %s failed" % oled_service)
+            self.ok = False
+            return
+        if fut.result().success == False:
+            self.get_logger().error("Service %s failed" % oled_service)
+            self.ok = False
+            return
+        print("oled okay!")
+
+    def check_ina(self):
+        # check topic existence
+        # check topic publishing and voltages and current is okay
+        ina_topic = "/io/power/power_watcher"
+        # check if topic exists
+        if ina_topic not in self.all_topics:
+            self.get_logger().error("Topic %s does not exist" % ina_topic)
+            self.ok = False
+            return
+        curr = None
+        volt = None
+        def update_ina(msg):
+            nonlocal curr, volt
+            if math.isfinite(msg.current) and math.isfinite(msg.voltage):
+                curr = msg.current
+                volt = msg.voltage
+                print("update ina", msg)
+                return
+            self.get_logger().error("INA is not publishing")
+            self.ok = False
+            return
+        # check if topic is callable
+        client = self.create_subscription(
+            BatteryState, ina_topic, lambda msg: update_ina(msg), 1
+        )
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            time.sleep(0.1)
+            rclpy.spin_once(self, timeout_sec=0.1)
+        
+        if curr is None or volt is None:
+            self.get_logger().error("INA is not publishing")
+            self.ok = False
+            return
+        
+        if curr < 0.1 or curr > 10:
+            self.get_logger().error("INA current is not okay")
+            self.ok = False
+            return
+        if volt < 10 or volt > 15:
+            self.get_logger().error("INA voltage is not okay")
+            self.ok = False
+            return
+        print("ina okay!")
+
+
+    def check_camera(self):
+        camera_topic = "/camera/depth/points"
+        # check if topic exists
+        if camera_topic not in self.all_topics:
+            self.get_logger().error("Topic %s does not exist" % camera_topic)
+            self.ok = False
+            return
+        # check if topic is callable
+        received = False
+        def update_camera(msg):
+            self.get_logger().info("Camera is publishing")
+            nonlocal received
+            received = True
+            return
+        client = self.create_subscription(
+            PointCloud2, camera_topic, lambda msg: update_camera(msg), 1
+        )
+
+        start_time = time.time()
+        while time.time() - start_time < 5 and not received:
+            time.sleep(0.1)
+            rclpy.spin_once(self, timeout_sec=0.1)
+        if not received:
+            self.get_logger().error("Camera is not publishing")
+            self.ok = False
+            return
+        print("camera okay!")
+
+    def check_lidar(self):
+        lidar_topic = "/scan"
+        # check if topic exists
+        if lidar_topic not in self.all_topics:
+            self.get_logger().error("Topic %s does not exist" % lidar_topic)
+            self.ok = False
+            return
+        # check if topic is callable
+        received = False
+        def update_lidar(msg):
+            nonlocal received
+            received = True
+            return
+        client = self.create_subscription(
+            PointCloud2, lidar_topic, lambda msg: update_lidar(msg), 1
+        )
+
+        start_time = time.time()
+        while time.time() - start_time < 5 and not received:
+            time.sleep(0.1)
+            rclpy.spin_once(self, timeout_sec=0.1)
+        if not received:
+            self.get_logger().error("Lidar is not publishing")
+            self.ok = False
+            return
+        print("lidar okay!")
+
+
+    def check_imu(self):
+        pass
+
+    def report_mac(self):
+        # print MAC address of WiFi
+        command = "ifconfig wlan0 | grep ether | awk '{print $2}'"
+        # run command
+        mac = subprocess.check_output(command, shell=True).decode("utf-8").strip()
+        self.get_logger().info("MAC address: %s" % mac)
+
     def check(self):
         time.sleep(2)
         self.ok = True
         self.all_services = [name for (name, _) in self.get_service_names_and_types()]
         self.all_topics = [name for (name, _) in self.get_topic_names_and_types()]
         # check wheels
-        # self.check_wheels()
+        self.check_wheels()
         # check odom
         # check sonars
         self.check_sonars()
         # # check oled
-        # self.check_oled()
+        self.check_oled()
         # # check ina
-        # self.check_ina()
+        self.check_ina()
         # # check servos
         # self.check_servos()
         # # check camera
-        # self.check_camera()
+        self.check_camera()
         # # check lidar
-        # self.check_lidar()
+        self.check_lidar()
         # # check imu optionally
         # self.check_imu()
         # report MAC
+        self.report_mac()
         if self.ok:
             self.get_logger().info("All checks passed")
 
