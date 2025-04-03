@@ -37,13 +37,14 @@ def generate_launch_description():
                     }
                 ],
             ),
-            # The video web server is broken untill https://github.com/RobotWebTools/web_video_server/pull/136 is merged,
-            # since the port parameter cannot be changed and port is already used (Now on the forked branch)
+
             Node(
                 package="web_video_server",
                 executable="web_video_server",
                 name="web_video_server",
-                parameters=[{"default_transport": "theora", "port": 8181}],
+                parameters=[{"default_transport": "theora", "port": 8181, 
+                        "address": "localhost", # Nginx will proxy it on /ros-video/
+                }],
             ),
         ]
     )
