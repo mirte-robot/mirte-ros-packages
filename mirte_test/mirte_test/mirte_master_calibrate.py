@@ -49,12 +49,29 @@ class CalibrateNode(Node):
             ranges[servo_id]["position"] = msg.raw
             # print("servo_id", servo_id, "position", msg.raw)
 
+    def enable_arm_control(self, enable):
+        enable_service = "/enable_arm_control"
+        enable_client = self.create_client(SetBool, enable_service)
+        if not enable_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error("Service %s is not callable" % enable_service)
+        else:
+            enable_req = SetBool.Request()
+            enable_req.data = enable
+            fut = enable_client.call_async(enable_req)
+            rclpy.spin_until_future_complete(self, fut)
+            if fut.result() is None:
+                self.get_logger().error(
+                    "Service %s failed, will continue with calibration" % enable_client
+                )
+
     def calibrate(self):
         # check existence of all servos and that they have a position
         while len(self.get_topic_names_and_types()) < 3:
             # sleep 1s
             time.sleep(1)
         # print(all_topics)
+        self.enable_arm_control(False)
+
         time.sleep(2)
         self.on = True
         all_topics = [topic for (topic, type) in self.get_topic_names_and_types()]
@@ -141,6 +158,8 @@ class CalibrateNode(Node):
             totalDiff = diff + curr_offset
             print(
                 "diff of",
+                servo_data["name"],
+                " servo_id: ",
                 servo_id,
                 " diff: ",
                 diff,
@@ -156,7 +175,7 @@ class CalibrateNode(Node):
             if abs(totalDiff) > 200:
                 print("setting offset:", totalDiff)
                 if abs(totalDiff / 24) > 125:
-                    print("servo too much off, need to fix the servo")
+                    self.get_logger().error("servo too much off, need to fix the servo")
                     continue
                 topic = "/io/servo/hiwonder/%s/_set_offset" % servo_data["name"]
                 set_pos = self.create_client(SetServoOffset, topic)
@@ -180,7 +199,10 @@ class CalibrateNode(Node):
             # print(curr_offset)
         # calculate new offset
         # save offset to servos
-        print("done calibrating, should be in the home position!")
+        print(
+            "done calibrating, should be in the home position, enabling arm controller again!"
+        )
+        self.enable_arm_control(True)
 
     def timer_callback(self):
         msg = String()

@@ -4,7 +4,13 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from std_srvs.srv import SetBool
 from mirte_msgs.msg import ServoPosition, Encoder
-from mirte_msgs.srv import GetServoOffset, SetServoOffset, SetServoAngle, SetMotorSpeed, SetOLEDText
+from mirte_msgs.srv import (
+    GetServoOffset,
+    SetServoOffset,
+    SetServoAngle,
+    SetMotorSpeed,
+    SetOLEDText,
+)
 import time
 import sys
 from geometry_msgs.msg import Twist
@@ -13,7 +19,6 @@ from sensor_msgs.msg import Range, BatteryState, PointCloud2, LaserScan, Imu
 import math
 import subprocess
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-
 
 
 class HWNode(Node):
@@ -91,6 +96,7 @@ class HWNode(Node):
             # check if encoder is updating
             start_time = time.time()
             while abs(start_enc - last_encoder) < 100 and time.time() - start_time < 5:
+                fut = client.call_async(req)  # force over the PID controller.
                 time.sleep(0.1)
                 rclpy.spin_once(self)
 
@@ -244,12 +250,12 @@ class HWNode(Node):
             self.get_logger().error("Service %s is not callable" % oled_service)
             self.ok = False
             return
-        
+
         req = SetOLEDText.Request()
         req.text = "Hello World"
         fut = client.call_async(req)
         rclpy.spin_until_future_complete(self, fut)
-        if fut.result() is None:    
+        if fut.result() is None:
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
@@ -257,7 +263,7 @@ class HWNode(Node):
             self.get_logger().error("Service %s failed" % oled_service)
             self.ok = False
             return
-        
+
         time.sleep(2)
         req.text = "Hello World 2"
         fut = client.call_async(req)
@@ -283,6 +289,7 @@ class HWNode(Node):
             return
         curr = None
         volt = None
+
         def update_ina(msg):
             nonlocal curr, volt
             if math.isfinite(msg.current) and math.isfinite(msg.voltage):
@@ -293,6 +300,7 @@ class HWNode(Node):
             # self.get_logger().error("INA is not publishing")
             # self.ok = False
             return
+
         # check if topic is callable
         client = self.create_subscription(
             BatteryState, ina_topic, lambda msg: update_ina(msg), 1
@@ -301,12 +309,12 @@ class HWNode(Node):
         while time.time() - start_time < 5:
             time.sleep(0.1)
             rclpy.spin_once(self, timeout_sec=0.1)
-        
+
         if curr is None or volt is None:
             self.get_logger().error("INA is not publishing")
             self.ok = False
             return
-        
+
         if curr < 0.1 or curr > 10:
             self.get_logger().error("INA current is not okay")
             self.ok = False
@@ -317,7 +325,6 @@ class HWNode(Node):
             return
         print("ina okay!")
 
-
     def check_camera(self):
         camera_topic = "/camera/depth/points"
         # check if topic exists
@@ -327,11 +334,13 @@ class HWNode(Node):
             return
         # check if topic is callable
         received = False
+
         def update_camera(msg):
             self.get_logger().info("Camera is publishing")
             nonlocal received
             received = True
             return
+
         client = self.create_subscription(
             PointCloud2, camera_topic, lambda msg: update_camera(msg), 1
         )
@@ -355,10 +364,12 @@ class HWNode(Node):
             return
         # check if topic is callable
         received = False
+
         def update_lidar(msg):
             nonlocal received
             received = True
             return
+
         client = self.create_subscription(
             LaserScan, lidar_topic, lambda msg: update_lidar(msg), 1
         )
@@ -373,7 +384,6 @@ class HWNode(Node):
             return
         print("lidar okay!")
 
-
     def check_imu(self):
         topic = "/io/imu/movement/data"
         # check if topic exists
@@ -384,22 +394,31 @@ class HWNode(Node):
         # check if topic is callable
         received = False
         lastmsg = None
+
         def update_imu(msg):
             nonlocal received, lastmsg
-            if(msg.linear_acceleration.x == 0 and msg.linear_acceleration.y == 0 and msg.linear_acceleration.z == 0): # if sensor is not connected, then it publishes 0.
+            if (
+                msg.linear_acceleration.x == 0
+                and msg.linear_acceleration.y == 0
+                and msg.linear_acceleration.z == 0
+            ):  # if sensor is not connected, then it publishes 0.
                 return
             if lastmsg is None:
                 lastmsg = msg
                 return
-            if(lastmsg is not None and lastmsg.linear_acceleration.x == msg.linear_acceleration.x and lastmsg.linear_acceleration.y == msg.linear_acceleration.y and lastmsg.linear_acceleration.z == msg.linear_acceleration.z):
+            if (
+                lastmsg is not None
+                and lastmsg.linear_acceleration.x == msg.linear_acceleration.x
+                and lastmsg.linear_acceleration.y == msg.linear_acceleration.y
+                and lastmsg.linear_acceleration.z == msg.linear_acceleration.z
+            ):
                 # data should always be changing
                 print("imu data is not changing")
                 return
             received = True
             return
-        client = self.create_subscription(
-            Imu, topic, lambda msg: update_imu(msg), 1
-        )
+
+        client = self.create_subscription(Imu, topic, lambda msg: update_imu(msg), 1)
         start_time = time.time()
         while time.time() - start_time < 5 and not received:
             time.sleep(0.1)
@@ -412,9 +431,13 @@ class HWNode(Node):
 
     def check_servos(self):
         # check if servos are connected
-        servos = [ "shoulder_pan", "shoulder_lift", "elbow", "wrist", 
-                #   "gripper"
-                  ]
+        servos = [
+            "shoulder_pan",
+            "shoulder_lift",
+            "elbow",
+            "wrist",
+            #   "gripper"
+        ]
         # check if service exists
         # call /enable_arm_control
         enable_service = "/enable_arm_control"
@@ -435,10 +458,10 @@ class HWNode(Node):
         fut = enable_client.call_async(enable_req)
         rclpy.spin_until_future_complete(self, fut)
         if fut.result() is None:
-            self.get_logger().error("Service %s failed" % service)
+            self.get_logger().error("Service %s failed" % enable_service)
             self.ok = False
             return
-        
+
         for servo in servos:
             print("testing servo", servo)
             service = "/io/servo/hiwonder/%s/set_angle" % servo
@@ -497,6 +520,7 @@ class HWNode(Node):
                 continue
             # check if topic is callable
             last_position = None
+
             def update_position(msg, s):
                 nonlocal last_position
                 if s != servo:
@@ -505,6 +529,7 @@ class HWNode(Node):
                     return
                 last_position = msg.angle
                 # print("update position", msg, s)
+
             self.create_subscription(
                 ServoPosition,
                 topic,
@@ -520,7 +545,7 @@ class HWNode(Node):
                 self.ok = False
                 continue
             print("last_position", last_position)
-        
+
         enable_req.data = True
         fut = enable_client.call_async(enable_req)
         rclpy.spin_until_future_complete(self, fut)
@@ -528,7 +553,7 @@ class HWNode(Node):
             self.get_logger().error("Service %s failed" % service)
             self.ok = False
             return
-        
+
         # publish to /mirte_master_arm_controller/joint_trajectory
         arm_cmd_topic = "/mirte_master_arm_controller/joint_trajectory"
         # check if topic exists
@@ -553,7 +578,7 @@ class HWNode(Node):
         ]
         traj.points = []
         point = JointTrajectoryPoint()
-        point.positions = [0.0, 0.0, 0.0,0.0]
+        point.positions = [0.0, 0.0, 0.0, 0.0]
         point.time_from_start.sec = 3
         point.time_from_start.nanosec = 0
         traj.points.append(point)
@@ -562,11 +587,10 @@ class HWNode(Node):
         print("count", count)
         client.publish(traj)
         rclpy.spin_once(self)
-        client.wait_for_all_acked() #TODO: doesnt work all the time
+        client.wait_for_all_acked()  # TODO: doesnt work all the time
         # check if arm is moving
-        
-        print("done servos")
 
+        print("done servos")
 
     def report_mac(self):
         # print MAC address of WiFi
@@ -581,14 +605,14 @@ class HWNode(Node):
         self.all_services = [name for (name, _) in self.get_service_names_and_types()]
         self.all_topics = [name for (name, _) in self.get_topic_names_and_types()]
         # check wheels
-        # self.check_wheels()
+        self.check_wheels()
         # # check odom
         # # check sonars
-        # self.check_sonars()
+        self.check_sonars()
         # # # check oled
-        # self.check_oled()
+        self.check_oled()
         # # # check ina
-        # self.check_ina()
+        self.check_ina()
         # # check servos
         self.check_servos()
         # # check camera
