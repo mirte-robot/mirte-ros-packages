@@ -70,10 +70,9 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         servo.last_request = service_requests[i]->angle;
 
         service_requests[i]->degrees = false;
-        if(this->enable) {
+        if (this->enable) {
           service_clients[i]->async_send_request(service_requests[i]);
         }
-        
       }
     }
   }
@@ -106,7 +105,8 @@ void MirteMasterArmHWInterface::connectServices() {
              std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
         this->enable = request->data;
         response->success = true;
-        response->message = this->enable? "Arm control enabled": "Arm control disabled";
+        response->message =
+            this->enable ? "Arm control enabled" : "Arm control disabled";
       });
 }
 

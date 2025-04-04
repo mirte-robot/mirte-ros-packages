@@ -121,7 +121,7 @@ private:
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
       service_requests;
-  
+
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr enable_arm_service;
   bool enable = true;
 
