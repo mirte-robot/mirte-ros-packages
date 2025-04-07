@@ -77,8 +77,9 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(logger_.value(),
-                "service " + left_service + " not available, waiting again...");
+    RCLCPP_INFO(
+        logger_.value(),
+        "service io/motor/left/set_speed not available, waiting again...");
   }
 
   // TODO: conbine with above
@@ -88,8 +89,9 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(logger_.value(), "service " + right_service +
-                                     " not available, waiting again...");
+    RCLCPP_INFO(
+        logger_.value(),
+        "service io/motor/right/set_speed not available, waiting again...");
   }
 
   hw_positions_.resize(info_.joints.size(),
