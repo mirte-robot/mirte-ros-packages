@@ -197,12 +197,12 @@ void MirteBaseHWInterface::init_service_clients() {
             motor_service); // TODO: add persistent connection
         while (!client->wait_for_service(1s)) {
           if (!rclcpp::ok()) {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
+            RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
                          "Interrupted while waiting for the service. Exiting.");
             return;
           }
           RCLCPP_INFO(
-              rclcpp::get_logger("rclcpp"),
+              rclcpp::get_logger("MirteBaseSystemHardware"),
               ("service " + motor_service + " not available, waiting again...")
                   .c_str());
         }
@@ -220,7 +220,7 @@ void MirteBaseHWInterface::init_service_clients() {
             "io/motor/motorservocontroller/set_multiple_speeds");
     while (!this->set_speed_multiple_client->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
+        RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
                      "Interrupted while waiting for the service. Exiting.");
         return;
         // return hardware_interface::CallbackReturn::ERROR;
@@ -253,7 +253,8 @@ unsigned int detect_joints(std::shared_ptr<rclcpp::Node> nh) {
   } else if (type.rfind("diff", 0) == 0) { // starts with diff
     return 2;
   } else {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("rclcpp"), "Unknown type: " << type);
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
+                        "Unknown type: " << type);
     return 4;
   }
 }

@@ -347,7 +347,7 @@ class HWNode(Node):
         )
 
         start_time = time.time()
-        while time.time() - start_time < 5 and not received:
+        while time.time() - start_time < 10 and not received:
             time.sleep(0.1)
             rclpy.spin_once(self, timeout_sec=0.1)
         if not received:

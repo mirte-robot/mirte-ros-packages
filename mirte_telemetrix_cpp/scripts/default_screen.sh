@@ -23,5 +23,9 @@ if [ "$(echo $percentage | wc -c)" -gt 1 ]; then
 	printf "SOC: %.0f%%\n" "$soc"
 fi
 
-# Time
-echo "Time: $(date +"%H:%M:%S")"
+# if not sure about date, then show uptime, otherwise show date
+if [ "$(timedatectl | grep "synchronized: yes" | wc -l)" -eq 1 ]; then
+	echo "Time: $(date +"%H:%M:%S")"
+else
+	echo "Uptime: $(uptime | sed 's/^.* up \+\(.\+\), \+[0-9] user.*$/\1/')"
+fi
