@@ -85,7 +85,7 @@ class CalibrateNode(Node):
             if topic not in all_topics:
                 self.get_logger().error("Servo %d does not exist" % servo_id)
                 return
-            print("subscribiing to topic", topic, "for servo", servo_id)
+            print("subscribing to topic", topic, "for servo", servo_id)
 
             self.subscribers.append(
                 self.create_subscription(

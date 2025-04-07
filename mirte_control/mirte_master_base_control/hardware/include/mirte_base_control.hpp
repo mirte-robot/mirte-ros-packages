@@ -95,7 +95,14 @@ public:
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
+  double rad_per_enc_tick() {
+    if (this->ticks < 1.0) {
+      std::cout << "ticks is less than 1.0, setting to 1.0" << std::endl;
+      this->ticks = 1.0;
+      return 1.0;
+    }
+    return 2.0 * M_PI / this->ticks;
+  }
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -167,6 +174,7 @@ private:
     if (msg->value < 0) {
       bidirectional = true;
     }
+    const std::lock_guard<std::mutex> lock(this->encoder_mutex);
     // std::cout << "Encoder value: " << msg->value << std::endl;
     _wheel_encoder[joint] = msg->value;
     _wheel_encoder_update_time[joint] = msg->header.stamp;
@@ -178,6 +186,7 @@ private:
   void init_service_clients();
   void start_reconnect();
   std::mutex service_clients_mutex;
+  std::mutex encoder_mutex;
 
   // thread for ros spinning
   std::jthread ros_thread;

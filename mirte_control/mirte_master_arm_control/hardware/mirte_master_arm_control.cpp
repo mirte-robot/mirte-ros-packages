@@ -86,8 +86,10 @@ void MirteMasterArmHWInterface::connectServices() {
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string joint_name = info_.joints[i].name;
     std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
-    auto client = nh->create_client<mirte_msgs::srv::SetServoAngle>(
-        (boost::format(service_format) % servo_name).str());
+    std::string service_name =
+        (boost::format(service_format) % servo_name).str();
+    auto client =
+        nh->create_client<mirte_msgs::srv::SetServoAngle>(service_name);
     while (!client->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
@@ -95,7 +97,10 @@ void MirteMasterArmHWInterface::connectServices() {
         return;
       }
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-                  "service not available, waiting again...");
+                  (boost::format("service %s not available, waiting again...") %
+                   service_name)
+                      .str()
+                      .c_str());
     }
     service_clients.push_back(client);
   }

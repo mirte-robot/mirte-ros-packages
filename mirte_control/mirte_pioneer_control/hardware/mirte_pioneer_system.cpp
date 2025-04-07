@@ -64,10 +64,12 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
   logger_ = rclcpp::get_logger(logger_name);
 
   // TODO: Make wheel service names configurable (Including namespace)
-  left_client_ = node->create_client<mirte_msgs::srv::SetMotorSpeed>(
-      "io/motor/left/set_speed");
-  right_client_ = node->create_client<mirte_msgs::srv::SetMotorSpeed>(
-      "io/motor/right/set_speed");
+  auto left_service = "io/motor/left/set_speed";
+  left_client_ =
+      node->create_client<mirte_msgs::srv::SetMotorSpeed>(left_service);
+  auto right_service = "io/motor/right/set_speed";
+  right_client_ =
+      node->create_client<mirte_msgs::srv::SetMotorSpeed>(right_service);
 
   while (!left_client_->wait_for_service(std::chrono::seconds(1))) {
     if (!rclcpp::ok()) {
@@ -75,7 +77,8 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(logger_.value(), "service not available, waiting again...");
+    RCLCPP_INFO(logger_.value(),
+                "service " + left_service + " not available, waiting again...");
   }
 
   // TODO: conbine with above
@@ -85,7 +88,8 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(logger_.value(), "service not available, waiting again...");
+    RCLCPP_INFO(logger_.value(), "service " + right_service +
+                                     " not available, waiting again...");
   }
 
   hw_positions_.resize(info_.joints.size(),

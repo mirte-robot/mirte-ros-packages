@@ -102,6 +102,8 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
 
 void MirteBaseHWInterface::read_single(int joint,
                                        const rclcpp::Duration &period) {
+  const std::lock_guard<std::mutex> lock(this->encoder_mutex);
+
   if (_last_value[joint] == 0) {
     _last_value[joint] = _wheel_encoder[joint];
     // when starting, the encoders dont have to be at 0. Without this, the odom
@@ -189,17 +191,20 @@ void MirteBaseHWInterface::init_service_clients() {
       service_clients.clear();
       service_requests.clear();
       for (size_t i = 0; i < NUM_JOINTS; i++) {
+        auto motor_service =
+            (boost::format(service_format) % this->joints[i]).str();
         auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
-            (boost::format(service_format) % this->joints[i])
-                .str()); // TODO: add persistent connection
+            motor_service); // TODO: add persistent connection
         while (!client->wait_for_service(1s)) {
           if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
                          "Interrupted while waiting for the service. Exiting.");
             return;
           }
-          RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-                      "service not available, waiting again...");
+          RCLCPP_INFO(
+              rclcpp::get_logger("rclcpp"),
+              ("service " + motor_service + " not available, waiting again...")
+                  .c_str());
         }
         service_clients.push_back(client);
         service_requests.push_back(

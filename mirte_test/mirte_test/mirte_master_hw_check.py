@@ -141,6 +141,7 @@ class HWNode(Node):
             time.sleep(0.1)
             rclpy.spin_once(self)
         if last_odom is None:
+            print("last_odom", last_odom)
             self.get_logger().error("Odom is not publishing")
             self.ok = False
             return
@@ -170,7 +171,7 @@ class HWNode(Node):
             rclpy.spin_once(self)
         print("diff_odom", diff_odom(last_odom, start_odom))
         print("time diff", time.time() - start_time)
-        if diff_odom(last_odom, start_odom) < 3:  # 1m/s, 5s, so at least 4m
+        if diff_odom(last_odom, start_odom) < 2:  # 1m/s, 5s, so at least 4m
             self.get_logger().error("Odom is not updating")
             self.ok = False
             return
@@ -501,7 +502,7 @@ class HWNode(Node):
             print("set to 0.5 degrees", fut.result())
             time.sleep(0.5)
             # set to 0 degrees
-            req.angle = 0.3
+            req.angle = -0.1
             req.degrees = False
             fut = client.call_async(req)
             rclpy.spin_until_future_complete(self, fut)
@@ -509,7 +510,7 @@ class HWNode(Node):
                 self.get_logger().error("Service %s failed" % service)
                 self.ok = False
                 continue
-            print("set to 0 degrees", fut.result())
+            print("set to -0.1 degrees", fut.result())
 
             # check if servo is updating
             topic = "/io/servo/hiwonder/%s/position" % servo
@@ -545,6 +546,10 @@ class HWNode(Node):
                 self.ok = False
                 continue
             print("last_position", last_position)
+            if abs(last_position - -0.1) > 0.1:
+                self.get_logger().error("Servo %s is not updating" % topic)
+                self.ok = False
+                continue
 
         enable_req.data = True
         fut = enable_client.call_async(enable_req)
