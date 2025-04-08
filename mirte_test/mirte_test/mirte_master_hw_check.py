@@ -437,7 +437,7 @@ class HWNode(Node):
             "shoulder_lift",
             "elbow",
             "wrist",
-            #   "gripper"
+            "gripper"
         ]
         # check if service exists
         # call /enable_arm_control
