@@ -161,7 +161,7 @@ private:
   std::vector<double> hw_commands_;
   std::vector<double> hw_states_;
 
-  void connectServices();
+  bool connectServices();
 
 }; // class
 

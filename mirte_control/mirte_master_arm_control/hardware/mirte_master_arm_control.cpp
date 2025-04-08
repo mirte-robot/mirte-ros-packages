@@ -81,7 +81,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 }
 
 using namespace std::chrono_literals;
-void MirteMasterArmHWInterface::connectServices() {
+bool MirteMasterArmHWInterface::connectServices() {
   service_clients.clear();
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     std::string joint_name = info_.joints[i].name;
@@ -90,17 +90,25 @@ void MirteMasterArmHWInterface::connectServices() {
         (boost::format(service_format) % servo_name).str();
     auto client =
         nh->create_client<mirte_msgs::srv::SetServoAngle>(service_name);
-    while (!client->wait_for_service(1s)) {
+    auto MAX_WAIT_TIME = 10;
+    auto wait_time = 0;
+    while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
+      wait_time++;
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
                      "Interrupted while waiting for the service. Exiting.");
-        return;
+        return false;
       }
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
                   (boost::format("service %s not available, waiting again...") %
                    service_name)
                       .str()
                       .c_str());
+    }
+    if (wait_time == MAX_WAIT_TIME) {
+      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
+                   "Could not connect to service %s", service_name.c_str());
+      return false;
     }
     service_clients.push_back(client);
   }
@@ -113,6 +121,7 @@ void MirteMasterArmHWInterface::connectServices() {
         response->message =
             this->enable ? "Arm control enabled" : "Arm control disabled";
       });
+  return true;
 }
 
 void MirteMasterArmHWInterface::ServoPositionCallback(
@@ -296,7 +305,10 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
             }));
   }
 
-  this->connectServices();
+  if (!this->connectServices()) {
+    RCLCPP_ERROR(get_logger(), "Could not connect to services");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
 
   // reset values always when configuring hardware
   for (uint i = 0; i < hw_states_.size(); i++) {

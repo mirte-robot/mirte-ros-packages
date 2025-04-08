@@ -183,7 +183,7 @@ private:
   // Thread and function to restart service clients when the service server has
   // restarted
   std::future<void> reconnect_thread;
-  void init_service_clients();
+  bool init_service_clients();
   void start_reconnect();
   std::mutex service_clients_mutex;
   std::mutex encoder_mutex;

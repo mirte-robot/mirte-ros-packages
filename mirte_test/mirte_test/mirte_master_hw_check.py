@@ -432,13 +432,7 @@ class HWNode(Node):
 
     def check_servos(self):
         # check if servos are connected
-        servos = [
-            "shoulder_pan",
-            "shoulder_lift",
-            "elbow",
-            "wrist",
-            "gripper"
-        ]
+        servos = ["shoulder_pan", "shoulder_lift", "elbow", "wrist", "gripper"]
         # check if service exists
         # call /enable_arm_control
         enable_service = "/enable_arm_control"

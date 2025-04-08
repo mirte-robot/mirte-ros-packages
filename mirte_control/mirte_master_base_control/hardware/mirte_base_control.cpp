@@ -177,7 +177,7 @@ MirteBaseHWInterface::read(const rclcpp::Time &time,
 }
 using namespace std::chrono_literals;
 
-void MirteBaseHWInterface::init_service_clients() {
+bool MirteBaseHWInterface::init_service_clients() {
   if (!this->use_single_client) {
 
     for (auto joint : this->joints) {
@@ -195,16 +195,26 @@ void MirteBaseHWInterface::init_service_clients() {
             (boost::format(service_format) % this->joints[i]).str();
         auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
             motor_service); // TODO: add persistent connection
-        while (!client->wait_for_service(1s)) {
+
+        auto MAX_WAIT_TIME = 10;
+        auto wait_time = 0;
+        while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
+          wait_time++;
           if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
                          "Interrupted while waiting for the service. Exiting.");
-            return;
+            return false;
           }
           RCLCPP_INFO(
               rclcpp::get_logger("MirteBaseSystemHardware"),
               ("service " + motor_service + " not available, waiting again...")
                   .c_str());
+        }
+        if (wait_time == MAX_WAIT_TIME) {
+          RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
+                       "Could not connect to service %s",
+                       motor_service.c_str());
+          return false;
         }
         service_clients.push_back(client);
         service_requests.push_back(
@@ -218,13 +228,23 @@ void MirteBaseHWInterface::init_service_clients() {
     this->set_speed_multiple_client =
         nh->create_client<mirte_msgs::srv::SetSpeedMultiple>(
             "io/motor/motorservocontroller/set_multiple_speeds");
-    while (!this->set_speed_multiple_client->wait_for_service(1s)) {
+    auto MAX_WAIT_TIME = 10;
+    auto wait_time = 0;
+    while (!this->set_speed_multiple_client->wait_for_service(1s) &&
+           wait_time < MAX_WAIT_TIME) {
+      wait_time++;
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
                      "Interrupted while waiting for the service. Exiting.");
-        return;
+        return false;
         // return hardware_interface::CallbackReturn::ERROR;
       }
+    }
+    if (wait_time == MAX_WAIT_TIME) {
+      RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
+                   "Could not connect to service %s",
+                   "io/motor/motorservocontroller/set_multiple_speeds");
+      return false;
     }
 
     this->set_speed_multiple_request =
@@ -241,6 +261,7 @@ void MirteBaseHWInterface::init_service_clients() {
     this->set_speed_multiple_client->async_send_request(
         this->set_speed_multiple_request);
   }
+  return true;
 }
 
 unsigned int detect_joints(std::shared_ptr<rclcpp::Node> nh) {
@@ -482,7 +503,11 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
             }));
   }
   assert(joints.size() == NUM_JOINTS);
-  this->init_service_clients();
+  if (!this->init_service_clients()) {
+    RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
+                 "Could not connect to services");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
   // assert(service_requests.size() == NUM_JOINTS);
 
   // assert(service_clients.size() == NUM_JOINTS);
