@@ -8,9 +8,18 @@ export PKG_HOME=$(realpath "$SCRIPT_DIR/")
 if [ -v MIRTE_ZENOH ] && [ "$MIRTE_ZENOH" != "false" ]; then
         echo "USING Zenoh"
         export RMW_IMPLEMENTATION=rmw_zenoh_cpp 
+
+        # check that we can write to the PKG_HOME directory
+        if [ ! -w "$PKG_HOME" ]; then
+                # use a tmp directory
+                export PKG_HOME=$(mktemp -d)
+                # echo "WARNING: Cannot write to $SCRIPT_DIR, using $PKG_HOME instead"
+                cp -r "$SCRIPT_DIR"/* "$PKG_HOME/"
+        fi
+        
         #   if MIRTE_ZENOH is true, then set router and ip vars
         if [ "$MIRTE_ZENOH" = "true" ]; then
-                echo "MIRTE_ZENOH robot mode"
+                echo "MIRTE_ZENOH main robot mode"
                 unset ZENOH_ROUTER_CONFIG_URI
                 # export ZENOH_ROUTER_CONFIG_URI="$PKG_HOME/config/router_robot_config.json5"
                 # export ZENOH_SESSION_CONFIG_URI="$PKG_HOME/config/session_config.json5"
