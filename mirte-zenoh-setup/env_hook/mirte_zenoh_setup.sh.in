@@ -5,8 +5,6 @@ SCRIPT_DIR="@CMAKE_INSTALL_PREFIX@/share/mirte_zenoh_setup"
 export PKG_HOME=$(realpath "$SCRIPT_DIR/")
 
 # if MIRTE_ZENOH is set and it is not false, then use Zenoh
-
-
 if [ -v MIRTE_ZENOH ] && [ "$MIRTE_ZENOH" != "false" ]; then
         echo "USING Zenoh"
         export RMW_IMPLEMENTATION=rmw_zenoh_cpp 
@@ -31,7 +29,7 @@ if [ -v MIRTE_ZENOH ] && [ "$MIRTE_ZENOH" != "false" ]; then
                 echo "ros2 run rmw_zenoh_cpp rmw_zenohd"
         fi
 elif [ "$MIRTE_ZENOH" != "false" ]; then # so it is not set
-        echo "Not using Zenoh, resetting all RMW variables once."
+        # echo "Not using Zenoh, resetting all RMW variables once."
         # echo "To use MIRTE_ZENOH, set MIRTE_ZENOH to true on robot and to robot_ip/robot_hostname on other devices"
         # echo "To disable this message, set MIRTE_ZENOH to false"
         unset RMW_IMPLEMENTATION
