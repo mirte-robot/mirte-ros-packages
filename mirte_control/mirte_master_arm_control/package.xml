@@ -6,13 +6,8 @@
 
   <maintainer email="m.klomp@tudelft.nl">Martin Klomp</maintainer>
 
-  <license>BSD</license>
+  <license>Apache-2.0</license>
 
-  <url type="website">https://github.com/davetcoleman/ros_control_boilerplate</url>
-  <url type="bugtracker">https://github.com/davetcoleman/ros_control_boilerplate/issues</url>
-  <url type="repository">https://github.com/davetcoleman/ros_control_boilerplate/</url>
-
-  <author email="davetcoleman@gmail.com">Dave Coleman</author>
   <depend>backward_ros</depend>
   <depend>hardware_interface</depend>
   <depend>pluginlib</depend>

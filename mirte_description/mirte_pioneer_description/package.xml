@@ -4,7 +4,7 @@
   <name>mirte_pioneer_description</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="m.klomp@tudelft.nl">martin</maintainer>
+  <maintainer email="m.klomp@tudelft.nl">Martin Klomp</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

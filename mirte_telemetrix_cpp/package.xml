@@ -5,7 +5,7 @@
   <version>0.0.1</version>
   <description>Telemetrix cpp implementation</description>
   <maintainer email="tmxcpp@arend-jan.com">Arend-Jan van Hilten</maintainer> 
-  <license>AGPL</license>
+  <license>Apache-2.0</license>
   
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
