@@ -92,24 +92,24 @@ bool MirteMasterArmHWInterface::connectServices() {
         nh->create_client<mirte_msgs::srv::SetServoAngle>(service_name);
     auto MAX_WAIT_TIME = 10;
     auto wait_time = 0;
-    while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
-      wait_time++;
-      if (!rclcpp::ok()) {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-                     "Interrupted while waiting for the service. Exiting.");
-        return false;
-      }
-      RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-                  (boost::format("service %s not available, waiting again...") %
-                   service_name)
-                      .str()
-                      .c_str());
-    }
-    if (wait_time == MAX_WAIT_TIME) {
-      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-                   "Could not connect to service %s", service_name.c_str());
-      return false;
-    }
+    // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
+    //   wait_time++;
+    //   if (!rclcpp::ok()) {
+    //     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
+    //                  "Interrupted while waiting for the service. Exiting.");
+    //     return false;
+    //   }
+    //   RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+    //               (boost::format("service %s not available, waiting again...") %
+    //                service_name)
+    //                   .str()
+    //                   .c_str());
+    // }
+    // if (wait_time == MAX_WAIT_TIME) {
+    //   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
+    //                "Could not connect to service %s", service_name.c_str());
+    //   return false;
+    // }
     service_clients.push_back(client);
   }
   this->enable_arm_service = nh->create_service<std_srvs::srv::SetBool>(
