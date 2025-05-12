@@ -11,3 +11,7 @@ repositories:
     type: git
     url: https://github.com/RobotWebTools/web_video_server.git
     version: ros2
+  usb_cam:
+    type: git
+    url: https://github.com/ArendJan/usb_cam.git # for lazy publishing
+    version: main
