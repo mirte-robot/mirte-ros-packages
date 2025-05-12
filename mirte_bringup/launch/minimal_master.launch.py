@@ -167,7 +167,18 @@ def generate_launch_description():
             "start_state_publishers": start_state_publishers,
         }.items(),
     )
-
+    cameras = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "launch",
+                        "gripper_camera.launch.py",
+                    ]
+                )
+            ]
+        ))
     web_video_server = Node(
         package="web_video_server",
         executable="web_video_server",
@@ -222,6 +233,7 @@ def generate_launch_description():
                 telemetrix,
                 ros2_control,
                 state_publishers,
+                cameras,
                 web_video_server,
                 lidar,
                 depth_cam,
