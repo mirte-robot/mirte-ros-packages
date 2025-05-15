@@ -193,7 +193,14 @@ def generate_launch_description():
         output="screen",
     )
 
-    depth_cam = IncludeLaunchDescription(
+    depth_cam =  GroupAction(
+    actions=[
+
+        SetRemap(src='/camera/color/image_raw',dst='/camera/color/_image_raw'),
+        SetRemap(src='/camera/depth/image_raw',dst='/camera/depth/_image_raw'),
+        SetRemap(src='/camera/ir/image_raw',dst='/camera/ir/_image_raw'),
+        
+        IncludeLaunchDescription(
         XMLLaunchDescriptionSource(
             [
                 PathJoinSubstitution(
@@ -204,8 +211,8 @@ def generate_launch_description():
                     ]
                 )
             ]
-        )
-    )
+        ), 
+    )])
     lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
