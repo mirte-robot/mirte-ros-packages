@@ -979,6 +979,13 @@ def add_modules(modules: dict, device: dict) -> []:
                 loop=loop,
             )
             tasks.append(loop.create_task(hmc_module.start()))
+        if module["type"].lower() == "as5600":
+            as5600_module = AS5600(
+                board,
+                module_name,
+                module,
+            )
+            tasks.append(loop.create_task(as5600_module.start()))
     return tasks
 
 
@@ -1449,6 +1456,73 @@ class INA226:
         asyncio.run(self.shutdown_robot())
         return SetBoolResponse(True, "")
 
+
+class AS5600:
+    def __init__(self, board, module_name, module):
+        self.name = module_name
+        self.module = module
+        self.board = board
+        
+        self.encoders = []
+        print(self.module)
+        print(self.module["encoders"])
+        self.mask = 0x00
+        for key in self.module["encoders"]:
+            print(key)
+            item = self.module["encoders"][key]
+            print(item)
+            if 'mux' in item:
+                self.encoders.append({"name":key, "mux":item['mux']})
+                self.mask |= 1 << item['mux']
+        self.encoders.sort(key=lambda x: x["mux"])
+        print(self.encoders)
+        for item in self.encoders:
+            print(item)
+            item["pub"] = rospy.Publisher(
+                f"mirte/encoder/{self.name}/{item['name']}",
+                Float32,
+                queue_size=1,
+                latch=True,
+            )
+        print(self.mask)
+
+    async def start(self):
+        # setup i2c, check with oled to not init twice
+        if board_mapping.get_mcu() == "pico":
+            if "connector" in self.module:
+                pins = board_mapping.connector_to_pins(self.module["connector"])
+            else:
+                # TODO: no other boards have support for this yet
+                pins = self.module["pins"]
+            pin_numbers = {}
+            for item in pins:
+                pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
+            self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
+            try:
+                await self.board.set_pin_mode_i2c(
+                    i2c_port=self.i2c_port,
+                    sda_gpio=pin_numbers["sda"],
+                    scl_gpio=pin_numbers["scl"],
+                )
+            except Exception as e:
+                pass
+        
+        await self.board.sensors.add_AS5600(self.i2c_port,self.mask, self.callback)
+        
+
+    async def callback(self, data):
+        # TODO: move this decoding to the library
+        ints = list(map(lambda i: i.to_bytes(1, "big"), data))
+        # split up in parts of 2 bytes and combine them into a single uint16
+        bytes_obj = b"".join(ints)
+
+        ints = list(struct.unpack(f">{len(self.encoders)}H", bytes_obj))
+        # print(data, ints)
+        for i, item in enumerate(self.encoders):
+            # print(item)
+            # print(item["pub"])
+            # print(ints[i])
+            item["pub"].publish(ints[i] / 4095 * 2 * math.pi) # radians
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):

@@ -4,6 +4,15 @@ device:
     version: 0.6
     max_frequency: 50
 modules:
+  # encoders: # requires mux, or only one encoder is supported.
+  #   device: mirte
+  #   type: AS5600
+  #   connector: I2C1
+  #   encoders:
+  #     a:
+  #       mux: 4
+  #     b:
+  #       mux: 2
   motorservocontroller:
     device: mirte
     type: PCA9685
