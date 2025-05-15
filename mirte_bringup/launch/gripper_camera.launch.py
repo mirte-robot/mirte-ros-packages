@@ -35,8 +35,7 @@ def generate_launch_description():
             capture_output=True,
         )
         if out.returncode != 0:
-            # continue
-            pass
+            continue
         print(device, out.stdout.decode())
         device_name = device.name
         nodes.append(
