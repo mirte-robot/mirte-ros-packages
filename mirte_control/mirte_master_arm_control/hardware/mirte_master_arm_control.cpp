@@ -100,7 +100,8 @@ bool MirteMasterArmHWInterface::connectServices() {
     //     return false;
     //   }
     //   RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-    //               (boost::format("service %s not available, waiting again...") %
+    //               (boost::format("service %s not available, waiting
+    //               again...") %
     //                service_name)
     //                   .str()
     //                   .c_str());

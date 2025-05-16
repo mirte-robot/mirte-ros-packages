@@ -7,12 +7,14 @@ from launch_ros.actions import Node
 import subprocess
 import re
 
+
 def generate_launch_description():
     video_regex = re.compile(r"video\d+")
     video_devices = [
         device
         for device in Path("/dev").glob("video*")
-        if video_regex.match(device.name) and (Path("/sys/class/video4linux") / device.name / "name").read_text().strip()
+        if video_regex.match(device.name)
+        and (Path("/sys/class/video4linux") / device.name / "name").read_text().strip()
         != "cedrus"
     ]
     if len(video_devices) < 1:
@@ -28,7 +30,7 @@ def generate_launch_description():
     nodes = []
     gripper_count = 0
     for device in video_devices:
-        cmd = f"v4l2-ctl --device={device} --all | grep \"Format Video Capture\""
+        cmd = f'v4l2-ctl --device={device} --all | grep "Format Video Capture"'
         out = subprocess.run(
             ["bash", "-c", cmd],
             check=False,
@@ -53,7 +55,7 @@ def generate_launch_description():
                     else "gripper_camera"
                 ),
                 remappings=[
-                    ("image_raw", f"_image_raw"), # discourage image_raw by hiding it.
+                    ("image_raw", f"_image_raw"),  # discourage image_raw by hiding it.
                 ],
                 parameters=[
                     {
@@ -64,6 +66,4 @@ def generate_launch_description():
             )
         )
         gripper_count += 1
-    return LaunchDescription(
-       nodes
-    )
+    return LaunchDescription(nodes)

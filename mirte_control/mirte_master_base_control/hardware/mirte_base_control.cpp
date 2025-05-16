@@ -202,12 +202,14 @@ bool MirteBaseHWInterface::init_service_clients() {
         //   wait_time++;
         //   if (!rclcpp::ok()) {
         //     RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
-        //                  "Interrupted while waiting for the service. Exiting.");
+        //                  "Interrupted while waiting for the service.
+        //                  Exiting.");
         //     return false;
         //   }
         //   RCLCPP_INFO(
         //       rclcpp::get_logger("MirteBaseSystemHardware"),
-        //       ("service " + motor_service + " not available, waiting again...")
+        //       ("service " + motor_service + " not available, waiting
+        //       again...")
         //           .c_str());
         // }
         // if (wait_time == MAX_WAIT_TIME) {
