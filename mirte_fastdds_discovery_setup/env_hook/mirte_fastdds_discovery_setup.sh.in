@@ -19,9 +19,8 @@ if [ -v MIRTE_FASTDDS ] && [ "$MIRTE_FASTDDS" != "false" ]; then
         
         #   if MIRTE_ZENOH is true, then set router and ip vars
         if [ "$MIRTE_FASTDDS" = "true" ]; then
-                echo "MIRTE_ZENOH main robot mode"
-                # unset ZENOH_ROUTER_CONFIG_URI
-                export ROS_DISCOVERY_SERVER=127.0.0.1
+                echo "MIRTE_FASTDDS main robot mode"
+                IP=127.0.0.1
                  # check if zenoh router is running on port 7447
                 if [ -z "$(ss -l | grep -w "11811")" ]; then
                         echo "Discovery server router is not running on port 11811"
@@ -30,11 +29,13 @@ if [ -v MIRTE_FASTDDS ] && [ "$MIRTE_FASTDDS" != "false" ]; then
                 fi
         else
                 echo "MIRTE_FASTDDS client mode"
-                # replace IP in config with $MIRTE_ZENOH
-                export ROS_DISCOVERY_SERVER=$MIRTE_FASTDDS
-                sed "s/IP/$MIRTE_FASTDDS/g" "$PKG_HOME/config/super_client_config.xml.in" > "$PKG_HOME/config/super_client_config.xml"
-                export FASTRTPS_DEFAULT_PROFILES_FILE="$PKG_HOME/config/super_client_config.xml"
+                IP=$MIRTE_FASTDDS
         fi
+        # replace IP in config with $MIRTE_ZENOH
+        export ROS_DISCOVERY_SERVER=$IP
+        sed "s/IP/$IP/g" "$PKG_HOME/config/super_client_config.xml.in" > "$PKG_HOME/config/super_client_config.xml"
+        export FASTRTPS_DEFAULT_PROFILES_FILE="$PKG_HOME/config/super_client_config.xml"
+        
 
        
 elif [ "$MIRTE_FASTDDS" != "false" ]; then # so it is not set
