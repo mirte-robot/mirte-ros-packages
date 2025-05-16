@@ -1,0 +1,48 @@
+#!/bin/bash
+# set -xe
+
+SCRIPT_DIR="@CMAKE_INSTALL_PREFIX@/share/mirte_fastdds_discovery_setup"
+export PKG_HOME=$(realpath "$SCRIPT_DIR/")
+
+# if MIRTE_ZENOH is set and it is not false, then use Zenoh
+if [ -v MIRTE_FASTDDS ] && [ "$MIRTE_FASTDDS" != "false" ]; then
+        echo "USING FastDDS discovery"
+        # export RMW_IMPLEMENTATION=rmw_zenoh_cpp 
+
+        # check that we can write to the PKG_HOME directory
+        if [ ! -w "$PKG_HOME" ]; then
+                # use a tmp directory
+                export PKG_HOME=$(mktemp -d)
+                # echo "WARNING: Cannot write to $SCRIPT_DIR, using $PKG_HOME instead"
+                cp -r "$SCRIPT_DIR"/* "$PKG_HOME/"
+        fi
+        
+        #   if MIRTE_ZENOH is true, then set router and ip vars
+        if [ "$MIRTE_FASTDDS" = "true" ]; then
+                echo "MIRTE_ZENOH main robot mode"
+                # unset ZENOH_ROUTER_CONFIG_URI
+                export ROS_DISCOVERY_SERVER=127.0.0.1
+                 # check if zenoh router is running on port 7447
+                if [ -z "$(ss -l | grep -w "11811")" ]; then
+                        echo "Discovery server router is not running on port 11811"
+                        echo "Please run a discovery server on port 11811 with the following command:"
+                        echo "fastdds discovery --server-id 0 -p 11811"
+                fi
+        else
+                echo "MIRTE_FASTDDS client mode"
+                # replace IP in config with $MIRTE_ZENOH
+                export ROS_DISCOVERY_SERVER=$MIRTE_FASTDDS
+                sed "s/IP/$MIRTE_FASTDDS/g" "$PKG_HOME/config/super_client_config.xml.in" > "$PKG_HOME/config/super_client_config.xml"
+                export FASTRTPS_DEFAULT_PROFILES_FILE="$PKG_HOME/config/super_client_config.xml"
+        fi
+
+       
+elif [ "$MIRTE_FASTDDS" != "false" ]; then # so it is not set
+        # echo "Not using Zenoh, resetting all RMW variables once."
+        # echo "To use MIRTE_ZENOH, set MIRTE_ZENOH to true on robot and to robot_ip/robot_hostname on other devices"
+        # echo "To disable this message, set MIRTE_ZENOH to false"
+        unset ROS_DISCOVERY_SERVER
+        unset FASTRTPS_DEFAULT_PROFILES_FILE
+        export MIRTE_FASTDDS=false
+fi
+
