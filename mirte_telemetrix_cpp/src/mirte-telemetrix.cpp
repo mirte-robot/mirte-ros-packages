@@ -62,13 +62,6 @@ bool TelemetrixNode::start() {
 
   auto parser = std::make_shared<Parser>(node_);
 
-  this->board = Mirte_Board::create(parser);
-
-  this->characteristics_service =
-      node_->create_service<mirte_msgs::srv::GetBoardCharacteristics>(
-          "get_board_characteristics",
-          std::bind(&Mirte_Board::get_board_characteristics_service_callback,
-                    this->board, _1, _2));
 
   auto ports = tmx_cpp::TMX::get_available_ports();
   decltype(ports) available_ports;
@@ -131,6 +124,13 @@ bool TelemetrixNode::start() {
   tmx->sendMessage(tmx_cpp::MESSAGE_TYPE::GET_PICO_UNIQUE_ID, {});
   tmx->setScanDelay(1000 / parser->get_frequency());
 
+  this->board = Mirte_Board::create(parser, tmx);
+
+  this->characteristics_service =
+      node_->create_service<mirte_msgs::srv::GetBoardCharacteristics>(
+          "get_board_characteristics",
+          std::bind(&Mirte_Board::get_board_characteristics_service_callback,
+                    this->board, _1, _2));
   NodeData node_data{node_, tmx, board};
 
   std::cout << "Start adding" << std::endl;
@@ -138,6 +138,9 @@ bool TelemetrixNode::start() {
   this->actuators = std::make_shared<Mirte_Actuators>(node_data, parser);
   this->monitor = std::make_shared<Mirte_Sensors>(node_data, parser);
   this->modules = std::make_shared<Mirte_modules>(node_data, parser);
+  this->actuators->start();
+  this->monitor->start();
+  this->modules->start();
   std::cout << "Done adding" << std::endl;
   return true;
 }

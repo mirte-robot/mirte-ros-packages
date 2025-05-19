@@ -10,6 +10,7 @@ using connector_map = std::map<std::string, pin_map>;
 #include <memory> // for shared_ptr, __shared_ptr_access
 #include <string> // for string, basic_string, operator<
 
+#include "tmx_cpp/tmx.hpp"
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp"
 #include "mirte_telemetrix_cpp/pcbs/v06.hpp"
 #include "mirte_telemetrix_cpp/pcbs/v08.hpp"
@@ -37,7 +38,8 @@ public:
   /// @return True if the pin is PWM capable
   virtual const bool is_pwm_pin(uint8_t pin) const = 0;
 
-  static std::shared_ptr<Mirte_Board> create(std::shared_ptr<Parser> parser);
+  static std::shared_ptr<Mirte_Board> create(std::shared_ptr<Parser> parser, 
+                                              std::shared_ptr<tmx_cpp::TMX> tmx);
 
   void get_board_characteristics_service_callback(
       const mirte_msgs::srv::GetBoardCharacteristics::Request::ConstSharedPtr
@@ -67,6 +69,29 @@ public:
   /// @param pin The MCU pin number
   /// @return True if the pin is PWM capable
   virtual const bool is_pwm_pin(uint8_t pin) const override;
+};
+class Mirte_Board_raw : public Mirte_Board { // add config stuff + read from features.
+public:
+  Mirte_Board_raw(std::shared_ptr<tmx_cpp::TMX> tmx);
+  std::map<std::string, int> resolveConnector(std::string connector) override;
+  int resolvePin(std::string pin) override;
+  virtual const double get_voltage_level() const override { return 5.0; }
+  virtual const int get_adc_bits() const override { return 10; }
+  virtual const int get_max_pwm() const override { return 255; }
+  virtual uint8_t resolveI2CPort(uint8_t sda) override { return 0; }
+
+  virtual uint8_t resolveUARTPort(uint8_t pin) override { return 0; };
+
+  /// @brief Indicate if a pin is analog capable
+  /// @param pin The MCU pin number
+  /// @return True if the pin is analog capable
+  virtual const bool is_analog_pin(uint8_t pin) const override;
+
+  /// @brief Indicate if a pin is PWM capable
+  /// @param pin The MCU pin number
+  /// @return True if the pin is PWM capable
+  virtual const bool is_pwm_pin(uint8_t pin) const override;
+  std::shared_ptr<tmx_cpp::TMX> tmx;
 };
 class Mirte_Board_pico : public Mirte_Board {
 public:
