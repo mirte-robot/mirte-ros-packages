@@ -1462,7 +1462,7 @@ class AS5600:
         self.name = module_name
         self.module = module
         self.board = board
-        
+
         self.encoders = []
         print(self.module)
         print(self.module["encoders"])
@@ -1471,9 +1471,9 @@ class AS5600:
             print(key)
             item = self.module["encoders"][key]
             print(item)
-            if 'mux' in item:
-                self.encoders.append({"name":key, "mux":item['mux']})
-                self.mask |= 1 << item['mux']
+            if "mux" in item:
+                self.encoders.append({"name": key, "mux": item["mux"]})
+                self.mask |= 1 << item["mux"]
         self.encoders.sort(key=lambda x: x["mux"])
         print(self.encoders)
         for item in self.encoders:
@@ -1506,9 +1506,8 @@ class AS5600:
                 )
             except Exception as e:
                 pass
-        
-        await self.board.sensors.add_AS5600(self.i2c_port,self.mask, self.callback)
-        
+
+        await self.board.sensors.add_AS5600(self.i2c_port, self.mask, self.callback)
 
     async def callback(self, data):
         # TODO: move this decoding to the library
@@ -1522,7 +1521,8 @@ class AS5600:
             # print(item)
             # print(item["pub"])
             # print(ints[i])
-            item["pub"].publish(ints[i] / 4095 * 2 * math.pi) # radians
+            item["pub"].publish(ints[i] / 4095 * 2 * math.pi)  # radians
+
 
 class Hiwonder_Servo:
     def __init__(self, servo_name, servo_obj, bus):
