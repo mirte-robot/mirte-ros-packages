@@ -54,9 +54,6 @@ def generate_launch_description():
                     if gripper_count > 0
                     else "gripper_camera"
                 ),
-                remappings=[
-                    ("image_raw", f"_image_raw"),  # discourage image_raw by hiding it.
-                ],
                 parameters=[
                     {
                         "pixel_format": "yuyv2rgb",
