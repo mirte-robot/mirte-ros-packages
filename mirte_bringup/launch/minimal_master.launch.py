@@ -196,9 +196,9 @@ def generate_launch_description():
 
     depth_cam = GroupAction(
         actions=[
-            SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
-            SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
-            SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
+            # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
+            # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
+            # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
             IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(
                     [
