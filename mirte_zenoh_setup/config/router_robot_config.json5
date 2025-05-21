@@ -81,7 +81,7 @@
     ///
     /// See https://docs.rs/zenoh/latest/zenoh/config/struct.EndPoint.html
     endpoints: [
-      "tcp/[::]:7447",
+      // "tcp/[::]:7447",
       "tcp/0.0.0.0:7447"
     ],
 

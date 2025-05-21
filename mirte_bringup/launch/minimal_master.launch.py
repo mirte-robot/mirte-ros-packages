@@ -194,18 +194,25 @@ def generate_launch_description():
         output="screen",
     )
 
-    depth_cam = IncludeLaunchDescription(
-        XMLLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
+    depth_cam = GroupAction(
+        actions=[
+            # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
+            # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
+            # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
+            IncludeLaunchDescription(
+                XMLLaunchDescriptionSource(
                     [
-                        FindPackageShare("astra_camera"),
-                        "launch",
-                        "astra_pro_plus.launch.xml",
+                        PathJoinSubstitution(
+                            [
+                                FindPackageShare("astra_camera"),
+                                "launch",
+                                "astra_pro_plus.launch.xml",
+                            ]
+                        )
                     ]
-                )
-            ]
-        )
+                ),
+            ),
+        ]
     )
     lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
