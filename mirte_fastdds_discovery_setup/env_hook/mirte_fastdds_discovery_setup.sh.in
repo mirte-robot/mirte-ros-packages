@@ -5,7 +5,7 @@ SCRIPT_DIR="@CMAKE_INSTALL_PREFIX@/share/mirte_fastdds_discovery_setup"
 export PKG_HOME=$(realpath "$SCRIPT_DIR/")
 
 # if MIRTE_ZENOH is set and it is not false, then use Zenoh
-if [ -v MIRTE_FASTDDS ] && [ "$MIRTE_FASTDDS" != "false" ]; then
+if [ -v MIRTE_FASTDDS ] && [ "$MIRTE_FASTDDS" != "false" ] && [ -n "$MIRTE_FASTDDS" ]; then
         echo "USING FastDDS discovery"
         # export RMW_IMPLEMENTATION=rmw_zenoh_cpp 
 
