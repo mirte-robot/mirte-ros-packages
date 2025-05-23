@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:if value="$(arg sim)">
+<joint name="_gripper_link_joint_r_mimic" type="fixed">
+  <parent link="shoulder_pan" />
+  <child link="random1" />
+</joint>
+<link name="random1"/>
+<joint name="_gripper_link_joint_l_mimic" type="fixed">
+  <parent link="shoulder_pan" />
+  <child link="random2" />
+</joint>
+<link name="random2"/>
+<joint name="_Gripper_joint_r_mimic" type="fixed">
+  <parent link="shoulder_pan" />
+  <child link="random" />
+</joint>
+<link name="random"/>
+</xacro:if>
+
+
     <link
         name="shoulder_pan">
         <inertial>

@@ -13,8 +13,8 @@ def generate_launch_description():
 
     moveit_config = (
         MoveItConfigsBuilder("mirte")
-        .robot_description(
-            file_path="config/mirte_master.urdf.xacro",
+        .robot_description( 
+            file_path="config/mirte_master.urdf.xacro", mappings={"sim": "true"}
         )
         .robot_description_semantic(file_path="config/mirte_master.srdf")
         .trajectory_execution(file_path="config/moveit_controllers.yaml")
