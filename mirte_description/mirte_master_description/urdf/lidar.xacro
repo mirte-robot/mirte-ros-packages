@@ -85,6 +85,7 @@
   <gazebo reference="lidar_link">
         <sensor name="lidar" type="gpu_lidar">
             <always_on>true</always_on>
+            <gz_frame_id>lidar_link</gz_frame_id>
             <visualize>${visualize_sensors}</visualize>
             <update_rate>10</update_rate>
             <topic>scan</topic>
