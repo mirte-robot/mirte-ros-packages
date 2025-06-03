@@ -103,6 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 #  CATKIN_DEPENDS roscpp rospy std_msgs mirte_msgs message_runtime controller_manager hardware_interface
 #  DEPENDS system_lib
 #)
+catkin_package(
+ CATKIN_DEPENDS
+)
 
 
 ###########

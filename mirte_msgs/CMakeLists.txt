@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   message_generation
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -49,7 +50,7 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
+add_message_files(
    FILES
    Encoder.msg
    Color.msg
@@ -59,7 +60,9 @@ find_package(catkin REQUIRED COMPONENTS
    Intensity.msg
    IntensityDigital.msg
    Keypad.msg
- )
+   ServoPosition.msg
+   Heading.msg
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -75,11 +78,14 @@ add_service_files(
   GetPinValue.srv
   SetPinValue.srv
   SetLEDValue.srv
+  SetSingleLEDValue.srv
   SetOLEDImage.srv
   SetServoAngle.srv
   SetMotorSpeed.srv
   Move.srv
   Turn.srv
+  GetIMU.srv
+  GetRange.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -94,6 +100,7 @@ generate_messages(
   DEPENDENCIES
   std_msgs
   geometry_msgs
+  sensor_msgs
  )
 
 ################################################
@@ -128,7 +135,7 @@ generate_messages(
 catkin_package(
 	#  INCLUDE_DIRS include
 #  LIBRARIES mirte_types
- CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+ CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime sensor_msgs
 #  DEPENDS system_lib
 )
 

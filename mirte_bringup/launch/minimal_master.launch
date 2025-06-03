@@ -1,0 +1,77 @@
+<launch>
+
+    <!-- Load parameters that match the correct
+         mcu connections -->
+    <group ns="mirte">
+        <rosparam file="$(find mirte_telemetrix)/config/mirte_master_config_goede_arm.yaml"/>
+    </group>
+
+    <!-- Telemetrix node to start all services and topics
+         for the sensors and actuators connected to the
+         mcu -->
+    <node name="mirte_telemetrix_mirte" output="screen"
+          pkg="mirte_telemetrix"
+          type="ROS_telemetrix_aio_api.py"
+          respawn="true"/>
+
+    <!-- ROS control hardware interface for mecanum
+         drive robot. -->
+
+
+   <group ns="arm">
+
+     <rosparam command="load" file="$(find ros_control_boilerplate)/rrbot_control/config/rrbot_controllers.yaml"/>  
+     <node name="mirte_arm_node" output="screen"
+          pkg="ros_control_boilerplate"
+          type="rrbot_hw_main"/>
+
+     <node name="controller_spawner_arm"
+          pkg="controller_manager"
+          type="spawner"
+          output="screen"
+          args="joint_state_controller position_trajectory_controller"/>
+
+     <param name="robot_description" textfile="$(find mirte_description)/urdf/mirte_arm.urdf"/>
+
+   </group>
+
+    <group>
+      <node name="mirte_base_node" output="screen"
+          pkg="mirte_base_control"
+          type="mirte_base_control_node"/>
+
+       <rosparam command="load" file="$(find mirte_base_control)/config/control_master.yaml"/>
+       <node name="controller_spawner"
+          pkg="controller_manager"
+          type="spawner"
+          output="screen"
+          args="mobile_base_controller"/>
+
+   </group>
+
+
+    <!-- Start the lidar -->
+    <include file="$(find rplidar_ros)/launch/rplidar_c1.launch"/>
+    <node pkg="tf" type="static_transform_publisher" name="laser_transform" args="0 0 0 1.57 0 0 base_link laser 100"/> 
+
+    <include file="$(find astra_camera)/launch/astra_pro_plus.launch"/>
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_color" args="0 0 0 0 0 -1.57 base_link camera_color_optical_frame 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_depth" args="0 0 0 0 0 -1.57 base_link camera_depth_optical_frame 100"/> 
+    <node pkg="tf" type="static_transform_publisher" name="astra_transform_ir" args="0 0 0 0 0 -1.57 base_link camera_ir_optical_frame 100"/> 
+
+<!--
+<include file="$(find mirte_teleop)/launch/teleop_holo_joy.launch"/>
+      <node pkg="joy_arm" type="joyArm.py" name="joyArm"/>
+-->
+  <!-- TODO: openCV bridge -->
+  <node name="webcam" pkg="usb_cam" type="usb_cam_node">
+     <param name="pixel_format" value="yuyv"/>
+  </node>
+
+
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server">
+    <param name="default_transport" value="theora"/>
+    <param name="port" value="8181"/>
+  </node>
+
+</launch>

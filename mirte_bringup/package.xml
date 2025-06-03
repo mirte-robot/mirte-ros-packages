@@ -15,6 +15,7 @@
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
   <license>BSD-3-Clause</license>
 
+  <exec_depend>controller_manager</exec_depend>
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
@@ -52,16 +53,18 @@
 
   <exec_depend>mirte_telemetrix</exec_depend>
   <exec_depend>mirte_teleop</exec_depend>
-  <exec_depend>mirte_control</exec_depend>
+  <exec_depend>mirte_base_control</exec_depend>
   <exec_depend>mirte_msgs</exec_depend>
-
+  <exec_depend>tf</exec_depend>
+  <exec_depend>rplidar_ros</exec_depend>
+  <exec_depend>astra_camera</exec_depend>
   <exec_depend>usb_cam</exec_depend>
   <exec_depend>image_common</exec_depend>
   <exec_depend>image_transport_plugins</exec_depend>
-
+  <exec_depend>ros_control_boilerplate</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
   <exec_depend>web_video_server</exec_depend>
-
+  <exec_depend>mirte_description</exec_depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
