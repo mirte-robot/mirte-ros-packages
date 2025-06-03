@@ -53,6 +53,19 @@ oled:
     pins:
       sda: GP4
       scl: GP5
+#color:
+#  left:
+#    name: left
+#    device: mirte
+#    pins:
+#      sda: GP10
+#      scl: GP11
+#  right:
+#    name: right
+#    device: mirte
+#    pins:
+#      sda: GP4
+#      scl: GP5
 servo:
   left:
     name: left

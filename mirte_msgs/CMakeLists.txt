@@ -53,7 +53,10 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    Encoder.msg
-   color.msg
+   Color.msg
+   ColorStamped.msg
+   ColorHSL.msg
+   ColorHSLStamped.msg
    Intensity.msg
    IntensityDigital.msg
    Keypad.msg
@@ -64,6 +67,8 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
+  GetColor.srv
+  GetColorHSL.srv
   GetDistance.srv
   GetIntensity.srv
   GetIntensityDigital.srv
@@ -76,8 +81,6 @@ add_service_files(
   SetSingleLEDValue.srv
   SetOLEDImage.srv
   SetServoAngle.srv
-  get_virtual_color.srv
-  get_barcode.srv
   SetMotorSpeed.srv
   Move.srv
   Turn.srv

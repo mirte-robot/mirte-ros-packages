@@ -8,6 +8,7 @@ import rospy
 import signal
 import aiorospy
 import io
+import colorsys
 from inspect import signature
 from tmx_pico_aio import tmx_pico_aio
 from telemetrix_aio import telemetrix_aio
@@ -375,6 +376,97 @@ class AnalogIntensitySensorMonitor(SensorMonitor):
         intensity.header = self.get_header()
         intensity.value = data[2]
         await self.publish(intensity)
+
+
+class ColorSensorMonitor(SensorMonitor):
+    def __init__(self, board, sensor, port):
+        pub = rospy.Publisher(
+            "/mirte/color/" + sensor["name"], ColorHSLStamped, queue_size=100
+        )
+        srv = rospy.Service(
+            "/mirte/get_color_" + sensor["name"], GetColorHSL, self.get_data
+        )
+        super().__init__(board, sensor, pub)
+        self.port = port  # this value is nonsense and unused
+        self.last_publish_value = ColorHSLStamped()
+        self.sensor_obj = sensor
+
+    def get_data(self, req):
+        color_HSL = ColorHSL()
+        color_HSL.h = self.last_publish_value.color.h
+        color_HSL.s = self.last_publish_value.color.s
+        color_HSL.l = self.last_publish_value.color.l
+        return GetColorHSLResponse(color_HSL)
+
+    async def start(self):
+        if board_mapping.get_mcu() != "pico":
+            print("Color sensor not supported on an Arduino yet")
+            return
+
+        if "connector" in self.sensor_obj:
+            pins = board_mapping.connector_to_pins(self.sensor_obj["connector"])
+        else:
+            pins = self.sensor_obj["pins"]
+        pin_numbers = {}
+        for item in pins:
+            pin_numbers[item] = board_mapping.pin_name_to_pin_number(pins[item])
+        self.i2c_port = board_mapping.get_I2C_port(pin_numbers["sda"])
+        try:
+            await self.board.set_pin_mode_i2c(
+                i2c_port=self.i2c_port,
+                sda_gpio=pin_numbers["sda"],
+                scl_gpio=pin_numbers["scl"],
+            )
+        except e:
+            print("err")
+            pass  # some other module on i2c probably
+        await asyncio.sleep(0.1)
+        await self.board.sensors.add_veml6040(self.i2c_port, self.publish_data)
+
+    async def publish_data(self, data):
+        # Get the data from the VEML6040 sensor
+        r = data[0] | data[1] << 8
+        g = data[2] | data[3] << 8
+        b = data[4] | data[5] << 8
+        w = data[6] | data[7] << 8
+
+        # To get to HSI/HSV/HSL we need to set a max to the intensity (setting). This could be
+        # 2^16, but to get more resolution, you could also cap this to a lower value.
+
+        # Getting the normalized values from fig 5 (normalized spectrum response)
+        # normalized red @ 619 -> 0.77
+        # normalized green @ 518 -> 0.57
+        # normalized blue @ 467 - > 0.91
+
+        # The irradiance response (counts / (uW/cm2)) from the characteristics table
+        # red @ 619 = 96
+        # green @ 518 = 74
+        # blue @ 467 = 56
+
+        # So, the normalized irrandiance repsonse is (see https://electronics.stackexchange.com/questions/372345/relative-responisivity-of-the-veml6040)
+        # red: 96 / 0.77 = 125
+        # green: 74 / 0.57 = 130
+        # blue: 56 / 0.91 = 62
+
+        # With that we can get the (uW/cm2) per channel. We can also calsulate the max
+        # uW/cm2 for green: 2^16 / 130 = 504 uW/cm2. And even though red and espcially blue
+        # can meadure more, they need to be capped to this value so they will be even.
+        # And all can be normalized to [0,1]
+        max_uW_cm2 = 250  # calculated (504), emperical (250) (TODO: make setting)
+        r_norm = min([r / 125, max_uW_cm2]) / max_uW_cm2
+        g_norm = min([g / 130, max_uW_cm2]) / max_uW_cm2
+        b_norm = min([b / 62, max_uW_cm2]) / max_uW_cm2
+        hls = list(colorsys.rgb_to_hls(r_norm, g_norm, b_norm))
+        hls[0] = hls[0] * 360
+
+        color_HSL_Stamped = ColorHSLStamped()
+        color_HSL_Stamped.header = self.get_header()
+        color_HSL = ColorHSL()
+        color_HSL.h = hls[0]
+        color_HSL.s = hls[2]
+        color_HSL.l = hls[1]
+        color_HSL_Stamped.color = color_HSL
+        await self.publish(color_HSL_Stamped)
 
 
 class EncoderSensorMonitor(SensorMonitor):
@@ -916,6 +1008,19 @@ def sensors(loop, board, device):
                     board, intensity_sensors[sensor]
                 )
                 tasks.append(loop.create_task(monitor.start()))
+
+    # Initialize color sensors
+    if rospy.has_param("/mirte/color"):
+        color_sensors = rospy.get_param("/mirte/color")
+        color_sensors = {
+            k: v for k, v in color_sensors.items() if v["device"] == device
+        }
+        sensor_id = 0
+        for sensor in color_sensors:
+            color_sensors[sensor]["max_frequency"] = max_freq
+            monitor = ColorSensorMonitor(board, color_sensors[sensor], port=sensor_id)
+            sensor_id = sensor_id + 1
+            tasks.append(loop.create_task(monitor.start()))
 
     # Initialize keypad sensors
     if rospy.has_param("mirte/keypad"):

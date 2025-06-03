@@ -5,8 +5,8 @@ jobs:
   check-python-style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Black Code Formatter
         uses: lgeiger/black-action@master
         with:
-          args: . --check
+          args: ". --check --diff"
