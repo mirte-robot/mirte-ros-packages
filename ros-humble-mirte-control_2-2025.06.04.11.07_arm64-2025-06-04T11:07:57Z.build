@@ -1,0 +1,2234 @@
+sbuild (Debian sbuild) 0.84.2~ubuntu2204+3 (28 December 2022) on fv-az2308-777.u0ph54j20wmuzodzvktzcxtuoc.xx.internal.cloudapp.net
+
++=====================================================================================+
+| ros-humble-mirte-control 2-2025.06.04.11.07 (arm64) Wed, 04 Jun 2025 11:07:57 +0000 |
++=====================================================================================+
+
+Package: ros-humble-mirte-control
+Version: 2-2025.06.04.11.07
+Source Version: 2-2025.06.04.11.07
+Distribution: jammy
+Machine Architecture: arm64
+Host Architecture: arm64
+Build Architecture: arm64
+Build Type: binary
+
+Unpacking /home/runner/.cache/sbuild/jammy-arm64.tar to /tmp/tmp.sbuild.bN6gUTirEm...
+I: NOTICE: Log filtering will replace 'sbuild-unshare-dummy-location' with '<<CHROOT>>'
+I: NOTICE: Log filtering will replace 'build/package//resolver-TURtSj' with '<<RESOLVERDIR>>'
+
++------------------------------------------------------------------------------+
+| Update chroot                                                                |
++------------------------------------------------------------------------------+
+
+Get:1 file:/build/package//resolver-9qjA9a/apt_archive ./ InRelease
+Ign:1 file:/build/package//resolver-9qjA9a/apt_archive ./ InRelease
+Get:2 file:/build/package//resolver-9qjA9a/apt_archive ./ Release [577 B]
+Get:2 file:/build/package//resolver-9qjA9a/apt_archive ./ Release [577 B]
+Get:3 file:/build/package//resolver-9qjA9a/apt_archive ./ Release.gpg
+Ign:3 file:/build/package//resolver-9qjA9a/apt_archive ./ Release.gpg
+Get:4 file:/build/package//resolver-9qjA9a/apt_archive ./ Packages [7511 B]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy InRelease [4682 B]
+Get:6 http://packages.ros.org/ros2/ubuntu jammy/main arm64 Packages [1631 kB]
+Get:7 http://ports.ubuntu.com/ubuntu-ports jammy InRelease [270 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease [128 kB]
+Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease [129 kB]
+Get:10 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 Packages [1369 kB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 Packages [13.9 MB]
+Get:12 http://ports.ubuntu.com/ubuntu-ports jammy-updates/universe arm64 Packages [1189 kB]
+Get:13 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 Packages [2374 kB]
+Get:14 http://ports.ubuntu.com/ubuntu-ports jammy-security/main arm64 Packages [2135 kB]
+Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-security/universe arm64 Packages [961 kB]
+Fetched 24.1 MB in 4s (6161 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
++------------------------------------------------------------------------------+
+| Fetch source files                                                           |
++------------------------------------------------------------------------------+
+
+
+Local sources
+-------------
+
+/home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO/mirte_control/ros-humble-mirte-control_2-2025.06.04.11.07.dsc exists in /home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO/mirte_control; copying to chroot
+I: NOTICE: Log filtering will replace 'build/package//package' with '<<PKGBUILDDIR>>'
+I: NOTICE: Log filtering will replace 'build/package/' with '<<BUILDDIR>>'
+
++------------------------------------------------------------------------------+
+| Install package build dependencies                                           |
++------------------------------------------------------------------------------+
+
+
+Setup apt archive
+-----------------
+
+Merged Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-cmake-gtest, ros-humble-hardware-interface, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, build-essential, fakeroot
+Filtered Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-cmake-gtest, ros-humble-hardware-interface, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, build-essential, fakeroot
+dpkg-deb: building package 'sbuild-build-depends-main-dummy' in '/<<RESOLVERDIR>>/apt_archive/sbuild-build-depends-main-dummy.deb'.
+Ign:1 copy:/<<RESOLVERDIR>>/apt_archive ./ InRelease
+Get:2 copy:/<<RESOLVERDIR>>/apt_archive ./ Release [580 B]
+Ign:3 copy:/<<RESOLVERDIR>>/apt_archive ./ Release.gpg
+Get:4 copy:/<<RESOLVERDIR>>/apt_archive ./ Sources [792 B]
+Get:5 copy:/<<RESOLVERDIR>>/apt_archive ./ Packages [824 B]
+Fetched 2196 B in 0s (0 B/s)
+Reading package lists...
+Get:1 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ InRelease
+Ign:1 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ InRelease
+Get:2 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ Release [577 B]
+Get:2 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ Release [577 B]
+Get:3 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ Release.gpg
+Ign:3 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ Release.gpg
+Reading package lists...
+Hit:1 http://packages.ros.org/ros2/ubuntu jammy InRelease
+Reading package lists...
+Reading package lists...
+
+Install main build dependencies (apt-based resolver)
+----------------------------------------------------
+
+Installing build dependencies
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils catch2 cmake
+  cmake-data debhelper debugedit dh-autoreconf dh-elpa-helper
+  dh-strip-nondeterminism docutils-common dwz emacsen-common fakeroot file
+  gettext gettext-base google-mock googletest groff-base intltool-debian
+  libarchive-zip-perl libarchive13 libblas3 libbrotli1 libconsole-bridge-dev
+  libconsole-bridge1.0 libcurl4 libdebhelper-perl libdw1 libelf1 libexpat1
+  libexpat1-dev libfakeroot libfile-stripnondeterminism-perl libfmt-dev
+  libfmt8 libgfortran5 libgtest-dev libicu70 libjs-jquery libjs-sphinxdoc
+  libjs-underscore libjsoncpp25 liblapack3 libldap-2.5-0 libmagic-mgc
+  libmagic1 libmpdec3 libnghttp2-14 libpipeline1 libpsl5 libpython3-dev
+  libpython3-stdlib libpython3.10 libpython3.10-dev libpython3.10-minimal
+  libpython3.10-stdlib libreadline8 librhash0 librtmp1 libsasl2-2
+  libsasl2-modules-db libsigsegv2 libspdlog-dev libspdlog1 libsqlite3-0
+  libssh-4 libssl-dev libsub-override-perl libtinyxml2-9 libtinyxml2-dev
+  libtool libuchardet0 libuv1 libxml2 libyaml-0-2 libyaml-dev m4 man-db
+  media-types po-debconf python3 python3-argcomplete python3-attr
+  python3-catkin-pkg-modules python3-dateutil python3-dev python3-distutils
+  python3-docutils python3-empy python3-importlib-metadata python3-iniconfig
+  python3-lark python3-lib2to3 python3-minimal python3-more-itertools
+  python3-numpy python3-packaging python3-pkg-resources python3-pluggy
+  python3-py python3-pyparsing python3-pytest python3-roman python3-setuptools
+  python3-six python3-toml python3-zipp python3.10 python3.10-dev
+  python3.10-minimal readline-common ros-humble-action-msgs
+  ros-humble-ament-cmake ros-humble-ament-cmake-core
+  ros-humble-ament-cmake-export-definitions
+  ros-humble-ament-cmake-export-dependencies
+  ros-humble-ament-cmake-export-include-directories
+  ros-humble-ament-cmake-export-interfaces
+  ros-humble-ament-cmake-export-libraries
+  ros-humble-ament-cmake-export-link-flags
+  ros-humble-ament-cmake-export-targets ros-humble-ament-cmake-gen-version-h
+  ros-humble-ament-cmake-gmock ros-humble-ament-cmake-gtest
+  ros-humble-ament-cmake-include-directories ros-humble-ament-cmake-libraries
+  ros-humble-ament-cmake-pytest ros-humble-ament-cmake-python
+  ros-humble-ament-cmake-ros ros-humble-ament-cmake-target-dependencies
+  ros-humble-ament-cmake-test ros-humble-ament-cmake-version
+  ros-humble-ament-index-cpp ros-humble-ament-index-python
+  ros-humble-ament-package ros-humble-builtin-interfaces
+  ros-humble-class-loader ros-humble-console-bridge-vendor
+  ros-humble-control-msgs ros-humble-domain-coordinator ros-humble-fastcdr
+  ros-humble-fastrtps ros-humble-fastrtps-cmake-module
+  ros-humble-foonathan-memory-vendor ros-humble-geometry-msgs
+  ros-humble-gmock-vendor ros-humble-gtest-vendor
+  ros-humble-hardware-interface ros-humble-libstatistics-collector
+  ros-humble-libyaml-vendor ros-humble-lifecycle-msgs ros-humble-mirte-msgs
+  ros-humble-pluginlib ros-humble-python-cmake-module ros-humble-rcl
+  ros-humble-rcl-interfaces ros-humble-rcl-lifecycle
+  ros-humble-rcl-logging-interface ros-humble-rcl-logging-spdlog
+  ros-humble-rcl-yaml-param-parser ros-humble-rclcpp
+  ros-humble-rclcpp-lifecycle ros-humble-rcpputils ros-humble-rcutils
+  ros-humble-rmw ros-humble-rmw-dds-common ros-humble-rmw-fastrtps-cpp
+  ros-humble-rmw-fastrtps-shared-cpp ros-humble-rmw-implementation
+  ros-humble-rmw-implementation-cmake ros-humble-ros-workspace
+  ros-humble-rosgraph-msgs ros-humble-rosidl-adapter ros-humble-rosidl-cli
+  ros-humble-rosidl-cmake ros-humble-rosidl-default-runtime
+  ros-humble-rosidl-generator-c ros-humble-rosidl-generator-cpp
+  ros-humble-rosidl-generator-py ros-humble-rosidl-parser
+  ros-humble-rosidl-runtime-c ros-humble-rosidl-runtime-cpp
+  ros-humble-rosidl-typesupport-c ros-humble-rosidl-typesupport-cpp
+  ros-humble-rosidl-typesupport-fastrtps-c
+  ros-humble-rosidl-typesupport-fastrtps-cpp
+  ros-humble-rosidl-typesupport-interface
+  ros-humble-rosidl-typesupport-introspection-c
+  ros-humble-rosidl-typesupport-introspection-cpp ros-humble-rpyutils
+  ros-humble-sensor-msgs ros-humble-spdlog-vendor ros-humble-statistics-msgs
+  ros-humble-std-msgs ros-humble-tinyxml2-vendor ros-humble-tracetools
+  ros-humble-trajectory-msgs ros-humble-unique-identifier-msgs sgml-base
+  tzdata xml-core zlib1g-dev
+Suggested packages:
+  autoconf-archive gnu-standards autoconf-doc cmake-doc ninja-build
+  cmake-format dh-make gettext-doc libasprintf-dev libgettextpo-dev groff
+  lrzip libfmt-doc libssl-doc libtool-doc gfortran | fortran95-compiler
+  gcj-jdk libyaml-doc m4-doc apparmor less www-browser libmail-box-perl
+  python3-doc python3-tk python3-venv python-attr-doc docutils-doc
+  fonts-linuxlibertine | ttf-linux-libertine texlive-lang-french
+  texlive-latex-base texlive-latex-recommended python-lark-doc gfortran
+  python-numpy-doc subversion python-pyparsing-doc python-setuptools-doc
+  python3.10-venv python3.10-doc binfmt-support readline-doc sgml-base-doc
+Recommended packages:
+  curl | wget | lynx libarchive-cpio-perl javascript-common libldap-common
+  publicsuffix libsasl2-modules libltdl-dev libmail-sendmail-perl
+  libpaper-utils python3-pil python3-pygments
+The following NEW packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils catch2 cmake
+  cmake-data debhelper debugedit dh-autoreconf dh-elpa-helper
+  dh-strip-nondeterminism docutils-common dwz emacsen-common fakeroot file
+  gettext gettext-base google-mock googletest groff-base intltool-debian
+  libarchive-zip-perl libarchive13 libblas3 libbrotli1 libconsole-bridge-dev
+  libconsole-bridge1.0 libcurl4 libdebhelper-perl libdw1 libelf1 libexpat1
+  libexpat1-dev libfakeroot libfile-stripnondeterminism-perl libfmt-dev
+  libfmt8 libgfortran5 libgtest-dev libicu70 libjs-jquery libjs-sphinxdoc
+  libjs-underscore libjsoncpp25 liblapack3 libldap-2.5-0 libmagic-mgc
+  libmagic1 libmpdec3 libnghttp2-14 libpipeline1 libpsl5 libpython3-dev
+  libpython3-stdlib libpython3.10 libpython3.10-dev libpython3.10-minimal
+  libpython3.10-stdlib libreadline8 librhash0 librtmp1 libsasl2-2
+  libsasl2-modules-db libsigsegv2 libspdlog-dev libspdlog1 libsqlite3-0
+  libssh-4 libssl-dev libsub-override-perl libtinyxml2-9 libtinyxml2-dev
+  libtool libuchardet0 libuv1 libxml2 libyaml-0-2 libyaml-dev m4 man-db
+  media-types po-debconf python3 python3-argcomplete python3-attr
+  python3-catkin-pkg-modules python3-dateutil python3-dev python3-distutils
+  python3-docutils python3-empy python3-importlib-metadata python3-iniconfig
+  python3-lark python3-lib2to3 python3-minimal python3-more-itertools
+  python3-numpy python3-packaging python3-pkg-resources python3-pluggy
+  python3-py python3-pyparsing python3-pytest python3-roman python3-setuptools
+  python3-six python3-toml python3-zipp python3.10 python3.10-dev
+  python3.10-minimal readline-common ros-humble-action-msgs
+  ros-humble-ament-cmake ros-humble-ament-cmake-core
+  ros-humble-ament-cmake-export-definitions
+  ros-humble-ament-cmake-export-dependencies
+  ros-humble-ament-cmake-export-include-directories
+  ros-humble-ament-cmake-export-interfaces
+  ros-humble-ament-cmake-export-libraries
+  ros-humble-ament-cmake-export-link-flags
+  ros-humble-ament-cmake-export-targets ros-humble-ament-cmake-gen-version-h
+  ros-humble-ament-cmake-gmock ros-humble-ament-cmake-gtest
+  ros-humble-ament-cmake-include-directories ros-humble-ament-cmake-libraries
+  ros-humble-ament-cmake-pytest ros-humble-ament-cmake-python
+  ros-humble-ament-cmake-ros ros-humble-ament-cmake-target-dependencies
+  ros-humble-ament-cmake-test ros-humble-ament-cmake-version
+  ros-humble-ament-index-cpp ros-humble-ament-index-python
+  ros-humble-ament-package ros-humble-builtin-interfaces
+  ros-humble-class-loader ros-humble-console-bridge-vendor
+  ros-humble-control-msgs ros-humble-domain-coordinator ros-humble-fastcdr
+  ros-humble-fastrtps ros-humble-fastrtps-cmake-module
+  ros-humble-foonathan-memory-vendor ros-humble-geometry-msgs
+  ros-humble-gmock-vendor ros-humble-gtest-vendor
+  ros-humble-hardware-interface ros-humble-libstatistics-collector
+  ros-humble-libyaml-vendor ros-humble-lifecycle-msgs ros-humble-mirte-msgs
+  ros-humble-pluginlib ros-humble-python-cmake-module ros-humble-rcl
+  ros-humble-rcl-interfaces ros-humble-rcl-lifecycle
+  ros-humble-rcl-logging-interface ros-humble-rcl-logging-spdlog
+  ros-humble-rcl-yaml-param-parser ros-humble-rclcpp
+  ros-humble-rclcpp-lifecycle ros-humble-rcpputils ros-humble-rcutils
+  ros-humble-rmw ros-humble-rmw-dds-common ros-humble-rmw-fastrtps-cpp
+  ros-humble-rmw-fastrtps-shared-cpp ros-humble-rmw-implementation
+  ros-humble-rmw-implementation-cmake ros-humble-ros-workspace
+  ros-humble-rosgraph-msgs ros-humble-rosidl-adapter ros-humble-rosidl-cli
+  ros-humble-rosidl-cmake ros-humble-rosidl-default-runtime
+  ros-humble-rosidl-generator-c ros-humble-rosidl-generator-cpp
+  ros-humble-rosidl-generator-py ros-humble-rosidl-parser
+  ros-humble-rosidl-runtime-c ros-humble-rosidl-runtime-cpp
+  ros-humble-rosidl-typesupport-c ros-humble-rosidl-typesupport-cpp
+  ros-humble-rosidl-typesupport-fastrtps-c
+  ros-humble-rosidl-typesupport-fastrtps-cpp
+  ros-humble-rosidl-typesupport-interface
+  ros-humble-rosidl-typesupport-introspection-c
+  ros-humble-rosidl-typesupport-introspection-cpp ros-humble-rpyutils
+  ros-humble-sensor-msgs ros-humble-spdlog-vendor ros-humble-statistics-msgs
+  ros-humble-std-msgs ros-humble-tinyxml2-vendor ros-humble-tracetools
+  ros-humble-trajectory-msgs ros-humble-unique-identifier-msgs
+  sbuild-build-depends-main-dummy sgml-base tzdata xml-core zlib1g-dev
+0 upgraded, 208 newly installed, 0 to remove and 0 not upgraded.
+Need to get 62.9 MB/63.2 MB of archives.
+After this operation, 282 MB of additional disk space will be used.
+Get:1 copy:/<<RESOLVERDIR>>/apt_archive ./ sbuild-build-depends-main-dummy 0.invalid.0 [736 B]
+Get:2 file:/<<BUILDDIR>>/resolver-9qjA9a/apt_archive ./ ros-humble-mirte-msgs 2-2025.06.04.11.04 [334 kB]
+Get:3 http://packages.ros.org/ros2/ubuntu jammy/main arm64 python3-catkin-pkg-modules all 1.0.0-1 [43.2 kB]
+Get:4 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ros-workspace arm64 1.0.2-2jammy.20241125.210925 [16.7 kB]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-fastcdr arm64 1.0.24-2jammy.20241125.212236 [41.5 kB]
+Get:6 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-package arm64 0.14.0-4jammy.20220421.001218 [23.7 kB]
+Get:7 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-core arm64 1.3.11-1jammy.20241125.210622 [29.1 kB]
+Get:8 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-definitions arm64 1.3.11-1jammy.20241125.211705 [7508 B]
+Get:9 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-libraries arm64 1.3.11-1jammy.20241125.211336 [7170 B]
+Get:10 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-dependencies arm64 1.3.11-1jammy.20241125.211530 [9020 B]
+Get:11 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-include-directories arm64 1.3.11-1jammy.20241125.211805 [7836 B]
+Get:12 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-libraries arm64 1.3.11-1jammy.20241125.211831 [10.6 kB]
+Get:13 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-interfaces arm64 1.3.11-1jammy.20241125.211855 [8262 B]
+Get:14 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-link-flags arm64 1.3.11-1jammy.20241125.211639 [7102 B]
+Get:15 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-export-targets arm64 1.3.11-1jammy.20241125.211901 [8044 B]
+Get:16 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-gen-version-h arm64 1.3.11-1jammy.20241125.213723 [9232 B]
+Get:17 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-python arm64 1.3.11-1jammy.20241125.211339 [10.6 kB]
+Get:18 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-include-directories arm64 1.3.11-1jammy.20241125.211314 [7540 B]
+Get:19 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-target-dependencies arm64 1.3.11-1jammy.20241125.211542 [9748 B]
+Get:20 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-test arm64 1.3.11-1jammy.20241125.211533 [16.9 kB]
+Get:21 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-version arm64 1.3.11-1jammy.20241125.211343 [7310 B]
+Get:22 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake arm64 1.3.11-1jammy.20241125.221444 [7644 B]
+Get:23 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-index-python arm64 1.4.0-2jammy.20250325.172209 [12.3 kB]
+Get:24 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-python-cmake-module arm64 0.10.0-2jammy.20250325.183738 [8016 B]
+Get:25 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcutils arm64 5.1.6-1jammy.20250325.193110 [87.9 kB]
+Get:26 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-interface arm64 3.1.6-1jammy.20250325.184242 [8884 B]
+Get:27 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-runtime-c arm64 3.1.6-1jammy.20250325.194220 [26.5 kB]
+Get:28 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw arm64 6.1.2-1jammy.20250325.195408 [67.4 kB]
+Get:29 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-cli arm64 3.1.6-1jammy.20250325.175029 [18.8 kB]
+Get:30 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-adapter arm64 3.1.6-1jammy.20250325.184117 [19.4 kB]
+Get:31 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-parser arm64 3.1.6-1jammy.20250325.184652 [19.4 kB]
+Get:32 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-cmake arm64 3.1.6-1jammy.20250325.185215 [15.7 kB]
+Get:33 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-generator-c arm64 3.1.6-1jammy.20250325.194913 [20.1 kB]
+Get:34 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcpputils arm64 2.4.5-1jammy.20250325.194210 [52.3 kB]
+Get:35 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10-minimal arm64 3.10.12-1~22.04.9 [812 kB]
+Get:36 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-c arm64 2.0.2-1jammy.20250325.195526 [24.0 kB]
+Get:37 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rpyutils arm64 0.2.1-2jammy.20250325.175015 [6124 B]
+Get:38 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-generator-py arm64 0.14.4-1jammy.20250325.202006 [29.5 kB]
+Get:39 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-runtime-cpp arm64 3.1.6-1jammy.20250325.195449 [15.5 kB]
+Get:40 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-cpp arm64 2.0.2-1jammy.20250325.200711 [23.2 kB]
+Get:41 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-gtest-vendor arm64 1.10.9006-1jammy.20241125.213405 [175 kB]
+Get:42 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-gtest arm64 1.3.11-1jammy.20241125.213525 [11.5 kB]
+Get:43 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-gmock-vendor arm64 1.10.9006-1jammy.20241126.014647 [93.4 kB]
+Get:44 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-gmock arm64 1.3.11-1jammy.20241126.014910 [10.5 kB]
+Get:45 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-pytest arm64 1.3.11-1jammy.20241125.211729 [9912 B]
+Get:46 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-domain-coordinator arm64 0.10.0-3jammy.20250325.172731 [5418 B]
+Get:47 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-cmake-ros arm64 0.10.0-3jammy.20250325.181608 [8142 B]
+Get:48 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-fastrtps-cmake-module arm64 2.2.2-2jammy.20250325.181609 [7174 B]
+Get:49 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-generator-cpp arm64 3.1.6-1jammy.20250325.200121 [22.4 kB]
+Get:50 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-fastrtps-cpp arm64 2.2.2-2jammy.20250325.200822 [25.6 kB]
+Get:51 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-fastrtps-c arm64 2.2.2-2jammy.20250325.201408 [23.9 kB]
+Get:52 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-introspection-c arm64 3.1.6-1jammy.20250325.194950 [22.7 kB]
+Get:53 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-typesupport-introspection-cpp arm64 3.1.6-1jammy.20250325.200123 [22.9 kB]
+Get:54 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosidl-default-runtime arm64 1.2.0-2jammy.20250325.202717 [6478 B]
+Get:55 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-builtin-interfaces arm64 1.2.1-1jammy.20250325.205450 [41.7 kB]
+Get:56 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-unique-identifier-msgs arm64 2.2.1-3jammy.20250325.205105 [37.6 kB]
+Get:57 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-action-msgs arm64 1.2.1-1jammy.20250325.210029 [69.3 kB]
+Get:58 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-index-cpp arm64 1.4.0-2jammy.20250325.190850 [22.3 kB]
+Get:59 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-console-bridge-vendor arm64 1.4.1-1jammy.20250325.184259 [5368 B]
+Get:60 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-class-loader arm64 2.2.0-3jammy.20250325.194951 [45.7 kB]
+Get:61 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-std-msgs arm64 4.8.0-1jammy.20250325.213809 [190 kB]
+Get:62 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-geometry-msgs arm64 4.8.0-1jammy.20250325.221651 [198 kB]
+Get:63 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-sensor-msgs arm64 4.8.0-1jammy.20250325.223641 [302 kB]
+Get:64 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-trajectory-msgs arm64 4.8.0-1jammy.20250326.015325 [83.7 kB]
+Get:65 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-control-msgs arm64 4.8.0-1jammy.20250326.020314 [439 kB]
+Get:66 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-foonathan-memory-vendor arm64 1.2.0-3jammy.20250325.185808 [764 kB]
+Get:67 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-fastrtps arm64 2.6.10-1jammy.20250429.171228 [2722 kB]
+Get:68 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libexpat1 arm64 2.4.7-1ubuntu0.6 [77.8 kB]
+Get:69 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3.10-minimal arm64 3.10.12-1~22.04.9 [2245 kB]
+Get:70 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-minimal arm64 3.10.6-1~22.04.1 [24.3 kB]
+Get:71 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 media-types all 7.0.0 [25.5 kB]
+Get:72 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libmpdec3 arm64 2.5.1-2build2 [89.0 kB]
+Get:73 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 readline-common all 8.1.2-1 [53.5 kB]
+Get:74 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libreadline8 arm64 8.1.2-1 [153 kB]
+Get:75 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libsqlite3-0 arm64 3.37.2-2ubuntu0.4 [636 kB]
+Get:76 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10-stdlib arm64 3.10.12-1~22.04.9 [1845 kB]
+Get:77 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3.10 arm64 3.10.12-1~22.04.9 [508 kB]
+Get:78 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3-stdlib arm64 3.10.6-1~22.04.1 [6812 B]
+Get:79 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3 arm64 3.10.6-1~22.04.1 [22.8 kB]
+Get:80 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-lifecycle-msgs arm64 1.2.1-1jammy.20250325.204343 [110 kB]
+Get:81 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-tinyxml2-vendor arm64 0.7.6-1jammy.20241125.234439 [6722 B]
+Get:82 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-pluginlib arm64 5.1.0-3jammy.20250325.200145 [28.2 kB]
+Get:83 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 sgml-base all 1.30 [12.5 kB]
+Get:84 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libelf1 arm64 0.186-1ubuntu0.1 [50.8 kB]
+Get:85 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libicu70 arm64 70.1-2 [10.5 MB]
+Get:86 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl-interfaces arm64 1.2.1-1jammy.20250325.210217 [221 kB]
+Get:87 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl-logging-interface arm64 2.3.1-1jammy.20250325.195219 [12.8 kB]
+Get:88 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-spdlog-vendor arm64 1.3.1-1jammy.20250325.184827 [6244 B]
+Get:89 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl-logging-spdlog arm64 2.3.1-1jammy.20250325.195904 [17.5 kB]
+Get:90 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-libyaml-vendor arm64 1.2.2-2jammy.20250325.195259 [67.7 kB]
+Get:91 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl-yaml-param-parser arm64 5.3.9-1jammy.20250325.200203 [29.9 kB]
+Get:92 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw-implementation-cmake arm64 6.1.2-1jammy.20250325.183954 [8878 B]
+Get:93 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw-dds-common arm64 1.6.0-2jammy.20250325.204837 [93.9 kB]
+Get:94 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-tracetools arm64 4.1.1-1jammy.20250325.192811 [18.0 kB]
+Get:95 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw-fastrtps-shared-cpp arm64 6.2.7-1jammy.20250429.173437 [158 kB]
+Get:96 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw-fastrtps-cpp arm64 6.2.7-1jammy.20250429.174248 [91.7 kB]
+Get:97 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rmw-implementation arm64 2.8.4-1jammy.20250429.181818 [25.2 kB]
+Get:98 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl arm64 5.3.9-1jammy.20250429.183009 [144 kB]
+Get:99 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rcl-lifecycle arm64 5.3.9-1jammy.20250429.235744 [28.1 kB]
+Get:100 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-statistics-msgs arm64 1.2.1-1jammy.20250325.212041 [58.2 kB]
+Get:101 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-libstatistics-collector arm64 1.3.4-1jammy.20250429.233639 [25.0 kB]
+Get:102 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rosgraph-msgs arm64 1.2.1-1jammy.20250325.211859 [36.2 kB]
+Get:103 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rclcpp arm64 16.0.12-1jammy.20250429.235657 [606 kB]
+Get:104 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-rclcpp-lifecycle arm64 16.0.12-1jammy.20250430.021154 [79.6 kB]
+Get:105 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-hardware-interface arm64 2.50.0-1jammy.20250430.072414 [215 kB]
+Get:106 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libxml2 arm64 2.9.13+dfsg-1ubuntu0.7 [729 kB]
+Get:107 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libyaml-0-2 arm64 0.2.2-1build2 [51.0 kB]
+Get:108 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-pkg-resources all 59.6.0-1.2ubuntu0.22.04.3 [133 kB]
+Get:109 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 tzdata all 2025b-0ubuntu0.22.04.1 [347 kB]
+Get:110 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 bsdextrautils arm64 2.37.2-4ubuntu3.4 [70.3 kB]
+Get:111 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libmagic-mgc arm64 1:5.41-3ubuntu0.1 [257 kB]
+Get:112 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libmagic1 arm64 1:5.41-3ubuntu0.1 [85.0 kB]
+Get:113 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 file arm64 1:5.41-3ubuntu0.1 [21.6 kB]
+Get:114 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 gettext-base arm64 0.21-4ubuntu4 [37.2 kB]
+Get:115 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libuchardet0 arm64 0.0.7-1build2 [77.3 kB]
+Get:116 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 groff-base arm64 1.22.4-8build1 [917 kB]
+Get:117 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libnghttp2-14 arm64 1.43.0-1ubuntu0.2 [76.0 kB]
+Get:118 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libpipeline1 arm64 1.5.5-1 [23.2 kB]
+Get:119 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libpsl5 arm64 0.21.0-1.2build2 [58.3 kB]
+Get:120 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libuv1 arm64 1.43.0-1ubuntu0.1 [90.1 kB]
+Get:121 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 man-db arm64 2.10.2-1 [1181 kB]
+Get:122 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libsigsegv2 arm64 2.13-1ubuntu3 [14.5 kB]
+Get:123 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 m4 arm64 1.4.18-5ubuntu2 [196 kB]
+Get:124 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autoconf all 2.71-2 [338 kB]
+Get:125 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autotools-dev all 20220109.1 [44.9 kB]
+Get:126 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 automake all 1:1.16.5-1.3 [558 kB]
+Get:127 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autopoint all 0.21-4ubuntu4 [422 kB]
+Get:128 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 catch2 arm64 2.13.8-1 [489 kB]
+Get:129 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libarchive13 arm64 3.6.0-1ubuntu1.4 [367 kB]
+Get:130 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libbrotli1 arm64 1.0.9-2build6 [314 kB]
+Get:131 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libsasl2-modules-db arm64 2.1.27+dfsg2-3ubuntu1.2 [21.1 kB]
+Get:132 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libsasl2-2 arm64 2.1.27+dfsg2-3ubuntu1.2 [55.6 kB]
+Get:133 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libldap-2.5-0 arm64 2.5.19+dfsg-0ubuntu0.22.04.1 [181 kB]
+Get:134 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 librtmp1 arm64 2.4+20151223.gitfa8646d.1-2build4 [59.2 kB]
+Get:135 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libssh-4 arm64 0.9.6-2ubuntu0.22.04.3 [185 kB]
+Get:136 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libcurl4 arm64 7.81.0-1ubuntu1.20 [284 kB]
+Get:137 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libjsoncpp25 arm64 1.9.5-3 [76.6 kB]
+Get:138 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 librhash0 arm64 1.4.2-1ubuntu1 [125 kB]
+Get:139 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dh-elpa-helper all 2.0.9ubuntu1 [7610 B]
+Get:140 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 emacsen-common all 3.0.4 [14.9 kB]
+Get:141 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 cmake-data all 3.22.1-1ubuntu1.22.04.2 [1913 kB]
+Get:142 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 cmake arm64 3.22.1-1ubuntu1.22.04.2 [4646 kB]
+Get:143 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libdebhelper-perl all 13.6ubuntu1 [67.2 kB]
+Get:144 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libtool all 2.4.6-15build2 [164 kB]
+Get:145 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dh-autoreconf all 20 [16.1 kB]
+Get:146 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libarchive-zip-perl all 1.68-1 [90.2 kB]
+Get:147 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libsub-override-perl all 0.09-2 [9532 B]
+Get:148 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libfile-stripnondeterminism-perl all 1.13.0-1 [18.1 kB]
+Get:149 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dh-strip-nondeterminism all 1.13.0-1 [5344 B]
+Get:150 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libdw1 arm64 0.186-1ubuntu0.1 [246 kB]
+Get:151 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 debugedit arm64 1:5.0-4build1 [46.5 kB]
+Get:152 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dwz arm64 0.14-1build2 [102 kB]
+Get:153 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 gettext arm64 0.21-4ubuntu4 [846 kB]
+Get:154 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 intltool-debian all 0.35.0+20060710.5 [24.9 kB]
+Get:155 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 po-debconf all 1.0.21+nmu1 [233 kB]
+Get:156 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 debhelper all 13.6ubuntu1 [923 kB]
+Get:157 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 xml-core all 0.18+nmu1 [21.6 kB]
+Get:158 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 docutils-common all 0.17.1+dfsg-2 [117 kB]
+Get:159 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libfakeroot arm64 1.28-1ubuntu1 [31.5 kB]
+Get:160 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 fakeroot arm64 1.28-1ubuntu1 [60.5 kB]
+Get:161 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 googletest all 1.11.0-3 [541 kB]
+Get:162 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 google-mock arm64 1.11.0-3 [3836 B]
+Get:163 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libblas3 arm64 3.10.0-2ubuntu1 [141 kB]
+Get:164 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libconsole-bridge1.0 arm64 1.0.1+dfsg2-3 [11.5 kB]
+Get:165 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libexpat1-dev arm64 2.4.7-1ubuntu0.6 [130 kB]
+Get:166 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libfmt8 arm64 8.1.1+ds1-2 [56.9 kB]
+Get:167 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libgfortran5 arm64 12.3.0-1ubuntu1~22.04 [416 kB]
+Get:168 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libgtest-dev arm64 1.11.0-3 [248 kB]
+Get:169 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libjs-jquery all 3.6.0+dfsg+~3.5.13-1 [321 kB]
+Get:170 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libjs-underscore all 1.13.2~dfsg-2 [118 kB]
+Get:171 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libjs-sphinxdoc all 4.3.2-1 [139 kB]
+Get:172 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 liblapack3 arm64 3.10.0-2ubuntu1 [2009 kB]
+Get:173 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10 arm64 3.10.12-1~22.04.9 [1888 kB]
+Get:174 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 zlib1g-dev arm64 1:1.2.11.dfsg-2ubuntu9.2 [163 kB]
+Get:175 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10-dev arm64 3.10.12-1~22.04.9 [4665 kB]
+Get:176 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3-dev arm64 3.10.6-1~22.04.1 [7064 B]
+Get:177 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libspdlog1 arm64 1:1.9.2+ds-0.2 [104 kB]
+Get:178 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libfmt-dev arm64 8.1.1+ds1-2 [118 kB]
+Get:179 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libspdlog-dev arm64 1:1.9.2+ds-0.2 [181 kB]
+Get:180 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libssl-dev arm64 3.0.2-0ubuntu1.19 [2299 kB]
+Get:181 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libtinyxml2-9 arm64 9.0.0+dfsg-3 [31.9 kB]
+Get:182 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-argcomplete all 1.8.1-1.5 [27.2 kB]
+Get:183 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-attr all 21.2.0-1 [44.0 kB]
+Get:184 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-six all 1.16.0-3ubuntu1 [12.6 kB]
+Get:185 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-dateutil all 2.8.1-6 [78.4 kB]
+Get:186 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-roman all 3.3-1 [10.6 kB]
+Get:187 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-docutils all 0.17.1+dfsg-2 [387 kB]
+Get:188 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-pyparsing all 2.4.7-1 [61.4 kB]
+Get:189 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3.10-dev arm64 3.10.12-1~22.04.9 [508 kB]
+Get:190 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-lib2to3 all 3.10.8-1~22.04 [77.6 kB]
+Get:191 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-distutils all 3.10.8-1~22.04 [139 kB]
+Get:192 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-dev arm64 3.10.6-1~22.04.1 [26.0 kB]
+Get:193 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-empy all 3.3.4-2 [65.7 kB]
+Get:194 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-more-itertools all 8.10.0-2 [47.9 kB]
+Get:195 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-zipp all 1.0.0-3ubuntu0.1 [6288 B]
+Get:196 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-importlib-metadata all 4.6.4-1 [16.2 kB]
+Get:197 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-iniconfig all 1.1.1-2 [6024 B]
+Get:198 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-lark all 1.1.1-1 [123 kB]
+Get:199 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-numpy arm64 1:1.21.5-1ubuntu22.04.1 [4105 kB]
+Get:200 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-packaging all 21.3-1 [30.7 kB]
+Get:201 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pluggy all 0.13.0-7.1 [19.0 kB]
+Get:202 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-py all 1.10.0-1 [71.9 kB]
+Get:203 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-toml all 0.10.2-1 [16.5 kB]
+Get:204 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pytest all 6.2.5-1ubuntu2 [214 kB]
+Get:205 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-setuptools all 59.6.0-1.2ubuntu0.22.04.3 [340 kB]
+Get:206 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libconsole-bridge-dev arm64 1.0.1+dfsg2-3 [6688 B]
+Get:207 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 libtinyxml2-dev arm64 9.0.0+dfsg-3 [18.6 kB]
+Get:208 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libyaml-dev arm64 0.2.2-1build2 [63.9 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 62.9 MB in 3s (19.3 MB/s)
+Selecting previously unselected package libpython3.10-minimal:arm64.
+(Reading database ... 10520 files and directories currently installed.)
+Preparing to unpack .../libpython3.10-minimal_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10-minimal:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libexpat1:arm64.
+Preparing to unpack .../libexpat1_2.4.7-1ubuntu0.6_arm64.deb ...
+Unpacking libexpat1:arm64 (2.4.7-1ubuntu0.6) ...
+Selecting previously unselected package python3.10-minimal.
+Preparing to unpack .../python3.10-minimal_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking python3.10-minimal (3.10.12-1~22.04.9) ...
+Setting up libpython3.10-minimal:arm64 (3.10.12-1~22.04.9) ...
+Setting up libexpat1:arm64 (2.4.7-1ubuntu0.6) ...
+Setting up python3.10-minimal (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3-minimal.
+(Reading database ... 10824 files and directories currently installed.)
+Preparing to unpack .../0-python3-minimal_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package media-types.
+Preparing to unpack .../1-media-types_7.0.0_all.deb ...
+Unpacking media-types (7.0.0) ...
+Selecting previously unselected package libmpdec3:arm64.
+Preparing to unpack .../2-libmpdec3_2.5.1-2build2_arm64.deb ...
+Unpacking libmpdec3:arm64 (2.5.1-2build2) ...
+Selecting previously unselected package readline-common.
+Preparing to unpack .../3-readline-common_8.1.2-1_all.deb ...
+Unpacking readline-common (8.1.2-1) ...
+Selecting previously unselected package libreadline8:arm64.
+Preparing to unpack .../4-libreadline8_8.1.2-1_arm64.deb ...
+Unpacking libreadline8:arm64 (8.1.2-1) ...
+Selecting previously unselected package libsqlite3-0:arm64.
+Preparing to unpack .../5-libsqlite3-0_3.37.2-2ubuntu0.4_arm64.deb ...
+Unpacking libsqlite3-0:arm64 (3.37.2-2ubuntu0.4) ...
+Selecting previously unselected package libpython3.10-stdlib:arm64.
+Preparing to unpack .../6-libpython3.10-stdlib_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10-stdlib:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3.10.
+Preparing to unpack .../7-python3.10_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking python3.10 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libpython3-stdlib:arm64.
+Preparing to unpack .../8-libpython3-stdlib_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking libpython3-stdlib:arm64 (3.10.6-1~22.04.1) ...
+Setting up python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package python3.
+(Reading database ... 11254 files and directories currently installed.)
+Preparing to unpack .../000-python3_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3 (3.10.6-1~22.04.1) ...
+Selecting previously unselected package sgml-base.
+Preparing to unpack .../001-sgml-base_1.30_all.deb ...
+Unpacking sgml-base (1.30) ...
+Selecting previously unselected package libelf1:arm64.
+Preparing to unpack .../002-libelf1_0.186-1ubuntu0.1_arm64.deb ...
+Unpacking libelf1:arm64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package libicu70:arm64.
+Preparing to unpack .../003-libicu70_70.1-2_arm64.deb ...
+Unpacking libicu70:arm64 (70.1-2) ...
+Selecting previously unselected package libxml2:arm64.
+Preparing to unpack .../004-libxml2_2.9.13+dfsg-1ubuntu0.7_arm64.deb ...
+Unpacking libxml2:arm64 (2.9.13+dfsg-1ubuntu0.7) ...
+Selecting previously unselected package libyaml-0-2:arm64.
+Preparing to unpack .../005-libyaml-0-2_0.2.2-1build2_arm64.deb ...
+Unpacking libyaml-0-2:arm64 (0.2.2-1build2) ...
+Selecting previously unselected package python3-pkg-resources.
+Preparing to unpack .../006-python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package tzdata.
+Preparing to unpack .../007-tzdata_2025b-0ubuntu0.22.04.1_all.deb ...
+Unpacking tzdata (2025b-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bsdextrautils.
+Preparing to unpack .../008-bsdextrautils_2.37.2-4ubuntu3.4_arm64.deb ...
+Unpacking bsdextrautils (2.37.2-4ubuntu3.4) ...
+Selecting previously unselected package libmagic-mgc.
+Preparing to unpack .../009-libmagic-mgc_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package libmagic1:arm64.
+Preparing to unpack .../010-libmagic1_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking libmagic1:arm64 (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package file.
+Preparing to unpack .../011-file_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking file (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package gettext-base.
+Preparing to unpack .../012-gettext-base_0.21-4ubuntu4_arm64.deb ...
+Unpacking gettext-base (0.21-4ubuntu4) ...
+Selecting previously unselected package libuchardet0:arm64.
+Preparing to unpack .../013-libuchardet0_0.0.7-1build2_arm64.deb ...
+Unpacking libuchardet0:arm64 (0.0.7-1build2) ...
+Selecting previously unselected package groff-base.
+Preparing to unpack .../014-groff-base_1.22.4-8build1_arm64.deb ...
+Unpacking groff-base (1.22.4-8build1) ...
+Selecting previously unselected package libnghttp2-14:arm64.
+Preparing to unpack .../015-libnghttp2-14_1.43.0-1ubuntu0.2_arm64.deb ...
+Unpacking libnghttp2-14:arm64 (1.43.0-1ubuntu0.2) ...
+Selecting previously unselected package libpipeline1:arm64.
+Preparing to unpack .../016-libpipeline1_1.5.5-1_arm64.deb ...
+Unpacking libpipeline1:arm64 (1.5.5-1) ...
+Selecting previously unselected package libpsl5:arm64.
+Preparing to unpack .../017-libpsl5_0.21.0-1.2build2_arm64.deb ...
+Unpacking libpsl5:arm64 (0.21.0-1.2build2) ...
+Selecting previously unselected package libuv1:arm64.
+Preparing to unpack .../018-libuv1_1.43.0-1ubuntu0.1_arm64.deb ...
+Unpacking libuv1:arm64 (1.43.0-1ubuntu0.1) ...
+Selecting previously unselected package man-db.
+Preparing to unpack .../019-man-db_2.10.2-1_arm64.deb ...
+Unpacking man-db (2.10.2-1) ...
+Selecting previously unselected package libsigsegv2:arm64.
+Preparing to unpack .../020-libsigsegv2_2.13-1ubuntu3_arm64.deb ...
+Unpacking libsigsegv2:arm64 (2.13-1ubuntu3) ...
+Selecting previously unselected package m4.
+Preparing to unpack .../021-m4_1.4.18-5ubuntu2_arm64.deb ...
+Unpacking m4 (1.4.18-5ubuntu2) ...
+Selecting previously unselected package autoconf.
+Preparing to unpack .../022-autoconf_2.71-2_all.deb ...
+Unpacking autoconf (2.71-2) ...
+Selecting previously unselected package autotools-dev.
+Preparing to unpack .../023-autotools-dev_20220109.1_all.deb ...
+Unpacking autotools-dev (20220109.1) ...
+Selecting previously unselected package automake.
+Preparing to unpack .../024-automake_1%3a1.16.5-1.3_all.deb ...
+Unpacking automake (1:1.16.5-1.3) ...
+Selecting previously unselected package autopoint.
+Preparing to unpack .../025-autopoint_0.21-4ubuntu4_all.deb ...
+Unpacking autopoint (0.21-4ubuntu4) ...
+Selecting previously unselected package catch2.
+Preparing to unpack .../026-catch2_2.13.8-1_arm64.deb ...
+Unpacking catch2 (2.13.8-1) ...
+Selecting previously unselected package libarchive13:arm64.
+Preparing to unpack .../027-libarchive13_3.6.0-1ubuntu1.4_arm64.deb ...
+Unpacking libarchive13:arm64 (3.6.0-1ubuntu1.4) ...
+Selecting previously unselected package libbrotli1:arm64.
+Preparing to unpack .../028-libbrotli1_1.0.9-2build6_arm64.deb ...
+Unpacking libbrotli1:arm64 (1.0.9-2build6) ...
+Selecting previously unselected package libsasl2-modules-db:arm64.
+Preparing to unpack .../029-libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2_arm64.deb ...
+Unpacking libsasl2-modules-db:arm64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libsasl2-2:arm64.
+Preparing to unpack .../030-libsasl2-2_2.1.27+dfsg2-3ubuntu1.2_arm64.deb ...
+Unpacking libsasl2-2:arm64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libldap-2.5-0:arm64.
+Preparing to unpack .../031-libldap-2.5-0_2.5.19+dfsg-0ubuntu0.22.04.1_arm64.deb ...
+Unpacking libldap-2.5-0:arm64 (2.5.19+dfsg-0ubuntu0.22.04.1) ...
+Selecting previously unselected package librtmp1:arm64.
+Preparing to unpack .../032-librtmp1_2.4+20151223.gitfa8646d.1-2build4_arm64.deb ...
+Unpacking librtmp1:arm64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Selecting previously unselected package libssh-4:arm64.
+Preparing to unpack .../033-libssh-4_0.9.6-2ubuntu0.22.04.3_arm64.deb ...
+Unpacking libssh-4:arm64 (0.9.6-2ubuntu0.22.04.3) ...
+Selecting previously unselected package libcurl4:arm64.
+Preparing to unpack .../034-libcurl4_7.81.0-1ubuntu1.20_arm64.deb ...
+Unpacking libcurl4:arm64 (7.81.0-1ubuntu1.20) ...
+Selecting previously unselected package libjsoncpp25:arm64.
+Preparing to unpack .../035-libjsoncpp25_1.9.5-3_arm64.deb ...
+Unpacking libjsoncpp25:arm64 (1.9.5-3) ...
+Selecting previously unselected package librhash0:arm64.
+Preparing to unpack .../036-librhash0_1.4.2-1ubuntu1_arm64.deb ...
+Unpacking librhash0:arm64 (1.4.2-1ubuntu1) ...
+Selecting previously unselected package dh-elpa-helper.
+Preparing to unpack .../037-dh-elpa-helper_2.0.9ubuntu1_all.deb ...
+Unpacking dh-elpa-helper (2.0.9ubuntu1) ...
+Selecting previously unselected package emacsen-common.
+Preparing to unpack .../038-emacsen-common_3.0.4_all.deb ...
+Unpacking emacsen-common (3.0.4) ...
+Selecting previously unselected package cmake-data.
+Preparing to unpack .../039-cmake-data_3.22.1-1ubuntu1.22.04.2_all.deb ...
+Unpacking cmake-data (3.22.1-1ubuntu1.22.04.2) ...
+Selecting previously unselected package cmake.
+Preparing to unpack .../040-cmake_3.22.1-1ubuntu1.22.04.2_arm64.deb ...
+Unpacking cmake (3.22.1-1ubuntu1.22.04.2) ...
+Selecting previously unselected package libdebhelper-perl.
+Preparing to unpack .../041-libdebhelper-perl_13.6ubuntu1_all.deb ...
+Unpacking libdebhelper-perl (13.6ubuntu1) ...
+Selecting previously unselected package libtool.
+Preparing to unpack .../042-libtool_2.4.6-15build2_all.deb ...
+Unpacking libtool (2.4.6-15build2) ...
+Selecting previously unselected package dh-autoreconf.
+Preparing to unpack .../043-dh-autoreconf_20_all.deb ...
+Unpacking dh-autoreconf (20) ...
+Selecting previously unselected package libarchive-zip-perl.
+Preparing to unpack .../044-libarchive-zip-perl_1.68-1_all.deb ...
+Unpacking libarchive-zip-perl (1.68-1) ...
+Selecting previously unselected package libsub-override-perl.
+Preparing to unpack .../045-libsub-override-perl_0.09-2_all.deb ...
+Unpacking libsub-override-perl (0.09-2) ...
+Selecting previously unselected package libfile-stripnondeterminism-perl.
+Preparing to unpack .../046-libfile-stripnondeterminism-perl_1.13.0-1_all.deb ...
+Unpacking libfile-stripnondeterminism-perl (1.13.0-1) ...
+Selecting previously unselected package dh-strip-nondeterminism.
+Preparing to unpack .../047-dh-strip-nondeterminism_1.13.0-1_all.deb ...
+Unpacking dh-strip-nondeterminism (1.13.0-1) ...
+Selecting previously unselected package libdw1:arm64.
+Preparing to unpack .../048-libdw1_0.186-1ubuntu0.1_arm64.deb ...
+Unpacking libdw1:arm64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package debugedit.
+Preparing to unpack .../049-debugedit_1%3a5.0-4build1_arm64.deb ...
+Unpacking debugedit (1:5.0-4build1) ...
+Selecting previously unselected package dwz.
+Preparing to unpack .../050-dwz_0.14-1build2_arm64.deb ...
+Unpacking dwz (0.14-1build2) ...
+Selecting previously unselected package gettext.
+Preparing to unpack .../051-gettext_0.21-4ubuntu4_arm64.deb ...
+Unpacking gettext (0.21-4ubuntu4) ...
+Selecting previously unselected package intltool-debian.
+Preparing to unpack .../052-intltool-debian_0.35.0+20060710.5_all.deb ...
+Unpacking intltool-debian (0.35.0+20060710.5) ...
+Selecting previously unselected package po-debconf.
+Preparing to unpack .../053-po-debconf_1.0.21+nmu1_all.deb ...
+Unpacking po-debconf (1.0.21+nmu1) ...
+Selecting previously unselected package debhelper.
+Preparing to unpack .../054-debhelper_13.6ubuntu1_all.deb ...
+Unpacking debhelper (13.6ubuntu1) ...
+Selecting previously unselected package xml-core.
+Preparing to unpack .../055-xml-core_0.18+nmu1_all.deb ...
+Unpacking xml-core (0.18+nmu1) ...
+Selecting previously unselected package docutils-common.
+Preparing to unpack .../056-docutils-common_0.17.1+dfsg-2_all.deb ...
+Unpacking docutils-common (0.17.1+dfsg-2) ...
+Selecting previously unselected package libfakeroot:arm64.
+Preparing to unpack .../057-libfakeroot_1.28-1ubuntu1_arm64.deb ...
+Unpacking libfakeroot:arm64 (1.28-1ubuntu1) ...
+Selecting previously unselected package fakeroot.
+Preparing to unpack .../058-fakeroot_1.28-1ubuntu1_arm64.deb ...
+Unpacking fakeroot (1.28-1ubuntu1) ...
+Selecting previously unselected package googletest.
+Preparing to unpack .../059-googletest_1.11.0-3_all.deb ...
+Unpacking googletest (1.11.0-3) ...
+Selecting previously unselected package google-mock:arm64.
+Preparing to unpack .../060-google-mock_1.11.0-3_arm64.deb ...
+Unpacking google-mock:arm64 (1.11.0-3) ...
+Selecting previously unselected package libblas3:arm64.
+Preparing to unpack .../061-libblas3_3.10.0-2ubuntu1_arm64.deb ...
+Unpacking libblas3:arm64 (3.10.0-2ubuntu1) ...
+Selecting previously unselected package libconsole-bridge1.0:arm64.
+Preparing to unpack .../062-libconsole-bridge1.0_1.0.1+dfsg2-3_arm64.deb ...
+Unpacking libconsole-bridge1.0:arm64 (1.0.1+dfsg2-3) ...
+Selecting previously unselected package libexpat1-dev:arm64.
+Preparing to unpack .../063-libexpat1-dev_2.4.7-1ubuntu0.6_arm64.deb ...
+Unpacking libexpat1-dev:arm64 (2.4.7-1ubuntu0.6) ...
+Selecting previously unselected package libfmt8:arm64.
+Preparing to unpack .../064-libfmt8_8.1.1+ds1-2_arm64.deb ...
+Unpacking libfmt8:arm64 (8.1.1+ds1-2) ...
+Selecting previously unselected package libgfortran5:arm64.
+Preparing to unpack .../065-libgfortran5_12.3.0-1ubuntu1~22.04_arm64.deb ...
+Unpacking libgfortran5:arm64 (12.3.0-1ubuntu1~22.04) ...
+Selecting previously unselected package libgtest-dev:arm64.
+Preparing to unpack .../066-libgtest-dev_1.11.0-3_arm64.deb ...
+Unpacking libgtest-dev:arm64 (1.11.0-3) ...
+Selecting previously unselected package libjs-jquery.
+Preparing to unpack .../067-libjs-jquery_3.6.0+dfsg+~3.5.13-1_all.deb ...
+Unpacking libjs-jquery (3.6.0+dfsg+~3.5.13-1) ...
+Selecting previously unselected package libjs-underscore.
+Preparing to unpack .../068-libjs-underscore_1.13.2~dfsg-2_all.deb ...
+Unpacking libjs-underscore (1.13.2~dfsg-2) ...
+Selecting previously unselected package libjs-sphinxdoc.
+Preparing to unpack .../069-libjs-sphinxdoc_4.3.2-1_all.deb ...
+Unpacking libjs-sphinxdoc (4.3.2-1) ...
+Selecting previously unselected package liblapack3:arm64.
+Preparing to unpack .../070-liblapack3_3.10.0-2ubuntu1_arm64.deb ...
+Unpacking liblapack3:arm64 (3.10.0-2ubuntu1) ...
+Selecting previously unselected package libpython3.10:arm64.
+Preparing to unpack .../071-libpython3.10_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package zlib1g-dev:arm64.
+Preparing to unpack .../072-zlib1g-dev_1%3a1.2.11.dfsg-2ubuntu9.2_arm64.deb ...
+Unpacking zlib1g-dev:arm64 (1:1.2.11.dfsg-2ubuntu9.2) ...
+Selecting previously unselected package libpython3.10-dev:arm64.
+Preparing to unpack .../073-libpython3.10-dev_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10-dev:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libpython3-dev:arm64.
+Preparing to unpack .../074-libpython3-dev_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking libpython3-dev:arm64 (3.10.6-1~22.04.1) ...
+Selecting previously unselected package libspdlog1:arm64.
+Preparing to unpack .../075-libspdlog1_1%3a1.9.2+ds-0.2_arm64.deb ...
+Unpacking libspdlog1:arm64 (1:1.9.2+ds-0.2) ...
+Selecting previously unselected package libfmt-dev:arm64.
+Preparing to unpack .../076-libfmt-dev_8.1.1+ds1-2_arm64.deb ...
+Unpacking libfmt-dev:arm64 (8.1.1+ds1-2) ...
+Selecting previously unselected package libspdlog-dev:arm64.
+Preparing to unpack .../077-libspdlog-dev_1%3a1.9.2+ds-0.2_arm64.deb ...
+Unpacking libspdlog-dev:arm64 (1:1.9.2+ds-0.2) ...
+Selecting previously unselected package libssl-dev:arm64.
+Preparing to unpack .../078-libssl-dev_3.0.2-0ubuntu1.19_arm64.deb ...
+Unpacking libssl-dev:arm64 (3.0.2-0ubuntu1.19) ...
+Selecting previously unselected package libtinyxml2-9:arm64.
+Preparing to unpack .../079-libtinyxml2-9_9.0.0+dfsg-3_arm64.deb ...
+Unpacking libtinyxml2-9:arm64 (9.0.0+dfsg-3) ...
+Selecting previously unselected package python3-argcomplete.
+Preparing to unpack .../080-python3-argcomplete_1.8.1-1.5_all.deb ...
+Unpacking python3-argcomplete (1.8.1-1.5) ...
+Selecting previously unselected package python3-attr.
+Preparing to unpack .../081-python3-attr_21.2.0-1_all.deb ...
+Unpacking python3-attr (21.2.0-1) ...
+Selecting previously unselected package python3-six.
+Preparing to unpack .../082-python3-six_1.16.0-3ubuntu1_all.deb ...
+Unpacking python3-six (1.16.0-3ubuntu1) ...
+Selecting previously unselected package python3-dateutil.
+Preparing to unpack .../083-python3-dateutil_2.8.1-6_all.deb ...
+Unpacking python3-dateutil (2.8.1-6) ...
+Selecting previously unselected package python3-roman.
+Preparing to unpack .../084-python3-roman_3.3-1_all.deb ...
+Unpacking python3-roman (3.3-1) ...
+Selecting previously unselected package python3-docutils.
+Preparing to unpack .../085-python3-docutils_0.17.1+dfsg-2_all.deb ...
+Unpacking python3-docutils (0.17.1+dfsg-2) ...
+Selecting previously unselected package python3-pyparsing.
+Preparing to unpack .../086-python3-pyparsing_2.4.7-1_all.deb ...
+Unpacking python3-pyparsing (2.4.7-1) ...
+Selecting previously unselected package python3-catkin-pkg-modules.
+Preparing to unpack .../087-python3-catkin-pkg-modules_1.0.0-1_all.deb ...
+Unpacking python3-catkin-pkg-modules (1.0.0-1) ...
+Selecting previously unselected package python3.10-dev.
+Preparing to unpack .../088-python3.10-dev_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking python3.10-dev (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3-lib2to3.
+Preparing to unpack .../089-python3-lib2to3_3.10.8-1~22.04_all.deb ...
+Unpacking python3-lib2to3 (3.10.8-1~22.04) ...
+Selecting previously unselected package python3-distutils.
+Preparing to unpack .../090-python3-distutils_3.10.8-1~22.04_all.deb ...
+Unpacking python3-distutils (3.10.8-1~22.04) ...
+Selecting previously unselected package python3-dev.
+Preparing to unpack .../091-python3-dev_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3-dev (3.10.6-1~22.04.1) ...
+Selecting previously unselected package python3-empy.
+Preparing to unpack .../092-python3-empy_3.3.4-2_all.deb ...
+Unpacking python3-empy (3.3.4-2) ...
+Selecting previously unselected package python3-more-itertools.
+Preparing to unpack .../093-python3-more-itertools_8.10.0-2_all.deb ...
+Unpacking python3-more-itertools (8.10.0-2) ...
+Selecting previously unselected package python3-zipp.
+Preparing to unpack .../094-python3-zipp_1.0.0-3ubuntu0.1_all.deb ...
+Unpacking python3-zipp (1.0.0-3ubuntu0.1) ...
+Selecting previously unselected package python3-importlib-metadata.
+Preparing to unpack .../095-python3-importlib-metadata_4.6.4-1_all.deb ...
+Unpacking python3-importlib-metadata (4.6.4-1) ...
+Selecting previously unselected package python3-iniconfig.
+Preparing to unpack .../096-python3-iniconfig_1.1.1-2_all.deb ...
+Unpacking python3-iniconfig (1.1.1-2) ...
+Selecting previously unselected package python3-lark.
+Preparing to unpack .../097-python3-lark_1.1.1-1_all.deb ...
+Unpacking python3-lark (1.1.1-1) ...
+Selecting previously unselected package python3-numpy.
+Preparing to unpack .../098-python3-numpy_1%3a1.21.5-1ubuntu22.04.1_arm64.deb ...
+Unpacking python3-numpy (1:1.21.5-1ubuntu22.04.1) ...
+Selecting previously unselected package python3-packaging.
+Preparing to unpack .../099-python3-packaging_21.3-1_all.deb ...
+Unpacking python3-packaging (21.3-1) ...
+Selecting previously unselected package python3-pluggy.
+Preparing to unpack .../100-python3-pluggy_0.13.0-7.1_all.deb ...
+Unpacking python3-pluggy (0.13.0-7.1) ...
+Selecting previously unselected package python3-py.
+Preparing to unpack .../101-python3-py_1.10.0-1_all.deb ...
+Unpacking python3-py (1.10.0-1) ...
+Selecting previously unselected package python3-toml.
+Preparing to unpack .../102-python3-toml_0.10.2-1_all.deb ...
+Unpacking python3-toml (0.10.2-1) ...
+Selecting previously unselected package python3-pytest.
+Preparing to unpack .../103-python3-pytest_6.2.5-1ubuntu2_all.deb ...
+Unpacking python3-pytest (6.2.5-1ubuntu2) ...
+Selecting previously unselected package python3-setuptools.
+Preparing to unpack .../104-python3-setuptools_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package ros-humble-ros-workspace.
+Preparing to unpack .../105-ros-humble-ros-workspace_1.0.2-2jammy.20241125.210925_arm64.deb ...
+Unpacking ros-humble-ros-workspace (1.0.2-2jammy.20241125.210925) ...
+Selecting previously unselected package ros-humble-fastcdr.
+Preparing to unpack .../106-ros-humble-fastcdr_1.0.24-2jammy.20241125.212236_arm64.deb ...
+Unpacking ros-humble-fastcdr (1.0.24-2jammy.20241125.212236) ...
+Selecting previously unselected package ros-humble-ament-package.
+Preparing to unpack .../107-ros-humble-ament-package_0.14.0-4jammy.20220421.001218_arm64.deb ...
+Unpacking ros-humble-ament-package (0.14.0-4jammy.20220421.001218) ...
+Selecting previously unselected package ros-humble-ament-cmake-core.
+Preparing to unpack .../108-ros-humble-ament-cmake-core_1.3.11-1jammy.20241125.210622_arm64.deb ...
+Unpacking ros-humble-ament-cmake-core (1.3.11-1jammy.20241125.210622) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-definitions.
+Preparing to unpack .../109-ros-humble-ament-cmake-export-definitions_1.3.11-1jammy.20241125.211705_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-definitions (1.3.11-1jammy.20241125.211705) ...
+Selecting previously unselected package ros-humble-ament-cmake-libraries.
+Preparing to unpack .../110-ros-humble-ament-cmake-libraries_1.3.11-1jammy.20241125.211336_arm64.deb ...
+Unpacking ros-humble-ament-cmake-libraries (1.3.11-1jammy.20241125.211336) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-dependencies.
+Preparing to unpack .../111-ros-humble-ament-cmake-export-dependencies_1.3.11-1jammy.20241125.211530_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-dependencies (1.3.11-1jammy.20241125.211530) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-include-directories.
+Preparing to unpack .../112-ros-humble-ament-cmake-export-include-directories_1.3.11-1jammy.20241125.211805_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-include-directories (1.3.11-1jammy.20241125.211805) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-libraries.
+Preparing to unpack .../113-ros-humble-ament-cmake-export-libraries_1.3.11-1jammy.20241125.211831_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-libraries (1.3.11-1jammy.20241125.211831) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-interfaces.
+Preparing to unpack .../114-ros-humble-ament-cmake-export-interfaces_1.3.11-1jammy.20241125.211855_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-interfaces (1.3.11-1jammy.20241125.211855) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-link-flags.
+Preparing to unpack .../115-ros-humble-ament-cmake-export-link-flags_1.3.11-1jammy.20241125.211639_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-link-flags (1.3.11-1jammy.20241125.211639) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-targets.
+Preparing to unpack .../116-ros-humble-ament-cmake-export-targets_1.3.11-1jammy.20241125.211901_arm64.deb ...
+Unpacking ros-humble-ament-cmake-export-targets (1.3.11-1jammy.20241125.211901) ...
+Selecting previously unselected package ros-humble-ament-cmake-gen-version-h.
+Preparing to unpack .../117-ros-humble-ament-cmake-gen-version-h_1.3.11-1jammy.20241125.213723_arm64.deb ...
+Unpacking ros-humble-ament-cmake-gen-version-h (1.3.11-1jammy.20241125.213723) ...
+Selecting previously unselected package ros-humble-ament-cmake-python.
+Preparing to unpack .../118-ros-humble-ament-cmake-python_1.3.11-1jammy.20241125.211339_arm64.deb ...
+Unpacking ros-humble-ament-cmake-python (1.3.11-1jammy.20241125.211339) ...
+Selecting previously unselected package ros-humble-ament-cmake-include-directories.
+Preparing to unpack .../119-ros-humble-ament-cmake-include-directories_1.3.11-1jammy.20241125.211314_arm64.deb ...
+Unpacking ros-humble-ament-cmake-include-directories (1.3.11-1jammy.20241125.211314) ...
+Selecting previously unselected package ros-humble-ament-cmake-target-dependencies.
+Preparing to unpack .../120-ros-humble-ament-cmake-target-dependencies_1.3.11-1jammy.20241125.211542_arm64.deb ...
+Unpacking ros-humble-ament-cmake-target-dependencies (1.3.11-1jammy.20241125.211542) ...
+Selecting previously unselected package ros-humble-ament-cmake-test.
+Preparing to unpack .../121-ros-humble-ament-cmake-test_1.3.11-1jammy.20241125.211533_arm64.deb ...
+Unpacking ros-humble-ament-cmake-test (1.3.11-1jammy.20241125.211533) ...
+Selecting previously unselected package ros-humble-ament-cmake-version.
+Preparing to unpack .../122-ros-humble-ament-cmake-version_1.3.11-1jammy.20241125.211343_arm64.deb ...
+Unpacking ros-humble-ament-cmake-version (1.3.11-1jammy.20241125.211343) ...
+Selecting previously unselected package ros-humble-ament-cmake.
+Preparing to unpack .../123-ros-humble-ament-cmake_1.3.11-1jammy.20241125.221444_arm64.deb ...
+Unpacking ros-humble-ament-cmake (1.3.11-1jammy.20241125.221444) ...
+Selecting previously unselected package ros-humble-ament-index-python.
+Preparing to unpack .../124-ros-humble-ament-index-python_1.4.0-2jammy.20250325.172209_arm64.deb ...
+Unpacking ros-humble-ament-index-python (1.4.0-2jammy.20250325.172209) ...
+Selecting previously unselected package ros-humble-python-cmake-module.
+Preparing to unpack .../125-ros-humble-python-cmake-module_0.10.0-2jammy.20250325.183738_arm64.deb ...
+Unpacking ros-humble-python-cmake-module (0.10.0-2jammy.20250325.183738) ...
+Selecting previously unselected package ros-humble-rcutils.
+Preparing to unpack .../126-ros-humble-rcutils_5.1.6-1jammy.20250325.193110_arm64.deb ...
+Unpacking ros-humble-rcutils (5.1.6-1jammy.20250325.193110) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-interface.
+Preparing to unpack .../127-ros-humble-rosidl-typesupport-interface_3.1.6-1jammy.20250325.184242_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-interface (3.1.6-1jammy.20250325.184242) ...
+Selecting previously unselected package ros-humble-rosidl-runtime-c.
+Preparing to unpack .../128-ros-humble-rosidl-runtime-c_3.1.6-1jammy.20250325.194220_arm64.deb ...
+Unpacking ros-humble-rosidl-runtime-c (3.1.6-1jammy.20250325.194220) ...
+Selecting previously unselected package ros-humble-rmw.
+Preparing to unpack .../129-ros-humble-rmw_6.1.2-1jammy.20250325.195408_arm64.deb ...
+Unpacking ros-humble-rmw (6.1.2-1jammy.20250325.195408) ...
+Selecting previously unselected package ros-humble-rosidl-cli.
+Preparing to unpack .../130-ros-humble-rosidl-cli_3.1.6-1jammy.20250325.175029_arm64.deb ...
+Unpacking ros-humble-rosidl-cli (3.1.6-1jammy.20250325.175029) ...
+Selecting previously unselected package ros-humble-rosidl-adapter.
+Preparing to unpack .../131-ros-humble-rosidl-adapter_3.1.6-1jammy.20250325.184117_arm64.deb ...
+Unpacking ros-humble-rosidl-adapter (3.1.6-1jammy.20250325.184117) ...
+Selecting previously unselected package ros-humble-rosidl-parser.
+Preparing to unpack .../132-ros-humble-rosidl-parser_3.1.6-1jammy.20250325.184652_arm64.deb ...
+Unpacking ros-humble-rosidl-parser (3.1.6-1jammy.20250325.184652) ...
+Selecting previously unselected package ros-humble-rosidl-cmake.
+Preparing to unpack .../133-ros-humble-rosidl-cmake_3.1.6-1jammy.20250325.185215_arm64.deb ...
+Unpacking ros-humble-rosidl-cmake (3.1.6-1jammy.20250325.185215) ...
+Selecting previously unselected package ros-humble-rosidl-generator-c.
+Preparing to unpack .../134-ros-humble-rosidl-generator-c_3.1.6-1jammy.20250325.194913_arm64.deb ...
+Unpacking ros-humble-rosidl-generator-c (3.1.6-1jammy.20250325.194913) ...
+Selecting previously unselected package ros-humble-rcpputils.
+Preparing to unpack .../135-ros-humble-rcpputils_2.4.5-1jammy.20250325.194210_arm64.deb ...
+Unpacking ros-humble-rcpputils (2.4.5-1jammy.20250325.194210) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-c.
+Preparing to unpack .../136-ros-humble-rosidl-typesupport-c_2.0.2-1jammy.20250325.195526_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-c (2.0.2-1jammy.20250325.195526) ...
+Selecting previously unselected package ros-humble-rpyutils.
+Preparing to unpack .../137-ros-humble-rpyutils_0.2.1-2jammy.20250325.175015_arm64.deb ...
+Unpacking ros-humble-rpyutils (0.2.1-2jammy.20250325.175015) ...
+Selecting previously unselected package ros-humble-rosidl-generator-py.
+Preparing to unpack .../138-ros-humble-rosidl-generator-py_0.14.4-1jammy.20250325.202006_arm64.deb ...
+Unpacking ros-humble-rosidl-generator-py (0.14.4-1jammy.20250325.202006) ...
+Selecting previously unselected package ros-humble-rosidl-runtime-cpp.
+Preparing to unpack .../139-ros-humble-rosidl-runtime-cpp_3.1.6-1jammy.20250325.195449_arm64.deb ...
+Unpacking ros-humble-rosidl-runtime-cpp (3.1.6-1jammy.20250325.195449) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-cpp.
+Preparing to unpack .../140-ros-humble-rosidl-typesupport-cpp_2.0.2-1jammy.20250325.200711_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-cpp (2.0.2-1jammy.20250325.200711) ...
+Selecting previously unselected package ros-humble-gtest-vendor.
+Preparing to unpack .../141-ros-humble-gtest-vendor_1.10.9006-1jammy.20241125.213405_arm64.deb ...
+Unpacking ros-humble-gtest-vendor (1.10.9006-1jammy.20241125.213405) ...
+Selecting previously unselected package ros-humble-ament-cmake-gtest.
+Preparing to unpack .../142-ros-humble-ament-cmake-gtest_1.3.11-1jammy.20241125.213525_arm64.deb ...
+Unpacking ros-humble-ament-cmake-gtest (1.3.11-1jammy.20241125.213525) ...
+Selecting previously unselected package ros-humble-gmock-vendor.
+Preparing to unpack .../143-ros-humble-gmock-vendor_1.10.9006-1jammy.20241126.014647_arm64.deb ...
+Unpacking ros-humble-gmock-vendor (1.10.9006-1jammy.20241126.014647) ...
+Selecting previously unselected package ros-humble-ament-cmake-gmock.
+Preparing to unpack .../144-ros-humble-ament-cmake-gmock_1.3.11-1jammy.20241126.014910_arm64.deb ...
+Unpacking ros-humble-ament-cmake-gmock (1.3.11-1jammy.20241126.014910) ...
+Selecting previously unselected package ros-humble-ament-cmake-pytest.
+Preparing to unpack .../145-ros-humble-ament-cmake-pytest_1.3.11-1jammy.20241125.211729_arm64.deb ...
+Unpacking ros-humble-ament-cmake-pytest (1.3.11-1jammy.20241125.211729) ...
+Selecting previously unselected package ros-humble-domain-coordinator.
+Preparing to unpack .../146-ros-humble-domain-coordinator_0.10.0-3jammy.20250325.172731_arm64.deb ...
+Unpacking ros-humble-domain-coordinator (0.10.0-3jammy.20250325.172731) ...
+Selecting previously unselected package ros-humble-ament-cmake-ros.
+Preparing to unpack .../147-ros-humble-ament-cmake-ros_0.10.0-3jammy.20250325.181608_arm64.deb ...
+Unpacking ros-humble-ament-cmake-ros (0.10.0-3jammy.20250325.181608) ...
+Selecting previously unselected package ros-humble-fastrtps-cmake-module.
+Preparing to unpack .../148-ros-humble-fastrtps-cmake-module_2.2.2-2jammy.20250325.181609_arm64.deb ...
+Unpacking ros-humble-fastrtps-cmake-module (2.2.2-2jammy.20250325.181609) ...
+Selecting previously unselected package ros-humble-rosidl-generator-cpp.
+Preparing to unpack .../149-ros-humble-rosidl-generator-cpp_3.1.6-1jammy.20250325.200121_arm64.deb ...
+Unpacking ros-humble-rosidl-generator-cpp (3.1.6-1jammy.20250325.200121) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-fastrtps-cpp.
+Preparing to unpack .../150-ros-humble-rosidl-typesupport-fastrtps-cpp_2.2.2-2jammy.20250325.200822_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-fastrtps-cpp (2.2.2-2jammy.20250325.200822) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-fastrtps-c.
+Preparing to unpack .../151-ros-humble-rosidl-typesupport-fastrtps-c_2.2.2-2jammy.20250325.201408_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-fastrtps-c (2.2.2-2jammy.20250325.201408) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-introspection-c.
+Preparing to unpack .../152-ros-humble-rosidl-typesupport-introspection-c_3.1.6-1jammy.20250325.194950_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-introspection-c (3.1.6-1jammy.20250325.194950) ...
+Selecting previously unselected package ros-humble-rosidl-typesupport-introspection-cpp.
+Preparing to unpack .../153-ros-humble-rosidl-typesupport-introspection-cpp_3.1.6-1jammy.20250325.200123_arm64.deb ...
+Unpacking ros-humble-rosidl-typesupport-introspection-cpp (3.1.6-1jammy.20250325.200123) ...
+Selecting previously unselected package ros-humble-rosidl-default-runtime.
+Preparing to unpack .../154-ros-humble-rosidl-default-runtime_1.2.0-2jammy.20250325.202717_arm64.deb ...
+Unpacking ros-humble-rosidl-default-runtime (1.2.0-2jammy.20250325.202717) ...
+Selecting previously unselected package ros-humble-builtin-interfaces.
+Preparing to unpack .../155-ros-humble-builtin-interfaces_1.2.1-1jammy.20250325.205450_arm64.deb ...
+Unpacking ros-humble-builtin-interfaces (1.2.1-1jammy.20250325.205450) ...
+Selecting previously unselected package ros-humble-unique-identifier-msgs.
+Preparing to unpack .../156-ros-humble-unique-identifier-msgs_2.2.1-3jammy.20250325.205105_arm64.deb ...
+Unpacking ros-humble-unique-identifier-msgs (2.2.1-3jammy.20250325.205105) ...
+Selecting previously unselected package ros-humble-action-msgs.
+Preparing to unpack .../157-ros-humble-action-msgs_1.2.1-1jammy.20250325.210029_arm64.deb ...
+Unpacking ros-humble-action-msgs (1.2.1-1jammy.20250325.210029) ...
+Selecting previously unselected package ros-humble-ament-index-cpp.
+Preparing to unpack .../158-ros-humble-ament-index-cpp_1.4.0-2jammy.20250325.190850_arm64.deb ...
+Unpacking ros-humble-ament-index-cpp (1.4.0-2jammy.20250325.190850) ...
+Selecting previously unselected package libconsole-bridge-dev:arm64.
+Preparing to unpack .../159-libconsole-bridge-dev_1.0.1+dfsg2-3_arm64.deb ...
+Unpacking libconsole-bridge-dev:arm64 (1.0.1+dfsg2-3) ...
+Selecting previously unselected package ros-humble-console-bridge-vendor.
+Preparing to unpack .../160-ros-humble-console-bridge-vendor_1.4.1-1jammy.20250325.184259_arm64.deb ...
+Unpacking ros-humble-console-bridge-vendor (1.4.1-1jammy.20250325.184259) ...
+Selecting previously unselected package ros-humble-class-loader.
+Preparing to unpack .../161-ros-humble-class-loader_2.2.0-3jammy.20250325.194951_arm64.deb ...
+Unpacking ros-humble-class-loader (2.2.0-3jammy.20250325.194951) ...
+Selecting previously unselected package ros-humble-std-msgs.
+Preparing to unpack .../162-ros-humble-std-msgs_4.8.0-1jammy.20250325.213809_arm64.deb ...
+Unpacking ros-humble-std-msgs (4.8.0-1jammy.20250325.213809) ...
+Selecting previously unselected package ros-humble-geometry-msgs.
+Preparing to unpack .../163-ros-humble-geometry-msgs_4.8.0-1jammy.20250325.221651_arm64.deb ...
+Unpacking ros-humble-geometry-msgs (4.8.0-1jammy.20250325.221651) ...
+Selecting previously unselected package ros-humble-sensor-msgs.
+Preparing to unpack .../164-ros-humble-sensor-msgs_4.8.0-1jammy.20250325.223641_arm64.deb ...
+Unpacking ros-humble-sensor-msgs (4.8.0-1jammy.20250325.223641) ...
+Selecting previously unselected package ros-humble-trajectory-msgs.
+Preparing to unpack .../165-ros-humble-trajectory-msgs_4.8.0-1jammy.20250326.015325_arm64.deb ...
+Unpacking ros-humble-trajectory-msgs (4.8.0-1jammy.20250326.015325) ...
+Selecting previously unselected package ros-humble-control-msgs.
+Preparing to unpack .../166-ros-humble-control-msgs_4.8.0-1jammy.20250326.020314_arm64.deb ...
+Unpacking ros-humble-control-msgs (4.8.0-1jammy.20250326.020314) ...
+Selecting previously unselected package libtinyxml2-dev:arm64.
+Preparing to unpack .../167-libtinyxml2-dev_9.0.0+dfsg-3_arm64.deb ...
+Unpacking libtinyxml2-dev:arm64 (9.0.0+dfsg-3) ...
+Selecting previously unselected package ros-humble-foonathan-memory-vendor.
+Preparing to unpack .../168-ros-humble-foonathan-memory-vendor_1.2.0-3jammy.20250325.185808_arm64.deb ...
+Unpacking ros-humble-foonathan-memory-vendor (1.2.0-3jammy.20250325.185808) ...
+Selecting previously unselected package ros-humble-fastrtps.
+Preparing to unpack .../169-ros-humble-fastrtps_2.6.10-1jammy.20250429.171228_arm64.deb ...
+Unpacking ros-humble-fastrtps (2.6.10-1jammy.20250429.171228) ...
+Selecting previously unselected package ros-humble-lifecycle-msgs.
+Preparing to unpack .../170-ros-humble-lifecycle-msgs_1.2.1-1jammy.20250325.204343_arm64.deb ...
+Unpacking ros-humble-lifecycle-msgs (1.2.1-1jammy.20250325.204343) ...
+Selecting previously unselected package ros-humble-tinyxml2-vendor.
+Preparing to unpack .../171-ros-humble-tinyxml2-vendor_0.7.6-1jammy.20241125.234439_arm64.deb ...
+Unpacking ros-humble-tinyxml2-vendor (0.7.6-1jammy.20241125.234439) ...
+Selecting previously unselected package ros-humble-pluginlib.
+Preparing to unpack .../172-ros-humble-pluginlib_5.1.0-3jammy.20250325.200145_arm64.deb ...
+Unpacking ros-humble-pluginlib (5.1.0-3jammy.20250325.200145) ...
+Selecting previously unselected package ros-humble-rcl-interfaces.
+Preparing to unpack .../173-ros-humble-rcl-interfaces_1.2.1-1jammy.20250325.210217_arm64.deb ...
+Unpacking ros-humble-rcl-interfaces (1.2.1-1jammy.20250325.210217) ...
+Selecting previously unselected package ros-humble-rcl-logging-interface.
+Preparing to unpack .../174-ros-humble-rcl-logging-interface_2.3.1-1jammy.20250325.195219_arm64.deb ...
+Unpacking ros-humble-rcl-logging-interface (2.3.1-1jammy.20250325.195219) ...
+Selecting previously unselected package ros-humble-spdlog-vendor.
+Preparing to unpack .../175-ros-humble-spdlog-vendor_1.3.1-1jammy.20250325.184827_arm64.deb ...
+Unpacking ros-humble-spdlog-vendor (1.3.1-1jammy.20250325.184827) ...
+Selecting previously unselected package ros-humble-rcl-logging-spdlog.
+Preparing to unpack .../176-ros-humble-rcl-logging-spdlog_2.3.1-1jammy.20250325.195904_arm64.deb ...
+Unpacking ros-humble-rcl-logging-spdlog (2.3.1-1jammy.20250325.195904) ...
+Selecting previously unselected package libyaml-dev:arm64.
+Preparing to unpack .../177-libyaml-dev_0.2.2-1build2_arm64.deb ...
+Unpacking libyaml-dev:arm64 (0.2.2-1build2) ...
+Selecting previously unselected package ros-humble-libyaml-vendor.
+Preparing to unpack .../178-ros-humble-libyaml-vendor_1.2.2-2jammy.20250325.195259_arm64.deb ...
+Unpacking ros-humble-libyaml-vendor (1.2.2-2jammy.20250325.195259) ...
+Selecting previously unselected package ros-humble-rcl-yaml-param-parser.
+Preparing to unpack .../179-ros-humble-rcl-yaml-param-parser_5.3.9-1jammy.20250325.200203_arm64.deb ...
+Unpacking ros-humble-rcl-yaml-param-parser (5.3.9-1jammy.20250325.200203) ...
+Selecting previously unselected package ros-humble-rmw-implementation-cmake.
+Preparing to unpack .../180-ros-humble-rmw-implementation-cmake_6.1.2-1jammy.20250325.183954_arm64.deb ...
+Unpacking ros-humble-rmw-implementation-cmake (6.1.2-1jammy.20250325.183954) ...
+Selecting previously unselected package ros-humble-rmw-dds-common.
+Preparing to unpack .../181-ros-humble-rmw-dds-common_1.6.0-2jammy.20250325.204837_arm64.deb ...
+Unpacking ros-humble-rmw-dds-common (1.6.0-2jammy.20250325.204837) ...
+Selecting previously unselected package ros-humble-tracetools.
+Preparing to unpack .../182-ros-humble-tracetools_4.1.1-1jammy.20250325.192811_arm64.deb ...
+Unpacking ros-humble-tracetools (4.1.1-1jammy.20250325.192811) ...
+Selecting previously unselected package ros-humble-rmw-fastrtps-shared-cpp.
+Preparing to unpack .../183-ros-humble-rmw-fastrtps-shared-cpp_6.2.7-1jammy.20250429.173437_arm64.deb ...
+Unpacking ros-humble-rmw-fastrtps-shared-cpp (6.2.7-1jammy.20250429.173437) ...
+Selecting previously unselected package ros-humble-rmw-fastrtps-cpp.
+Preparing to unpack .../184-ros-humble-rmw-fastrtps-cpp_6.2.7-1jammy.20250429.174248_arm64.deb ...
+Unpacking ros-humble-rmw-fastrtps-cpp (6.2.7-1jammy.20250429.174248) ...
+Selecting previously unselected package ros-humble-rmw-implementation.
+Preparing to unpack .../185-ros-humble-rmw-implementation_2.8.4-1jammy.20250429.181818_arm64.deb ...
+Unpacking ros-humble-rmw-implementation (2.8.4-1jammy.20250429.181818) ...
+Selecting previously unselected package ros-humble-rcl.
+Preparing to unpack .../186-ros-humble-rcl_5.3.9-1jammy.20250429.183009_arm64.deb ...
+Unpacking ros-humble-rcl (5.3.9-1jammy.20250429.183009) ...
+Selecting previously unselected package ros-humble-rcl-lifecycle.
+Preparing to unpack .../187-ros-humble-rcl-lifecycle_5.3.9-1jammy.20250429.235744_arm64.deb ...
+Unpacking ros-humble-rcl-lifecycle (5.3.9-1jammy.20250429.235744) ...
+Selecting previously unselected package ros-humble-statistics-msgs.
+Preparing to unpack .../188-ros-humble-statistics-msgs_1.2.1-1jammy.20250325.212041_arm64.deb ...
+Unpacking ros-humble-statistics-msgs (1.2.1-1jammy.20250325.212041) ...
+Selecting previously unselected package ros-humble-libstatistics-collector.
+Preparing to unpack .../189-ros-humble-libstatistics-collector_1.3.4-1jammy.20250429.233639_arm64.deb ...
+Unpacking ros-humble-libstatistics-collector (1.3.4-1jammy.20250429.233639) ...
+Selecting previously unselected package ros-humble-rosgraph-msgs.
+Preparing to unpack .../190-ros-humble-rosgraph-msgs_1.2.1-1jammy.20250325.211859_arm64.deb ...
+Unpacking ros-humble-rosgraph-msgs (1.2.1-1jammy.20250325.211859) ...
+Selecting previously unselected package ros-humble-rclcpp.
+Preparing to unpack .../191-ros-humble-rclcpp_16.0.12-1jammy.20250429.235657_arm64.deb ...
+Unpacking ros-humble-rclcpp (16.0.12-1jammy.20250429.235657) ...
+Selecting previously unselected package ros-humble-rclcpp-lifecycle.
+Preparing to unpack .../192-ros-humble-rclcpp-lifecycle_16.0.12-1jammy.20250430.021154_arm64.deb ...
+Unpacking ros-humble-rclcpp-lifecycle (16.0.12-1jammy.20250430.021154) ...
+Selecting previously unselected package ros-humble-hardware-interface.
+Preparing to unpack .../193-ros-humble-hardware-interface_2.50.0-1jammy.20250430.072414_arm64.deb ...
+Unpacking ros-humble-hardware-interface (2.50.0-1jammy.20250430.072414) ...
+Selecting previously unselected package ros-humble-mirte-msgs.
+Preparing to unpack .../194-ros-humble-mirte-msgs_2-2025.06.04.11.04_arm64.deb ...
+Unpacking ros-humble-mirte-msgs (2-2025.06.04.11.04) ...
+Selecting previously unselected package sbuild-build-depends-main-dummy.
+Preparing to unpack .../195-sbuild-build-depends-main-dummy_0.invalid.0_arm64.deb ...
+Unpacking sbuild-build-depends-main-dummy (0.invalid.0) ...
+Setting up ros-humble-ros-workspace (1.0.2-2jammy.20241125.210925) ...
+Setting up media-types (7.0.0) ...
+Setting up libpipeline1:arm64 (1.5.5-1) ...
+Setting up catch2 (2.13.8-1) ...
+Setting up libpsl5:arm64 (0.21.0-1.2build2) ...
+Setting up ros-humble-fastcdr (1.0.24-2jammy.20241125.212236) ...
+Setting up bsdextrautils (2.37.2-4ubuntu3.4) ...
+update-alternatives: using /usr/bin/write.ul to provide /usr/bin/write (write) in auto mode
+Setting up libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Setting up ros-humble-gtest-vendor (1.10.9006-1jammy.20241125.213405) ...
+Setting up libarchive-zip-perl (1.68-1) ...
+Setting up libyaml-0-2:arm64 (0.2.2-1build2) ...
+Setting up libdebhelper-perl (13.6ubuntu1) ...
+Setting up libbrotli1:arm64 (1.0.9-2build6) ...
+Setting up libsqlite3-0:arm64 (3.37.2-2ubuntu0.4) ...
+Setting up libnghttp2-14:arm64 (1.43.0-1ubuntu0.2) ...
+Setting up libmagic1:arm64 (1:5.41-3ubuntu0.1) ...
+Setting up gettext-base (0.21-4ubuntu4) ...
+Setting up file (1:5.41-3ubuntu0.1) ...
+Setting up googletest (1.11.0-3) ...
+Setting up ros-humble-domain-coordinator (0.10.0-3jammy.20250325.172731) ...
+Setting up libfakeroot:arm64 (1.28-1ubuntu1) ...
+Setting up libsasl2-modules-db:arm64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up tzdata (2025b-0ubuntu0.22.04.1) ...
+
+Current default time zone: 'Etc/UTC'
+Local time is now:      Wed Jun  4 11:08:38 UTC 2025.
+Universal Time is now:  Wed Jun  4 11:08:38 UTC 2025.
+Run 'dpkg-reconfigure tzdata' if you wish to change it.
+
+Setting up fakeroot (1.28-1ubuntu1) ...
+update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode
+Setting up ros-humble-rosidl-typesupport-interface (3.1.6-1jammy.20250325.184242) ...
+Setting up autotools-dev (20220109.1) ...
+Setting up libblas3:arm64 (3.10.0-2ubuntu1) ...
+update-alternatives: using /usr/lib/aarch64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/aarch64-linux-gnu/libblas.so.3 (libblas.so.3-aarch64-linux-gnu) in auto mode
+Setting up libuv1:arm64 (1.43.0-1ubuntu0.1) ...
+Setting up libexpat1-dev:arm64 (2.4.7-1ubuntu0.6) ...
+Setting up emacsen-common (3.0.4) ...
+Setting up librtmp1:arm64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Setting up dh-elpa-helper (2.0.9ubuntu1) ...
+Setting up libsigsegv2:arm64 (2.13-1ubuntu3) ...
+Setting up libssl-dev:arm64 (3.0.2-0ubuntu1.19) ...
+Setting up libtinyxml2-9:arm64 (9.0.0+dfsg-3) ...
+Setting up autopoint (0.21-4ubuntu4) ...
+Setting up libjsoncpp25:arm64 (1.9.5-3) ...
+Setting up ros-humble-rcutils (5.1.6-1jammy.20250325.193110) ...
+Setting up ros-humble-fastrtps-cmake-module (2.2.2-2jammy.20250325.181609) ...
+Setting up libtinyxml2-dev:arm64 (9.0.0+dfsg-3) ...
+Setting up libsasl2-2:arm64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up libssh-4:arm64 (0.9.6-2ubuntu0.22.04.3) ...
+Setting up libgfortran5:arm64 (12.3.0-1ubuntu1~22.04) ...
+Setting up zlib1g-dev:arm64 (1:1.2.11.dfsg-2ubuntu9.2) ...
+Setting up ros-humble-rcpputils (2.4.5-1jammy.20250325.194210) ...
+Setting up ros-humble-tracetools (4.1.1-1jammy.20250325.192811) ...
+Setting up google-mock:arm64 (1.11.0-3) ...
+Setting up librhash0:arm64 (1.4.2-1ubuntu1) ...
+Setting up libfmt8:arm64 (8.1.1+ds1-2) ...
+Setting up ros-humble-tinyxml2-vendor (0.7.6-1jammy.20241125.234439) ...
+Setting up ros-humble-libyaml-vendor (1.2.2-2jammy.20250325.195259) ...
+Setting up libuchardet0:arm64 (0.0.7-1build2) ...
+Setting up ros-humble-ament-index-cpp (1.4.0-2jammy.20250325.190850) ...
+Setting up ros-humble-rpyutils (0.2.1-2jammy.20250325.175015) ...
+Setting up libmpdec3:arm64 (2.5.1-2build2) ...
+Setting up libspdlog1:arm64 (1:1.9.2+ds-0.2) ...
+Setting up ros-humble-gmock-vendor (1.10.9006-1jammy.20241126.014647) ...
+Setting up libsub-override-perl (0.09-2) ...
+Setting up sgml-base (1.30) ...
+Setting up cmake-data (3.22.1-1ubuntu1.22.04.2) ...
+Setting up libjs-jquery (3.6.0+dfsg+~3.5.13-1) ...
+Setting up ros-humble-ament-index-python (1.4.0-2jammy.20250325.172209) ...
+Setting up libconsole-bridge1.0:arm64 (1.0.1+dfsg2-3) ...
+Setting up libconsole-bridge-dev:arm64 (1.0.1+dfsg2-3) ...
+Setting up libelf1:arm64 (0.186-1ubuntu0.1) ...
+Setting up readline-common (8.1.2-1) ...
+Setting up libjs-underscore (1.13.2~dfsg-2) ...
+Setting up libicu70:arm64 (70.1-2) ...
+Setting up libfile-stripnondeterminism-perl (1.13.0-1) ...
+Setting up libdw1:arm64 (0.186-1ubuntu0.1) ...
+Setting up liblapack3:arm64 (3.10.0-2ubuntu1) ...
+update-alternatives: using /usr/lib/aarch64-linux-gnu/lapack/liblapack.so.3 to provide /usr/lib/aarch64-linux-gnu/liblapack.so.3 (liblapack.so.3-aarch64-linux-gnu) in auto mode
+Setting up libgtest-dev:arm64 (1.11.0-3) ...
+Setting up libyaml-dev:arm64 (0.2.2-1build2) ...
+Setting up libtool (2.4.6-15build2) ...
+Setting up ros-humble-rcl-logging-interface (2.3.1-1jammy.20250325.195219) ...
+Setting up libreadline8:arm64 (8.1.2-1) ...
+Setting up m4 (1.4.18-5ubuntu2) ...
+Setting up ros-humble-console-bridge-vendor (1.4.1-1jammy.20250325.184259) ...
+Setting up libldap-2.5-0:arm64 (2.5.19+dfsg-0ubuntu0.22.04.1) ...
+Setting up ros-humble-class-loader (2.2.0-3jammy.20250325.194951) ...
+Setting up libpython3.10-stdlib:arm64 (3.10.12-1~22.04.9) ...
+Setting up ros-humble-pluginlib (5.1.0-3jammy.20250325.200145) ...
+Setting up libfmt-dev:arm64 (8.1.1+ds1-2) ...
+Setting up libjs-sphinxdoc (4.3.2-1) ...
+Setting up autoconf (2.71-2) ...
+Setting up dh-strip-nondeterminism (1.13.0-1) ...
+Setting up dwz (0.14-1build2) ...
+Setting up groff-base (1.22.4-8build1) ...
+Setting up xml-core (0.18+nmu1) ...
+Setting up debugedit (1:5.0-4build1) ...
+Setting up libcurl4:arm64 (7.81.0-1ubuntu1.20) ...
+Setting up libxml2:arm64 (2.9.13+dfsg-1ubuntu0.7) ...
+Setting up libpython3-stdlib:arm64 (3.10.6-1~22.04.1) ...
+Setting up automake (1:1.16.5-1.3) ...
+update-alternatives: using /usr/bin/automake-1.16 to provide /usr/bin/automake (automake) in auto mode
+Setting up libpython3.10:arm64 (3.10.12-1~22.04.9) ...
+Setting up gettext (0.21-4ubuntu4) ...
+Setting up python3.10 (3.10.12-1~22.04.9) ...
+Setting up libarchive13:arm64 (3.6.0-1ubuntu1.4) ...
+Setting up python3 (3.10.6-1~22.04.1) ...
+Setting up python3-empy (3.3.4-2) ...
+Setting up libspdlog-dev:arm64 (1:1.9.2+ds-0.2) ...
+Setting up man-db (2.10.2-1) ...
+Not building database; man-db/auto-update is not 'true'.
+Setting up intltool-debian (0.35.0+20060710.5) ...
+Setting up python3-six (1.16.0-3ubuntu1) ...
+Setting up dh-autoreconf (20) ...
+Setting up python3-roman (3.3-1) ...
+Setting up python3-pyparsing (2.4.7-1) ...
+Setting up ros-humble-spdlog-vendor (1.3.1-1jammy.20250325.184827) ...
+Setting up libpython3.10-dev:arm64 (3.10.12-1~22.04.9) ...
+Setting up python3-toml (0.10.2-1) ...
+Setting up python3.10-dev (3.10.12-1~22.04.9) ...
+Setting up cmake (3.22.1-1ubuntu1.22.04.2) ...
+Setting up python3-dateutil (2.8.1-6) ...
+Setting up python3-argcomplete (1.8.1-1.5) ...
+Setting up python3-lib2to3 (3.10.8-1~22.04) ...
+Setting up python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-distutils (3.10.8-1~22.04) ...
+Setting up python3-more-itertools (8.10.0-2) ...
+Setting up python3-iniconfig (1.1.1-2) ...
+Setting up python3-attr (21.2.0-1) ...
+Setting up python3-lark (1.1.1-1) ...
+Setting up libpython3-dev:arm64 (3.10.6-1~22.04.1) ...
+Setting up python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-py (1.10.0-1) ...
+Setting up po-debconf (1.0.21+nmu1) ...
+Setting up ros-humble-foonathan-memory-vendor (1.2.0-3jammy.20250325.185808) ...
+Setting up debhelper (13.6ubuntu1) ...
+Setting up python3-zipp (1.0.0-3ubuntu0.1) ...
+Setting up python3-packaging (21.3-1) ...
+Setting up ros-humble-rcl-logging-spdlog (2.3.1-1jammy.20250325.195904) ...
+Setting up python3-dev (3.10.6-1~22.04.1) ...
+Setting up python3-numpy (1:1.21.5-1ubuntu22.04.1) ...
+Setting up ros-humble-python-cmake-module (0.10.0-2jammy.20250325.183738) ...
+Setting up python3-importlib-metadata (4.6.4-1) ...
+Setting up ros-humble-fastrtps (2.6.10-1jammy.20250429.171228) ...
+Setting up ros-humble-ament-package (0.14.0-4jammy.20220421.001218) ...
+Setting up python3-pluggy (0.13.0-7.1) ...
+Setting up ros-humble-rosidl-cli (3.1.6-1jammy.20250325.175029) ...
+Setting up python3-pytest (6.2.5-1ubuntu2) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+Processing triggers for sgml-base (1.30) ...
+Setting up docutils-common (0.17.1+dfsg-2) ...
+Processing triggers for sgml-base (1.30) ...
+Setting up python3-docutils (0.17.1+dfsg-2) ...
+Setting up python3-catkin-pkg-modules (1.0.0-1) ...
+Setting up ros-humble-ament-cmake-core (1.3.11-1jammy.20241125.210622) ...
+Setting up ros-humble-ament-cmake-gen-version-h (1.3.11-1jammy.20241125.213723) ...
+Setting up ros-humble-ament-cmake-test (1.3.11-1jammy.20241125.211533) ...
+Setting up ros-humble-ament-cmake-python (1.3.11-1jammy.20241125.211339) ...
+Setting up ros-humble-ament-cmake-export-definitions (1.3.11-1jammy.20241125.211705) ...
+Setting up ros-humble-ament-cmake-export-libraries (1.3.11-1jammy.20241125.211831) ...
+Setting up ros-humble-rosidl-adapter (3.1.6-1jammy.20250325.184117) ...
+Setting up ros-humble-ament-cmake-include-directories (1.3.11-1jammy.20241125.211314) ...
+Setting up ros-humble-ament-cmake-libraries (1.3.11-1jammy.20241125.211336) ...
+Setting up ros-humble-ament-cmake-export-targets (1.3.11-1jammy.20241125.211901) ...
+Setting up ros-humble-ament-cmake-export-include-directories (1.3.11-1jammy.20241125.211805) ...
+Setting up ros-humble-ament-cmake-export-link-flags (1.3.11-1jammy.20241125.211639) ...
+Setting up ros-humble-ament-cmake-version (1.3.11-1jammy.20241125.211343) ...
+Setting up ros-humble-ament-cmake-pytest (1.3.11-1jammy.20241125.211729) ...
+Setting up ros-humble-ament-cmake-gtest (1.3.11-1jammy.20241125.213525) ...
+Setting up ros-humble-ament-cmake-export-interfaces (1.3.11-1jammy.20241125.211855) ...
+Setting up ros-humble-ament-cmake-export-dependencies (1.3.11-1jammy.20241125.211530) ...
+Setting up ros-humble-rosidl-parser (3.1.6-1jammy.20250325.184652) ...
+Setting up ros-humble-ament-cmake-gmock (1.3.11-1jammy.20241126.014910) ...
+Setting up ros-humble-ament-cmake-target-dependencies (1.3.11-1jammy.20241125.211542) ...
+Setting up ros-humble-ament-cmake (1.3.11-1jammy.20241125.221444) ...
+Setting up ros-humble-ament-cmake-ros (0.10.0-3jammy.20250325.181608) ...
+Setting up ros-humble-rosidl-cmake (3.1.6-1jammy.20250325.185215) ...
+Setting up ros-humble-rosidl-runtime-c (3.1.6-1jammy.20250325.194220) ...
+Setting up ros-humble-rosidl-typesupport-introspection-c (3.1.6-1jammy.20250325.194950) ...
+Setting up ros-humble-rosidl-generator-c (3.1.6-1jammy.20250325.194913) ...
+Setting up ros-humble-rmw-implementation-cmake (6.1.2-1jammy.20250325.183954) ...
+Setting up ros-humble-rmw (6.1.2-1jammy.20250325.195408) ...
+Setting up ros-humble-rosidl-typesupport-c (2.0.2-1jammy.20250325.195526) ...
+Setting up ros-humble-rosidl-runtime-cpp (3.1.6-1jammy.20250325.195449) ...
+Setting up ros-humble-rosidl-generator-py (0.14.4-1jammy.20250325.202006) ...
+Setting up ros-humble-rosidl-generator-cpp (3.1.6-1jammy.20250325.200121) ...
+Setting up ros-humble-rcl-yaml-param-parser (5.3.9-1jammy.20250325.200203) ...
+Setting up ros-humble-rosidl-typesupport-cpp (2.0.2-1jammy.20250325.200711) ...
+Setting up ros-humble-rosidl-typesupport-fastrtps-cpp (2.2.2-2jammy.20250325.200822) ...
+Setting up ros-humble-rosidl-typesupport-introspection-cpp (3.1.6-1jammy.20250325.200123) ...
+Setting up ros-humble-rosidl-typesupport-fastrtps-c (2.2.2-2jammy.20250325.201408) ...
+Setting up ros-humble-rosidl-default-runtime (1.2.0-2jammy.20250325.202717) ...
+Setting up ros-humble-builtin-interfaces (1.2.1-1jammy.20250325.205450) ...
+Setting up ros-humble-statistics-msgs (1.2.1-1jammy.20250325.212041) ...
+Setting up ros-humble-rmw-dds-common (1.6.0-2jammy.20250325.204837) ...
+Setting up ros-humble-rmw-fastrtps-shared-cpp (6.2.7-1jammy.20250429.173437) ...
+Setting up ros-humble-rosgraph-msgs (1.2.1-1jammy.20250325.211859) ...
+Setting up ros-humble-lifecycle-msgs (1.2.1-1jammy.20250325.204343) ...
+Setting up ros-humble-unique-identifier-msgs (2.2.1-3jammy.20250325.205105) ...
+Setting up ros-humble-std-msgs (4.8.0-1jammy.20250325.213809) ...
+Setting up ros-humble-rcl-interfaces (1.2.1-1jammy.20250325.210217) ...
+Setting up ros-humble-rmw-fastrtps-cpp (6.2.7-1jammy.20250429.174248) ...
+Setting up ros-humble-geometry-msgs (4.8.0-1jammy.20250325.221651) ...
+Setting up ros-humble-rmw-implementation (2.8.4-1jammy.20250429.181818) ...
+Setting up ros-humble-action-msgs (1.2.1-1jammy.20250325.210029) ...
+Setting up ros-humble-rcl (5.3.9-1jammy.20250429.183009) ...
+Setting up ros-humble-libstatistics-collector (1.3.4-1jammy.20250429.233639) ...
+Setting up ros-humble-rcl-lifecycle (5.3.9-1jammy.20250429.235744) ...
+Setting up ros-humble-rclcpp (16.0.12-1jammy.20250429.235657) ...
+Setting up ros-humble-sensor-msgs (4.8.0-1jammy.20250325.223641) ...
+Setting up ros-humble-trajectory-msgs (4.8.0-1jammy.20250326.015325) ...
+Setting up ros-humble-rclcpp-lifecycle (16.0.12-1jammy.20250430.021154) ...
+Setting up ros-humble-mirte-msgs (2-2025.06.04.11.04) ...
+Setting up ros-humble-control-msgs (4.8.0-1jammy.20250326.020314) ...
+Setting up ros-humble-hardware-interface (2.50.0-1jammy.20250430.072414) ...
+Setting up sbuild-build-depends-main-dummy (0.invalid.0) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+
++------------------------------------------------------------------------------+
+| Check architectures                                                          |
++------------------------------------------------------------------------------+
+
+Arch check ok (arm64 included in any)
+
++------------------------------------------------------------------------------+
+| Build environment                                                            |
++------------------------------------------------------------------------------+
+
+Kernel: Linux 6.8.0-1021-azure #25~22.04.1-Ubuntu SMP Thu Jan 16 21:09:47 UTC 2025 arm64 (aarch64)
+Toolchain package versions: binutils_2.38-4ubuntu2.8 dpkg-dev_1.21.1ubuntu2.3 g++-11_11.4.0-1ubuntu1~22.04 gcc-11_11.4.0-1ubuntu1~22.04 libc6-dev_2.35-0ubuntu3.10 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 linux-libc-dev_5.15.0-141.151
+Package versions: adduser_3.118ubuntu5 apt_2.4.14 autoconf_2.71-2 automake_1:1.16.5-1.3 autopoint_0.21-4ubuntu4 autotools-dev_20220109.1 base-files_12ubuntu4.7 base-passwd_3.5.52build1 bash_5.1-6ubuntu1.1 binutils_2.38-4ubuntu2.8 binutils-aarch64-linux-gnu_2.38-4ubuntu2.8 binutils-common_2.38-4ubuntu2.8 bsdextrautils_2.37.2-4ubuntu3.4 bsdutils_1:2.37.2-4ubuntu3.4 build-essential_12.9ubuntu3 bzip2_1.0.8-5build1 ca-certificates_20240203~22.04.1 catch2_2.13.8-1 ccache_4.5.1-1 cmake_3.22.1-1ubuntu1.22.04.2 cmake-data_3.22.1-1ubuntu1.22.04.2 coreutils_8.32-4.1ubuntu1.2 cpp_4:11.2.0-1ubuntu1 cpp-11_11.4.0-1ubuntu1~22.04 dash_0.5.11+git20210903+057cd650a4ed-3build1 debconf_1.5.79ubuntu1 debhelper_13.6ubuntu1 debianutils_5.5-1ubuntu2 debugedit_1:5.0-4build1 dh-autoreconf_20 dh-elpa-helper_2.0.9ubuntu1 dh-strip-nondeterminism_1.13.0-1 diffutils_1:3.8-0ubuntu2 docutils-common_0.17.1+dfsg-2 dpkg_1.21.1ubuntu2.3 dpkg-dev_1.21.1ubuntu2.3 dwz_0.14-1build2 e2fsprogs_1.46.5-2ubuntu1.2 emacsen-common_3.0.4 fakeroot_1.28-1ubuntu1 file_1:5.41-3ubuntu0.1 findutils_4.8.0-1ubuntu3 g++_4:11.2.0-1ubuntu1 g++-11_11.4.0-1ubuntu1~22.04 gcc_4:11.2.0-1ubuntu1 gcc-11_11.4.0-1ubuntu1~22.04 gcc-11-base_11.4.0-1ubuntu1~22.04 gcc-12-base_12.3.0-1ubuntu1~22.04 gettext_0.21-4ubuntu4 gettext-base_0.21-4ubuntu4 google-mock_1.11.0-3 googletest_1.11.0-3 gpgv_2.2.27-3ubuntu2.3 grep_3.7-1build1 groff-base_1.22.4-8build1 gzip_1.10-4ubuntu4.1 hostname_3.23ubuntu2 init-system-helpers_1.62 intltool-debian_0.35.0+20060710.5 libacl1_2.3.1-1 libapt-pkg6.0_2.4.14 libarchive-zip-perl_1.68-1 libarchive13_3.6.0-1ubuntu1.4 libasan6_11.4.0-1ubuntu1~22.04 libatomic1_12.3.0-1ubuntu1~22.04 libattr1_1:2.5.1-1build1 libaudit-common_1:3.0.7-1build1 libaudit1_1:3.0.7-1build1 libbinutils_2.38-4ubuntu2.8 libblas3_3.10.0-2ubuntu1 libblkid1_2.37.2-4ubuntu3.4 libbrotli1_1.0.9-2build6 libbz2-1.0_1.0.8-5build1 libc-bin_2.35-0ubuntu3.10 libc-dev-bin_2.35-0ubuntu3.10 libc6_2.35-0ubuntu3.10 libc6-dev_2.35-0ubuntu3.10 libcap-ng0_0.7.9-2.2build3 libcap2_1:2.44-1ubuntu0.22.04.2 libcc1-0_12.3.0-1ubuntu1~22.04 libcom-err2_1.46.5-2ubuntu1.2 libconsole-bridge-dev_1.0.1+dfsg2-3 libconsole-bridge1.0_1.0.1+dfsg2-3 libcrypt-dev_1:4.4.27-1 libcrypt1_1:4.4.27-1 libctf-nobfd0_2.38-4ubuntu2.8 libctf0_2.38-4ubuntu2.8 libcurl4_7.81.0-1ubuntu1.20 libdb5.3_5.3.28+dfsg1-0.8ubuntu3 libdebconfclient0_0.261ubuntu1 libdebhelper-perl_13.6ubuntu1 libdpkg-perl_1.21.1ubuntu2.3 libdw1_0.186-1ubuntu0.1 libelf1_0.186-1ubuntu0.1 libexpat1_2.4.7-1ubuntu0.6 libexpat1-dev_2.4.7-1ubuntu0.6 libext2fs2_1.46.5-2ubuntu1.2 libfakeroot_1.28-1ubuntu1 libffi8_3.4.2-4 libfile-stripnondeterminism-perl_1.13.0-1 libfmt-dev_8.1.1+ds1-2 libfmt8_8.1.1+ds1-2 libgcc-11-dev_11.4.0-1ubuntu1~22.04 libgcc-s1_12.3.0-1ubuntu1~22.04 libgcrypt20_1.9.4-3ubuntu3 libgdbm-compat4_1.23-1 libgdbm6_1.23-1 libgfortran5_12.3.0-1ubuntu1~22.04 libgmp10_2:6.2.1+dfsg-3ubuntu1 libgnutls30_3.7.3-4ubuntu1.6 libgomp1_12.3.0-1ubuntu1~22.04 libgpg-error0_1.43-3 libgssapi-krb5-2_1.19.2-2ubuntu0.7 libgtest-dev_1.11.0-3 libhiredis0.14_0.14.1-2 libhogweed6_3.7.3-1build2 libhwasan0_12.3.0-1ubuntu1~22.04 libicu70_70.1-2 libidn2-0_2.3.2-2build1 libisl23_0.24-2build1 libitm1_12.3.0-1ubuntu1~22.04 libjs-jquery_3.6.0+dfsg+~3.5.13-1 libjs-sphinxdoc_4.3.2-1 libjs-underscore_1.13.2~dfsg-2 libjsoncpp25_1.9.5-3 libk5crypto3_1.19.2-2ubuntu0.7 libkeyutils1_1.6.1-2ubuntu3 libkrb5-3_1.19.2-2ubuntu0.7 libkrb5support0_1.19.2-2ubuntu0.7 liblapack3_3.10.0-2ubuntu1 libldap-2.5-0_2.5.19+dfsg-0ubuntu0.22.04.1 liblsan0_12.3.0-1ubuntu1~22.04 liblz4-1_1.9.3-2build2 liblzma5_5.2.5-2ubuntu1 libmagic-mgc_1:5.41-3ubuntu0.1 libmagic1_1:5.41-3ubuntu0.1 libmount1_2.37.2-4ubuntu3.4 libmpc3_1.2.1-2build1 libmpdec3_2.5.1-2build2 libmpfr6_4.1.0-3build3 libncurses6_6.3-2ubuntu0.1 libncursesw6_6.3-2ubuntu0.1 libnettle8_3.7.3-1build2 libnghttp2-14_1.43.0-1ubuntu0.2 libnsl-dev_1.3.0-2build2 libnsl2_1.3.0-2build2 libp11-kit0_0.24.0-6build1 libpam-modules_1.4.0-11ubuntu2.5 libpam-modules-bin_1.4.0-11ubuntu2.5 libpam-runtime_1.4.0-11ubuntu2.5 libpam0g_1.4.0-11ubuntu2.5 libpcre2-8-0_10.39-3ubuntu0.1 libpcre3_2:8.39-13ubuntu0.22.04.1 libperl5.34_5.34.0-3ubuntu1.4 libpipeline1_1.5.5-1 libprocps8_2:3.3.17-6ubuntu2.1 libpsl5_0.21.0-1.2build2 libpython3-dev_3.10.6-1~22.04.1 libpython3-stdlib_3.10.6-1~22.04.1 libpython3.10_3.10.12-1~22.04.9 libpython3.10-dev_3.10.12-1~22.04.9 libpython3.10-minimal_3.10.12-1~22.04.9 libpython3.10-stdlib_3.10.12-1~22.04.9 libreadline8_8.1.2-1 librhash0_1.4.2-1ubuntu1 librtmp1_2.4+20151223.gitfa8646d.1-2build4 libsasl2-2_2.1.27+dfsg2-3ubuntu1.2 libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2 libseccomp2_2.5.3-2ubuntu3~22.04.1 libselinux1_3.3-1build2 libsemanage-common_3.3-1build2 libsemanage2_3.3-1build2 libsepol2_3.3-1build1 libsigsegv2_2.13-1ubuntu3 libsmartcols1_2.37.2-4ubuntu3.4 libspdlog-dev_1:1.9.2+ds-0.2 libspdlog1_1:1.9.2+ds-0.2 libsqlite3-0_3.37.2-2ubuntu0.4 libss2_1.46.5-2ubuntu1.2 libssh-4_0.9.6-2ubuntu0.22.04.3 libssl-dev_3.0.2-0ubuntu1.19 libssl3_3.0.2-0ubuntu1.19 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 libsub-override-perl_0.09-2 libsystemd0_249.11-0ubuntu3.15 libtasn1-6_4.18.0-4ubuntu0.1 libtinfo6_6.3-2ubuntu0.1 libtinyxml2-9_9.0.0+dfsg-3 libtinyxml2-dev_9.0.0+dfsg-3 libtirpc-common_1.3.2-2ubuntu0.1 libtirpc-dev_1.3.2-2ubuntu0.1 libtirpc3_1.3.2-2ubuntu0.1 libtool_2.4.6-15build2 libtsan0_11.4.0-1ubuntu1~22.04 libubsan1_12.3.0-1ubuntu1~22.04 libuchardet0_0.0.7-1build2 libudev1_249.11-0ubuntu3.15 libunistring2_1.0-1 libuuid1_2.37.2-4ubuntu3.4 libuv1_1.43.0-1ubuntu0.1 libxml2_2.9.13+dfsg-1ubuntu0.7 libxxhash0_0.8.1-1 libyaml-0-2_0.2.2-1build2 libyaml-dev_0.2.2-1build2 libzstd1_1.4.8+dfsg-3build1 linux-libc-dev_5.15.0-141.151 login_1:4.8.1-2ubuntu2.2 logsave_1.46.5-2ubuntu1.2 lsb-base_11.1.0ubuntu4 lto-disabled-list_24 m4_1.4.18-5ubuntu2 make_4.3-4.1build1 man-db_2.10.2-1 mawk_1.3.4.20200120-3 media-types_7.0.0 mount_2.37.2-4ubuntu3.4 ncurses-base_6.3-2ubuntu0.1 ncurses-bin_6.3-2ubuntu0.1 openssl_3.0.2-0ubuntu1.19 passwd_1:4.8.1-2ubuntu2.2 patch_2.7.6-7build2 perl_5.34.0-3ubuntu1.4 perl-base_5.34.0-3ubuntu1.4 perl-modules-5.34_5.34.0-3ubuntu1.4 po-debconf_1.0.21+nmu1 procps_2:3.3.17-6ubuntu2.1 python3_3.10.6-1~22.04.1 python3-argcomplete_1.8.1-1.5 python3-attr_21.2.0-1 python3-catkin-pkg-modules_1.0.0-1 python3-dateutil_2.8.1-6 python3-dev_3.10.6-1~22.04.1 python3-distutils_3.10.8-1~22.04 python3-docutils_0.17.1+dfsg-2 python3-empy_3.3.4-2 python3-importlib-metadata_4.6.4-1 python3-iniconfig_1.1.1-2 python3-lark_1.1.1-1 python3-lib2to3_3.10.8-1~22.04 python3-minimal_3.10.6-1~22.04.1 python3-more-itertools_8.10.0-2 python3-numpy_1:1.21.5-1ubuntu22.04.1 python3-packaging_21.3-1 python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3 python3-pluggy_0.13.0-7.1 python3-py_1.10.0-1 python3-pyparsing_2.4.7-1 python3-pytest_6.2.5-1ubuntu2 python3-roman_3.3-1 python3-setuptools_59.6.0-1.2ubuntu0.22.04.3 python3-six_1.16.0-3ubuntu1 python3-toml_0.10.2-1 python3-zipp_1.0.0-3ubuntu0.1 python3.10_3.10.12-1~22.04.9 python3.10-dev_3.10.12-1~22.04.9 python3.10-minimal_3.10.12-1~22.04.9 readline-common_8.1.2-1 ros-humble-action-msgs_1.2.1-1jammy.20250325.210029 ros-humble-ament-cmake_1.3.11-1jammy.20241125.221444 ros-humble-ament-cmake-core_1.3.11-1jammy.20241125.210622 ros-humble-ament-cmake-export-definitions_1.3.11-1jammy.20241125.211705 ros-humble-ament-cmake-export-dependencies_1.3.11-1jammy.20241125.211530 ros-humble-ament-cmake-export-include-directories_1.3.11-1jammy.20241125.211805 ros-humble-ament-cmake-export-interfaces_1.3.11-1jammy.20241125.211855 ros-humble-ament-cmake-export-libraries_1.3.11-1jammy.20241125.211831 ros-humble-ament-cmake-export-link-flags_1.3.11-1jammy.20241125.211639 ros-humble-ament-cmake-export-targets_1.3.11-1jammy.20241125.211901 ros-humble-ament-cmake-gen-version-h_1.3.11-1jammy.20241125.213723 ros-humble-ament-cmake-gmock_1.3.11-1jammy.20241126.014910 ros-humble-ament-cmake-gtest_1.3.11-1jammy.20241125.213525 ros-humble-ament-cmake-include-directories_1.3.11-1jammy.20241125.211314 ros-humble-ament-cmake-libraries_1.3.11-1jammy.20241125.211336 ros-humble-ament-cmake-pytest_1.3.11-1jammy.20241125.211729 ros-humble-ament-cmake-python_1.3.11-1jammy.20241125.211339 ros-humble-ament-cmake-ros_0.10.0-3jammy.20250325.181608 ros-humble-ament-cmake-target-dependencies_1.3.11-1jammy.20241125.211542 ros-humble-ament-cmake-test_1.3.11-1jammy.20241125.211533 ros-humble-ament-cmake-version_1.3.11-1jammy.20241125.211343 ros-humble-ament-index-cpp_1.4.0-2jammy.20250325.190850 ros-humble-ament-index-python_1.4.0-2jammy.20250325.172209 ros-humble-ament-package_0.14.0-4jammy.20220421.001218 ros-humble-builtin-interfaces_1.2.1-1jammy.20250325.205450 ros-humble-class-loader_2.2.0-3jammy.20250325.194951 ros-humble-console-bridge-vendor_1.4.1-1jammy.20250325.184259 ros-humble-control-msgs_4.8.0-1jammy.20250326.020314 ros-humble-domain-coordinator_0.10.0-3jammy.20250325.172731 ros-humble-fastcdr_1.0.24-2jammy.20241125.212236 ros-humble-fastrtps_2.6.10-1jammy.20250429.171228 ros-humble-fastrtps-cmake-module_2.2.2-2jammy.20250325.181609 ros-humble-foonathan-memory-vendor_1.2.0-3jammy.20250325.185808 ros-humble-geometry-msgs_4.8.0-1jammy.20250325.221651 ros-humble-gmock-vendor_1.10.9006-1jammy.20241126.014647 ros-humble-gtest-vendor_1.10.9006-1jammy.20241125.213405 ros-humble-hardware-interface_2.50.0-1jammy.20250430.072414 ros-humble-libstatistics-collector_1.3.4-1jammy.20250429.233639 ros-humble-libyaml-vendor_1.2.2-2jammy.20250325.195259 ros-humble-lifecycle-msgs_1.2.1-1jammy.20250325.204343 ros-humble-mirte-msgs_2-2025.06.04.11.04 ros-humble-pluginlib_5.1.0-3jammy.20250325.200145 ros-humble-python-cmake-module_0.10.0-2jammy.20250325.183738 ros-humble-rcl_5.3.9-1jammy.20250429.183009 ros-humble-rcl-interfaces_1.2.1-1jammy.20250325.210217 ros-humble-rcl-lifecycle_5.3.9-1jammy.20250429.235744 ros-humble-rcl-logging-interface_2.3.1-1jammy.20250325.195219 ros-humble-rcl-logging-spdlog_2.3.1-1jammy.20250325.195904 ros-humble-rcl-yaml-param-parser_5.3.9-1jammy.20250325.200203 ros-humble-rclcpp_16.0.12-1jammy.20250429.235657 ros-humble-rclcpp-lifecycle_16.0.12-1jammy.20250430.021154 ros-humble-rcpputils_2.4.5-1jammy.20250325.194210 ros-humble-rcutils_5.1.6-1jammy.20250325.193110 ros-humble-rmw_6.1.2-1jammy.20250325.195408 ros-humble-rmw-dds-common_1.6.0-2jammy.20250325.204837 ros-humble-rmw-fastrtps-cpp_6.2.7-1jammy.20250429.174248 ros-humble-rmw-fastrtps-shared-cpp_6.2.7-1jammy.20250429.173437 ros-humble-rmw-implementation_2.8.4-1jammy.20250429.181818 ros-humble-rmw-implementation-cmake_6.1.2-1jammy.20250325.183954 ros-humble-ros-workspace_1.0.2-2jammy.20241125.210925 ros-humble-rosgraph-msgs_1.2.1-1jammy.20250325.211859 ros-humble-rosidl-adapter_3.1.6-1jammy.20250325.184117 ros-humble-rosidl-cli_3.1.6-1jammy.20250325.175029 ros-humble-rosidl-cmake_3.1.6-1jammy.20250325.185215 ros-humble-rosidl-default-runtime_1.2.0-2jammy.20250325.202717 ros-humble-rosidl-generator-c_3.1.6-1jammy.20250325.194913 ros-humble-rosidl-generator-cpp_3.1.6-1jammy.20250325.200121 ros-humble-rosidl-generator-py_0.14.4-1jammy.20250325.202006 ros-humble-rosidl-parser_3.1.6-1jammy.20250325.184652 ros-humble-rosidl-runtime-c_3.1.6-1jammy.20250325.194220 ros-humble-rosidl-runtime-cpp_3.1.6-1jammy.20250325.195449 ros-humble-rosidl-typesupport-c_2.0.2-1jammy.20250325.195526 ros-humble-rosidl-typesupport-cpp_2.0.2-1jammy.20250325.200711 ros-humble-rosidl-typesupport-fastrtps-c_2.2.2-2jammy.20250325.201408 ros-humble-rosidl-typesupport-fastrtps-cpp_2.2.2-2jammy.20250325.200822 ros-humble-rosidl-typesupport-interface_3.1.6-1jammy.20250325.184242 ros-humble-rosidl-typesupport-introspection-c_3.1.6-1jammy.20250325.194950 ros-humble-rosidl-typesupport-introspection-cpp_3.1.6-1jammy.20250325.200123 ros-humble-rpyutils_0.2.1-2jammy.20250325.175015 ros-humble-sensor-msgs_4.8.0-1jammy.20250325.223641 ros-humble-spdlog-vendor_1.3.1-1jammy.20250325.184827 ros-humble-statistics-msgs_1.2.1-1jammy.20250325.212041 ros-humble-std-msgs_4.8.0-1jammy.20250325.213809 ros-humble-tinyxml2-vendor_0.7.6-1jammy.20241125.234439 ros-humble-tracetools_4.1.1-1jammy.20250325.192811 ros-humble-trajectory-msgs_4.8.0-1jammy.20250326.015325 ros-humble-unique-identifier-msgs_2.2.1-3jammy.20250325.205105 rpcsvc-proto_1.4.2-0ubuntu6 sbuild-build-depends-main-dummy_0.invalid.0 sed_4.8-1ubuntu2 sensible-utils_0.0.17 sgml-base_1.30 sysvinit-utils_3.01-1ubuntu1 tar_1.34+dfsg-1ubuntu0.1.22.04.2 tzdata_2025b-0ubuntu0.22.04.1 ubuntu-keyring_2021.03.26 usrmerge_25ubuntu2 util-linux_2.37.2-4ubuntu3.4 xml-core_0.18+nmu1 xz-utils_5.2.5-2ubuntu1 zlib1g_1:1.2.11.dfsg-2ubuntu9.2 zlib1g-dev_1:1.2.11.dfsg-2ubuntu9.2
+
++------------------------------------------------------------------------------+
+| Build                                                                        |
++------------------------------------------------------------------------------+
+
+
+Unpack source
+-------------
+
+Format: 1.0
+Source: ros-humble-mirte-control
+Binary: ros-humble-mirte-control
+Architecture: any
+Version: 2-2025.06.04.11.07
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-cmake-gtest, ros-humble-hardware-interface, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle
+Package-List:
+ ros-humble-mirte-control deb misc optional arch=any
+Checksums-Sha1:
+ 038cc66640b2d0863179053ccad347d6eb70fb86 15490 ros-humble-mirte-control_2-2025.06.04.11.07.tar.gz
+Checksums-Sha256:
+ 25b39880db28457d7fca9b25f76d400cf0c362e26a7e52739c5067a9a91c5b56 15490 ros-humble-mirte-control_2-2025.06.04.11.07.tar.gz
+Files:
+ dbba23d3c2b718d8a5f206a735b13c63 15490 ros-humble-mirte-control_2-2025.06.04.11.07.tar.gz
+
+dpkg-source: warning: extracting unsigned source package (ros-humble-mirte-control_2-2025.06.04.11.07.dsc)
+dpkg-source: info: extracting ros-humble-mirte-control in /<<BUILDDIR>>package
+dpkg-source: info: unpacking ros-humble-mirte-control_2-2025.06.04.11.07.tar.gz
+
+Check disk space
+----------------
+
+Sufficient free space for build
+
+User Environment
+----------------
+
+APT_CONFIG=/var/lib/sbuild/apt.conf
+CCACHE_DIR=/build/ccache
+DEB_BUILD_OPTIONS=nocheck
+HOME=/var/lib/sbuild
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
+LOGNAME=runner
+OLDPWD=/
+PATH=/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PWD=/<<BUILDDIR>>package
+SHELL=/bin/sh
+USER=runner
+
+dpkg-buildpackage
+-----------------
+
+Command: dpkg-buildpackage --sanitize-env -us -uc -b -rfakeroot
+dpkg-buildpackage: info: source package ros-humble-mirte-control
+dpkg-buildpackage: info: source version 2-2025.06.04.11.07
+dpkg-buildpackage: info: source distribution jammy
+dpkg-buildpackage: info: source changed by Martin Klomp <m.klomp@tudelft.nl>
+ dpkg-source --before-build .
+dpkg-buildpackage: info: host architecture arm64
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+ fakeroot debian/rules clean
+dh clean -v --buildsystem=cmake
+   dh_auto_clean -O-v -O--buildsystem=cmake
+   dh_autoreconf_clean -O-v -O--buildsystem=cmake
+   dh_clean -O-v -O--buildsystem=cmake
+	rm -f debian/debhelper-build-stamp
+	rm -rf debian/.debhelper/
+	rm -f -- debian/ros-humble-mirte-control.substvars debian/files
+	rm -fr -- debian/ros-humble-mirte-control/ debian/tmp/
+	find .  \( \( \
+		\( -path .\*/.git -o -path .\*/.svn -o -path .\*/.bzr -o -path .\*/.hg -o -path .\*/CVS -o -path .\*/.pc -o -path .\*/_darcs \) -prune -o -type f -a \
+	        \( -name '#*#' -o -name '.*~' -o -name '*~' -o -name DEADJOE \
+		 -o -name '*.orig' -o -name '*.rej' -o -name '*.bak' \
+		 -o -name '.*.orig' -o -name .*.rej -o -name '.SUMS' \
+		 -o -name TAGS -o \( -path '*/.deps/*' -a -name '*.P' \) \
+		\) -exec rm -f {} + \) -o \
+		\( -type d -a -name autom4te.cache -prune -exec rm -rf {} + \) \)
+ debian/rules build
+dh build -v --buildsystem=cmake
+   dh_update_autotools_config -O-v -O--buildsystem=cmake
+   dh_autoreconf -O-v -O--buildsystem=cmake
+   debian/rules override_dh_auto_configure
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_configure -- \
+	-DCMAKE_INSTALL_PREFIX="/opt/ros/humble" \
+	-DAMENT_PREFIX_PATH="/opt/ros/humble" \
+	-DCMAKE_PREFIX_PATH="/opt/ros/humble"
+	install -d obj-aarch64-linux-gnu
+	cd obj-aarch64-linux-gnu && cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=None -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON -DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF -DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON -DCMAKE_INSTALL_RUNSTATEDIR=/run "-GUnix Makefiles" -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_INSTALL_LIBDIR=lib/aarch64-linux-gnu -DCMAKE_INSTALL_PREFIX=/opt/ros/humble -DAMENT_PREFIX_PATH=/opt/ros/humble -DCMAKE_PREFIX_PATH=/opt/ros/humble ..
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/lib/ccache/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Found hardware_interface: 2.50.0 (/opt/ros/humble/share/hardware_interface/cmake)
+-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+-- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.2")  
+-- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+-- Found FastRTPS: /opt/ros/humble/include  
+-- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+-- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Looking for C++ include pthread.h
+-- Looking for C++ include pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found mirte_msgs: 0.0.0 (/opt/ros/humble/share/mirte_msgs/cmake)
+-- Found ament_cmake_gtest: 1.3.11 (/opt/ros/humble/share/ament_cmake_gtest/cmake)
+-- Configuring done
+-- Generating done
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    AMENT_PREFIX_PATH
+    CMAKE_EXPORT_NO_PACKAGE_REGISTRY
+    CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
+    CMAKE_INSTALL_LIBDIR
+    CMAKE_INSTALL_LOCALSTATEDIR
+    CMAKE_INSTALL_RUNSTATEDIR
+    CMAKE_INSTALL_SYSCONFDIR
+
+
+-- Build files have been written to: /<<BUILDDIR>>package/obj-aarch64-linux-gnu
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-mirte-control.debhelper.log
+   debian/rules override_dh_auto_build
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_build
+	cd obj-aarch64-linux-gnu && make -j4 "INSTALL=install --strip-program=true" VERBOSE=1
+make[2]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+/usr/bin/cmake -S/<<BUILDDIR>>package -B/<<BUILDDIR>>package/obj-aarch64-linux-gnu --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles /<<BUILDDIR>>package/obj-aarch64-linux-gnu//CMakeFiles/progress.marks
+make  -f CMakeFiles/Makefile2 all
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make  -f CMakeFiles/mirte_control.dir/build.make CMakeFiles/mirte_control.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-aarch64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-aarch64-linux-gnu /<<BUILDDIR>>package/obj-aarch64-linux-gnu /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles/mirte_control.dir/DependInfo.cmake --color=
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make  -f CMakeFiles/mirte_control.dir/build.make CMakeFiles/mirte_control.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+[ 50%] Building CXX object CMakeFiles/mirte_control.dir/hardware/mirte_pioneer_system.cpp.o
+/usr/lib/ccache/c++ -DDEFAULT_RMW_IMPLEMENTATION=rmw_fastrtps_cpp -DMIRTE_CONTROL_BUILDING_DLL -DRCUTILS_ENABLE_FAULT_INJECTION -Dmirte_control_EXPORTS -I/<<BUILDDIR>>package/hardware/include -I/opt/ros/humble/include -isystem /opt/ros/humble/include/pluginlib -isystem /opt/ros/humble/include/rclcpp -isystem /opt/ros/humble/include/rclcpp_lifecycle -isystem /opt/ros/humble/include/mirte_msgs -isystem /opt/ros/humble/include/control_msgs -isystem /opt/ros/humble/include/lifecycle_msgs -isystem /opt/ros/humble/include/rcpputils -isystem /opt/ros/humble/include/rcutils -isystem /opt/ros/humble/include/ament_index_cpp -isystem /opt/ros/humble/include/class_loader -isystem /opt/ros/humble/include/libstatistics_collector -isystem /opt/ros/humble/include/builtin_interfaces -isystem /opt/ros/humble/include/rosidl_runtime_c -isystem /opt/ros/humble/include/rosidl_typesupport_interface -isystem /opt/ros/humble/include/fastcdr -isystem /opt/ros/humble/include/rosidl_runtime_cpp -isystem /opt/ros/humble/include/rosidl_typesupport_fastrtps_cpp -isystem /opt/ros/humble/include/rmw -isystem /opt/ros/humble/include/rosidl_typesupport_fastrtps_c -isystem /opt/ros/humble/include/rosidl_typesupport_introspection_c -isystem /opt/ros/humble/include/rosidl_typesupport_introspection_cpp -isystem /opt/ros/humble/include/rcl -isystem /opt/ros/humble/include/rcl_interfaces -isystem /opt/ros/humble/include/rcl_logging_interface -isystem /opt/ros/humble/include/rcl_yaml_param_parser -isystem /opt/ros/humble/include/libyaml_vendor -isystem /opt/ros/humble/include/tracetools -isystem /opt/ros/humble/include/statistics_msgs -isystem /opt/ros/humble/include/rosgraph_msgs -isystem /opt/ros/humble/include/rosidl_typesupport_cpp -isystem /opt/ros/humble/include/rosidl_typesupport_c -isystem /opt/ros/humble/include/rcl_lifecycle -isystem /opt/ros/humble/include/std_msgs -isystem /opt/ros/humble/include/sensor_msgs -isystem /opt/ros/humble/include/geometry_msgs -isystem /opt/ros/humble/include/action_msgs -isystem /opt/ros/humble/include/unique_identifier_msgs -isystem /opt/ros/humble/include/trajectory_msgs -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -Wall -Wextra -std=gnu++20 -MD -MT CMakeFiles/mirte_control.dir/hardware/mirte_pioneer_system.cpp.o -MF CMakeFiles/mirte_control.dir/hardware/mirte_pioneer_system.cpp.o.d -o CMakeFiles/mirte_control.dir/hardware/mirte_pioneer_system.cpp.o -c /<<BUILDDIR>>package/hardware/mirte_pioneer_system.cpp
+[100%] Linking CXX shared library libmirte_control.so
+/usr/bin/cmake -E cmake_link_script CMakeFiles/mirte_control.dir/link.txt --verbose=1
+/usr/lib/ccache/c++ -fPIC -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2 -shared -Wl,-soname,libmirte_control.so -o libmirte_control.so CMakeFiles/mirte_control.dir/hardware/mirte_pioneer_system.cpp.o  -Wl,-rpath,/opt/ros/humble/lib: /opt/ros/humble/lib/librclcpp_lifecycle.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libmirte_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libfake_components.so /opt/ros/humble/lib/libmock_components.so /opt/ros/humble/lib/libhardware_interface.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_generator_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_generator_py.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libstd_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libaction_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libsensor_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_generator_py.so /opt/ros/humble/lib/librosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/librmw.so /opt/ros/humble/lib/librosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/librosidl_typesupport_c.so /opt/ros/humble/lib/librosidl_typesupport_cpp.so /opt/ros/humble/lib/librosidl_typesupport_introspection_c.so /opt/ros/humble/lib/librosidl_typesupport_introspection_cpp.so /usr/lib/aarch64-linux-gnu/libconsole_bridge.so.1.0 /opt/ros/humble/lib/libclass_loader.so /opt/ros/humble/lib/libclass_loader.so /usr/lib/aarch64-linux-gnu/libtinyxml2.so /opt/ros/humble/lib/librcl.so /opt/ros/humble/lib/librosidl_runtime_c.so /opt/ros/humble/lib/libtracetools.so /opt/ros/humble/lib/librcl_lifecycle.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_generator_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_generator_py.so /usr/lib/aarch64-linux-gnu/libpython3.10.so /opt/ros/humble/lib/librclcpp_lifecycle.so /opt/ros/humble/lib/librclcpp.so /opt/ros/humble/lib/librcl_lifecycle.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_generator_py.so /opt/ros/humble/lib/librcpputils.so /opt/ros/humble/lib/librcutils.so -ldl /usr/lib/aarch64-linux-gnu/libconsole_bridge.so.1.0 /opt/ros/humble/lib/liblibstatistics_collector.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_generator_py.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/librosgraph_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libstatistics_msgs__rosidl_generator_c.so /opt/ros/humble/lib/librcl.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_cpp.so /opt/ros/humble/lib/librcl_interfaces__rosidl_generator_py.so /opt/ros/humble/lib/librcl_interfaces__rosidl_typesupport_c.so /opt/ros/humble/lib/librcl_interfaces__rosidl_generator_c.so /opt/ros/humble/lib/librcl_yaml_param_parser.so /opt/ros/humble/lib/libyaml.so /opt/ros/humble/lib/librmw_implementation.so /opt/ros/humble/lib/libament_index_cpp.so /opt/ros/humble/lib/librcl_logging_spdlog.so /opt/ros/humble/lib/librcl_logging_interface.so /opt/ros/humble/lib/libtracetools.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/liblifecycle_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libmirte_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libmirte_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/librosidl_typesupport_fastrtps_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/librosidl_typesupport_fastrtps_cpp.so /opt/ros/humble/lib/libfastcdr.so.1.0.24 /opt/ros/humble/lib/librmw.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/librosidl_typesupport_introspection_cpp.so /opt/ros/humble/lib/librosidl_typesupport_introspection_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_cpp.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_cpp.so /opt/ros/humble/lib/librosidl_typesupport_cpp.so /opt/ros/humble/lib/libsensor_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libcontrol_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libsensor_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libaction_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libunique_identifier_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libtrajectory_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libgeometry_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_generator_py.so /opt/ros/humble/lib/libstd_msgs__rosidl_typesupport_c.so /opt/ros/humble/lib/libstd_msgs__rosidl_generator_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_generator_py.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_typesupport_c.so /opt/ros/humble/lib/libbuiltin_interfaces__rosidl_generator_c.so /opt/ros/humble/lib/librosidl_typesupport_c.so /opt/ros/humble/lib/librcpputils.so /opt/ros/humble/lib/librosidl_runtime_c.so /opt/ros/humble/lib/librcutils.so -ldl /usr/lib/aarch64-linux-gnu/libpython3.10.so 
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+[100%] Built target mirte_control
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles 0
+make[2]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-mirte-control.debhelper.log
+   debian/rules override_dh_auto_test
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+echo -- Running tests. Even if one of them fails the build is not canceled.
+-- Running tests. Even if one of them fails the build is not canceled.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_test || true
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   create-stamp debian/debhelper-build-stamp
+ fakeroot debian/rules binary
+dh binary -v --buildsystem=cmake
+   dh_testroot -O-v -O--buildsystem=cmake
+   dh_prep -O-v -O--buildsystem=cmake
+	rm -f -- debian/ros-humble-mirte-control.substvars
+	rm -fr -- debian/.debhelper/generated/ros-humble-mirte-control/ debian/ros-humble-mirte-control/ debian/tmp/
+   debian/rules override_dh_auto_install
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_install
+	install -d /<<BUILDDIR>>package/debian/ros-humble-mirte-control
+	cd obj-aarch64-linux-gnu && make -j4 install DESTDIR=/<<BUILDDIR>>package/debian/ros-humble-mirte-control AM_UPDATE_INFO_DIR=no "INSTALL=install --strip-program=true"
+make[2]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+/usr/bin/cmake -S/<<BUILDDIR>>package -B/<<BUILDDIR>>package/obj-aarch64-linux-gnu --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles /<<BUILDDIR>>package/obj-aarch64-linux-gnu//CMakeFiles/progress.marks
+make  -f CMakeFiles/Makefile2 all
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make  -f CMakeFiles/mirte_control.dir/build.make CMakeFiles/mirte_control.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-aarch64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-aarch64-linux-gnu /<<BUILDDIR>>package/obj-aarch64-linux-gnu /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles/mirte_control.dir/DependInfo.cmake --color=
+Consolidate compiler generated dependencies of target mirte_control
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make  -f CMakeFiles/mirte_control.dir/build.make CMakeFiles/mirte_control.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make[4]: Nothing to be done for 'CMakeFiles/mirte_control.dir/build'.
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+[100%] Built target mirte_control
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-aarch64-linux-gnu/CMakeFiles 0
+make  -f CMakeFiles/Makefile2 preinstall
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make[3]: Nothing to be done for 'preinstall'.
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+Install the project...
+/usr/bin/cmake -P cmake_install.cmake
+-- Install configuration: "None"
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/mirte_control.xml
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/include/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/include/mirte_control/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/include/mirte_control/mirte_control/visibility_control.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/include/mirte_control/mirte_control/mirte_pioneer_system.hpp
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/launch
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/launch/view_robot.launch.py
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/ros2_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/ros2_control/diffbot.ros2_control.xacro
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/urdf
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/urdf/diffbot.urdf.xacro
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/urdf/diffbot.materials.xacro
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/urdf/diffbot_description.urdf.xacro
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/rviz
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/rviz/diffbot_view.rviz
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/rviz/diffbot.rviz
+-- Up-to-date: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/launch
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/launch/diffbot.launch.py
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/launch/mirte.launch.py
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/config
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/config/diffbot_controllers.yaml
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/config/mirte_diff_drive_controllers.yaml
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+-- Set runtime path of "/<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so" to ""
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/library_path.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/library_path.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/ament_prefix_path.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/ament_prefix_path.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/path.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/environment/path.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/local_setup.bash
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/local_setup.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/local_setup.zsh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/local_setup.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/package.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/ament_index/resource_index/packages/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/mirte_control
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/export_mirte_controlExport.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/export_mirte_controlExport-none.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/ament_cmake_export_targets-extras.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/mirte_controlConfig.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/cmake/mirte_controlConfig-version.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-mirte-control/opt/ros/humble/share/mirte_control/package.xml
+make[2]: Leaving directory '/<<BUILDDIR>>package/obj-aarch64-linux-gnu'
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdocs -O-v -O--buildsystem=cmake
+	install -d debian/ros-humble-mirte-control/usr/share/doc/ros-humble-mirte-control
+	install -d debian/.debhelper/generated/ros-humble-mirte-control
+   dh_installchangelogs -O-v -O--buildsystem=cmake
+	install -p -m0644 debian/changelog debian/ros-humble-mirte-control/usr/share/doc/ros-humble-mirte-control/changelog.Debian
+   dh_installinit -O-v -O--buildsystem=cmake
+   dh_perl -O-v -O--buildsystem=cmake
+   dh_link -O-v -O--buildsystem=cmake
+   dh_strip_nondeterminism -O-v -O--buildsystem=cmake
+   dh_compress -O-v -O--buildsystem=cmake
+	cd debian/ros-humble-mirte-control
+	chmod a-x usr/share/doc/ros-humble-mirte-control/changelog.Debian
+	gzip -9nf usr/share/doc/ros-humble-mirte-control/changelog.Debian
+	cd '/<<BUILDDIR>>package'
+   dh_fixperms -O-v -O--buildsystem=cmake
+	find debian/ros-humble-mirte-control -true -print0 2>/dev/null | xargs -0r chown --no-dereference 0:0
+	find debian/ros-humble-mirte-control ! -type l -a -true -a -true -print0 2>/dev/null | xargs -0r chmod go=rX,u+rw,a-s
+	find debian/ros-humble-mirte-control/usr/share/doc -type f -a -true -a ! -regex 'debian/ros-humble-mirte-control/usr/share/doc/[^/]*/examples/.*' -print0 2>/dev/null | xargs -0r chmod 0644
+	find debian/ros-humble-mirte-control/usr/share/doc -type d -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0755
+	find debian/ros-humble-mirte-control -type f \( -name '*.so.*' -o -name '*.so' -o -name '*.la' -o -name '*.a' -o -name '*.js' -o -name '*.css' -o -name '*.scss' -o -name '*.sass' -o -name '*.jpeg' -o -name '*.jpg' -o -name '*.png' -o -name '*.gif' -o -name '*.cmxs' -o -name '*.node' \) -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0644
+   dh_missing -O-v -O--buildsystem=cmake
+   dh_strip -O-v -O--buildsystem=cmake
+	debugedit --build-id --build-id-seed=ros-humble-mirte-control/2-2025.06.04.11.07 debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+7d9d5499fbe838cad01d30fdd8f980622645e9e0
+	install -d debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/lib/debug/.build-id/7d
+	objcopy --only-keep-debug --compress-debug-sections debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/lib/debug/.build-id/7d/9d5499fbe838cad01d30fdd8f980622645e9e0.debug
+	chmod 0644 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/lib/debug/.build-id/7d/9d5499fbe838cad01d30fdd8f980622645e9e0.debug
+	chown 0:0 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/lib/debug/.build-id/7d/9d5499fbe838cad01d30fdd8f980622645e9e0.debug
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded -o /tmp/ZbDAdzVVGq/stripkswozo debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+	chmod --reference debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so /tmp/ZbDAdzVVGq/stripkswozo
+	cat '/tmp/ZbDAdzVVGq/stripkswozo' > 'debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so'
+	chmod --reference /tmp/ZbDAdzVVGq/stripkswozo debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+	objcopy --add-gnu-debuglink debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/lib/debug/.build-id/7d/9d5499fbe838cad01d30fdd8f980622645e9e0.debug debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so /tmp/ZbDAdzVVGq/objcopyeSonfp
+	chmod --reference debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so /tmp/ZbDAdzVVGq/objcopyeSonfp
+	cat '/tmp/ZbDAdzVVGq/objcopyeSonfp' > 'debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so'
+	chmod --reference /tmp/ZbDAdzVVGq/objcopyeSonfp debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+	install -d debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/share/doc
+	ln -s ros-humble-mirte-control debian/.debhelper/ros-humble-mirte-control/dbgsym-root/usr/share/doc/ros-humble-mirte-control-dbgsym
+   dh_makeshlibs -O-v -O--buildsystem=cmake
+	rm -f debian/ros-humble-mirte-control/DEBIAN/shlibs
+	rm -f debian/ros-humble-mirte-control.debhelper.log
+   debian/rules override_dh_shlibdeps
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_shlibdeps -l/<<BUILDDIR>>package/debian/ros-humble-mirte-control//opt/ros/humble/lib/
+	install -d debian/ros-humble-mirte-control/DEBIAN
+	dpkg-shlibdeps -Tdebian/ros-humble-mirte-control.substvars -l/<<BUILDDIR>>package/debian/ros-humble-mirte-control//opt/ros/humble/lib/ debian/ros-humble-mirte-control/opt/ros/humble/lib/libmirte_control.so
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librclcpp_lifecycle.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librclcpp_lifecycle.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'libmirte_msgs__rosidl_typesupport_cpp.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'libmirte_msgs__rosidl_typesupport_cpp.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'libmirte_msgs__rosidl_typesupport_cpp.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'libclass_loader.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'libclass_loader.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librcl.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librcl.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librclcpp.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librclcpp.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librcutils.so'
+dpkg-shlibdeps: warning: can't extract name and version from library name 'librcutils.so'
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdeb -O-v -O--buildsystem=cmake
+   dh_gencontrol -O-v -O--buildsystem=cmake
+	echo misc:Depends= >> debian/ros-humble-mirte-control.substvars
+	echo misc:Pre-Depends= >> debian/ros-humble-mirte-control.substvars
+	install -d debian/.debhelper/ros-humble-mirte-control/dbgsym-root/DEBIAN
+	dpkg-gencontrol -pros-humble-mirte-control -ldebian/changelog -Tdebian/ros-humble-mirte-control.substvars -Pdebian/.debhelper/ros-humble-mirte-control/dbgsym-root -UPre-Depends -URecommends -USuggests -UEnhances -UProvides -UEssential -UConflicts -DPriority=optional -UHomepage -UImportant -UBuilt-Using -DAuto-Built-Package=debug-symbols -UProtected -DPackage=ros-humble-mirte-control-dbgsym "-DDepends=ros-humble-mirte-control (= \${binary:Version})" "-DDescription=debug symbols for ros-humble-mirte-control" -DBuild-Ids=7d9d5499fbe838cad01d30fdd8f980622645e9e0 -DSection=debug -DPackage-Type=ddeb -UMulti-Arch -UReplaces -UBreaks
+	chmod 0644 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/DEBIAN/control
+	chown 0:0 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/DEBIAN/control
+	dpkg-gencontrol -pros-humble-mirte-control -ldebian/changelog -Tdebian/ros-humble-mirte-control.substvars -Pdebian/ros-humble-mirte-control
+	chmod 0644 -- debian/ros-humble-mirte-control/DEBIAN/control
+	chown 0:0 -- debian/ros-humble-mirte-control/DEBIAN/control
+   dh_md5sums -O-v -O--buildsystem=cmake
+	cd debian/ros-humble-mirte-control >/dev/null && xargs -r0 md5sum | perl -pe 'if (s@^\\@@) { s/\\\\/\\/g; }' > DEBIAN/md5sums
+	chmod 0644 -- debian/ros-humble-mirte-control/DEBIAN/md5sums
+	chown 0:0 -- debian/ros-humble-mirte-control/DEBIAN/md5sums
+	cd debian/.debhelper/ros-humble-mirte-control/dbgsym-root >/dev/null && xargs -r0 md5sum | perl -pe 'if (s@^\\@@) { s/\\\\/\\/g; }' > DEBIAN/md5sums
+	chmod 0644 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/DEBIAN/md5sums
+	chown 0:0 -- debian/.debhelper/ros-humble-mirte-control/dbgsym-root/DEBIAN/md5sums
+   dh_builddeb -O-v -O--buildsystem=cmake
+	dpkg-deb --build debian/ros-humble-mirte-control ..
+dpkg-deb: building package 'ros-humble-mirte-control' in '../ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb'.
+	install -d debian/.debhelper/scratch-space/build-ros-humble-mirte-control
+	dpkg-deb --build debian/.debhelper/ros-humble-mirte-control/dbgsym-root debian/.debhelper/scratch-space/build-ros-humble-mirte-control
+dpkg-deb: building package 'ros-humble-mirte-control-dbgsym' in 'debian/.debhelper/scratch-space/build-ros-humble-mirte-control/ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.deb'.
+	Renaming ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.deb to ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+	mv debian/.debhelper/scratch-space/build-ros-humble-mirte-control/ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.deb ../ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ dpkg-genbuildinfo --build=binary -O../ros-humble-mirte-control_2-2025.06.04.11.07_arm64.buildinfo
+ dpkg-genchanges --build=binary -O../ros-humble-mirte-control_2-2025.06.04.11.07_arm64.changes
+dpkg-genchanges: info: binary-only upload (no source code included)
+ dpkg-source --after-build .
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+dpkg-buildpackage: info: binary-only upload (no source included)
+--------------------------------------------------------------------------------
+Build finished at 2025-06-04T11:08:56Z
+
+Finished
+--------
+
+I: Built successfully
+
++------------------------------------------------------------------------------+
+| Changes                                                                      |
++------------------------------------------------------------------------------+
+
+
+ros-humble-mirte-control_2-2025.06.04.11.07_arm64.changes:
+----------------------------------------------------------
+
+Format: 1.8
+Date: Wed, 04 Jun 2025 11:07:57 -0000
+Source: ros-humble-mirte-control
+Binary: ros-humble-mirte-control
+Built-For-Profiles: noudeb
+Architecture: arm64
+Version: 2-2025.06.04.11.07
+Distribution: jammy
+Urgency: high
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Changed-By: Martin Klomp <m.klomp@tudelft.nl>
+Description:
+ ros-humble-mirte-control - Mirte Pioneer Hardware interface
+Changes:
+ ros-humble-mirte-control (2-2025.06.04.11.07) jammy; urgency=high
+ .
+   * Autogenerated, no changelog for this version found in CHANGELOG.rst.
+Checksums-Sha1:
+ 6610cef30f1256a5edbb84e9f5388bd474d57ccf 729442 ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ 2467d77546e7bd40d6ebadb13f2bf9ef2d8a9d3a 15305 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.buildinfo
+ 0880ad6375780819106dc7d5e893144bc4860d7d 53418 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+Checksums-Sha256:
+ e3e181799fd26932e9f9061c5e991ad43d778f6147e48d032ad4052053a1ec65 729442 ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ 4083b29e19e7cd818f51f741d6c1565f916b237501613066e76a61bd57ccc90f 15305 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.buildinfo
+ b7a4b1d9d5c3fa018e1bb7b4a83cf8af2949759568028b7a33127ef10bac18ea 53418 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+Files:
+ 5ec1f58e1282dfbee3a46d6c93002f1c 729442 debug optional ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ fcc984df9b1c0dbf6b66398f5caab48b 15305 misc optional ros-humble-mirte-control_2-2025.06.04.11.07_arm64.buildinfo
+ c3abdb1f44b64aa0f363c54849337069 53418 misc optional ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+
++------------------------------------------------------------------------------+
+| Buildinfo                                                                    |
++------------------------------------------------------------------------------+
+
+Format: 1.0
+Source: ros-humble-mirte-control
+Binary: ros-humble-mirte-control ros-humble-mirte-control-dbgsym
+Architecture: arm64
+Version: 2-2025.06.04.11.07
+Checksums-Md5:
+ 5ec1f58e1282dfbee3a46d6c93002f1c 729442 ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ c3abdb1f44b64aa0f363c54849337069 53418 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+Checksums-Sha1:
+ 6610cef30f1256a5edbb84e9f5388bd474d57ccf 729442 ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ 0880ad6375780819106dc7d5e893144bc4860d7d 53418 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+Checksums-Sha256:
+ e3e181799fd26932e9f9061c5e991ad43d778f6147e48d032ad4052053a1ec65 729442 ros-humble-mirte-control-dbgsym_2-2025.06.04.11.07_arm64.ddeb
+ b7a4b1d9d5c3fa018e1bb7b4a83cf8af2949759568028b7a33127ef10bac18ea 53418 ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+Build-Origin: Ubuntu
+Build-Architecture: arm64
+Build-Date: Wed, 04 Jun 2025 11:08:56 +0000
+Build-Path: /<<BUILDDIR>>package
+Build-Tainted-By:
+ merged-usr-via-aliased-dirs
+Installed-Build-Depends:
+ autoconf (= 2.71-2),
+ automake (= 1:1.16.5-1.3),
+ autopoint (= 0.21-4ubuntu4),
+ autotools-dev (= 20220109.1),
+ base-files (= 12ubuntu4.7),
+ base-passwd (= 3.5.52build1),
+ bash (= 5.1-6ubuntu1.1),
+ binutils (= 2.38-4ubuntu2.8),
+ binutils-aarch64-linux-gnu (= 2.38-4ubuntu2.8),
+ binutils-common (= 2.38-4ubuntu2.8),
+ bsdextrautils (= 2.37.2-4ubuntu3.4),
+ bsdutils (= 1:2.37.2-4ubuntu3.4),
+ build-essential (= 12.9ubuntu3),
+ bzip2 (= 1.0.8-5build1),
+ catch2 (= 2.13.8-1),
+ cmake (= 3.22.1-1ubuntu1.22.04.2),
+ cmake-data (= 3.22.1-1ubuntu1.22.04.2),
+ coreutils (= 8.32-4.1ubuntu1.2),
+ cpp (= 4:11.2.0-1ubuntu1),
+ cpp-11 (= 11.4.0-1ubuntu1~22.04),
+ dash (= 0.5.11+git20210903+057cd650a4ed-3build1),
+ debconf (= 1.5.79ubuntu1),
+ debhelper (= 13.6ubuntu1),
+ debianutils (= 5.5-1ubuntu2),
+ debugedit (= 1:5.0-4build1),
+ dh-autoreconf (= 20),
+ dh-elpa-helper (= 2.0.9ubuntu1),
+ dh-strip-nondeterminism (= 1.13.0-1),
+ diffutils (= 1:3.8-0ubuntu2),
+ docutils-common (= 0.17.1+dfsg-2),
+ dpkg (= 1.21.1ubuntu2.3),
+ dpkg-dev (= 1.21.1ubuntu2.3),
+ dwz (= 0.14-1build2),
+ emacsen-common (= 3.0.4),
+ file (= 1:5.41-3ubuntu0.1),
+ findutils (= 4.8.0-1ubuntu3),
+ g++ (= 4:11.2.0-1ubuntu1),
+ g++-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc (= 4:11.2.0-1ubuntu1),
+ gcc-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc-11-base (= 11.4.0-1ubuntu1~22.04),
+ gcc-12-base (= 12.3.0-1ubuntu1~22.04),
+ gettext (= 0.21-4ubuntu4),
+ gettext-base (= 0.21-4ubuntu4),
+ google-mock (= 1.11.0-3),
+ googletest (= 1.11.0-3),
+ grep (= 3.7-1build1),
+ groff-base (= 1.22.4-8build1),
+ gzip (= 1.10-4ubuntu4.1),
+ hostname (= 3.23ubuntu2),
+ init-system-helpers (= 1.62),
+ intltool-debian (= 0.35.0+20060710.5),
+ libacl1 (= 2.3.1-1),
+ libarchive-zip-perl (= 1.68-1),
+ libarchive13 (= 3.6.0-1ubuntu1.4),
+ libasan6 (= 11.4.0-1ubuntu1~22.04),
+ libatomic1 (= 12.3.0-1ubuntu1~22.04),
+ libattr1 (= 1:2.5.1-1build1),
+ libaudit-common (= 1:3.0.7-1build1),
+ libaudit1 (= 1:3.0.7-1build1),
+ libbinutils (= 2.38-4ubuntu2.8),
+ libblas3 (= 3.10.0-2ubuntu1),
+ libblkid1 (= 2.37.2-4ubuntu3.4),
+ libbrotli1 (= 1.0.9-2build6),
+ libbz2-1.0 (= 1.0.8-5build1),
+ libc-bin (= 2.35-0ubuntu3.10),
+ libc-dev-bin (= 2.35-0ubuntu3.10),
+ libc6 (= 2.35-0ubuntu3.10),
+ libc6-dev (= 2.35-0ubuntu3.10),
+ libcap-ng0 (= 0.7.9-2.2build3),
+ libcap2 (= 1:2.44-1ubuntu0.22.04.2),
+ libcc1-0 (= 12.3.0-1ubuntu1~22.04),
+ libcom-err2 (= 1.46.5-2ubuntu1.2),
+ libconsole-bridge-dev (= 1.0.1+dfsg2-3),
+ libconsole-bridge1.0 (= 1.0.1+dfsg2-3),
+ libcrypt-dev (= 1:4.4.27-1),
+ libcrypt1 (= 1:4.4.27-1),
+ libctf-nobfd0 (= 2.38-4ubuntu2.8),
+ libctf0 (= 2.38-4ubuntu2.8),
+ libcurl4 (= 7.81.0-1ubuntu1.20),
+ libdb5.3 (= 5.3.28+dfsg1-0.8ubuntu3),
+ libdebconfclient0 (= 0.261ubuntu1),
+ libdebhelper-perl (= 13.6ubuntu1),
+ libdpkg-perl (= 1.21.1ubuntu2.3),
+ libdw1 (= 0.186-1ubuntu0.1),
+ libelf1 (= 0.186-1ubuntu0.1),
+ libexpat1 (= 2.4.7-1ubuntu0.6),
+ libexpat1-dev (= 2.4.7-1ubuntu0.6),
+ libffi8 (= 3.4.2-4),
+ libfile-stripnondeterminism-perl (= 1.13.0-1),
+ libfmt-dev (= 8.1.1+ds1-2),
+ libfmt8 (= 8.1.1+ds1-2),
+ libgcc-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libgcc-s1 (= 12.3.0-1ubuntu1~22.04),
+ libgcrypt20 (= 1.9.4-3ubuntu3),
+ libgdbm-compat4 (= 1.23-1),
+ libgdbm6 (= 1.23-1),
+ libgfortran5 (= 12.3.0-1ubuntu1~22.04),
+ libgmp10 (= 2:6.2.1+dfsg-3ubuntu1),
+ libgnutls30 (= 3.7.3-4ubuntu1.6),
+ libgomp1 (= 12.3.0-1ubuntu1~22.04),
+ libgpg-error0 (= 1.43-3),
+ libgssapi-krb5-2 (= 1.19.2-2ubuntu0.7),
+ libgtest-dev (= 1.11.0-3),
+ libhogweed6 (= 3.7.3-1build2),
+ libhwasan0 (= 12.3.0-1ubuntu1~22.04),
+ libicu70 (= 70.1-2),
+ libidn2-0 (= 2.3.2-2build1),
+ libisl23 (= 0.24-2build1),
+ libitm1 (= 12.3.0-1ubuntu1~22.04),
+ libjs-jquery (= 3.6.0+dfsg+~3.5.13-1),
+ libjs-sphinxdoc (= 4.3.2-1),
+ libjs-underscore (= 1.13.2~dfsg-2),
+ libjsoncpp25 (= 1.9.5-3),
+ libk5crypto3 (= 1.19.2-2ubuntu0.7),
+ libkeyutils1 (= 1.6.1-2ubuntu3),
+ libkrb5-3 (= 1.19.2-2ubuntu0.7),
+ libkrb5support0 (= 1.19.2-2ubuntu0.7),
+ liblapack3 (= 3.10.0-2ubuntu1),
+ libldap-2.5-0 (= 2.5.19+dfsg-0ubuntu0.22.04.1),
+ liblsan0 (= 12.3.0-1ubuntu1~22.04),
+ liblz4-1 (= 1.9.3-2build2),
+ liblzma5 (= 5.2.5-2ubuntu1),
+ libmagic-mgc (= 1:5.41-3ubuntu0.1),
+ libmagic1 (= 1:5.41-3ubuntu0.1),
+ libmount1 (= 2.37.2-4ubuntu3.4),
+ libmpc3 (= 1.2.1-2build1),
+ libmpdec3 (= 2.5.1-2build2),
+ libmpfr6 (= 4.1.0-3build3),
+ libncurses6 (= 6.3-2ubuntu0.1),
+ libncursesw6 (= 6.3-2ubuntu0.1),
+ libnettle8 (= 3.7.3-1build2),
+ libnghttp2-14 (= 1.43.0-1ubuntu0.2),
+ libnsl-dev (= 1.3.0-2build2),
+ libnsl2 (= 1.3.0-2build2),
+ libp11-kit0 (= 0.24.0-6build1),
+ libpam-modules (= 1.4.0-11ubuntu2.5),
+ libpam-modules-bin (= 1.4.0-11ubuntu2.5),
+ libpam-runtime (= 1.4.0-11ubuntu2.5),
+ libpam0g (= 1.4.0-11ubuntu2.5),
+ libpcre2-8-0 (= 10.39-3ubuntu0.1),
+ libpcre3 (= 2:8.39-13ubuntu0.22.04.1),
+ libperl5.34 (= 5.34.0-3ubuntu1.4),
+ libpipeline1 (= 1.5.5-1),
+ libprocps8 (= 2:3.3.17-6ubuntu2.1),
+ libpsl5 (= 0.21.0-1.2build2),
+ libpython3-dev (= 3.10.6-1~22.04.1),
+ libpython3-stdlib (= 3.10.6-1~22.04.1),
+ libpython3.10 (= 3.10.12-1~22.04.9),
+ libpython3.10-dev (= 3.10.12-1~22.04.9),
+ libpython3.10-minimal (= 3.10.12-1~22.04.9),
+ libpython3.10-stdlib (= 3.10.12-1~22.04.9),
+ libreadline8 (= 8.1.2-1),
+ librhash0 (= 1.4.2-1ubuntu1),
+ librtmp1 (= 2.4+20151223.gitfa8646d.1-2build4),
+ libsasl2-2 (= 2.1.27+dfsg2-3ubuntu1.2),
+ libsasl2-modules-db (= 2.1.27+dfsg2-3ubuntu1.2),
+ libseccomp2 (= 2.5.3-2ubuntu3~22.04.1),
+ libselinux1 (= 3.3-1build2),
+ libsigsegv2 (= 2.13-1ubuntu3),
+ libsmartcols1 (= 2.37.2-4ubuntu3.4),
+ libspdlog-dev (= 1:1.9.2+ds-0.2),
+ libspdlog1 (= 1:1.9.2+ds-0.2),
+ libsqlite3-0 (= 3.37.2-2ubuntu0.4),
+ libssh-4 (= 0.9.6-2ubuntu0.22.04.3),
+ libssl-dev (= 3.0.2-0ubuntu1.19),
+ libssl3 (= 3.0.2-0ubuntu1.19),
+ libstdc++-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libstdc++6 (= 12.3.0-1ubuntu1~22.04),
+ libsub-override-perl (= 0.09-2),
+ libsystemd0 (= 249.11-0ubuntu3.15),
+ libtasn1-6 (= 4.18.0-4ubuntu0.1),
+ libtinfo6 (= 6.3-2ubuntu0.1),
+ libtinyxml2-9 (= 9.0.0+dfsg-3),
+ libtinyxml2-dev (= 9.0.0+dfsg-3),
+ libtirpc-common (= 1.3.2-2ubuntu0.1),
+ libtirpc-dev (= 1.3.2-2ubuntu0.1),
+ libtirpc3 (= 1.3.2-2ubuntu0.1),
+ libtool (= 2.4.6-15build2),
+ libtsan0 (= 11.4.0-1ubuntu1~22.04),
+ libubsan1 (= 12.3.0-1ubuntu1~22.04),
+ libuchardet0 (= 0.0.7-1build2),
+ libudev1 (= 249.11-0ubuntu3.15),
+ libunistring2 (= 1.0-1),
+ libuuid1 (= 2.37.2-4ubuntu3.4),
+ libuv1 (= 1.43.0-1ubuntu0.1),
+ libxml2 (= 2.9.13+dfsg-1ubuntu0.7),
+ libyaml-0-2 (= 0.2.2-1build2),
+ libyaml-dev (= 0.2.2-1build2),
+ libzstd1 (= 1.4.8+dfsg-3build1),
+ linux-libc-dev (= 5.15.0-141.151),
+ login (= 1:4.8.1-2ubuntu2.2),
+ lsb-base (= 11.1.0ubuntu4),
+ lto-disabled-list (= 24),
+ m4 (= 1.4.18-5ubuntu2),
+ make (= 4.3-4.1build1),
+ man-db (= 2.10.2-1),
+ mawk (= 1.3.4.20200120-3),
+ media-types (= 7.0.0),
+ ncurses-base (= 6.3-2ubuntu0.1),
+ ncurses-bin (= 6.3-2ubuntu0.1),
+ patch (= 2.7.6-7build2),
+ perl (= 5.34.0-3ubuntu1.4),
+ perl-base (= 5.34.0-3ubuntu1.4),
+ perl-modules-5.34 (= 5.34.0-3ubuntu1.4),
+ po-debconf (= 1.0.21+nmu1),
+ procps (= 2:3.3.17-6ubuntu2.1),
+ python3 (= 3.10.6-1~22.04.1),
+ python3-argcomplete (= 1.8.1-1.5),
+ python3-attr (= 21.2.0-1),
+ python3-catkin-pkg-modules (= 1.0.0-1),
+ python3-dateutil (= 2.8.1-6),
+ python3-dev (= 3.10.6-1~22.04.1),
+ python3-distutils (= 3.10.8-1~22.04),
+ python3-docutils (= 0.17.1+dfsg-2),
+ python3-empy (= 3.3.4-2),
+ python3-importlib-metadata (= 4.6.4-1),
+ python3-iniconfig (= 1.1.1-2),
+ python3-lark (= 1.1.1-1),
+ python3-lib2to3 (= 3.10.8-1~22.04),
+ python3-minimal (= 3.10.6-1~22.04.1),
+ python3-more-itertools (= 8.10.0-2),
+ python3-numpy (= 1:1.21.5-1ubuntu22.04.1),
+ python3-packaging (= 21.3-1),
+ python3-pkg-resources (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-pluggy (= 0.13.0-7.1),
+ python3-py (= 1.10.0-1),
+ python3-pyparsing (= 2.4.7-1),
+ python3-pytest (= 6.2.5-1ubuntu2),
+ python3-roman (= 3.3-1),
+ python3-setuptools (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-six (= 1.16.0-3ubuntu1),
+ python3-toml (= 0.10.2-1),
+ python3-zipp (= 1.0.0-3ubuntu0.1),
+ python3.10 (= 3.10.12-1~22.04.9),
+ python3.10-dev (= 3.10.12-1~22.04.9),
+ python3.10-minimal (= 3.10.12-1~22.04.9),
+ readline-common (= 8.1.2-1),
+ ros-humble-action-msgs (= 1.2.1-1jammy.20250325.210029),
+ ros-humble-ament-cmake (= 1.3.11-1jammy.20241125.221444),
+ ros-humble-ament-cmake-core (= 1.3.11-1jammy.20241125.210622),
+ ros-humble-ament-cmake-export-definitions (= 1.3.11-1jammy.20241125.211705),
+ ros-humble-ament-cmake-export-dependencies (= 1.3.11-1jammy.20241125.211530),
+ ros-humble-ament-cmake-export-include-directories (= 1.3.11-1jammy.20241125.211805),
+ ros-humble-ament-cmake-export-interfaces (= 1.3.11-1jammy.20241125.211855),
+ ros-humble-ament-cmake-export-libraries (= 1.3.11-1jammy.20241125.211831),
+ ros-humble-ament-cmake-export-link-flags (= 1.3.11-1jammy.20241125.211639),
+ ros-humble-ament-cmake-export-targets (= 1.3.11-1jammy.20241125.211901),
+ ros-humble-ament-cmake-gen-version-h (= 1.3.11-1jammy.20241125.213723),
+ ros-humble-ament-cmake-gmock (= 1.3.11-1jammy.20241126.014910),
+ ros-humble-ament-cmake-gtest (= 1.3.11-1jammy.20241125.213525),
+ ros-humble-ament-cmake-include-directories (= 1.3.11-1jammy.20241125.211314),
+ ros-humble-ament-cmake-libraries (= 1.3.11-1jammy.20241125.211336),
+ ros-humble-ament-cmake-pytest (= 1.3.11-1jammy.20241125.211729),
+ ros-humble-ament-cmake-python (= 1.3.11-1jammy.20241125.211339),
+ ros-humble-ament-cmake-ros (= 0.10.0-3jammy.20250325.181608),
+ ros-humble-ament-cmake-target-dependencies (= 1.3.11-1jammy.20241125.211542),
+ ros-humble-ament-cmake-test (= 1.3.11-1jammy.20241125.211533),
+ ros-humble-ament-cmake-version (= 1.3.11-1jammy.20241125.211343),
+ ros-humble-ament-index-cpp (= 1.4.0-2jammy.20250325.190850),
+ ros-humble-ament-index-python (= 1.4.0-2jammy.20250325.172209),
+ ros-humble-ament-package (= 0.14.0-4jammy.20220421.001218),
+ ros-humble-builtin-interfaces (= 1.2.1-1jammy.20250325.205450),
+ ros-humble-class-loader (= 2.2.0-3jammy.20250325.194951),
+ ros-humble-console-bridge-vendor (= 1.4.1-1jammy.20250325.184259),
+ ros-humble-control-msgs (= 4.8.0-1jammy.20250326.020314),
+ ros-humble-domain-coordinator (= 0.10.0-3jammy.20250325.172731),
+ ros-humble-fastcdr (= 1.0.24-2jammy.20241125.212236),
+ ros-humble-fastrtps (= 2.6.10-1jammy.20250429.171228),
+ ros-humble-fastrtps-cmake-module (= 2.2.2-2jammy.20250325.181609),
+ ros-humble-foonathan-memory-vendor (= 1.2.0-3jammy.20250325.185808),
+ ros-humble-geometry-msgs (= 4.8.0-1jammy.20250325.221651),
+ ros-humble-gmock-vendor (= 1.10.9006-1jammy.20241126.014647),
+ ros-humble-gtest-vendor (= 1.10.9006-1jammy.20241125.213405),
+ ros-humble-hardware-interface (= 2.50.0-1jammy.20250430.072414),
+ ros-humble-libstatistics-collector (= 1.3.4-1jammy.20250429.233639),
+ ros-humble-libyaml-vendor (= 1.2.2-2jammy.20250325.195259),
+ ros-humble-lifecycle-msgs (= 1.2.1-1jammy.20250325.204343),
+ ros-humble-mirte-msgs (= 2-2025.06.04.11.04),
+ ros-humble-pluginlib (= 5.1.0-3jammy.20250325.200145),
+ ros-humble-python-cmake-module (= 0.10.0-2jammy.20250325.183738),
+ ros-humble-rcl (= 5.3.9-1jammy.20250429.183009),
+ ros-humble-rcl-interfaces (= 1.2.1-1jammy.20250325.210217),
+ ros-humble-rcl-lifecycle (= 5.3.9-1jammy.20250429.235744),
+ ros-humble-rcl-logging-interface (= 2.3.1-1jammy.20250325.195219),
+ ros-humble-rcl-logging-spdlog (= 2.3.1-1jammy.20250325.195904),
+ ros-humble-rcl-yaml-param-parser (= 5.3.9-1jammy.20250325.200203),
+ ros-humble-rclcpp (= 16.0.12-1jammy.20250429.235657),
+ ros-humble-rclcpp-lifecycle (= 16.0.12-1jammy.20250430.021154),
+ ros-humble-rcpputils (= 2.4.5-1jammy.20250325.194210),
+ ros-humble-rcutils (= 5.1.6-1jammy.20250325.193110),
+ ros-humble-rmw (= 6.1.2-1jammy.20250325.195408),
+ ros-humble-rmw-dds-common (= 1.6.0-2jammy.20250325.204837),
+ ros-humble-rmw-fastrtps-cpp (= 6.2.7-1jammy.20250429.174248),
+ ros-humble-rmw-fastrtps-shared-cpp (= 6.2.7-1jammy.20250429.173437),
+ ros-humble-rmw-implementation (= 2.8.4-1jammy.20250429.181818),
+ ros-humble-rmw-implementation-cmake (= 6.1.2-1jammy.20250325.183954),
+ ros-humble-ros-workspace (= 1.0.2-2jammy.20241125.210925),
+ ros-humble-rosgraph-msgs (= 1.2.1-1jammy.20250325.211859),
+ ros-humble-rosidl-adapter (= 3.1.6-1jammy.20250325.184117),
+ ros-humble-rosidl-cli (= 3.1.6-1jammy.20250325.175029),
+ ros-humble-rosidl-cmake (= 3.1.6-1jammy.20250325.185215),
+ ros-humble-rosidl-default-runtime (= 1.2.0-2jammy.20250325.202717),
+ ros-humble-rosidl-generator-c (= 3.1.6-1jammy.20250325.194913),
+ ros-humble-rosidl-generator-cpp (= 3.1.6-1jammy.20250325.200121),
+ ros-humble-rosidl-generator-py (= 0.14.4-1jammy.20250325.202006),
+ ros-humble-rosidl-parser (= 3.1.6-1jammy.20250325.184652),
+ ros-humble-rosidl-runtime-c (= 3.1.6-1jammy.20250325.194220),
+ ros-humble-rosidl-runtime-cpp (= 3.1.6-1jammy.20250325.195449),
+ ros-humble-rosidl-typesupport-c (= 2.0.2-1jammy.20250325.195526),
+ ros-humble-rosidl-typesupport-cpp (= 2.0.2-1jammy.20250325.200711),
+ ros-humble-rosidl-typesupport-fastrtps-c (= 2.2.2-2jammy.20250325.201408),
+ ros-humble-rosidl-typesupport-fastrtps-cpp (= 2.2.2-2jammy.20250325.200822),
+ ros-humble-rosidl-typesupport-interface (= 3.1.6-1jammy.20250325.184242),
+ ros-humble-rosidl-typesupport-introspection-c (= 3.1.6-1jammy.20250325.194950),
+ ros-humble-rosidl-typesupport-introspection-cpp (= 3.1.6-1jammy.20250325.200123),
+ ros-humble-rpyutils (= 0.2.1-2jammy.20250325.175015),
+ ros-humble-sensor-msgs (= 4.8.0-1jammy.20250325.223641),
+ ros-humble-spdlog-vendor (= 1.3.1-1jammy.20250325.184827),
+ ros-humble-statistics-msgs (= 1.2.1-1jammy.20250325.212041),
+ ros-humble-std-msgs (= 4.8.0-1jammy.20250325.213809),
+ ros-humble-tinyxml2-vendor (= 0.7.6-1jammy.20241125.234439),
+ ros-humble-tracetools (= 4.1.1-1jammy.20250325.192811),
+ ros-humble-trajectory-msgs (= 4.8.0-1jammy.20250326.015325),
+ ros-humble-unique-identifier-msgs (= 2.2.1-3jammy.20250325.205105),
+ rpcsvc-proto (= 1.4.2-0ubuntu6),
+ sed (= 4.8-1ubuntu2),
+ sensible-utils (= 0.0.17),
+ sgml-base (= 1.30),
+ sysvinit-utils (= 3.01-1ubuntu1),
+ tar (= 1.34+dfsg-1ubuntu0.1.22.04.2),
+ tzdata (= 2025b-0ubuntu0.22.04.1),
+ util-linux (= 2.37.2-4ubuntu3.4),
+ xml-core (= 0.18+nmu1),
+ xz-utils (= 5.2.5-2ubuntu1),
+ zlib1g (= 1:1.2.11.dfsg-2ubuntu9.2),
+ zlib1g-dev (= 1:1.2.11.dfsg-2ubuntu9.2)
+Environment:
+ DEB_BUILD_OPTIONS="nocheck parallel=4"
+ DEB_BUILD_PROFILES="noudeb"
+ LANG="C.UTF-8"
+ LC_ALL="C.UTF-8"
+ LC_COLLATE="C.UTF-8"
+ SOURCE_DATE_EPOCH="1749035277"
+
+
++------------------------------------------------------------------------------+
+| Package contents                                                             |
++------------------------------------------------------------------------------+
+
+
+ros-humble-mirte-control_2-2025.06.04.11.07_arm64.deb
+-----------------------------------------------------
+
+ new Debian package, version 2.0.
+ size 53418 bytes: control archive=1715 bytes.
+     685 bytes,     9 lines      control              
+    3769 bytes,    38 lines      md5sums              
+ Package: ros-humble-mirte-control
+ Version: 2-2025.06.04.11.07
+ Architecture: arm64
+ Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+ Installed-Size: 224
+ Depends: libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 11), ros-humble-controller-manager, ros-humble-diff-drive-controller, ros-humble-hardware-interface, ros-humble-joint-state-broadcaster, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-robot-state-publisher, ros-humble-ros2-controllers-test-nodes, ros-humble-ros2controlcli, ros-humble-twist-stamper
+ Section: misc
+ Priority: optional
+ Description: Mirte Pioneer Hardware interface
+
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/include/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/include/mirte_control/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/include/mirte_control/mirte_control/
+-rw-r--r-- root/root      2943 2025-06-04 10:52 ./opt/ros/humble/include/mirte_control/mirte_control/mirte_pioneer_system.hpp
+-rw-r--r-- root/root      2132 2025-06-04 10:52 ./opt/ros/humble/include/mirte_control/mirte_control/visibility_control.h
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/lib/
+-rw-r--r-- root/root    105568 2025-06-04 11:07 ./opt/ros/humble/lib/libmirte_control.so
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/
+-rw-r--r-- root/root        38 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/mirte_control
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/
+-rw-r--r-- root/root       225 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/mirte_control
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/packages/
+-rw-r--r-- root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/packages/mirte_control
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/
+-rw-r--r-- root/root         8 2025-06-04 11:07 ./opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/mirte_control
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/
+-rw-r--r-- root/root      4013 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/ament_cmake_export_dependencies-extras.cmake
+-rw-r--r-- root/root       984 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/ament_cmake_export_targets-extras.cmake
+-rw-r--r-- root/root       900 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/export_mirte_controlExport-none.cmake
+-rw-r--r-- root/root     14816 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/export_mirte_controlExport.cmake
+-rw-r--r-- root/root       432 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/mirte_controlConfig-version.cmake
+-rw-r--r-- root/root      1378 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/cmake/mirte_controlConfig.cmake
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/config/
+-rw-r--r-- root/root      1826 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/config/diffbot_controllers.yaml
+-rw-r--r-- root/root      1843 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/config/mirte_diff_drive_controllers.yaml
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/environment/
+-rw-r--r-- root/root        41 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/environment/ament_prefix_path.dsv
+-rw-r--r-- root/root       160 2024-11-25 17:35 ./opt/ros/humble/share/mirte_control/environment/ament_prefix_path.sh
+-rw-r--r-- root/root        42 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/environment/library_path.dsv
+-rw-r--r-- root/root       411 2022-04-19 23:53 ./opt/ros/humble/share/mirte_control/environment/library_path.sh
+-rw-r--r-- root/root        41 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/environment/path.dsv
+-rw-r--r-- root/root       185 2024-11-25 17:35 ./opt/ros/humble/share/mirte_control/environment/path.sh
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/launch/
+-rw-r--r-- root/root      3688 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/launch/diffbot.launch.py
+-rw-r--r-- root/root      3953 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/launch/mirte.launch.py
+-rw-r--r-- root/root      3322 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/launch/view_robot.launch.py
+-rw-r--r-- root/root      1594 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/local_setup.bash
+-rw-r--r-- root/root       162 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/local_setup.dsv
+-rw-r--r-- root/root      5106 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/local_setup.sh
+-rw-r--r-- root/root      1957 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/local_setup.zsh
+-rw-r--r-- root/root       515 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/mirte_control.xml
+-rw-r--r-- root/root       172 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/package.dsv
+-rw-r--r-- root/root      1065 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/package.xml
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/ros2_control/
+-rw-r--r-- root/root       733 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/ros2_control/diffbot.ros2_control.xacro
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/rviz/
+-rw-r--r-- root/root      5826 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/rviz/diffbot.rviz
+-rw-r--r-- root/root      5831 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/rviz/diffbot_view.rviz
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./opt/ros/humble/share/mirte_control/urdf/
+-rw-r--r-- root/root       838 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/urdf/diffbot.materials.xacro
+-rw-r--r-- root/root       668 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/urdf/diffbot.urdf.xacro
+-rw-r--r-- root/root      6509 2025-06-04 10:52 ./opt/ros/humble/share/mirte_control/urdf/diffbot_description.urdf.xacro
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./usr/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./usr/share/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./usr/share/doc/
+drwxr-xr-x root/root         0 2025-06-04 11:07 ./usr/share/doc/ros-humble-mirte-control/
+-rw-r--r-- root/root       200 2025-06-04 11:07 ./usr/share/doc/ros-humble-mirte-control/changelog.Debian.gz
+
+
++------------------------------------------------------------------------------+
+| Post Build                                                                   |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+| Cleanup                                                                      |
++------------------------------------------------------------------------------+
+
+Purging /<<BUILDDIR>>
+Not cleaning session: cloned chroot in use
+
++------------------------------------------------------------------------------+
+| Summary                                                                      |
++------------------------------------------------------------------------------+
+
+Build Architecture: arm64
+Build Type: binary
+Build-Space: 16332
+Build-Time: 6
+Distribution: jammy
+Host Architecture: arm64
+Install-Time: 41
+Job: /home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO/mirte_control/ros-humble-mirte-control_2-2025.06.04.11.07.dsc
+Machine Architecture: arm64
+Package: ros-humble-mirte-control
+Package-Time: 59
+Source-Version: 2-2025.06.04.11.07
+Space: 16332
+Status: successful
+Version: 2-2025.06.04.11.07
+--------------------------------------------------------------------------------
+Finished at 2025-06-04T11:08:56Z
+Build needed 00:00:59, 16332k disk space

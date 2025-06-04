@@ -1,0 +1,1177 @@
+sbuild (Debian sbuild) 0.84.2~ubuntu2204+3 (28 December 2022) on fv-az2308-777.u0ph54j20wmuzodzvktzcxtuoc.xx.internal.cloudapp.net
+
++==================================================================================+
+| ros-humble-mirte-test 2-2025.06.04.11.15 (arm64) Wed, 04 Jun 2025 11:15:25 +0000 |
++==================================================================================+
+
+Package: ros-humble-mirte-test
+Version: 2-2025.06.04.11.15
+Source Version: 2-2025.06.04.11.15
+Distribution: jammy
+Machine Architecture: arm64
+Host Architecture: arm64
+Build Architecture: arm64
+Build Type: binary
+
+Unpacking /home/runner/.cache/sbuild/jammy-arm64.tar to /tmp/tmp.sbuild.kiVFkbYK84...
+I: NOTICE: Log filtering will replace 'sbuild-unshare-dummy-location' with '<<CHROOT>>'
+I: NOTICE: Log filtering will replace 'build/package//resolver-5qq4II' with '<<RESOLVERDIR>>'
+
++------------------------------------------------------------------------------+
+| Update chroot                                                                |
++------------------------------------------------------------------------------+
+
+Get:1 file:/build/package//resolver-Qp1a9e/apt_archive ./ InRelease
+Ign:1 file:/build/package//resolver-Qp1a9e/apt_archive ./ InRelease
+Get:2 file:/build/package//resolver-Qp1a9e/apt_archive ./ Release [580 B]
+Get:2 file:/build/package//resolver-Qp1a9e/apt_archive ./ Release [580 B]
+Get:3 file:/build/package//resolver-Qp1a9e/apt_archive ./ Release.gpg
+Ign:3 file:/build/package//resolver-Qp1a9e/apt_archive ./ Release.gpg
+Get:4 file:/build/package//resolver-Qp1a9e/apt_archive ./ Packages [11.8 kB]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy InRelease [4682 B]
+Get:6 http://ports.ubuntu.com/ubuntu-ports jammy InRelease [270 kB]
+Get:7 http://packages.ros.org/ros2/ubuntu jammy/main arm64 Packages [1631 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease [128 kB]
+Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease [129 kB]
+Get:10 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 Packages [13.9 MB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 Packages [1369 kB]
+Get:12 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 Packages [2374 kB]
+Get:13 http://ports.ubuntu.com/ubuntu-ports jammy-updates/universe arm64 Packages [1189 kB]
+Get:14 http://ports.ubuntu.com/ubuntu-ports jammy-security/universe arm64 Packages [961 kB]
+Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-security/main arm64 Packages [2135 kB]
+Fetched 24.1 MB in 3s (9166 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
++------------------------------------------------------------------------------+
+| Fetch source files                                                           |
++------------------------------------------------------------------------------+
+
+
+Local sources
+-------------
+
+/home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO/ros-humble-mirte-test_2-2025.06.04.11.15.dsc exists in /home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO; copying to chroot
+I: NOTICE: Log filtering will replace 'build/package//package' with '<<PKGBUILDDIR>>'
+I: NOTICE: Log filtering will replace 'build/package/' with '<<BUILDDIR>>'
+
++------------------------------------------------------------------------------+
+| Install package build dependencies                                           |
++------------------------------------------------------------------------------+
+
+
+Setup apt archive
+-----------------
+
+Merged Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-humble-ament-copyright, ros-humble-ament-flake8, ros-humble-ament-pep257, python3-all, python3-setuptools, dh-python, build-essential, fakeroot
+Filtered Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-humble-ament-copyright, ros-humble-ament-flake8, ros-humble-ament-pep257, python3-all, python3-setuptools, dh-python, build-essential, fakeroot
+dpkg-deb: building package 'sbuild-build-depends-main-dummy' in '/<<RESOLVERDIR>>/apt_archive/sbuild-build-depends-main-dummy.deb'.
+Ign:1 copy:/<<RESOLVERDIR>>/apt_archive ./ InRelease
+Get:2 copy:/<<RESOLVERDIR>>/apt_archive ./ Release [580 B]
+Ign:3 copy:/<<RESOLVERDIR>>/apt_archive ./ Release.gpg
+Get:4 copy:/<<RESOLVERDIR>>/apt_archive ./ Sources [752 B]
+Get:5 copy:/<<RESOLVERDIR>>/apt_archive ./ Packages [784 B]
+Fetched 2116 B in 0s (0 B/s)
+Reading package lists...
+Get:1 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ InRelease
+Ign:1 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ InRelease
+Get:2 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ Release [580 B]
+Get:2 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ Release [580 B]
+Get:3 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ Release.gpg
+Ign:3 file:/<<BUILDDIR>>/resolver-Qp1a9e/apt_archive ./ Release.gpg
+Reading package lists...
+Hit:1 http://packages.ros.org/ros2/ubuntu jammy InRelease
+Reading package lists...
+Reading package lists...
+
+Install main build dependencies (apt-based resolver)
+----------------------------------------------------
+
+Installing build dependencies
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils debhelper debugedit
+  dh-autoreconf dh-python dh-strip-nondeterminism dwz fakeroot file gettext
+  gettext-base groff-base intltool-debian libarchive-zip-perl
+  libdebhelper-perl libdw1 libelf1 libexpat1 libfakeroot
+  libfile-stripnondeterminism-perl libicu70 libmagic-mgc libmagic1 libmpdec3
+  libpipeline1 libpython3-stdlib libpython3.10-minimal libpython3.10-stdlib
+  libreadline8 libsigsegv2 libsqlite3-0 libsub-override-perl libtool
+  libuchardet0 libxml2 m4 man-db media-types po-debconf pydocstyle python3
+  python3-all python3-attr python3-distutils python3-flake8
+  python3-importlib-metadata python3-iniconfig python3-lib2to3 python3-mccabe
+  python3-minimal python3-more-itertools python3-packaging
+  python3-pkg-resources python3-pluggy python3-py python3-pycodestyle
+  python3-pydocstyle python3-pyflakes python3-pyparsing python3-pytest
+  python3-setuptools python3-snowballstemmer python3-toml python3-zipp
+  python3.10 python3.10-minimal readline-common ros-humble-ament-copyright
+  ros-humble-ament-flake8 ros-humble-ament-lint ros-humble-ament-pep257
+  ros-humble-ros-workspace
+Suggested packages:
+  autoconf-archive gnu-standards autoconf-doc dh-make flit python3-build
+  python3-tomli python3-installer gettext-doc libasprintf-dev libgettextpo-dev
+  groff libtool-doc gfortran | fortran95-compiler gcj-jdk m4-doc apparmor less
+  www-browser libmail-box-perl python3-doc python3-tk python3-venv
+  python-attr-doc subversion python-pyparsing-doc python-setuptools-doc
+  python3-stemmer python3.10-venv python3.10-doc binfmt-support readline-doc
+Recommended packages:
+  curl | wget | lynx libarchive-cpio-perl libltdl-dev libmail-sendmail-perl
+  pyflakes3 python3-pygments
+The following NEW packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils debhelper debugedit
+  dh-autoreconf dh-python dh-strip-nondeterminism dwz fakeroot file gettext
+  gettext-base groff-base intltool-debian libarchive-zip-perl
+  libdebhelper-perl libdw1 libelf1 libexpat1 libfakeroot
+  libfile-stripnondeterminism-perl libicu70 libmagic-mgc libmagic1 libmpdec3
+  libpipeline1 libpython3-stdlib libpython3.10-minimal libpython3.10-stdlib
+  libreadline8 libsigsegv2 libsqlite3-0 libsub-override-perl libtool
+  libuchardet0 libxml2 m4 man-db media-types po-debconf pydocstyle python3
+  python3-all python3-attr python3-distutils python3-flake8
+  python3-importlib-metadata python3-iniconfig python3-lib2to3 python3-mccabe
+  python3-minimal python3-more-itertools python3-packaging
+  python3-pkg-resources python3-pluggy python3-py python3-pycodestyle
+  python3-pydocstyle python3-pyflakes python3-pyparsing python3-pytest
+  python3-setuptools python3-snowballstemmer python3-toml python3-zipp
+  python3.10 python3.10-minimal readline-common ros-humble-ament-copyright
+  ros-humble-ament-flake8 ros-humble-ament-lint ros-humble-ament-pep257
+  ros-humble-ros-workspace sbuild-build-depends-main-dummy
+0 upgraded, 77 newly installed, 0 to remove and 0 not upgraded.
+Need to get 26.6 MB of archives.
+After this operation, 96.9 MB of additional disk space will be used.
+Get:1 copy:/<<RESOLVERDIR>>/apt_archive ./ sbuild-build-depends-main-dummy 0.invalid.0 [732 B]
+Get:2 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ros-workspace arm64 1.0.2-2jammy.20241125.210925 [16.7 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10-minimal arm64 3.10.12-1~22.04.9 [812 kB]
+Get:4 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-lint arm64 0.12.12-1jammy.20250325.164506 [4550 B]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-copyright arm64 0.12.12-1jammy.20250325.171643 [45.5 kB]
+Get:6 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-flake8 arm64 0.12.12-1jammy.20250325.165615 [15.8 kB]
+Get:7 http://packages.ros.org/ros2/ubuntu jammy/main arm64 ros-humble-ament-pep257 arm64 0.12.12-1jammy.20250325.170729 [12.2 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libexpat1 arm64 2.4.7-1ubuntu0.6 [77.8 kB]
+Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3.10-minimal arm64 3.10.12-1~22.04.9 [2245 kB]
+Get:10 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-minimal arm64 3.10.6-1~22.04.1 [24.3 kB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 media-types all 7.0.0 [25.5 kB]
+Get:12 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libmpdec3 arm64 2.5.1-2build2 [89.0 kB]
+Get:13 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 readline-common all 8.1.2-1 [53.5 kB]
+Get:14 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libreadline8 arm64 8.1.2-1 [153 kB]
+Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libsqlite3-0 arm64 3.37.2-2ubuntu0.4 [636 kB]
+Get:16 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3.10-stdlib arm64 3.10.12-1~22.04.9 [1845 kB]
+Get:17 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3.10 arm64 3.10.12-1~22.04.9 [508 kB]
+Get:18 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libpython3-stdlib arm64 3.10.6-1~22.04.1 [6812 B]
+Get:19 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3 arm64 3.10.6-1~22.04.1 [22.8 kB]
+Get:20 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libelf1 arm64 0.186-1ubuntu0.1 [50.8 kB]
+Get:21 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libicu70 arm64 70.1-2 [10.5 MB]
+Get:22 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libxml2 arm64 2.9.13+dfsg-1ubuntu0.7 [729 kB]
+Get:23 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-pkg-resources all 59.6.0-1.2ubuntu0.22.04.3 [133 kB]
+Get:24 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 bsdextrautils arm64 2.37.2-4ubuntu3.4 [70.3 kB]
+Get:25 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libmagic-mgc arm64 1:5.41-3ubuntu0.1 [257 kB]
+Get:26 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libmagic1 arm64 1:5.41-3ubuntu0.1 [85.0 kB]
+Get:27 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 file arm64 1:5.41-3ubuntu0.1 [21.6 kB]
+Get:28 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 gettext-base arm64 0.21-4ubuntu4 [37.2 kB]
+Get:29 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libuchardet0 arm64 0.0.7-1build2 [77.3 kB]
+Get:30 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 groff-base arm64 1.22.4-8build1 [917 kB]
+Get:31 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libpipeline1 arm64 1.5.5-1 [23.2 kB]
+Get:32 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 man-db arm64 2.10.2-1 [1181 kB]
+Get:33 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libsigsegv2 arm64 2.13-1ubuntu3 [14.5 kB]
+Get:34 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 m4 arm64 1.4.18-5ubuntu2 [196 kB]
+Get:35 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autoconf all 2.71-2 [338 kB]
+Get:36 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autotools-dev all 20220109.1 [44.9 kB]
+Get:37 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 automake all 1:1.16.5-1.3 [558 kB]
+Get:38 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 autopoint all 0.21-4ubuntu4 [422 kB]
+Get:39 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libdebhelper-perl all 13.6ubuntu1 [67.2 kB]
+Get:40 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libtool all 2.4.6-15build2 [164 kB]
+Get:41 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dh-autoreconf all 20 [16.1 kB]
+Get:42 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libarchive-zip-perl all 1.68-1 [90.2 kB]
+Get:43 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libsub-override-perl all 0.09-2 [9532 B]
+Get:44 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libfile-stripnondeterminism-perl all 1.13.0-1 [18.1 kB]
+Get:45 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dh-strip-nondeterminism all 1.13.0-1 [5344 B]
+Get:46 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libdw1 arm64 0.186-1ubuntu0.1 [246 kB]
+Get:47 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 debugedit arm64 1:5.0-4build1 [46.5 kB]
+Get:48 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 dwz arm64 0.14-1build2 [102 kB]
+Get:49 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 gettext arm64 0.21-4ubuntu4 [846 kB]
+Get:50 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 intltool-debian all 0.35.0+20060710.5 [24.9 kB]
+Get:51 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 po-debconf all 1.0.21+nmu1 [233 kB]
+Get:52 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 debhelper all 13.6ubuntu1 [923 kB]
+Get:53 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-lib2to3 all 3.10.8-1~22.04 [77.6 kB]
+Get:54 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-distutils all 3.10.8-1~22.04 [139 kB]
+Get:55 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 dh-python all 5.20220403 [106 kB]
+Get:56 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libfakeroot arm64 1.28-1ubuntu1 [31.5 kB]
+Get:57 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 fakeroot arm64 1.28-1ubuntu1 [60.5 kB]
+Get:58 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-snowballstemmer all 2.2.0-1build1 [60.2 kB]
+Get:59 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pydocstyle all 6.1.1-1 [33.8 kB]
+Get:60 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 pydocstyle all 6.1.1-1 [8828 B]
+Get:61 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-all arm64 3.10.6-1~22.04.1 [908 B]
+Get:62 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-attr all 21.2.0-1 [44.0 kB]
+Get:63 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-mccabe all 0.6.1-3 [8488 B]
+Get:64 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pycodestyle all 2.8.0-2 [39.2 kB]
+Get:65 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pyflakes all 2.4.0-2 [57.6 kB]
+Get:66 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-setuptools all 59.6.0-1.2ubuntu0.22.04.3 [340 kB]
+Get:67 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-more-itertools all 8.10.0-2 [47.9 kB]
+Get:68 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 python3-zipp all 1.0.0-3ubuntu0.1 [6288 B]
+Get:69 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-importlib-metadata all 4.6.4-1 [16.2 kB]
+Get:70 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-flake8 all 4.0.1-2 [49.8 kB]
+Get:71 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-iniconfig all 1.1.1-2 [6024 B]
+Get:72 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-pyparsing all 2.4.7-1 [61.4 kB]
+Get:73 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 python3-packaging all 21.3-1 [30.7 kB]
+Get:74 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pluggy all 0.13.0-7.1 [19.0 kB]
+Get:75 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-py all 1.10.0-1 [71.9 kB]
+Get:76 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-toml all 0.10.2-1 [16.5 kB]
+Get:77 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 python3-pytest all 6.2.5-1ubuntu2 [214 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 26.6 MB in 2s (13.7 MB/s)
+Selecting previously unselected package libpython3.10-minimal:arm64.
+(Reading database ... 10520 files and directories currently installed.)
+Preparing to unpack .../libpython3.10-minimal_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10-minimal:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libexpat1:arm64.
+Preparing to unpack .../libexpat1_2.4.7-1ubuntu0.6_arm64.deb ...
+Unpacking libexpat1:arm64 (2.4.7-1ubuntu0.6) ...
+Selecting previously unselected package python3.10-minimal.
+Preparing to unpack .../python3.10-minimal_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking python3.10-minimal (3.10.12-1~22.04.9) ...
+Setting up libpython3.10-minimal:arm64 (3.10.12-1~22.04.9) ...
+Setting up libexpat1:arm64 (2.4.7-1ubuntu0.6) ...
+Setting up python3.10-minimal (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3-minimal.
+(Reading database ... 10824 files and directories currently installed.)
+Preparing to unpack .../0-python3-minimal_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package media-types.
+Preparing to unpack .../1-media-types_7.0.0_all.deb ...
+Unpacking media-types (7.0.0) ...
+Selecting previously unselected package libmpdec3:arm64.
+Preparing to unpack .../2-libmpdec3_2.5.1-2build2_arm64.deb ...
+Unpacking libmpdec3:arm64 (2.5.1-2build2) ...
+Selecting previously unselected package readline-common.
+Preparing to unpack .../3-readline-common_8.1.2-1_all.deb ...
+Unpacking readline-common (8.1.2-1) ...
+Selecting previously unselected package libreadline8:arm64.
+Preparing to unpack .../4-libreadline8_8.1.2-1_arm64.deb ...
+Unpacking libreadline8:arm64 (8.1.2-1) ...
+Selecting previously unselected package libsqlite3-0:arm64.
+Preparing to unpack .../5-libsqlite3-0_3.37.2-2ubuntu0.4_arm64.deb ...
+Unpacking libsqlite3-0:arm64 (3.37.2-2ubuntu0.4) ...
+Selecting previously unselected package libpython3.10-stdlib:arm64.
+Preparing to unpack .../6-libpython3.10-stdlib_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking libpython3.10-stdlib:arm64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3.10.
+Preparing to unpack .../7-python3.10_3.10.12-1~22.04.9_arm64.deb ...
+Unpacking python3.10 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libpython3-stdlib:arm64.
+Preparing to unpack .../8-libpython3-stdlib_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking libpython3-stdlib:arm64 (3.10.6-1~22.04.1) ...
+Setting up python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package python3.
+(Reading database ... 11254 files and directories currently installed.)
+Preparing to unpack .../00-python3_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3 (3.10.6-1~22.04.1) ...
+Selecting previously unselected package libelf1:arm64.
+Preparing to unpack .../01-libelf1_0.186-1ubuntu0.1_arm64.deb ...
+Unpacking libelf1:arm64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package libicu70:arm64.
+Preparing to unpack .../02-libicu70_70.1-2_arm64.deb ...
+Unpacking libicu70:arm64 (70.1-2) ...
+Selecting previously unselected package libxml2:arm64.
+Preparing to unpack .../03-libxml2_2.9.13+dfsg-1ubuntu0.7_arm64.deb ...
+Unpacking libxml2:arm64 (2.9.13+dfsg-1ubuntu0.7) ...
+Selecting previously unselected package python3-pkg-resources.
+Preparing to unpack .../04-python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package bsdextrautils.
+Preparing to unpack .../05-bsdextrautils_2.37.2-4ubuntu3.4_arm64.deb ...
+Unpacking bsdextrautils (2.37.2-4ubuntu3.4) ...
+Selecting previously unselected package libmagic-mgc.
+Preparing to unpack .../06-libmagic-mgc_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package libmagic1:arm64.
+Preparing to unpack .../07-libmagic1_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking libmagic1:arm64 (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package file.
+Preparing to unpack .../08-file_1%3a5.41-3ubuntu0.1_arm64.deb ...
+Unpacking file (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package gettext-base.
+Preparing to unpack .../09-gettext-base_0.21-4ubuntu4_arm64.deb ...
+Unpacking gettext-base (0.21-4ubuntu4) ...
+Selecting previously unselected package libuchardet0:arm64.
+Preparing to unpack .../10-libuchardet0_0.0.7-1build2_arm64.deb ...
+Unpacking libuchardet0:arm64 (0.0.7-1build2) ...
+Selecting previously unselected package groff-base.
+Preparing to unpack .../11-groff-base_1.22.4-8build1_arm64.deb ...
+Unpacking groff-base (1.22.4-8build1) ...
+Selecting previously unselected package libpipeline1:arm64.
+Preparing to unpack .../12-libpipeline1_1.5.5-1_arm64.deb ...
+Unpacking libpipeline1:arm64 (1.5.5-1) ...
+Selecting previously unselected package man-db.
+Preparing to unpack .../13-man-db_2.10.2-1_arm64.deb ...
+Unpacking man-db (2.10.2-1) ...
+Selecting previously unselected package libsigsegv2:arm64.
+Preparing to unpack .../14-libsigsegv2_2.13-1ubuntu3_arm64.deb ...
+Unpacking libsigsegv2:arm64 (2.13-1ubuntu3) ...
+Selecting previously unselected package m4.
+Preparing to unpack .../15-m4_1.4.18-5ubuntu2_arm64.deb ...
+Unpacking m4 (1.4.18-5ubuntu2) ...
+Selecting previously unselected package autoconf.
+Preparing to unpack .../16-autoconf_2.71-2_all.deb ...
+Unpacking autoconf (2.71-2) ...
+Selecting previously unselected package autotools-dev.
+Preparing to unpack .../17-autotools-dev_20220109.1_all.deb ...
+Unpacking autotools-dev (20220109.1) ...
+Selecting previously unselected package automake.
+Preparing to unpack .../18-automake_1%3a1.16.5-1.3_all.deb ...
+Unpacking automake (1:1.16.5-1.3) ...
+Selecting previously unselected package autopoint.
+Preparing to unpack .../19-autopoint_0.21-4ubuntu4_all.deb ...
+Unpacking autopoint (0.21-4ubuntu4) ...
+Selecting previously unselected package libdebhelper-perl.
+Preparing to unpack .../20-libdebhelper-perl_13.6ubuntu1_all.deb ...
+Unpacking libdebhelper-perl (13.6ubuntu1) ...
+Selecting previously unselected package libtool.
+Preparing to unpack .../21-libtool_2.4.6-15build2_all.deb ...
+Unpacking libtool (2.4.6-15build2) ...
+Selecting previously unselected package dh-autoreconf.
+Preparing to unpack .../22-dh-autoreconf_20_all.deb ...
+Unpacking dh-autoreconf (20) ...
+Selecting previously unselected package libarchive-zip-perl.
+Preparing to unpack .../23-libarchive-zip-perl_1.68-1_all.deb ...
+Unpacking libarchive-zip-perl (1.68-1) ...
+Selecting previously unselected package libsub-override-perl.
+Preparing to unpack .../24-libsub-override-perl_0.09-2_all.deb ...
+Unpacking libsub-override-perl (0.09-2) ...
+Selecting previously unselected package libfile-stripnondeterminism-perl.
+Preparing to unpack .../25-libfile-stripnondeterminism-perl_1.13.0-1_all.deb ...
+Unpacking libfile-stripnondeterminism-perl (1.13.0-1) ...
+Selecting previously unselected package dh-strip-nondeterminism.
+Preparing to unpack .../26-dh-strip-nondeterminism_1.13.0-1_all.deb ...
+Unpacking dh-strip-nondeterminism (1.13.0-1) ...
+Selecting previously unselected package libdw1:arm64.
+Preparing to unpack .../27-libdw1_0.186-1ubuntu0.1_arm64.deb ...
+Unpacking libdw1:arm64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package debugedit.
+Preparing to unpack .../28-debugedit_1%3a5.0-4build1_arm64.deb ...
+Unpacking debugedit (1:5.0-4build1) ...
+Selecting previously unselected package dwz.
+Preparing to unpack .../29-dwz_0.14-1build2_arm64.deb ...
+Unpacking dwz (0.14-1build2) ...
+Selecting previously unselected package gettext.
+Preparing to unpack .../30-gettext_0.21-4ubuntu4_arm64.deb ...
+Unpacking gettext (0.21-4ubuntu4) ...
+Selecting previously unselected package intltool-debian.
+Preparing to unpack .../31-intltool-debian_0.35.0+20060710.5_all.deb ...
+Unpacking intltool-debian (0.35.0+20060710.5) ...
+Selecting previously unselected package po-debconf.
+Preparing to unpack .../32-po-debconf_1.0.21+nmu1_all.deb ...
+Unpacking po-debconf (1.0.21+nmu1) ...
+Selecting previously unselected package debhelper.
+Preparing to unpack .../33-debhelper_13.6ubuntu1_all.deb ...
+Unpacking debhelper (13.6ubuntu1) ...
+Selecting previously unselected package python3-lib2to3.
+Preparing to unpack .../34-python3-lib2to3_3.10.8-1~22.04_all.deb ...
+Unpacking python3-lib2to3 (3.10.8-1~22.04) ...
+Selecting previously unselected package python3-distutils.
+Preparing to unpack .../35-python3-distutils_3.10.8-1~22.04_all.deb ...
+Unpacking python3-distutils (3.10.8-1~22.04) ...
+Selecting previously unselected package dh-python.
+Preparing to unpack .../36-dh-python_5.20220403_all.deb ...
+Unpacking dh-python (5.20220403) ...
+Selecting previously unselected package libfakeroot:arm64.
+Preparing to unpack .../37-libfakeroot_1.28-1ubuntu1_arm64.deb ...
+Unpacking libfakeroot:arm64 (1.28-1ubuntu1) ...
+Selecting previously unselected package fakeroot.
+Preparing to unpack .../38-fakeroot_1.28-1ubuntu1_arm64.deb ...
+Unpacking fakeroot (1.28-1ubuntu1) ...
+Selecting previously unselected package python3-snowballstemmer.
+Preparing to unpack .../39-python3-snowballstemmer_2.2.0-1build1_all.deb ...
+Unpacking python3-snowballstemmer (2.2.0-1build1) ...
+Selecting previously unselected package python3-pydocstyle.
+Preparing to unpack .../40-python3-pydocstyle_6.1.1-1_all.deb ...
+Unpacking python3-pydocstyle (6.1.1-1) ...
+Selecting previously unselected package pydocstyle.
+Preparing to unpack .../41-pydocstyle_6.1.1-1_all.deb ...
+Unpacking pydocstyle (6.1.1-1) ...
+Selecting previously unselected package python3-all.
+Preparing to unpack .../42-python3-all_3.10.6-1~22.04.1_arm64.deb ...
+Unpacking python3-all (3.10.6-1~22.04.1) ...
+Selecting previously unselected package python3-attr.
+Preparing to unpack .../43-python3-attr_21.2.0-1_all.deb ...
+Unpacking python3-attr (21.2.0-1) ...
+Selecting previously unselected package python3-mccabe.
+Preparing to unpack .../44-python3-mccabe_0.6.1-3_all.deb ...
+Unpacking python3-mccabe (0.6.1-3) ...
+Selecting previously unselected package python3-pycodestyle.
+Preparing to unpack .../45-python3-pycodestyle_2.8.0-2_all.deb ...
+Unpacking python3-pycodestyle (2.8.0-2) ...
+Selecting previously unselected package python3-pyflakes.
+Preparing to unpack .../46-python3-pyflakes_2.4.0-2_all.deb ...
+Unpacking python3-pyflakes (2.4.0-2) ...
+Selecting previously unselected package python3-setuptools.
+Preparing to unpack .../47-python3-setuptools_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package python3-more-itertools.
+Preparing to unpack .../48-python3-more-itertools_8.10.0-2_all.deb ...
+Unpacking python3-more-itertools (8.10.0-2) ...
+Selecting previously unselected package python3-zipp.
+Preparing to unpack .../49-python3-zipp_1.0.0-3ubuntu0.1_all.deb ...
+Unpacking python3-zipp (1.0.0-3ubuntu0.1) ...
+Selecting previously unselected package python3-importlib-metadata.
+Preparing to unpack .../50-python3-importlib-metadata_4.6.4-1_all.deb ...
+Unpacking python3-importlib-metadata (4.6.4-1) ...
+Selecting previously unselected package python3-flake8.
+Preparing to unpack .../51-python3-flake8_4.0.1-2_all.deb ...
+Unpacking python3-flake8 (4.0.1-2) ...
+Selecting previously unselected package python3-iniconfig.
+Preparing to unpack .../52-python3-iniconfig_1.1.1-2_all.deb ...
+Unpacking python3-iniconfig (1.1.1-2) ...
+Selecting previously unselected package python3-pyparsing.
+Preparing to unpack .../53-python3-pyparsing_2.4.7-1_all.deb ...
+Unpacking python3-pyparsing (2.4.7-1) ...
+Selecting previously unselected package python3-packaging.
+Preparing to unpack .../54-python3-packaging_21.3-1_all.deb ...
+Unpacking python3-packaging (21.3-1) ...
+Selecting previously unselected package python3-pluggy.
+Preparing to unpack .../55-python3-pluggy_0.13.0-7.1_all.deb ...
+Unpacking python3-pluggy (0.13.0-7.1) ...
+Selecting previously unselected package python3-py.
+Preparing to unpack .../56-python3-py_1.10.0-1_all.deb ...
+Unpacking python3-py (1.10.0-1) ...
+Selecting previously unselected package python3-toml.
+Preparing to unpack .../57-python3-toml_0.10.2-1_all.deb ...
+Unpacking python3-toml (0.10.2-1) ...
+Selecting previously unselected package python3-pytest.
+Preparing to unpack .../58-python3-pytest_6.2.5-1ubuntu2_all.deb ...
+Unpacking python3-pytest (6.2.5-1ubuntu2) ...
+Selecting previously unselected package ros-humble-ros-workspace.
+Preparing to unpack .../59-ros-humble-ros-workspace_1.0.2-2jammy.20241125.210925_arm64.deb ...
+Unpacking ros-humble-ros-workspace (1.0.2-2jammy.20241125.210925) ...
+Selecting previously unselected package ros-humble-ament-lint.
+Preparing to unpack .../60-ros-humble-ament-lint_0.12.12-1jammy.20250325.164506_arm64.deb ...
+Unpacking ros-humble-ament-lint (0.12.12-1jammy.20250325.164506) ...
+Selecting previously unselected package ros-humble-ament-copyright.
+Preparing to unpack .../61-ros-humble-ament-copyright_0.12.12-1jammy.20250325.171643_arm64.deb ...
+Unpacking ros-humble-ament-copyright (0.12.12-1jammy.20250325.171643) ...
+Selecting previously unselected package ros-humble-ament-flake8.
+Preparing to unpack .../62-ros-humble-ament-flake8_0.12.12-1jammy.20250325.165615_arm64.deb ...
+Unpacking ros-humble-ament-flake8 (0.12.12-1jammy.20250325.165615) ...
+Selecting previously unselected package ros-humble-ament-pep257.
+Preparing to unpack .../63-ros-humble-ament-pep257_0.12.12-1jammy.20250325.170729_arm64.deb ...
+Unpacking ros-humble-ament-pep257 (0.12.12-1jammy.20250325.170729) ...
+Selecting previously unselected package sbuild-build-depends-main-dummy.
+Preparing to unpack .../64-sbuild-build-depends-main-dummy_0.invalid.0_arm64.deb ...
+Unpacking sbuild-build-depends-main-dummy (0.invalid.0) ...
+Setting up ros-humble-ros-workspace (1.0.2-2jammy.20241125.210925) ...
+Setting up media-types (7.0.0) ...
+Setting up libpipeline1:arm64 (1.5.5-1) ...
+Setting up bsdextrautils (2.37.2-4ubuntu3.4) ...
+update-alternatives: using /usr/bin/write.ul to provide /usr/bin/write (write) in auto mode
+Setting up libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Setting up libarchive-zip-perl (1.68-1) ...
+Setting up libdebhelper-perl (13.6ubuntu1) ...
+Setting up libsqlite3-0:arm64 (3.37.2-2ubuntu0.4) ...
+Setting up libmagic1:arm64 (1:5.41-3ubuntu0.1) ...
+Setting up gettext-base (0.21-4ubuntu4) ...
+Setting up file (1:5.41-3ubuntu0.1) ...
+Setting up libfakeroot:arm64 (1.28-1ubuntu1) ...
+Setting up fakeroot (1.28-1ubuntu1) ...
+update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode
+Setting up autotools-dev (20220109.1) ...
+Setting up libsigsegv2:arm64 (2.13-1ubuntu3) ...
+Setting up autopoint (0.21-4ubuntu4) ...
+Setting up ros-humble-ament-lint (0.12.12-1jammy.20250325.164506) ...
+Setting up libuchardet0:arm64 (0.0.7-1build2) ...
+Setting up libmpdec3:arm64 (2.5.1-2build2) ...
+Setting up libsub-override-perl (0.09-2) ...
+Setting up libelf1:arm64 (0.186-1ubuntu0.1) ...
+Setting up readline-common (8.1.2-1) ...
+Setting up libicu70:arm64 (70.1-2) ...
+Setting up libfile-stripnondeterminism-perl (1.13.0-1) ...
+Setting up libdw1:arm64 (0.186-1ubuntu0.1) ...
+Setting up libtool (2.4.6-15build2) ...
+Setting up libreadline8:arm64 (8.1.2-1) ...
+Setting up m4 (1.4.18-5ubuntu2) ...
+Setting up libpython3.10-stdlib:arm64 (3.10.12-1~22.04.9) ...
+Setting up autoconf (2.71-2) ...
+Setting up dh-strip-nondeterminism (1.13.0-1) ...
+Setting up dwz (0.14-1build2) ...
+Setting up groff-base (1.22.4-8build1) ...
+Setting up debugedit (1:5.0-4build1) ...
+Setting up libxml2:arm64 (2.9.13+dfsg-1ubuntu0.7) ...
+Setting up libpython3-stdlib:arm64 (3.10.6-1~22.04.1) ...
+Setting up automake (1:1.16.5-1.3) ...
+update-alternatives: using /usr/bin/automake-1.16 to provide /usr/bin/automake (automake) in auto mode
+Setting up gettext (0.21-4ubuntu4) ...
+Setting up python3.10 (3.10.12-1~22.04.9) ...
+Setting up python3 (3.10.6-1~22.04.1) ...
+Setting up man-db (2.10.2-1) ...
+Not building database; man-db/auto-update is not 'true'.
+Setting up intltool-debian (0.35.0+20060710.5) ...
+Setting up dh-autoreconf (20) ...
+Setting up python3-pycodestyle (2.8.0-2) ...
+Setting up python3-pyparsing (2.4.7-1) ...
+Setting up python3-snowballstemmer (2.2.0-1build1) ...
+Setting up python3-toml (0.10.2-1) ...
+Setting up python3-pydocstyle (6.1.1-1) ...
+Setting up python3-mccabe (0.6.1-3) ...
+Setting up python3-lib2to3 (3.10.8-1~22.04) ...
+Setting up python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-distutils (3.10.8-1~22.04) ...
+Setting up dh-python (5.20220403) ...
+Setting up python3-more-itertools (8.10.0-2) ...
+Setting up python3-iniconfig (1.1.1-2) ...
+Setting up python3-attr (21.2.0-1) ...
+Setting up python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-py (1.10.0-1) ...
+Setting up po-debconf (1.0.21+nmu1) ...
+Setting up python3-pyflakes (2.4.0-2) ...
+Setting up python3-all (3.10.6-1~22.04.1) ...
+Setting up debhelper (13.6ubuntu1) ...
+Setting up python3-zipp (1.0.0-3ubuntu0.1) ...
+Setting up python3-flake8 (4.0.1-2) ...
+Setting up python3-packaging (21.3-1) ...
+Setting up pydocstyle (6.1.1-1) ...
+Setting up ros-humble-ament-pep257 (0.12.12-1jammy.20250325.170729) ...
+Setting up python3-importlib-metadata (4.6.4-1) ...
+Setting up ros-humble-ament-copyright (0.12.12-1jammy.20250325.171643) ...
+Setting up ros-humble-ament-flake8 (0.12.12-1jammy.20250325.165615) ...
+Setting up python3-pluggy (0.13.0-7.1) ...
+Setting up python3-pytest (6.2.5-1ubuntu2) ...
+Setting up sbuild-build-depends-main-dummy (0.invalid.0) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+
++------------------------------------------------------------------------------+
+| Check architectures                                                          |
++------------------------------------------------------------------------------+
+
+Arch check ok (arm64 included in any)
+
++------------------------------------------------------------------------------+
+| Build environment                                                            |
++------------------------------------------------------------------------------+
+
+Kernel: Linux 6.8.0-1021-azure #25~22.04.1-Ubuntu SMP Thu Jan 16 21:09:47 UTC 2025 arm64 (aarch64)
+Toolchain package versions: binutils_2.38-4ubuntu2.8 dpkg-dev_1.21.1ubuntu2.3 g++-11_11.4.0-1ubuntu1~22.04 gcc-11_11.4.0-1ubuntu1~22.04 libc6-dev_2.35-0ubuntu3.10 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 linux-libc-dev_5.15.0-141.151
+Package versions: adduser_3.118ubuntu5 apt_2.4.14 autoconf_2.71-2 automake_1:1.16.5-1.3 autopoint_0.21-4ubuntu4 autotools-dev_20220109.1 base-files_12ubuntu4.7 base-passwd_3.5.52build1 bash_5.1-6ubuntu1.1 binutils_2.38-4ubuntu2.8 binutils-aarch64-linux-gnu_2.38-4ubuntu2.8 binutils-common_2.38-4ubuntu2.8 bsdextrautils_2.37.2-4ubuntu3.4 bsdutils_1:2.37.2-4ubuntu3.4 build-essential_12.9ubuntu3 bzip2_1.0.8-5build1 ca-certificates_20240203~22.04.1 ccache_4.5.1-1 coreutils_8.32-4.1ubuntu1.2 cpp_4:11.2.0-1ubuntu1 cpp-11_11.4.0-1ubuntu1~22.04 dash_0.5.11+git20210903+057cd650a4ed-3build1 debconf_1.5.79ubuntu1 debhelper_13.6ubuntu1 debianutils_5.5-1ubuntu2 debugedit_1:5.0-4build1 dh-autoreconf_20 dh-python_5.20220403 dh-strip-nondeterminism_1.13.0-1 diffutils_1:3.8-0ubuntu2 dpkg_1.21.1ubuntu2.3 dpkg-dev_1.21.1ubuntu2.3 dwz_0.14-1build2 e2fsprogs_1.46.5-2ubuntu1.2 fakeroot_1.28-1ubuntu1 file_1:5.41-3ubuntu0.1 findutils_4.8.0-1ubuntu3 g++_4:11.2.0-1ubuntu1 g++-11_11.4.0-1ubuntu1~22.04 gcc_4:11.2.0-1ubuntu1 gcc-11_11.4.0-1ubuntu1~22.04 gcc-11-base_11.4.0-1ubuntu1~22.04 gcc-12-base_12.3.0-1ubuntu1~22.04 gettext_0.21-4ubuntu4 gettext-base_0.21-4ubuntu4 gpgv_2.2.27-3ubuntu2.3 grep_3.7-1build1 groff-base_1.22.4-8build1 gzip_1.10-4ubuntu4.1 hostname_3.23ubuntu2 init-system-helpers_1.62 intltool-debian_0.35.0+20060710.5 libacl1_2.3.1-1 libapt-pkg6.0_2.4.14 libarchive-zip-perl_1.68-1 libasan6_11.4.0-1ubuntu1~22.04 libatomic1_12.3.0-1ubuntu1~22.04 libattr1_1:2.5.1-1build1 libaudit-common_1:3.0.7-1build1 libaudit1_1:3.0.7-1build1 libbinutils_2.38-4ubuntu2.8 libblkid1_2.37.2-4ubuntu3.4 libbz2-1.0_1.0.8-5build1 libc-bin_2.35-0ubuntu3.10 libc-dev-bin_2.35-0ubuntu3.10 libc6_2.35-0ubuntu3.10 libc6-dev_2.35-0ubuntu3.10 libcap-ng0_0.7.9-2.2build3 libcap2_1:2.44-1ubuntu0.22.04.2 libcc1-0_12.3.0-1ubuntu1~22.04 libcom-err2_1.46.5-2ubuntu1.2 libcrypt-dev_1:4.4.27-1 libcrypt1_1:4.4.27-1 libctf-nobfd0_2.38-4ubuntu2.8 libctf0_2.38-4ubuntu2.8 libdb5.3_5.3.28+dfsg1-0.8ubuntu3 libdebconfclient0_0.261ubuntu1 libdebhelper-perl_13.6ubuntu1 libdpkg-perl_1.21.1ubuntu2.3 libdw1_0.186-1ubuntu0.1 libelf1_0.186-1ubuntu0.1 libexpat1_2.4.7-1ubuntu0.6 libext2fs2_1.46.5-2ubuntu1.2 libfakeroot_1.28-1ubuntu1 libffi8_3.4.2-4 libfile-stripnondeterminism-perl_1.13.0-1 libgcc-11-dev_11.4.0-1ubuntu1~22.04 libgcc-s1_12.3.0-1ubuntu1~22.04 libgcrypt20_1.9.4-3ubuntu3 libgdbm-compat4_1.23-1 libgdbm6_1.23-1 libgmp10_2:6.2.1+dfsg-3ubuntu1 libgnutls30_3.7.3-4ubuntu1.6 libgomp1_12.3.0-1ubuntu1~22.04 libgpg-error0_1.43-3 libgssapi-krb5-2_1.19.2-2ubuntu0.7 libhiredis0.14_0.14.1-2 libhogweed6_3.7.3-1build2 libhwasan0_12.3.0-1ubuntu1~22.04 libicu70_70.1-2 libidn2-0_2.3.2-2build1 libisl23_0.24-2build1 libitm1_12.3.0-1ubuntu1~22.04 libk5crypto3_1.19.2-2ubuntu0.7 libkeyutils1_1.6.1-2ubuntu3 libkrb5-3_1.19.2-2ubuntu0.7 libkrb5support0_1.19.2-2ubuntu0.7 liblsan0_12.3.0-1ubuntu1~22.04 liblz4-1_1.9.3-2build2 liblzma5_5.2.5-2ubuntu1 libmagic-mgc_1:5.41-3ubuntu0.1 libmagic1_1:5.41-3ubuntu0.1 libmount1_2.37.2-4ubuntu3.4 libmpc3_1.2.1-2build1 libmpdec3_2.5.1-2build2 libmpfr6_4.1.0-3build3 libncurses6_6.3-2ubuntu0.1 libncursesw6_6.3-2ubuntu0.1 libnettle8_3.7.3-1build2 libnsl-dev_1.3.0-2build2 libnsl2_1.3.0-2build2 libp11-kit0_0.24.0-6build1 libpam-modules_1.4.0-11ubuntu2.5 libpam-modules-bin_1.4.0-11ubuntu2.5 libpam-runtime_1.4.0-11ubuntu2.5 libpam0g_1.4.0-11ubuntu2.5 libpcre2-8-0_10.39-3ubuntu0.1 libpcre3_2:8.39-13ubuntu0.22.04.1 libperl5.34_5.34.0-3ubuntu1.4 libpipeline1_1.5.5-1 libprocps8_2:3.3.17-6ubuntu2.1 libpython3-stdlib_3.10.6-1~22.04.1 libpython3.10-minimal_3.10.12-1~22.04.9 libpython3.10-stdlib_3.10.12-1~22.04.9 libreadline8_8.1.2-1 libseccomp2_2.5.3-2ubuntu3~22.04.1 libselinux1_3.3-1build2 libsemanage-common_3.3-1build2 libsemanage2_3.3-1build2 libsepol2_3.3-1build1 libsigsegv2_2.13-1ubuntu3 libsmartcols1_2.37.2-4ubuntu3.4 libsqlite3-0_3.37.2-2ubuntu0.4 libss2_1.46.5-2ubuntu1.2 libssl3_3.0.2-0ubuntu1.19 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 libsub-override-perl_0.09-2 libsystemd0_249.11-0ubuntu3.15 libtasn1-6_4.18.0-4ubuntu0.1 libtinfo6_6.3-2ubuntu0.1 libtirpc-common_1.3.2-2ubuntu0.1 libtirpc-dev_1.3.2-2ubuntu0.1 libtirpc3_1.3.2-2ubuntu0.1 libtool_2.4.6-15build2 libtsan0_11.4.0-1ubuntu1~22.04 libubsan1_12.3.0-1ubuntu1~22.04 libuchardet0_0.0.7-1build2 libudev1_249.11-0ubuntu3.15 libunistring2_1.0-1 libuuid1_2.37.2-4ubuntu3.4 libxml2_2.9.13+dfsg-1ubuntu0.7 libxxhash0_0.8.1-1 libzstd1_1.4.8+dfsg-3build1 linux-libc-dev_5.15.0-141.151 login_1:4.8.1-2ubuntu2.2 logsave_1.46.5-2ubuntu1.2 lsb-base_11.1.0ubuntu4 lto-disabled-list_24 m4_1.4.18-5ubuntu2 make_4.3-4.1build1 man-db_2.10.2-1 mawk_1.3.4.20200120-3 media-types_7.0.0 mount_2.37.2-4ubuntu3.4 ncurses-base_6.3-2ubuntu0.1 ncurses-bin_6.3-2ubuntu0.1 openssl_3.0.2-0ubuntu1.19 passwd_1:4.8.1-2ubuntu2.2 patch_2.7.6-7build2 perl_5.34.0-3ubuntu1.4 perl-base_5.34.0-3ubuntu1.4 perl-modules-5.34_5.34.0-3ubuntu1.4 po-debconf_1.0.21+nmu1 procps_2:3.3.17-6ubuntu2.1 pydocstyle_6.1.1-1 python3_3.10.6-1~22.04.1 python3-all_3.10.6-1~22.04.1 python3-attr_21.2.0-1 python3-distutils_3.10.8-1~22.04 python3-flake8_4.0.1-2 python3-importlib-metadata_4.6.4-1 python3-iniconfig_1.1.1-2 python3-lib2to3_3.10.8-1~22.04 python3-mccabe_0.6.1-3 python3-minimal_3.10.6-1~22.04.1 python3-more-itertools_8.10.0-2 python3-packaging_21.3-1 python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3 python3-pluggy_0.13.0-7.1 python3-py_1.10.0-1 python3-pycodestyle_2.8.0-2 python3-pydocstyle_6.1.1-1 python3-pyflakes_2.4.0-2 python3-pyparsing_2.4.7-1 python3-pytest_6.2.5-1ubuntu2 python3-setuptools_59.6.0-1.2ubuntu0.22.04.3 python3-snowballstemmer_2.2.0-1build1 python3-toml_0.10.2-1 python3-zipp_1.0.0-3ubuntu0.1 python3.10_3.10.12-1~22.04.9 python3.10-minimal_3.10.12-1~22.04.9 readline-common_8.1.2-1 ros-humble-ament-copyright_0.12.12-1jammy.20250325.171643 ros-humble-ament-flake8_0.12.12-1jammy.20250325.165615 ros-humble-ament-lint_0.12.12-1jammy.20250325.164506 ros-humble-ament-pep257_0.12.12-1jammy.20250325.170729 ros-humble-ros-workspace_1.0.2-2jammy.20241125.210925 rpcsvc-proto_1.4.2-0ubuntu6 sbuild-build-depends-main-dummy_0.invalid.0 sed_4.8-1ubuntu2 sensible-utils_0.0.17 sysvinit-utils_3.01-1ubuntu1 tar_1.34+dfsg-1ubuntu0.1.22.04.2 ubuntu-keyring_2021.03.26 usrmerge_25ubuntu2 util-linux_2.37.2-4ubuntu3.4 xz-utils_5.2.5-2ubuntu1 zlib1g_1:1.2.11.dfsg-2ubuntu9.2
+
++------------------------------------------------------------------------------+
+| Build                                                                        |
++------------------------------------------------------------------------------+
+
+
+Unpack source
+-------------
+
+Format: 1.0
+Source: ros-humble-mirte-test
+Binary: ros-humble-mirte-test
+Architecture: any
+Version: 2-2025.06.04.11.15
+Maintainer: Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-humble-ament-copyright, ros-humble-ament-flake8, ros-humble-ament-pep257, python3-all, python3-setuptools, dh-python
+Package-List:
+ ros-humble-mirte-test deb misc optional arch=any
+Checksums-Sha1:
+ 42772fbd285e78ba8d9940b34c5b9d043b9f54c9 11157 ros-humble-mirte-test_2-2025.06.04.11.15.tar.gz
+Checksums-Sha256:
+ bdd51c17763b69ba57b8cd20cd881dbd1063f189c815257301c4248e585653d6 11157 ros-humble-mirte-test_2-2025.06.04.11.15.tar.gz
+Files:
+ 7a488d61bbfcf982a6364284704ab1d9 11157 ros-humble-mirte-test_2-2025.06.04.11.15.tar.gz
+
+dpkg-source: warning: extracting unsigned source package (ros-humble-mirte-test_2-2025.06.04.11.15.dsc)
+dpkg-source: info: extracting ros-humble-mirte-test in /<<BUILDDIR>>package
+dpkg-source: info: unpacking ros-humble-mirte-test_2-2025.06.04.11.15.tar.gz
+
+Check disk space
+----------------
+
+Sufficient free space for build
+
+User Environment
+----------------
+
+APT_CONFIG=/var/lib/sbuild/apt.conf
+CCACHE_DIR=/build/ccache
+DEB_BUILD_OPTIONS=nocheck
+HOME=/var/lib/sbuild
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
+LOGNAME=runner
+OLDPWD=/
+PATH=/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PWD=/<<BUILDDIR>>package
+SHELL=/bin/sh
+USER=runner
+
+dpkg-buildpackage
+-----------------
+
+Command: dpkg-buildpackage --sanitize-env -us -uc -b -rfakeroot
+dpkg-buildpackage: info: source package ros-humble-mirte-test
+dpkg-buildpackage: info: source version 2-2025.06.04.11.15
+dpkg-buildpackage: info: source distribution jammy
+dpkg-buildpackage: info: source changed by Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+ dpkg-source --before-build .
+dpkg-buildpackage: info: host architecture arm64
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+ fakeroot debian/rules clean
+dh clean -v --buildsystem=pybuild --with python3
+   dh_auto_clean -O-v -O--buildsystem=pybuild
+	pybuild --clean -i python{version} -p 3.10
+I: pybuild base:239: python3.10 setup.py clean 
+running clean
+removing '/<<BUILDDIR>>package/.pybuild/cpython3_3.10/build' (and everything under it)
+'build/bdist.linux-arm64' does not exist -- can't clean it
+'build/scripts-3.10' does not exist -- can't clean it
+	rm -rf .pybuild/
+	find . -name \*.pyc -exec rm {} \;
+   dh_autoreconf_clean -O-v -O--buildsystem=pybuild
+   dh_clean -O-v -O--buildsystem=pybuild
+	rm -f debian/debhelper-build-stamp
+	rm -rf debian/.debhelper/
+	rm -f -- debian/ros-humble-mirte-test.substvars debian/files
+	rm -fr -- debian/ros-humble-mirte-test/ debian/tmp/
+	find .  \( \( \
+		\( -path .\*/.git -o -path .\*/.svn -o -path .\*/.bzr -o -path .\*/.hg -o -path .\*/CVS -o -path .\*/.pc -o -path .\*/_darcs \) -prune -o -type f -a \
+	        \( -name '#*#' -o -name '.*~' -o -name '*~' -o -name DEADJOE \
+		 -o -name '*.orig' -o -name '*.rej' -o -name '*.bak' \
+		 -o -name '.*.orig' -o -name .*.rej -o -name '.SUMS' \
+		 -o -name TAGS -o \( -path '*/.deps/*' -a -name '*.P' \) \
+		\) -exec rm -f {} + \) -o \
+		\( -type d -a -name autom4te.cache -prune -exec rm -rf {} + \) \)
+ debian/rules build
+dh build -v --buildsystem=pybuild --with python3
+   dh_update_autotools_config -O-v -O--buildsystem=pybuild
+   dh_autoreconf -O-v -O--buildsystem=pybuild
+   debian/rules override_dh_auto_configure
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_configure
+	pybuild --configure -i python{version} -p 3.10
+I: pybuild base:239: python3.10 setup.py config 
+running config
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-mirte-test.debhelper.log
+   debian/rules override_dh_auto_build
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_build
+	pybuild --build -i python{version} -p 3.10
+I: pybuild base:239: /usr/bin/python3 setup.py build 
+running build
+running build_py
+creating /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test
+copying mirte_test/mirte_master_hw_check.py -> /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test
+copying mirte_test/mirte_master_calibrate.py -> /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test
+copying mirte_test/__init__.py -> /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-mirte-test.debhelper.log
+   debian/rules override_dh_auto_test
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+echo -- Running tests. Even if one of them fails the build is not canceled.
+-- Running tests. Even if one of them fails the build is not canceled.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_test || true
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   create-stamp debian/debhelper-build-stamp
+ fakeroot debian/rules binary
+dh binary -v --buildsystem=pybuild --with python3
+   dh_testroot -O-v -O--buildsystem=pybuild
+   dh_prep -O-v -O--buildsystem=pybuild
+	rm -f -- debian/ros-humble-mirte-test.substvars
+	rm -fr -- debian/.debhelper/generated/ros-humble-mirte-test/ debian/ros-humble-mirte-test/ debian/tmp/
+   debian/rules override_dh_auto_install
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_install
+	install -d /<<BUILDDIR>>package/debian/ros-humble-mirte-test
+	pybuild --install -i python{version} -p 3.10 --dest-dir /<<BUILDDIR>>package/debian/ros-humble-mirte-test
+I: pybuild base:239: /usr/bin/python3 setup.py install --root /<<BUILDDIR>>package/debian/ros-humble-mirte-test --prefix "/opt/ros/humble" --install-lib "\$base/lib/python3.10/site-packages" 
+running install
+/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+running build
+running build_py
+running install_lib
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test
+copying /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test/mirte_master_hw_check.py -> /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test
+copying /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test/mirte_master_calibrate.py -> /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test
+copying /<<BUILDDIR>>package/.pybuild/cpython3_3.10/build/mirte_test/__init__.py -> /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test
+byte-compiling /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test/mirte_master_hw_check.py to mirte_master_hw_check.cpython-310.pyc
+byte-compiling /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test/mirte_master_calibrate.py to mirte_master_calibrate.cpython-310.pyc
+byte-compiling /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/ament_index
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/ament_index/resource_index
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/ament_index/resource_index/packages
+copying resource/mirte_test -> /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/ament_index/resource_index/packages
+creating /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/mirte_test
+copying package.xml -> /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/share/mirte_test
+running install_egg_info
+running egg_info
+creating mirte_test.egg-info
+writing mirte_test.egg-info/PKG-INFO
+writing dependency_links to mirte_test.egg-info/dependency_links.txt
+writing entry points to mirte_test.egg-info/entry_points.txt
+writing requirements to mirte_test.egg-info/requires.txt
+writing top-level names to mirte_test.egg-info/top_level.txt
+writing manifest file 'mirte_test.egg-info/SOURCES.txt'
+reading manifest file 'mirte_test.egg-info/SOURCES.txt'
+writing manifest file 'mirte_test.egg-info/SOURCES.txt'
+Copying mirte_test.egg-info to /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info
+Skipping SOURCES.txt
+running install_scripts
+Installing mirte_master_calibrate script to /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/mirte_test
+Installing mirte_master_hw_check script to /<<BUILDDIR>>package/debian/ros-humble-mirte-test/opt/ros/humble/lib/mirte_test
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdocs -O-v -O--buildsystem=pybuild
+	install -d debian/ros-humble-mirte-test/usr/share/doc/ros-humble-mirte-test
+	install -d debian/.debhelper/generated/ros-humble-mirte-test
+   dh_installchangelogs -O-v -O--buildsystem=pybuild
+	install -p -m0644 debian/changelog debian/ros-humble-mirte-test/usr/share/doc/ros-humble-mirte-test/changelog.Debian
+   dh_python3 -O-v -O--buildsystem=pybuild
+D: dh_python3 dh_python3:161: version: 5.20220403
+D: dh_python3 dh_python3:162: argv: ['/usr/bin/dh_python3', '-O-v', '-O--buildsystem=pybuild']
+D: dh_python3 dh_python3:163: options: {'guess_deps': True, 'skip_private': False, 'verbose': False, 'arch': None, 'package': None, 'no_package': None, 'compile_all': False, 'vrange': None, 'regexpr': None, 'accept_upstream_versions': False, 'depends': None, 'depends_section': None, 'recommends': None, 'recommends_section': None, 'suggests': None, 'suggests_section': None, 'requires': None, 'shebang': None, 'ignore_shebangs': False, 'clean_dbg_pkg': True, 'no_ext_rename': False, 'no_shebang_rewrite': False, 'O': '--buildsystem=pybuild'}
+D: dh_python3 dh_python3:164: args: []
+D: dh_python3 dh_python3:165: supported Python versions: 3.10 (default=3.10)
+D: dh_python3 debhelper:169: source=ros-humble-mirte-test, binary packages=['ros-humble-mirte-test']
+D: dh_python3 dh_python3:183: processing package ros-humble-mirte-test...
+D: dh_python3 fs:399: package ros-humble-mirte-test details = {'requires.txt': set(), 'egg-info': set(), 'dist-info': set(), 'nsp.txt': set(), 'shebangs': set(), 'public_vers': set(), 'private_dirs': {}, 'compile': False, 'ext_vers': set(), 'ext_no_version': set()}
+D: dh_python3 depends:117: generating dependencies for package ros-humble-mirte-test
+D: dh_python3 depends:281: D=set(); R=[]; S=[]; E=[], B=[]; RT=[]
+   dh_installinit -O-v -O--buildsystem=pybuild
+   dh_perl -O-v -O--buildsystem=pybuild
+   dh_link -O-v -O--buildsystem=pybuild
+   dh_strip_nondeterminism -O-v -O--buildsystem=pybuild
+   dh_compress -O-v -O--buildsystem=pybuild
+	cd debian/ros-humble-mirte-test
+	chmod a-x usr/share/doc/ros-humble-mirte-test/changelog.Debian
+	gzip -9nf usr/share/doc/ros-humble-mirte-test/changelog.Debian
+	cd '/<<BUILDDIR>>package'
+   dh_fixperms -O-v -O--buildsystem=pybuild
+	find debian/ros-humble-mirte-test -true -print0 2>/dev/null | xargs -0r chown --no-dereference 0:0
+	find debian/ros-humble-mirte-test ! -type l -a -true -a -true -print0 2>/dev/null | xargs -0r chmod go=rX,u+rw,a-s
+	find debian/ros-humble-mirte-test/usr/share/doc -type f -a -true -a ! -regex 'debian/ros-humble-mirte-test/usr/share/doc/[^/]*/examples/.*' -print0 2>/dev/null | xargs -0r chmod 0644
+	find debian/ros-humble-mirte-test/usr/share/doc -type d -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0755
+	find debian/ros-humble-mirte-test -type f \( -name '*.so.*' -o -name '*.so' -o -name '*.la' -o -name '*.a' -o -name '*.js' -o -name '*.css' -o -name '*.scss' -o -name '*.sass' -o -name '*.jpeg' -o -name '*.jpg' -o -name '*.png' -o -name '*.gif' -o -name '*.cmxs' -o -name '*.node' \) -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0644
+   dh_missing -O-v -O--buildsystem=pybuild
+   dh_strip -O-v -O--buildsystem=pybuild
+   dh_makeshlibs -O-v -O--buildsystem=pybuild
+	rm -f debian/ros-humble-mirte-test/DEBIAN/shlibs
+	rm -f debian/ros-humble-mirte-test.debhelper.log
+   debian/rules override_dh_shlibdeps
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_shlibdeps -l/<<BUILDDIR>>package/debian/ros-humble-mirte-test//opt/ros/humble/lib/
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdeb -O-v -O--buildsystem=pybuild
+	install -d debian/ros-humble-mirte-test/DEBIAN
+   dh_gencontrol -O-v -O--buildsystem=pybuild
+	echo misc:Depends= >> debian/ros-humble-mirte-test.substvars
+	echo misc:Pre-Depends= >> debian/ros-humble-mirte-test.substvars
+	dpkg-gencontrol -pros-humble-mirte-test -ldebian/changelog -Tdebian/ros-humble-mirte-test.substvars -Pdebian/ros-humble-mirte-test
+dpkg-gencontrol: warning: Depends field of package ros-humble-mirte-test: substitution variable ${python3:Depends} used, but is not defined
+	chmod 0644 -- debian/ros-humble-mirte-test/DEBIAN/control
+	chown 0:0 -- debian/ros-humble-mirte-test/DEBIAN/control
+   dh_md5sums -O-v -O--buildsystem=pybuild
+	cd debian/ros-humble-mirte-test >/dev/null && xargs -r0 md5sum | perl -pe 'if (s@^\\@@) { s/\\\\/\\/g; }' > DEBIAN/md5sums
+	chmod 0644 -- debian/ros-humble-mirte-test/DEBIAN/md5sums
+	chown 0:0 -- debian/ros-humble-mirte-test/DEBIAN/md5sums
+   dh_builddeb -O-v -O--buildsystem=pybuild
+	dpkg-deb --build debian/ros-humble-mirte-test ..
+dpkg-deb: building package 'ros-humble-mirte-test' in '../ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb'.
+ dpkg-genbuildinfo --build=binary -O../ros-humble-mirte-test_2-2025.06.04.11.15_arm64.buildinfo
+ dpkg-genchanges --build=binary -O../ros-humble-mirte-test_2-2025.06.04.11.15_arm64.changes
+dpkg-genchanges: info: binary-only upload (no source code included)
+ dpkg-source --after-build .
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+dpkg-buildpackage: info: binary-only upload (no source included)
+--------------------------------------------------------------------------------
+Build finished at 2025-06-04T11:15:57Z
+
+Finished
+--------
+
+I: Built successfully
+
++------------------------------------------------------------------------------+
+| Changes                                                                      |
++------------------------------------------------------------------------------+
+
+
+ros-humble-mirte-test_2-2025.06.04.11.15_arm64.changes:
+-------------------------------------------------------
+
+Format: 1.8
+Date: Wed, 04 Jun 2025 11:15:24 -0000
+Source: ros-humble-mirte-test
+Binary: ros-humble-mirte-test
+Built-For-Profiles: noudeb
+Architecture: arm64
+Version: 2-2025.06.04.11.15
+Distribution: jammy
+Urgency: high
+Maintainer: Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+Changed-By: Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+Description:
+ ros-humble-mirte-test - TODO: Package description
+Changes:
+ ros-humble-mirte-test (2-2025.06.04.11.15) jammy; urgency=high
+ .
+   * Autogenerated, no changelog for this version found in CHANGELOG.rst.
+Checksums-Sha1:
+ 3910c8f841511293f56766b7559d93447f357838 7543 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.buildinfo
+ 47b25fa57d828b12cdd918e180711cfe305cfed4 15404 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+Checksums-Sha256:
+ 1882ca912a30f838e6328c7991999b6f20d1d1f4d89cd68bb25af09b8ddf7eed 7543 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.buildinfo
+ c35bcf43716db736d7552a54df573446fef709490c7f2415265777d168c8b231 15404 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+Files:
+ 970b30ef738eeda8d7ba78de1e576946 7543 misc optional ros-humble-mirte-test_2-2025.06.04.11.15_arm64.buildinfo
+ abde4f2728cd6f7f7f5f63a22f8f54b6 15404 misc optional ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+
++------------------------------------------------------------------------------+
+| Buildinfo                                                                    |
++------------------------------------------------------------------------------+
+
+Format: 1.0
+Source: ros-humble-mirte-test
+Binary: ros-humble-mirte-test
+Architecture: arm64
+Version: 2-2025.06.04.11.15
+Checksums-Md5:
+ abde4f2728cd6f7f7f5f63a22f8f54b6 15404 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+Checksums-Sha1:
+ 47b25fa57d828b12cdd918e180711cfe305cfed4 15404 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+Checksums-Sha256:
+ c35bcf43716db736d7552a54df573446fef709490c7f2415265777d168c8b231 15404 ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+Build-Origin: Ubuntu
+Build-Architecture: arm64
+Build-Date: Wed, 04 Jun 2025 11:15:56 +0000
+Build-Path: /<<BUILDDIR>>package
+Build-Tainted-By:
+ merged-usr-via-aliased-dirs
+Installed-Build-Depends:
+ autoconf (= 2.71-2),
+ automake (= 1:1.16.5-1.3),
+ autopoint (= 0.21-4ubuntu4),
+ autotools-dev (= 20220109.1),
+ base-files (= 12ubuntu4.7),
+ base-passwd (= 3.5.52build1),
+ bash (= 5.1-6ubuntu1.1),
+ binutils (= 2.38-4ubuntu2.8),
+ binutils-aarch64-linux-gnu (= 2.38-4ubuntu2.8),
+ binutils-common (= 2.38-4ubuntu2.8),
+ bsdextrautils (= 2.37.2-4ubuntu3.4),
+ bsdutils (= 1:2.37.2-4ubuntu3.4),
+ build-essential (= 12.9ubuntu3),
+ bzip2 (= 1.0.8-5build1),
+ coreutils (= 8.32-4.1ubuntu1.2),
+ cpp (= 4:11.2.0-1ubuntu1),
+ cpp-11 (= 11.4.0-1ubuntu1~22.04),
+ dash (= 0.5.11+git20210903+057cd650a4ed-3build1),
+ debconf (= 1.5.79ubuntu1),
+ debhelper (= 13.6ubuntu1),
+ debianutils (= 5.5-1ubuntu2),
+ debugedit (= 1:5.0-4build1),
+ dh-autoreconf (= 20),
+ dh-python (= 5.20220403),
+ dh-strip-nondeterminism (= 1.13.0-1),
+ diffutils (= 1:3.8-0ubuntu2),
+ dpkg (= 1.21.1ubuntu2.3),
+ dpkg-dev (= 1.21.1ubuntu2.3),
+ dwz (= 0.14-1build2),
+ file (= 1:5.41-3ubuntu0.1),
+ findutils (= 4.8.0-1ubuntu3),
+ g++ (= 4:11.2.0-1ubuntu1),
+ g++-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc (= 4:11.2.0-1ubuntu1),
+ gcc-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc-11-base (= 11.4.0-1ubuntu1~22.04),
+ gcc-12-base (= 12.3.0-1ubuntu1~22.04),
+ gettext (= 0.21-4ubuntu4),
+ gettext-base (= 0.21-4ubuntu4),
+ grep (= 3.7-1build1),
+ groff-base (= 1.22.4-8build1),
+ gzip (= 1.10-4ubuntu4.1),
+ hostname (= 3.23ubuntu2),
+ init-system-helpers (= 1.62),
+ intltool-debian (= 0.35.0+20060710.5),
+ libacl1 (= 2.3.1-1),
+ libarchive-zip-perl (= 1.68-1),
+ libasan6 (= 11.4.0-1ubuntu1~22.04),
+ libatomic1 (= 12.3.0-1ubuntu1~22.04),
+ libattr1 (= 1:2.5.1-1build1),
+ libaudit-common (= 1:3.0.7-1build1),
+ libaudit1 (= 1:3.0.7-1build1),
+ libbinutils (= 2.38-4ubuntu2.8),
+ libblkid1 (= 2.37.2-4ubuntu3.4),
+ libbz2-1.0 (= 1.0.8-5build1),
+ libc-bin (= 2.35-0ubuntu3.10),
+ libc-dev-bin (= 2.35-0ubuntu3.10),
+ libc6 (= 2.35-0ubuntu3.10),
+ libc6-dev (= 2.35-0ubuntu3.10),
+ libcap-ng0 (= 0.7.9-2.2build3),
+ libcap2 (= 1:2.44-1ubuntu0.22.04.2),
+ libcc1-0 (= 12.3.0-1ubuntu1~22.04),
+ libcom-err2 (= 1.46.5-2ubuntu1.2),
+ libcrypt-dev (= 1:4.4.27-1),
+ libcrypt1 (= 1:4.4.27-1),
+ libctf-nobfd0 (= 2.38-4ubuntu2.8),
+ libctf0 (= 2.38-4ubuntu2.8),
+ libdb5.3 (= 5.3.28+dfsg1-0.8ubuntu3),
+ libdebconfclient0 (= 0.261ubuntu1),
+ libdebhelper-perl (= 13.6ubuntu1),
+ libdpkg-perl (= 1.21.1ubuntu2.3),
+ libdw1 (= 0.186-1ubuntu0.1),
+ libelf1 (= 0.186-1ubuntu0.1),
+ libexpat1 (= 2.4.7-1ubuntu0.6),
+ libffi8 (= 3.4.2-4),
+ libfile-stripnondeterminism-perl (= 1.13.0-1),
+ libgcc-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libgcc-s1 (= 12.3.0-1ubuntu1~22.04),
+ libgcrypt20 (= 1.9.4-3ubuntu3),
+ libgdbm-compat4 (= 1.23-1),
+ libgdbm6 (= 1.23-1),
+ libgmp10 (= 2:6.2.1+dfsg-3ubuntu1),
+ libgomp1 (= 12.3.0-1ubuntu1~22.04),
+ libgpg-error0 (= 1.43-3),
+ libgssapi-krb5-2 (= 1.19.2-2ubuntu0.7),
+ libhwasan0 (= 12.3.0-1ubuntu1~22.04),
+ libicu70 (= 70.1-2),
+ libisl23 (= 0.24-2build1),
+ libitm1 (= 12.3.0-1ubuntu1~22.04),
+ libk5crypto3 (= 1.19.2-2ubuntu0.7),
+ libkeyutils1 (= 1.6.1-2ubuntu3),
+ libkrb5-3 (= 1.19.2-2ubuntu0.7),
+ libkrb5support0 (= 1.19.2-2ubuntu0.7),
+ liblsan0 (= 12.3.0-1ubuntu1~22.04),
+ liblz4-1 (= 1.9.3-2build2),
+ liblzma5 (= 5.2.5-2ubuntu1),
+ libmagic-mgc (= 1:5.41-3ubuntu0.1),
+ libmagic1 (= 1:5.41-3ubuntu0.1),
+ libmount1 (= 2.37.2-4ubuntu3.4),
+ libmpc3 (= 1.2.1-2build1),
+ libmpdec3 (= 2.5.1-2build2),
+ libmpfr6 (= 4.1.0-3build3),
+ libncursesw6 (= 6.3-2ubuntu0.1),
+ libnsl-dev (= 1.3.0-2build2),
+ libnsl2 (= 1.3.0-2build2),
+ libpam-modules (= 1.4.0-11ubuntu2.5),
+ libpam-modules-bin (= 1.4.0-11ubuntu2.5),
+ libpam-runtime (= 1.4.0-11ubuntu2.5),
+ libpam0g (= 1.4.0-11ubuntu2.5),
+ libpcre2-8-0 (= 10.39-3ubuntu0.1),
+ libpcre3 (= 2:8.39-13ubuntu0.22.04.1),
+ libperl5.34 (= 5.34.0-3ubuntu1.4),
+ libpipeline1 (= 1.5.5-1),
+ libpython3-stdlib (= 3.10.6-1~22.04.1),
+ libpython3.10-minimal (= 3.10.12-1~22.04.9),
+ libpython3.10-stdlib (= 3.10.12-1~22.04.9),
+ libreadline8 (= 8.1.2-1),
+ libseccomp2 (= 2.5.3-2ubuntu3~22.04.1),
+ libselinux1 (= 3.3-1build2),
+ libsigsegv2 (= 2.13-1ubuntu3),
+ libsmartcols1 (= 2.37.2-4ubuntu3.4),
+ libsqlite3-0 (= 3.37.2-2ubuntu0.4),
+ libssl3 (= 3.0.2-0ubuntu1.19),
+ libstdc++-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libstdc++6 (= 12.3.0-1ubuntu1~22.04),
+ libsub-override-perl (= 0.09-2),
+ libsystemd0 (= 249.11-0ubuntu3.15),
+ libtinfo6 (= 6.3-2ubuntu0.1),
+ libtirpc-common (= 1.3.2-2ubuntu0.1),
+ libtirpc-dev (= 1.3.2-2ubuntu0.1),
+ libtirpc3 (= 1.3.2-2ubuntu0.1),
+ libtool (= 2.4.6-15build2),
+ libtsan0 (= 11.4.0-1ubuntu1~22.04),
+ libubsan1 (= 12.3.0-1ubuntu1~22.04),
+ libuchardet0 (= 0.0.7-1build2),
+ libudev1 (= 249.11-0ubuntu3.15),
+ libunistring2 (= 1.0-1),
+ libuuid1 (= 2.37.2-4ubuntu3.4),
+ libxml2 (= 2.9.13+dfsg-1ubuntu0.7),
+ libzstd1 (= 1.4.8+dfsg-3build1),
+ linux-libc-dev (= 5.15.0-141.151),
+ login (= 1:4.8.1-2ubuntu2.2),
+ lsb-base (= 11.1.0ubuntu4),
+ lto-disabled-list (= 24),
+ m4 (= 1.4.18-5ubuntu2),
+ make (= 4.3-4.1build1),
+ man-db (= 2.10.2-1),
+ mawk (= 1.3.4.20200120-3),
+ media-types (= 7.0.0),
+ ncurses-base (= 6.3-2ubuntu0.1),
+ ncurses-bin (= 6.3-2ubuntu0.1),
+ patch (= 2.7.6-7build2),
+ perl (= 5.34.0-3ubuntu1.4),
+ perl-base (= 5.34.0-3ubuntu1.4),
+ perl-modules-5.34 (= 5.34.0-3ubuntu1.4),
+ po-debconf (= 1.0.21+nmu1),
+ pydocstyle (= 6.1.1-1),
+ python3 (= 3.10.6-1~22.04.1),
+ python3-all (= 3.10.6-1~22.04.1),
+ python3-attr (= 21.2.0-1),
+ python3-distutils (= 3.10.8-1~22.04),
+ python3-flake8 (= 4.0.1-2),
+ python3-importlib-metadata (= 4.6.4-1),
+ python3-iniconfig (= 1.1.1-2),
+ python3-lib2to3 (= 3.10.8-1~22.04),
+ python3-mccabe (= 0.6.1-3),
+ python3-minimal (= 3.10.6-1~22.04.1),
+ python3-more-itertools (= 8.10.0-2),
+ python3-packaging (= 21.3-1),
+ python3-pkg-resources (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-pluggy (= 0.13.0-7.1),
+ python3-py (= 1.10.0-1),
+ python3-pycodestyle (= 2.8.0-2),
+ python3-pydocstyle (= 6.1.1-1),
+ python3-pyflakes (= 2.4.0-2),
+ python3-pyparsing (= 2.4.7-1),
+ python3-pytest (= 6.2.5-1ubuntu2),
+ python3-setuptools (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-snowballstemmer (= 2.2.0-1build1),
+ python3-toml (= 0.10.2-1),
+ python3-zipp (= 1.0.0-3ubuntu0.1),
+ python3.10 (= 3.10.12-1~22.04.9),
+ python3.10-minimal (= 3.10.12-1~22.04.9),
+ readline-common (= 8.1.2-1),
+ ros-humble-ament-copyright (= 0.12.12-1jammy.20250325.171643),
+ ros-humble-ament-flake8 (= 0.12.12-1jammy.20250325.165615),
+ ros-humble-ament-lint (= 0.12.12-1jammy.20250325.164506),
+ ros-humble-ament-pep257 (= 0.12.12-1jammy.20250325.170729),
+ ros-humble-ros-workspace (= 1.0.2-2jammy.20241125.210925),
+ rpcsvc-proto (= 1.4.2-0ubuntu6),
+ sed (= 4.8-1ubuntu2),
+ sensible-utils (= 0.0.17),
+ sysvinit-utils (= 3.01-1ubuntu1),
+ tar (= 1.34+dfsg-1ubuntu0.1.22.04.2),
+ util-linux (= 2.37.2-4ubuntu3.4),
+ xz-utils (= 5.2.5-2ubuntu1),
+ zlib1g (= 1:1.2.11.dfsg-2ubuntu9.2)
+Environment:
+ DEB_BUILD_OPTIONS="nocheck parallel=4"
+ DEB_BUILD_PROFILES="noudeb"
+ LANG="C.UTF-8"
+ LC_ALL="C.UTF-8"
+ LC_COLLATE="C.UTF-8"
+ SOURCE_DATE_EPOCH="1749035724"
+
+
++------------------------------------------------------------------------------+
+| Package contents                                                             |
++------------------------------------------------------------------------------+
+
+
+ros-humble-mirte-test_2-2025.06.04.11.15_arm64.deb
+--------------------------------------------------
+
+ new Debian package, version 2.0.
+ size 15404 bytes: control archive=892 bytes.
+     230 bytes,     8 lines      control              
+    1885 bytes,    17 lines      md5sums              
+ Package: ros-humble-mirte-test
+ Version: 2-2025.06.04.11.15
+ Architecture: arm64
+ Maintainer: Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+ Installed-Size: 84
+ Section: misc
+ Priority: optional
+ Description: TODO: Package description
+
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/mirte_test/
+-rwxr-xr-x root/root       997 2025-06-04 11:15 ./opt/ros/humble/lib/mirte_test/mirte_master_calibrate
+-rwxr-xr-x root/root       995 2025-06-04 11:15 ./opt/ros/humble/lib/mirte_test/mirte_master_hw_check
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/
+-rw-r--r-- root/root       232 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/PKG-INFO
+-rw-r--r-- root/root         1 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/dependency_links.txt
+-rw-r--r-- root/root       145 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/entry_points.txt
+-rw-r--r-- root/root        11 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/requires.txt
+-rw-r--r-- root/root        11 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/top_level.txt
+-rw-r--r-- root/root         1 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test-0.0.0.egg-info/zip-safe
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/
+-rw-r--r-- root/root         0 2025-06-04 10:52 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/__init__.py
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/__pycache__/
+-rw-r--r-- root/root       160 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/__pycache__/__init__.cpython-310.pyc
+-rw-r--r-- root/root      5155 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/__pycache__/mirte_master_calibrate.cpython-310.pyc
+-rw-r--r-- root/root     14741 2025-06-04 11:15 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/__pycache__/mirte_master_hw_check.cpython-310.pyc
+-rw-r--r-- root/root      7971 2025-06-04 10:52 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/mirte_master_calibrate.py
+-rw-r--r-- root/root     23141 2025-06-04 10:52 ./opt/ros/humble/lib/python3.10/site-packages/mirte_test/mirte_master_hw_check.py
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/share/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/share/ament_index/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/share/ament_index/resource_index/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/share/ament_index/resource_index/packages/
+-rw-r--r-- root/root         0 2025-06-04 10:52 ./opt/ros/humble/share/ament_index/resource_index/packages/mirte_test
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./opt/ros/humble/share/mirte_test/
+-rw-r--r-- root/root       635 2025-06-04 10:52 ./opt/ros/humble/share/mirte_test/package.xml
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./usr/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./usr/share/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./usr/share/doc/
+drwxr-xr-x root/root         0 2025-06-04 11:15 ./usr/share/doc/ros-humble-mirte-test/
+-rw-r--r-- root/root       204 2025-06-04 11:15 ./usr/share/doc/ros-humble-mirte-test/changelog.Debian.gz
+
+
++------------------------------------------------------------------------------+
+| Post Build                                                                   |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+| Cleanup                                                                      |
++------------------------------------------------------------------------------+
+
+Purging /<<BUILDDIR>>
+Not cleaning session: cloned chroot in use
+
++------------------------------------------------------------------------------+
+| Summary                                                                      |
++------------------------------------------------------------------------------+
+
+Build Architecture: arm64
+Build Type: binary
+Build-Space: 432
+Build-Time: 4
+Distribution: jammy
+Host Architecture: arm64
+Install-Time: 17
+Job: /home/runner/work/mirte-ros-packages/mirte-ros-packages/srcO/ros-humble-mirte-test_2-2025.06.04.11.15.dsc
+Machine Architecture: arm64
+Package: ros-humble-mirte-test
+Package-Time: 32
+Source-Version: 2-2025.06.04.11.15
+Space: 432
+Status: successful
+Version: 2-2025.06.04.11.15
+--------------------------------------------------------------------------------
+Finished at 2025-06-04T11:15:57Z
+Build needed 00:00:32, 432k disk space

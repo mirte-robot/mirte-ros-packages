@@ -1,0 +1,17 @@
+repositories:
+  libuvc:
+    type: git
+    url: https://github.com/ArendJan/libuvc.git
+    version: f89008d9dd4cf46946661451bce0c4d1fa00383a
+  ros2_astra_camera:
+    type: git
+    url: https://github.com/ArendJan/ros2_astra_camera/
+    version: 39d4646c9747792c4aed961c1ee15642cf41bd24
+  usb_cam:
+    type: git
+    url: https://github.com/ArendJan/usb_cam.git
+    version: 9f456347c993df94aac2351b305a391506c406c4
+  web_video_server:
+    type: git
+    url: https://github.com/RobotWebTools/web_video_server.git
+    version: ef682a437c622d550337bfd56490f8ad36365ef6

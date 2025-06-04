@@ -1,0 +1,34 @@
+Format: 1.8
+Date: Wed, 21 May 2025 00:00:00 -0000
+Source: ros-humble-web-video-server
+Binary: ros-humble-web-video-server
+Built-For-Profiles: noudeb
+Architecture: arm64
+Version: 2.1.0-2-gef682a4-2025.06.04.11.19
+Distribution: jammy
+Urgency: high
+Maintainer: Błażej Sowa <blazej@fictionlab.pl>
+Changed-By: Błażej Sowa <blazej@fictionlab.pl>
+Description:
+ ros-humble-web-video-server - HTTP Streaming of ROS Image Topics in Multiple Formats
+Changes:
+ ros-humble-web-video-server (2.1.0-2-gef682a4-2025.06.04.11.19) jammy; urgency=high
+ .
+   * Use target_link_libraries instead of ament_target_dependencies (#182)
+   * Fix compile warnings (#176)
+   * Use chrono steady clock for frame timing (#173)
+   * Add pkg-config dependency (#175)
+   * Separate web_video_server into a component and an executable (#168)
+   * Contributors: Błażej Sowa, Fabian Freihube, Joe Dinius, Ph.D., Lars Lorentz Ludvigsen, Mat198
+Checksums-Sha1:
+ e35a5fe6e031a4b30011665f40862452b1eae75d 5901696 ros-humble-web-video-server-dbgsym_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.ddeb
+ 4ea22e6d2262d3ca13204e1927c1a5dad2a70d73 34836 ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.buildinfo
+ 15df9f76efa2aacfbb0be631e112899c0b5150c1 174078 ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.deb
+Checksums-Sha256:
+ 99b5b10a5682d138addd0cdbf0beaf85157ca0254d6d3d21e03c649a98c92e41 5901696 ros-humble-web-video-server-dbgsym_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.ddeb
+ e5a955bb869c19ec9a74a78cf55e174ca37228c15e9b088d45d224373c3d55ed 34836 ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.buildinfo
+ 0488214919605e8452ba9ee5579a77bd7e196575497152e37f9a91dcde016365 174078 ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.deb
+Files:
+ 2e6f059028ff0795000eed359d1c0f2a 5901696 debug optional ros-humble-web-video-server-dbgsym_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.ddeb
+ e863c4ea72c000a2debe3045f0f472ed 34836 misc optional ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.buildinfo
+ c493aa469409e9e0ac9ef2069a0630fc 174078 misc optional ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.19_arm64.deb
