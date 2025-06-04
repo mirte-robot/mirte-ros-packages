@@ -1,0 +1,1770 @@
+sbuild (Debian sbuild) 0.84.2~ubuntu2204+3 (28 December 2022) on fv-az658-581
+
++==============================================================================+
+| ros-humble-libuvc 2-2025.06.04.10.55 (amd64) Wed, 04 Jun 2025 10:55:12 +0000 |
++==============================================================================+
+
+Package: ros-humble-libuvc
+Version: 2-2025.06.04.10.55
+Source Version: 2-2025.06.04.10.55
+Distribution: jammy
+Machine Architecture: amd64
+Host Architecture: amd64
+Build Architecture: amd64
+Build Type: binary
+
+Unpacking /home/runner/.cache/sbuild/jammy-amd64.tar to /tmp/tmp.sbuild.1L5yAiGF0O...
+I: NOTICE: Log filtering will replace 'sbuild-unshare-dummy-location' with '<<CHROOT>>'
+I: NOTICE: Log filtering will replace 'build/package//resolver-h3tkEz' with '<<RESOLVERDIR>>'
+
++------------------------------------------------------------------------------+
+| Update chroot                                                                |
++------------------------------------------------------------------------------+
+
+Get:1 file:/build/package//resolver-OUr7r5/apt_archive ./ InRelease
+Ign:1 file:/build/package//resolver-OUr7r5/apt_archive ./ InRelease
+Get:2 file:/build/package//resolver-OUr7r5/apt_archive ./ Release [574 B]
+Get:2 file:/build/package//resolver-OUr7r5/apt_archive ./ Release [574 B]
+Get:3 file:/build/package//resolver-OUr7r5/apt_archive ./ Release.gpg
+Ign:3 file:/build/package//resolver-OUr7r5/apt_archive ./ Release.gpg
+Get:4 file:/build/package//resolver-OUr7r5/apt_archive ./ Packages [669 B]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy InRelease [4682 B]
+Get:6 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+Get:7 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Get:8 http://packages.ros.org/ros2/ubuntu jammy/main amd64 Packages [1672 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:10 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [2375 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1395 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [14.1 MB]
+Get:13 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [974 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [2623 kB]
+Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1208 kB]
+Fetched 24.9 MB in 3s (8824 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
++------------------------------------------------------------------------------+
+| Fetch source files                                                           |
++------------------------------------------------------------------------------+
+
+
+Local sources
+-------------
+
+/home/runner/work/mirte-ros-packages/mirte-ros-packages/src/ros-humble-libuvc_2-2025.06.04.10.55.dsc exists in /home/runner/work/mirte-ros-packages/mirte-ros-packages/src; copying to chroot
+I: NOTICE: Log filtering will replace 'build/package//package' with '<<PKGBUILDDIR>>'
+I: NOTICE: Log filtering will replace 'build/package/' with '<<BUILDDIR>>'
+
++------------------------------------------------------------------------------+
+| Install package build dependencies                                           |
++------------------------------------------------------------------------------+
+
+
+Setup apt archive
+-----------------
+
+Merged Build-Depends: debhelper (>= 9.0.0), libjpeg-dev, libusb-1.0-0, libusb-1.0-0-dev, pkg-config, ros-humble-ament-cmake-ros, build-essential, fakeroot
+Filtered Build-Depends: debhelper (>= 9.0.0), libjpeg-dev, libusb-1.0-0, libusb-1.0-0-dev, pkg-config, ros-humble-ament-cmake-ros, build-essential, fakeroot
+dpkg-deb: building package 'sbuild-build-depends-main-dummy' in '/<<RESOLVERDIR>>/apt_archive/sbuild-build-depends-main-dummy.deb'.
+Ign:1 copy:/<<RESOLVERDIR>>/apt_archive ./ InRelease
+Get:2 copy:/<<RESOLVERDIR>>/apt_archive ./ Release [580 B]
+Ign:3 copy:/<<RESOLVERDIR>>/apt_archive ./ Release.gpg
+Get:4 copy:/<<RESOLVERDIR>>/apt_archive ./ Sources [699 B]
+Get:5 copy:/<<RESOLVERDIR>>/apt_archive ./ Packages [731 B]
+Fetched 2010 B in 0s (0 B/s)
+Reading package lists...
+Get:1 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ InRelease
+Ign:1 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ InRelease
+Get:2 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ Release [574 B]
+Get:2 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ Release [574 B]
+Get:3 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ Release.gpg
+Ign:3 file:/<<BUILDDIR>>/resolver-OUr7r5/apt_archive ./ Release.gpg
+Reading package lists...
+Hit:1 http://packages.ros.org/ros2/ubuntu jammy InRelease
+Reading package lists...
+Reading package lists...
+
+Install main build dependencies (apt-based resolver)
+----------------------------------------------------
+
+Installing build dependencies
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils cmake cmake-data
+  debhelper debugedit dh-autoreconf dh-elpa-helper dh-strip-nondeterminism
+  docutils-common dwz emacsen-common fakeroot file gettext gettext-base
+  google-mock googletest groff-base intltool-debian libarchive-zip-perl
+  libarchive13 libbrotli1 libcurl4 libdebhelper-perl libdw1 libelf1 libexpat1
+  libfakeroot libfile-stripnondeterminism-perl libglib2.0-0 libgtest-dev
+  libicu70 libjpeg-dev libjpeg-turbo8 libjpeg-turbo8-dev libjpeg8 libjpeg8-dev
+  libjsoncpp25 libldap-2.5-0 libmagic-mgc libmagic1 libmpdec3 libnghttp2-14
+  libpipeline1 libpsl5 libpython3-stdlib libpython3.10-minimal
+  libpython3.10-stdlib libreadline8 librhash0 librtmp1 libsasl2-2
+  libsasl2-modules-db libsigsegv2 libsqlite3-0 libssh-4 libsub-override-perl
+  libtool libuchardet0 libusb-1.0-0 libusb-1.0-0-dev libuv1 libxml2 m4 man-db
+  media-types pkg-config po-debconf python3 python3-attr
+  python3-catkin-pkg-modules python3-dateutil python3-distutils
+  python3-docutils python3-importlib-metadata python3-iniconfig
+  python3-lib2to3 python3-minimal python3-more-itertools python3-packaging
+  python3-pkg-resources python3-pluggy python3-py python3-pyparsing
+  python3-pytest python3-roman python3-setuptools python3-six python3-toml
+  python3-zipp python3.10 python3.10-minimal readline-common
+  ros-humble-ament-cmake ros-humble-ament-cmake-core
+  ros-humble-ament-cmake-export-definitions
+  ros-humble-ament-cmake-export-dependencies
+  ros-humble-ament-cmake-export-include-directories
+  ros-humble-ament-cmake-export-interfaces
+  ros-humble-ament-cmake-export-libraries
+  ros-humble-ament-cmake-export-link-flags
+  ros-humble-ament-cmake-export-targets ros-humble-ament-cmake-gen-version-h
+  ros-humble-ament-cmake-gmock ros-humble-ament-cmake-gtest
+  ros-humble-ament-cmake-include-directories ros-humble-ament-cmake-libraries
+  ros-humble-ament-cmake-pytest ros-humble-ament-cmake-python
+  ros-humble-ament-cmake-ros ros-humble-ament-cmake-target-dependencies
+  ros-humble-ament-cmake-test ros-humble-ament-cmake-version
+  ros-humble-ament-package ros-humble-domain-coordinator
+  ros-humble-gmock-vendor ros-humble-gtest-vendor ros-humble-ros-workspace
+  sgml-base tzdata xml-core
+Suggested packages:
+  autoconf-archive gnu-standards autoconf-doc cmake-doc ninja-build
+  cmake-format dh-make gettext-doc libasprintf-dev libgettextpo-dev groff
+  lrzip libtool-doc gfortran | fortran95-compiler gcj-jdk m4-doc apparmor less
+  www-browser libmail-box-perl python3-doc python3-tk python3-venv
+  python-attr-doc docutils-doc fonts-linuxlibertine | ttf-linux-libertine
+  texlive-lang-french texlive-latex-base texlive-latex-recommended subversion
+  python-pyparsing-doc python-setuptools-doc python3.10-venv python3.10-doc
+  binfmt-support readline-doc sgml-base-doc
+Recommended packages:
+  curl | wget | lynx libarchive-cpio-perl libglib2.0-data shared-mime-info
+  xdg-user-dirs libldap-common publicsuffix libsasl2-modules libltdl-dev
+  libusb-1.0-doc libmail-sendmail-perl libpaper-utils python3-pil
+  python3-pygments
+The following NEW packages will be installed:
+  autoconf automake autopoint autotools-dev bsdextrautils cmake cmake-data
+  debhelper debugedit dh-autoreconf dh-elpa-helper dh-strip-nondeterminism
+  docutils-common dwz emacsen-common fakeroot file gettext gettext-base
+  google-mock googletest groff-base intltool-debian libarchive-zip-perl
+  libarchive13 libbrotli1 libcurl4 libdebhelper-perl libdw1 libelf1 libexpat1
+  libfakeroot libfile-stripnondeterminism-perl libglib2.0-0 libgtest-dev
+  libicu70 libjpeg-dev libjpeg-turbo8 libjpeg-turbo8-dev libjpeg8 libjpeg8-dev
+  libjsoncpp25 libldap-2.5-0 libmagic-mgc libmagic1 libmpdec3 libnghttp2-14
+  libpipeline1 libpsl5 libpython3-stdlib libpython3.10-minimal
+  libpython3.10-stdlib libreadline8 librhash0 librtmp1 libsasl2-2
+  libsasl2-modules-db libsigsegv2 libsqlite3-0 libssh-4 libsub-override-perl
+  libtool libuchardet0 libusb-1.0-0 libusb-1.0-0-dev libuv1 libxml2 m4 man-db
+  media-types pkg-config po-debconf python3 python3-attr
+  python3-catkin-pkg-modules python3-dateutil python3-distutils
+  python3-docutils python3-importlib-metadata python3-iniconfig
+  python3-lib2to3 python3-minimal python3-more-itertools python3-packaging
+  python3-pkg-resources python3-pluggy python3-py python3-pyparsing
+  python3-pytest python3-roman python3-setuptools python3-six python3-toml
+  python3-zipp python3.10 python3.10-minimal readline-common
+  ros-humble-ament-cmake ros-humble-ament-cmake-core
+  ros-humble-ament-cmake-export-definitions
+  ros-humble-ament-cmake-export-dependencies
+  ros-humble-ament-cmake-export-include-directories
+  ros-humble-ament-cmake-export-interfaces
+  ros-humble-ament-cmake-export-libraries
+  ros-humble-ament-cmake-export-link-flags
+  ros-humble-ament-cmake-export-targets ros-humble-ament-cmake-gen-version-h
+  ros-humble-ament-cmake-gmock ros-humble-ament-cmake-gtest
+  ros-humble-ament-cmake-include-directories ros-humble-ament-cmake-libraries
+  ros-humble-ament-cmake-pytest ros-humble-ament-cmake-python
+  ros-humble-ament-cmake-ros ros-humble-ament-cmake-target-dependencies
+  ros-humble-ament-cmake-test ros-humble-ament-cmake-version
+  ros-humble-ament-package ros-humble-domain-coordinator
+  ros-humble-gmock-vendor ros-humble-gtest-vendor ros-humble-ros-workspace
+  sbuild-build-depends-main-dummy sgml-base tzdata xml-core
+0 upgraded, 126 newly installed, 0 to remove and 0 not upgraded.
+Need to get 39.6 MB of archives.
+After this operation, 154 MB of additional disk space will be used.
+Get:1 copy:/<<RESOLVERDIR>>/apt_archive ./ sbuild-build-depends-main-dummy 0.invalid.0 [722 B]
+Get:2 http://packages.ros.org/ros2/ubuntu jammy/main amd64 python3-catkin-pkg-modules all 1.0.0-1 [43.2 kB]
+Get:3 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-package amd64 0.14.0-4jammy.20220421.093117 [23.6 kB]
+Get:4 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-core amd64 1.3.11-1jammy.20241125.213936 [29.1 kB]
+Get:5 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ros-workspace amd64 1.0.2-2jammy.20241125.214203 [16.7 kB]
+Get:6 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-definitions amd64 1.3.11-1jammy.20241125.230042 [7514 B]
+Get:7 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-libraries amd64 1.3.11-1jammy.20241125.230151 [7158 B]
+Get:8 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-dependencies amd64 1.3.11-1jammy.20241125.230223 [9002 B]
+Get:9 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-include-directories amd64 1.3.11-1jammy.20241125.230043 [7838 B]
+Get:10 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-libraries amd64 1.3.11-1jammy.20241125.230050 [10.6 kB]
+Get:11 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-interfaces amd64 1.3.11-1jammy.20241125.230126 [8248 B]
+Get:12 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-link-flags amd64 1.3.11-1jammy.20241125.225619 [7100 B]
+Get:13 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-export-targets amd64 1.3.11-1jammy.20241125.230138 [8054 B]
+Get:14 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-gen-version-h amd64 1.3.11-1jammy.20241125.232841 [9222 B]
+Get:15 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-python amd64 1.3.11-1jammy.20241125.230201 [10.6 kB]
+Get:16 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-include-directories amd64 1.3.11-1jammy.20241125.230103 [7546 B]
+Get:17 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-target-dependencies amd64 1.3.11-1jammy.20241125.230301 [9762 B]
+Get:18 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-test amd64 1.3.11-1jammy.20241125.230243 [16.9 kB]
+Get:19 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-version amd64 1.3.11-1jammy.20241125.230210 [7304 B]
+Get:20 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake amd64 1.3.11-1jammy.20241125.233032 [7634 B]
+Get:21 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-gtest-vendor amd64 1.10.9006-1jammy.20241125.232503 [175 kB]
+Get:22 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-gtest amd64 1.3.11-1jammy.20241125.232737 [11.5 kB]
+Get:23 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-gmock-vendor amd64 1.10.9006-1jammy.20241125.233045 [93.5 kB]
+Get:24 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-gmock amd64 1.3.11-1jammy.20241125.235057 [10.5 kB]
+Get:25 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-pytest amd64 1.3.11-1jammy.20241125.232240 [9918 B]
+Get:26 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-domain-coordinator amd64 0.10.0-3jammy.20250325.170229 [5418 B]
+Get:27 http://packages.ros.org/ros2/ubuntu jammy/main amd64 ros-humble-ament-cmake-ros amd64 0.10.0-3jammy.20250325.172310 [8158 B]
+Get:28 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-minimal amd64 3.10.12-1~22.04.9 [815 kB]
+Get:29 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libexpat1 amd64 2.4.7-1ubuntu0.6 [92.1 kB]
+Get:30 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10-minimal amd64 3.10.12-1~22.04.9 [2263 kB]
+Get:31 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-minimal amd64 3.10.6-1~22.04.1 [24.3 kB]
+Get:32 http://archive.ubuntu.com/ubuntu jammy/main amd64 media-types all 7.0.0 [25.5 kB]
+Get:33 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmpdec3 amd64 2.5.1-2build2 [86.8 kB]
+Get:34 http://archive.ubuntu.com/ubuntu jammy/main amd64 readline-common all 8.1.2-1 [53.5 kB]
+Get:35 http://archive.ubuntu.com/ubuntu jammy/main amd64 libreadline8 amd64 8.1.2-1 [153 kB]
+Get:36 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsqlite3-0 amd64 3.37.2-2ubuntu0.4 [643 kB]
+Get:37 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-stdlib amd64 3.10.12-1~22.04.9 [1850 kB]
+Get:38 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10 amd64 3.10.12-1~22.04.9 [508 kB]
+Get:39 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3-stdlib amd64 3.10.6-1~22.04.1 [6812 B]
+Get:40 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3 amd64 3.10.6-1~22.04.1 [22.8 kB]
+Get:41 http://archive.ubuntu.com/ubuntu jammy/main amd64 sgml-base all 1.30 [12.5 kB]
+Get:42 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libelf1 amd64 0.186-1ubuntu0.1 [51.1 kB]
+Get:43 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libglib2.0-0 amd64 2.72.4-0ubuntu2.5 [1466 kB]
+Get:44 http://archive.ubuntu.com/ubuntu jammy/main amd64 libicu70 amd64 70.1-2 [10.6 MB]
+Get:45 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libxml2 amd64 2.9.13+dfsg-1ubuntu0.7 [763 kB]
+Get:46 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-pkg-resources all 59.6.0-1.2ubuntu0.22.04.3 [133 kB]
+Get:47 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 tzdata all 2025b-0ubuntu0.22.04.1 [347 kB]
+Get:48 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 bsdextrautils amd64 2.37.2-4ubuntu3.4 [71.4 kB]
+Get:49 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libmagic-mgc amd64 1:5.41-3ubuntu0.1 [257 kB]
+Get:50 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libmagic1 amd64 1:5.41-3ubuntu0.1 [87.2 kB]
+Get:51 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 file amd64 1:5.41-3ubuntu0.1 [21.5 kB]
+Get:52 http://archive.ubuntu.com/ubuntu jammy/main amd64 gettext-base amd64 0.21-4ubuntu4 [37.8 kB]
+Get:53 http://archive.ubuntu.com/ubuntu jammy/main amd64 libuchardet0 amd64 0.0.7-1build2 [76.9 kB]
+Get:54 http://archive.ubuntu.com/ubuntu jammy/main amd64 groff-base amd64 1.22.4-8build1 [955 kB]
+Get:55 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnghttp2-14 amd64 1.43.0-1ubuntu0.2 [76.9 kB]
+Get:56 http://archive.ubuntu.com/ubuntu jammy/main amd64 libpipeline1 amd64 1.5.5-1 [23.5 kB]
+Get:57 http://archive.ubuntu.com/ubuntu jammy/main amd64 libpsl5 amd64 0.21.0-1.2build2 [58.4 kB]
+Get:58 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libusb-1.0-0 amd64 2:1.0.25-1ubuntu2 [52.7 kB]
+Get:59 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libuv1 amd64 1.43.0-1ubuntu0.1 [92.7 kB]
+Get:60 http://archive.ubuntu.com/ubuntu jammy/main amd64 man-db amd64 2.10.2-1 [1187 kB]
+Get:61 http://archive.ubuntu.com/ubuntu jammy/main amd64 libsigsegv2 amd64 2.13-1ubuntu3 [14.6 kB]
+Get:62 http://archive.ubuntu.com/ubuntu jammy/main amd64 m4 amd64 1.4.18-5ubuntu2 [199 kB]
+Get:63 http://archive.ubuntu.com/ubuntu jammy/main amd64 autoconf all 2.71-2 [338 kB]
+Get:64 http://archive.ubuntu.com/ubuntu jammy/main amd64 autotools-dev all 20220109.1 [44.9 kB]
+Get:65 http://archive.ubuntu.com/ubuntu jammy/main amd64 automake all 1:1.16.5-1.3 [558 kB]
+Get:66 http://archive.ubuntu.com/ubuntu jammy/main amd64 autopoint all 0.21-4ubuntu4 [422 kB]
+Get:67 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libarchive13 amd64 3.6.0-1ubuntu1.4 [368 kB]
+Get:68 http://archive.ubuntu.com/ubuntu jammy/main amd64 libbrotli1 amd64 1.0.9-2build6 [315 kB]
+Get:69 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-modules-db amd64 2.1.27+dfsg2-3ubuntu1.2 [20.5 kB]
+Get:70 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-2 amd64 2.1.27+dfsg2-3ubuntu1.2 [53.8 kB]
+Get:71 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libldap-2.5-0 amd64 2.5.19+dfsg-0ubuntu0.22.04.1 [184 kB]
+Get:72 http://archive.ubuntu.com/ubuntu jammy/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2build4 [58.2 kB]
+Get:73 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssh-4 amd64 0.9.6-2ubuntu0.22.04.3 [186 kB]
+Get:74 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.20 [289 kB]
+Get:75 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjsoncpp25 amd64 1.9.5-3 [80.0 kB]
+Get:76 http://archive.ubuntu.com/ubuntu jammy/main amd64 librhash0 amd64 1.4.2-1ubuntu1 [125 kB]
+Get:77 http://archive.ubuntu.com/ubuntu jammy/main amd64 dh-elpa-helper all 2.0.9ubuntu1 [7610 B]
+Get:78 http://archive.ubuntu.com/ubuntu jammy/main amd64 emacsen-common all 3.0.4 [14.9 kB]
+Get:79 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 cmake-data all 3.22.1-1ubuntu1.22.04.2 [1913 kB]
+Get:80 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 cmake amd64 3.22.1-1ubuntu1.22.04.2 [5010 kB]
+Get:81 http://archive.ubuntu.com/ubuntu jammy/main amd64 libdebhelper-perl all 13.6ubuntu1 [67.2 kB]
+Get:82 http://archive.ubuntu.com/ubuntu jammy/main amd64 libtool all 2.4.6-15build2 [164 kB]
+Get:83 http://archive.ubuntu.com/ubuntu jammy/main amd64 dh-autoreconf all 20 [16.1 kB]
+Get:84 http://archive.ubuntu.com/ubuntu jammy/main amd64 libarchive-zip-perl all 1.68-1 [90.2 kB]
+Get:85 http://archive.ubuntu.com/ubuntu jammy/main amd64 libsub-override-perl all 0.09-2 [9532 B]
+Get:86 http://archive.ubuntu.com/ubuntu jammy/main amd64 libfile-stripnondeterminism-perl all 1.13.0-1 [18.1 kB]
+Get:87 http://archive.ubuntu.com/ubuntu jammy/main amd64 dh-strip-nondeterminism all 1.13.0-1 [5344 B]
+Get:88 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libdw1 amd64 0.186-1ubuntu0.1 [251 kB]
+Get:89 http://archive.ubuntu.com/ubuntu jammy/main amd64 debugedit amd64 1:5.0-4build1 [47.2 kB]
+Get:90 http://archive.ubuntu.com/ubuntu jammy/main amd64 dwz amd64 0.14-1build2 [105 kB]
+Get:91 http://archive.ubuntu.com/ubuntu jammy/main amd64 gettext amd64 0.21-4ubuntu4 [868 kB]
+Get:92 http://archive.ubuntu.com/ubuntu jammy/main amd64 intltool-debian all 0.35.0+20060710.5 [24.9 kB]
+Get:93 http://archive.ubuntu.com/ubuntu jammy/main amd64 po-debconf all 1.0.21+nmu1 [233 kB]
+Get:94 http://archive.ubuntu.com/ubuntu jammy/main amd64 debhelper all 13.6ubuntu1 [923 kB]
+Get:95 http://archive.ubuntu.com/ubuntu jammy/main amd64 xml-core all 0.18+nmu1 [21.6 kB]
+Get:96 http://archive.ubuntu.com/ubuntu jammy/main amd64 docutils-common all 0.17.1+dfsg-2 [117 kB]
+Get:97 http://archive.ubuntu.com/ubuntu jammy/main amd64 libfakeroot amd64 1.28-1ubuntu1 [31.5 kB]
+Get:98 http://archive.ubuntu.com/ubuntu jammy/main amd64 fakeroot amd64 1.28-1ubuntu1 [60.4 kB]
+Get:99 http://archive.ubuntu.com/ubuntu jammy/universe amd64 googletest all 1.11.0-3 [541 kB]
+Get:100 http://archive.ubuntu.com/ubuntu jammy/universe amd64 google-mock amd64 1.11.0-3 [3838 B]
+Get:101 http://archive.ubuntu.com/ubuntu jammy/universe amd64 libgtest-dev amd64 1.11.0-3 [250 kB]
+Get:102 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg-turbo8 amd64 2.1.2-0ubuntu1 [134 kB]
+Get:103 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg-turbo8-dev amd64 2.1.2-0ubuntu1 [257 kB]
+Get:104 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg8 amd64 8c-2ubuntu10 [2264 B]
+Get:105 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg8-dev amd64 8c-2ubuntu10 [1476 B]
+Get:106 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg-dev amd64 8c-2ubuntu10 [1472 B]
+Get:107 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libusb-1.0-0-dev amd64 2:1.0.25-1ubuntu2 [76.3 kB]
+Get:108 http://archive.ubuntu.com/ubuntu jammy/main amd64 pkg-config amd64 0.29.2-1ubuntu3 [48.2 kB]
+Get:109 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-attr all 21.2.0-1 [44.0 kB]
+Get:110 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-six all 1.16.0-3ubuntu1 [12.6 kB]
+Get:111 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-dateutil all 2.8.1-6 [78.4 kB]
+Get:112 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-roman all 3.3-1 [10.6 kB]
+Get:113 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-docutils all 0.17.1+dfsg-2 [387 kB]
+Get:114 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-pyparsing all 2.4.7-1 [61.4 kB]
+Get:115 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-lib2to3 all 3.10.8-1~22.04 [77.6 kB]
+Get:116 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-distutils all 3.10.8-1~22.04 [139 kB]
+Get:117 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-more-itertools all 8.10.0-2 [47.9 kB]
+Get:118 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-zipp all 1.0.0-3ubuntu0.1 [6288 B]
+Get:119 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-importlib-metadata all 4.6.4-1 [16.2 kB]
+Get:120 http://archive.ubuntu.com/ubuntu jammy/universe amd64 python3-iniconfig all 1.1.1-2 [6024 B]
+Get:121 http://archive.ubuntu.com/ubuntu jammy/main amd64 python3-packaging all 21.3-1 [30.7 kB]
+Get:122 http://archive.ubuntu.com/ubuntu jammy/universe amd64 python3-pluggy all 0.13.0-7.1 [19.0 kB]
+Get:123 http://archive.ubuntu.com/ubuntu jammy/universe amd64 python3-py all 1.10.0-1 [71.9 kB]
+Get:124 http://archive.ubuntu.com/ubuntu jammy/universe amd64 python3-toml all 0.10.2-1 [16.5 kB]
+Get:125 http://archive.ubuntu.com/ubuntu jammy/universe amd64 python3-pytest all 6.2.5-1ubuntu2 [214 kB]
+Get:126 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-setuptools all 59.6.0-1.2ubuntu0.22.04.3 [340 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 39.6 MB in 5s (8529 kB/s)
+Selecting previously unselected package libpython3.10-minimal:amd64.
+(Reading database ... 10538 files and directories currently installed.)
+Preparing to unpack .../libpython3.10-minimal_3.10.12-1~22.04.9_amd64.deb ...
+Unpacking libpython3.10-minimal:amd64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libexpat1:amd64.
+Preparing to unpack .../libexpat1_2.4.7-1ubuntu0.6_amd64.deb ...
+Unpacking libexpat1:amd64 (2.4.7-1ubuntu0.6) ...
+Selecting previously unselected package python3.10-minimal.
+Preparing to unpack .../python3.10-minimal_3.10.12-1~22.04.9_amd64.deb ...
+Unpacking python3.10-minimal (3.10.12-1~22.04.9) ...
+Setting up libpython3.10-minimal:amd64 (3.10.12-1~22.04.9) ...
+Setting up libexpat1:amd64 (2.4.7-1ubuntu0.6) ...
+Setting up python3.10-minimal (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3-minimal.
+(Reading database ... 10842 files and directories currently installed.)
+Preparing to unpack .../0-python3-minimal_3.10.6-1~22.04.1_amd64.deb ...
+Unpacking python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package media-types.
+Preparing to unpack .../1-media-types_7.0.0_all.deb ...
+Unpacking media-types (7.0.0) ...
+Selecting previously unselected package libmpdec3:amd64.
+Preparing to unpack .../2-libmpdec3_2.5.1-2build2_amd64.deb ...
+Unpacking libmpdec3:amd64 (2.5.1-2build2) ...
+Selecting previously unselected package readline-common.
+Preparing to unpack .../3-readline-common_8.1.2-1_all.deb ...
+Unpacking readline-common (8.1.2-1) ...
+Selecting previously unselected package libreadline8:amd64.
+Preparing to unpack .../4-libreadline8_8.1.2-1_amd64.deb ...
+Unpacking libreadline8:amd64 (8.1.2-1) ...
+Selecting previously unselected package libsqlite3-0:amd64.
+Preparing to unpack .../5-libsqlite3-0_3.37.2-2ubuntu0.4_amd64.deb ...
+Unpacking libsqlite3-0:amd64 (3.37.2-2ubuntu0.4) ...
+Selecting previously unselected package libpython3.10-stdlib:amd64.
+Preparing to unpack .../6-libpython3.10-stdlib_3.10.12-1~22.04.9_amd64.deb ...
+Unpacking libpython3.10-stdlib:amd64 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package python3.10.
+Preparing to unpack .../7-python3.10_3.10.12-1~22.04.9_amd64.deb ...
+Unpacking python3.10 (3.10.12-1~22.04.9) ...
+Selecting previously unselected package libpython3-stdlib:amd64.
+Preparing to unpack .../8-libpython3-stdlib_3.10.6-1~22.04.1_amd64.deb ...
+Unpacking libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+Setting up python3-minimal (3.10.6-1~22.04.1) ...
+Selecting previously unselected package python3.
+(Reading database ... 11272 files and directories currently installed.)
+Preparing to unpack .../000-python3_3.10.6-1~22.04.1_amd64.deb ...
+Unpacking python3 (3.10.6-1~22.04.1) ...
+Selecting previously unselected package sgml-base.
+Preparing to unpack .../001-sgml-base_1.30_all.deb ...
+Unpacking sgml-base (1.30) ...
+Selecting previously unselected package libelf1:amd64.
+Preparing to unpack .../002-libelf1_0.186-1ubuntu0.1_amd64.deb ...
+Unpacking libelf1:amd64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package libglib2.0-0:amd64.
+Preparing to unpack .../003-libglib2.0-0_2.72.4-0ubuntu2.5_amd64.deb ...
+Unpacking libglib2.0-0:amd64 (2.72.4-0ubuntu2.5) ...
+Selecting previously unselected package libicu70:amd64.
+Preparing to unpack .../004-libicu70_70.1-2_amd64.deb ...
+Unpacking libicu70:amd64 (70.1-2) ...
+Selecting previously unselected package libxml2:amd64.
+Preparing to unpack .../005-libxml2_2.9.13+dfsg-1ubuntu0.7_amd64.deb ...
+Unpacking libxml2:amd64 (2.9.13+dfsg-1ubuntu0.7) ...
+Selecting previously unselected package python3-pkg-resources.
+Preparing to unpack .../006-python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package tzdata.
+Preparing to unpack .../007-tzdata_2025b-0ubuntu0.22.04.1_all.deb ...
+Unpacking tzdata (2025b-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bsdextrautils.
+Preparing to unpack .../008-bsdextrautils_2.37.2-4ubuntu3.4_amd64.deb ...
+Unpacking bsdextrautils (2.37.2-4ubuntu3.4) ...
+Selecting previously unselected package libmagic-mgc.
+Preparing to unpack .../009-libmagic-mgc_1%3a5.41-3ubuntu0.1_amd64.deb ...
+Unpacking libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package libmagic1:amd64.
+Preparing to unpack .../010-libmagic1_1%3a5.41-3ubuntu0.1_amd64.deb ...
+Unpacking libmagic1:amd64 (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package file.
+Preparing to unpack .../011-file_1%3a5.41-3ubuntu0.1_amd64.deb ...
+Unpacking file (1:5.41-3ubuntu0.1) ...
+Selecting previously unselected package gettext-base.
+Preparing to unpack .../012-gettext-base_0.21-4ubuntu4_amd64.deb ...
+Unpacking gettext-base (0.21-4ubuntu4) ...
+Selecting previously unselected package libuchardet0:amd64.
+Preparing to unpack .../013-libuchardet0_0.0.7-1build2_amd64.deb ...
+Unpacking libuchardet0:amd64 (0.0.7-1build2) ...
+Selecting previously unselected package groff-base.
+Preparing to unpack .../014-groff-base_1.22.4-8build1_amd64.deb ...
+Unpacking groff-base (1.22.4-8build1) ...
+Selecting previously unselected package libnghttp2-14:amd64.
+Preparing to unpack .../015-libnghttp2-14_1.43.0-1ubuntu0.2_amd64.deb ...
+Unpacking libnghttp2-14:amd64 (1.43.0-1ubuntu0.2) ...
+Selecting previously unselected package libpipeline1:amd64.
+Preparing to unpack .../016-libpipeline1_1.5.5-1_amd64.deb ...
+Unpacking libpipeline1:amd64 (1.5.5-1) ...
+Selecting previously unselected package libpsl5:amd64.
+Preparing to unpack .../017-libpsl5_0.21.0-1.2build2_amd64.deb ...
+Unpacking libpsl5:amd64 (0.21.0-1.2build2) ...
+Selecting previously unselected package libusb-1.0-0:amd64.
+Preparing to unpack .../018-libusb-1.0-0_2%3a1.0.25-1ubuntu2_amd64.deb ...
+Unpacking libusb-1.0-0:amd64 (2:1.0.25-1ubuntu2) ...
+Selecting previously unselected package libuv1:amd64.
+Preparing to unpack .../019-libuv1_1.43.0-1ubuntu0.1_amd64.deb ...
+Unpacking libuv1:amd64 (1.43.0-1ubuntu0.1) ...
+Selecting previously unselected package man-db.
+Preparing to unpack .../020-man-db_2.10.2-1_amd64.deb ...
+Unpacking man-db (2.10.2-1) ...
+Selecting previously unselected package libsigsegv2:amd64.
+Preparing to unpack .../021-libsigsegv2_2.13-1ubuntu3_amd64.deb ...
+Unpacking libsigsegv2:amd64 (2.13-1ubuntu3) ...
+Selecting previously unselected package m4.
+Preparing to unpack .../022-m4_1.4.18-5ubuntu2_amd64.deb ...
+Unpacking m4 (1.4.18-5ubuntu2) ...
+Selecting previously unselected package autoconf.
+Preparing to unpack .../023-autoconf_2.71-2_all.deb ...
+Unpacking autoconf (2.71-2) ...
+Selecting previously unselected package autotools-dev.
+Preparing to unpack .../024-autotools-dev_20220109.1_all.deb ...
+Unpacking autotools-dev (20220109.1) ...
+Selecting previously unselected package automake.
+Preparing to unpack .../025-automake_1%3a1.16.5-1.3_all.deb ...
+Unpacking automake (1:1.16.5-1.3) ...
+Selecting previously unselected package autopoint.
+Preparing to unpack .../026-autopoint_0.21-4ubuntu4_all.deb ...
+Unpacking autopoint (0.21-4ubuntu4) ...
+Selecting previously unselected package libarchive13:amd64.
+Preparing to unpack .../027-libarchive13_3.6.0-1ubuntu1.4_amd64.deb ...
+Unpacking libarchive13:amd64 (3.6.0-1ubuntu1.4) ...
+Selecting previously unselected package libbrotli1:amd64.
+Preparing to unpack .../028-libbrotli1_1.0.9-2build6_amd64.deb ...
+Unpacking libbrotli1:amd64 (1.0.9-2build6) ...
+Selecting previously unselected package libsasl2-modules-db:amd64.
+Preparing to unpack .../029-libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+Unpacking libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libsasl2-2:amd64.
+Preparing to unpack .../030-libsasl2-2_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+Unpacking libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libldap-2.5-0:amd64.
+Preparing to unpack .../031-libldap-2.5-0_2.5.19+dfsg-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking libldap-2.5-0:amd64 (2.5.19+dfsg-0ubuntu0.22.04.1) ...
+Selecting previously unselected package librtmp1:amd64.
+Preparing to unpack .../032-librtmp1_2.4+20151223.gitfa8646d.1-2build4_amd64.deb ...
+Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Selecting previously unselected package libssh-4:amd64.
+Preparing to unpack .../033-libssh-4_0.9.6-2ubuntu0.22.04.3_amd64.deb ...
+Unpacking libssh-4:amd64 (0.9.6-2ubuntu0.22.04.3) ...
+Selecting previously unselected package libcurl4:amd64.
+Preparing to unpack .../034-libcurl4_7.81.0-1ubuntu1.20_amd64.deb ...
+Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.20) ...
+Selecting previously unselected package libjsoncpp25:amd64.
+Preparing to unpack .../035-libjsoncpp25_1.9.5-3_amd64.deb ...
+Unpacking libjsoncpp25:amd64 (1.9.5-3) ...
+Selecting previously unselected package librhash0:amd64.
+Preparing to unpack .../036-librhash0_1.4.2-1ubuntu1_amd64.deb ...
+Unpacking librhash0:amd64 (1.4.2-1ubuntu1) ...
+Selecting previously unselected package dh-elpa-helper.
+Preparing to unpack .../037-dh-elpa-helper_2.0.9ubuntu1_all.deb ...
+Unpacking dh-elpa-helper (2.0.9ubuntu1) ...
+Selecting previously unselected package emacsen-common.
+Preparing to unpack .../038-emacsen-common_3.0.4_all.deb ...
+Unpacking emacsen-common (3.0.4) ...
+Selecting previously unselected package cmake-data.
+Preparing to unpack .../039-cmake-data_3.22.1-1ubuntu1.22.04.2_all.deb ...
+Unpacking cmake-data (3.22.1-1ubuntu1.22.04.2) ...
+Selecting previously unselected package cmake.
+Preparing to unpack .../040-cmake_3.22.1-1ubuntu1.22.04.2_amd64.deb ...
+Unpacking cmake (3.22.1-1ubuntu1.22.04.2) ...
+Selecting previously unselected package libdebhelper-perl.
+Preparing to unpack .../041-libdebhelper-perl_13.6ubuntu1_all.deb ...
+Unpacking libdebhelper-perl (13.6ubuntu1) ...
+Selecting previously unselected package libtool.
+Preparing to unpack .../042-libtool_2.4.6-15build2_all.deb ...
+Unpacking libtool (2.4.6-15build2) ...
+Selecting previously unselected package dh-autoreconf.
+Preparing to unpack .../043-dh-autoreconf_20_all.deb ...
+Unpacking dh-autoreconf (20) ...
+Selecting previously unselected package libarchive-zip-perl.
+Preparing to unpack .../044-libarchive-zip-perl_1.68-1_all.deb ...
+Unpacking libarchive-zip-perl (1.68-1) ...
+Selecting previously unselected package libsub-override-perl.
+Preparing to unpack .../045-libsub-override-perl_0.09-2_all.deb ...
+Unpacking libsub-override-perl (0.09-2) ...
+Selecting previously unselected package libfile-stripnondeterminism-perl.
+Preparing to unpack .../046-libfile-stripnondeterminism-perl_1.13.0-1_all.deb ...
+Unpacking libfile-stripnondeterminism-perl (1.13.0-1) ...
+Selecting previously unselected package dh-strip-nondeterminism.
+Preparing to unpack .../047-dh-strip-nondeterminism_1.13.0-1_all.deb ...
+Unpacking dh-strip-nondeterminism (1.13.0-1) ...
+Selecting previously unselected package libdw1:amd64.
+Preparing to unpack .../048-libdw1_0.186-1ubuntu0.1_amd64.deb ...
+Unpacking libdw1:amd64 (0.186-1ubuntu0.1) ...
+Selecting previously unselected package debugedit.
+Preparing to unpack .../049-debugedit_1%3a5.0-4build1_amd64.deb ...
+Unpacking debugedit (1:5.0-4build1) ...
+Selecting previously unselected package dwz.
+Preparing to unpack .../050-dwz_0.14-1build2_amd64.deb ...
+Unpacking dwz (0.14-1build2) ...
+Selecting previously unselected package gettext.
+Preparing to unpack .../051-gettext_0.21-4ubuntu4_amd64.deb ...
+Unpacking gettext (0.21-4ubuntu4) ...
+Selecting previously unselected package intltool-debian.
+Preparing to unpack .../052-intltool-debian_0.35.0+20060710.5_all.deb ...
+Unpacking intltool-debian (0.35.0+20060710.5) ...
+Selecting previously unselected package po-debconf.
+Preparing to unpack .../053-po-debconf_1.0.21+nmu1_all.deb ...
+Unpacking po-debconf (1.0.21+nmu1) ...
+Selecting previously unselected package debhelper.
+Preparing to unpack .../054-debhelper_13.6ubuntu1_all.deb ...
+Unpacking debhelper (13.6ubuntu1) ...
+Selecting previously unselected package xml-core.
+Preparing to unpack .../055-xml-core_0.18+nmu1_all.deb ...
+Unpacking xml-core (0.18+nmu1) ...
+Selecting previously unselected package docutils-common.
+Preparing to unpack .../056-docutils-common_0.17.1+dfsg-2_all.deb ...
+Unpacking docutils-common (0.17.1+dfsg-2) ...
+Selecting previously unselected package libfakeroot:amd64.
+Preparing to unpack .../057-libfakeroot_1.28-1ubuntu1_amd64.deb ...
+Unpacking libfakeroot:amd64 (1.28-1ubuntu1) ...
+Selecting previously unselected package fakeroot.
+Preparing to unpack .../058-fakeroot_1.28-1ubuntu1_amd64.deb ...
+Unpacking fakeroot (1.28-1ubuntu1) ...
+Selecting previously unselected package googletest.
+Preparing to unpack .../059-googletest_1.11.0-3_all.deb ...
+Unpacking googletest (1.11.0-3) ...
+Selecting previously unselected package google-mock:amd64.
+Preparing to unpack .../060-google-mock_1.11.0-3_amd64.deb ...
+Unpacking google-mock:amd64 (1.11.0-3) ...
+Selecting previously unselected package libgtest-dev:amd64.
+Preparing to unpack .../061-libgtest-dev_1.11.0-3_amd64.deb ...
+Unpacking libgtest-dev:amd64 (1.11.0-3) ...
+Selecting previously unselected package libjpeg-turbo8:amd64.
+Preparing to unpack .../062-libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb ...
+Unpacking libjpeg-turbo8:amd64 (2.1.2-0ubuntu1) ...
+Selecting previously unselected package libjpeg-turbo8-dev:amd64.
+Preparing to unpack .../063-libjpeg-turbo8-dev_2.1.2-0ubuntu1_amd64.deb ...
+Unpacking libjpeg-turbo8-dev:amd64 (2.1.2-0ubuntu1) ...
+Selecting previously unselected package libjpeg8:amd64.
+Preparing to unpack .../064-libjpeg8_8c-2ubuntu10_amd64.deb ...
+Unpacking libjpeg8:amd64 (8c-2ubuntu10) ...
+Selecting previously unselected package libjpeg8-dev:amd64.
+Preparing to unpack .../065-libjpeg8-dev_8c-2ubuntu10_amd64.deb ...
+Unpacking libjpeg8-dev:amd64 (8c-2ubuntu10) ...
+Selecting previously unselected package libjpeg-dev:amd64.
+Preparing to unpack .../066-libjpeg-dev_8c-2ubuntu10_amd64.deb ...
+Unpacking libjpeg-dev:amd64 (8c-2ubuntu10) ...
+Selecting previously unselected package libusb-1.0-0-dev:amd64.
+Preparing to unpack .../067-libusb-1.0-0-dev_2%3a1.0.25-1ubuntu2_amd64.deb ...
+Unpacking libusb-1.0-0-dev:amd64 (2:1.0.25-1ubuntu2) ...
+Selecting previously unselected package pkg-config.
+Preparing to unpack .../068-pkg-config_0.29.2-1ubuntu3_amd64.deb ...
+Unpacking pkg-config (0.29.2-1ubuntu3) ...
+Selecting previously unselected package python3-attr.
+Preparing to unpack .../069-python3-attr_21.2.0-1_all.deb ...
+Unpacking python3-attr (21.2.0-1) ...
+Selecting previously unselected package python3-six.
+Preparing to unpack .../070-python3-six_1.16.0-3ubuntu1_all.deb ...
+Unpacking python3-six (1.16.0-3ubuntu1) ...
+Selecting previously unselected package python3-dateutil.
+Preparing to unpack .../071-python3-dateutil_2.8.1-6_all.deb ...
+Unpacking python3-dateutil (2.8.1-6) ...
+Selecting previously unselected package python3-roman.
+Preparing to unpack .../072-python3-roman_3.3-1_all.deb ...
+Unpacking python3-roman (3.3-1) ...
+Selecting previously unselected package python3-docutils.
+Preparing to unpack .../073-python3-docutils_0.17.1+dfsg-2_all.deb ...
+Unpacking python3-docutils (0.17.1+dfsg-2) ...
+Selecting previously unselected package python3-pyparsing.
+Preparing to unpack .../074-python3-pyparsing_2.4.7-1_all.deb ...
+Unpacking python3-pyparsing (2.4.7-1) ...
+Selecting previously unselected package python3-catkin-pkg-modules.
+Preparing to unpack .../075-python3-catkin-pkg-modules_1.0.0-1_all.deb ...
+Unpacking python3-catkin-pkg-modules (1.0.0-1) ...
+Selecting previously unselected package python3-lib2to3.
+Preparing to unpack .../076-python3-lib2to3_3.10.8-1~22.04_all.deb ...
+Unpacking python3-lib2to3 (3.10.8-1~22.04) ...
+Selecting previously unselected package python3-distutils.
+Preparing to unpack .../077-python3-distutils_3.10.8-1~22.04_all.deb ...
+Unpacking python3-distutils (3.10.8-1~22.04) ...
+Selecting previously unselected package python3-more-itertools.
+Preparing to unpack .../078-python3-more-itertools_8.10.0-2_all.deb ...
+Unpacking python3-more-itertools (8.10.0-2) ...
+Selecting previously unselected package python3-zipp.
+Preparing to unpack .../079-python3-zipp_1.0.0-3ubuntu0.1_all.deb ...
+Unpacking python3-zipp (1.0.0-3ubuntu0.1) ...
+Selecting previously unselected package python3-importlib-metadata.
+Preparing to unpack .../080-python3-importlib-metadata_4.6.4-1_all.deb ...
+Unpacking python3-importlib-metadata (4.6.4-1) ...
+Selecting previously unselected package python3-iniconfig.
+Preparing to unpack .../081-python3-iniconfig_1.1.1-2_all.deb ...
+Unpacking python3-iniconfig (1.1.1-2) ...
+Selecting previously unselected package python3-packaging.
+Preparing to unpack .../082-python3-packaging_21.3-1_all.deb ...
+Unpacking python3-packaging (21.3-1) ...
+Selecting previously unselected package python3-pluggy.
+Preparing to unpack .../083-python3-pluggy_0.13.0-7.1_all.deb ...
+Unpacking python3-pluggy (0.13.0-7.1) ...
+Selecting previously unselected package python3-py.
+Preparing to unpack .../084-python3-py_1.10.0-1_all.deb ...
+Unpacking python3-py (1.10.0-1) ...
+Selecting previously unselected package python3-toml.
+Preparing to unpack .../085-python3-toml_0.10.2-1_all.deb ...
+Unpacking python3-toml (0.10.2-1) ...
+Selecting previously unselected package python3-pytest.
+Preparing to unpack .../086-python3-pytest_6.2.5-1ubuntu2_all.deb ...
+Unpacking python3-pytest (6.2.5-1ubuntu2) ...
+Selecting previously unselected package python3-setuptools.
+Preparing to unpack .../087-python3-setuptools_59.6.0-1.2ubuntu0.22.04.3_all.deb ...
+Unpacking python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Selecting previously unselected package ros-humble-ament-package.
+Preparing to unpack .../088-ros-humble-ament-package_0.14.0-4jammy.20220421.093117_amd64.deb ...
+Unpacking ros-humble-ament-package (0.14.0-4jammy.20220421.093117) ...
+Selecting previously unselected package ros-humble-ament-cmake-core.
+Preparing to unpack .../089-ros-humble-ament-cmake-core_1.3.11-1jammy.20241125.213936_amd64.deb ...
+Unpacking ros-humble-ament-cmake-core (1.3.11-1jammy.20241125.213936) ...
+Selecting previously unselected package ros-humble-ros-workspace.
+Preparing to unpack .../090-ros-humble-ros-workspace_1.0.2-2jammy.20241125.214203_amd64.deb ...
+Unpacking ros-humble-ros-workspace (1.0.2-2jammy.20241125.214203) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-definitions.
+Preparing to unpack .../091-ros-humble-ament-cmake-export-definitions_1.3.11-1jammy.20241125.230042_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-definitions (1.3.11-1jammy.20241125.230042) ...
+Selecting previously unselected package ros-humble-ament-cmake-libraries.
+Preparing to unpack .../092-ros-humble-ament-cmake-libraries_1.3.11-1jammy.20241125.230151_amd64.deb ...
+Unpacking ros-humble-ament-cmake-libraries (1.3.11-1jammy.20241125.230151) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-dependencies.
+Preparing to unpack .../093-ros-humble-ament-cmake-export-dependencies_1.3.11-1jammy.20241125.230223_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-dependencies (1.3.11-1jammy.20241125.230223) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-include-directories.
+Preparing to unpack .../094-ros-humble-ament-cmake-export-include-directories_1.3.11-1jammy.20241125.230043_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-include-directories (1.3.11-1jammy.20241125.230043) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-libraries.
+Preparing to unpack .../095-ros-humble-ament-cmake-export-libraries_1.3.11-1jammy.20241125.230050_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-libraries (1.3.11-1jammy.20241125.230050) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-interfaces.
+Preparing to unpack .../096-ros-humble-ament-cmake-export-interfaces_1.3.11-1jammy.20241125.230126_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-interfaces (1.3.11-1jammy.20241125.230126) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-link-flags.
+Preparing to unpack .../097-ros-humble-ament-cmake-export-link-flags_1.3.11-1jammy.20241125.225619_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-link-flags (1.3.11-1jammy.20241125.225619) ...
+Selecting previously unselected package ros-humble-ament-cmake-export-targets.
+Preparing to unpack .../098-ros-humble-ament-cmake-export-targets_1.3.11-1jammy.20241125.230138_amd64.deb ...
+Unpacking ros-humble-ament-cmake-export-targets (1.3.11-1jammy.20241125.230138) ...
+Selecting previously unselected package ros-humble-ament-cmake-gen-version-h.
+Preparing to unpack .../099-ros-humble-ament-cmake-gen-version-h_1.3.11-1jammy.20241125.232841_amd64.deb ...
+Unpacking ros-humble-ament-cmake-gen-version-h (1.3.11-1jammy.20241125.232841) ...
+Selecting previously unselected package ros-humble-ament-cmake-python.
+Preparing to unpack .../100-ros-humble-ament-cmake-python_1.3.11-1jammy.20241125.230201_amd64.deb ...
+Unpacking ros-humble-ament-cmake-python (1.3.11-1jammy.20241125.230201) ...
+Selecting previously unselected package ros-humble-ament-cmake-include-directories.
+Preparing to unpack .../101-ros-humble-ament-cmake-include-directories_1.3.11-1jammy.20241125.230103_amd64.deb ...
+Unpacking ros-humble-ament-cmake-include-directories (1.3.11-1jammy.20241125.230103) ...
+Selecting previously unselected package ros-humble-ament-cmake-target-dependencies.
+Preparing to unpack .../102-ros-humble-ament-cmake-target-dependencies_1.3.11-1jammy.20241125.230301_amd64.deb ...
+Unpacking ros-humble-ament-cmake-target-dependencies (1.3.11-1jammy.20241125.230301) ...
+Selecting previously unselected package ros-humble-ament-cmake-test.
+Preparing to unpack .../103-ros-humble-ament-cmake-test_1.3.11-1jammy.20241125.230243_amd64.deb ...
+Unpacking ros-humble-ament-cmake-test (1.3.11-1jammy.20241125.230243) ...
+Selecting previously unselected package ros-humble-ament-cmake-version.
+Preparing to unpack .../104-ros-humble-ament-cmake-version_1.3.11-1jammy.20241125.230210_amd64.deb ...
+Unpacking ros-humble-ament-cmake-version (1.3.11-1jammy.20241125.230210) ...
+Selecting previously unselected package ros-humble-ament-cmake.
+Preparing to unpack .../105-ros-humble-ament-cmake_1.3.11-1jammy.20241125.233032_amd64.deb ...
+Unpacking ros-humble-ament-cmake (1.3.11-1jammy.20241125.233032) ...
+Selecting previously unselected package ros-humble-gtest-vendor.
+Preparing to unpack .../106-ros-humble-gtest-vendor_1.10.9006-1jammy.20241125.232503_amd64.deb ...
+Unpacking ros-humble-gtest-vendor (1.10.9006-1jammy.20241125.232503) ...
+Selecting previously unselected package ros-humble-ament-cmake-gtest.
+Preparing to unpack .../107-ros-humble-ament-cmake-gtest_1.3.11-1jammy.20241125.232737_amd64.deb ...
+Unpacking ros-humble-ament-cmake-gtest (1.3.11-1jammy.20241125.232737) ...
+Selecting previously unselected package ros-humble-gmock-vendor.
+Preparing to unpack .../108-ros-humble-gmock-vendor_1.10.9006-1jammy.20241125.233045_amd64.deb ...
+Unpacking ros-humble-gmock-vendor (1.10.9006-1jammy.20241125.233045) ...
+Selecting previously unselected package ros-humble-ament-cmake-gmock.
+Preparing to unpack .../109-ros-humble-ament-cmake-gmock_1.3.11-1jammy.20241125.235057_amd64.deb ...
+Unpacking ros-humble-ament-cmake-gmock (1.3.11-1jammy.20241125.235057) ...
+Selecting previously unselected package ros-humble-ament-cmake-pytest.
+Preparing to unpack .../110-ros-humble-ament-cmake-pytest_1.3.11-1jammy.20241125.232240_amd64.deb ...
+Unpacking ros-humble-ament-cmake-pytest (1.3.11-1jammy.20241125.232240) ...
+Selecting previously unselected package ros-humble-domain-coordinator.
+Preparing to unpack .../111-ros-humble-domain-coordinator_0.10.0-3jammy.20250325.170229_amd64.deb ...
+Unpacking ros-humble-domain-coordinator (0.10.0-3jammy.20250325.170229) ...
+Selecting previously unselected package ros-humble-ament-cmake-ros.
+Preparing to unpack .../112-ros-humble-ament-cmake-ros_0.10.0-3jammy.20250325.172310_amd64.deb ...
+Unpacking ros-humble-ament-cmake-ros (0.10.0-3jammy.20250325.172310) ...
+Selecting previously unselected package sbuild-build-depends-main-dummy.
+Preparing to unpack .../113-sbuild-build-depends-main-dummy_0.invalid.0_amd64.deb ...
+Unpacking sbuild-build-depends-main-dummy (0.invalid.0) ...
+Setting up ros-humble-ros-workspace (1.0.2-2jammy.20241125.214203) ...
+Setting up media-types (7.0.0) ...
+Setting up libpipeline1:amd64 (1.5.5-1) ...
+Setting up libpsl5:amd64 (0.21.0-1.2build2) ...
+Setting up bsdextrautils (2.37.2-4ubuntu3.4) ...
+update-alternatives: using /usr/bin/write.ul to provide /usr/bin/write (write) in auto mode
+Setting up libmagic-mgc (1:5.41-3ubuntu0.1) ...
+Setting up ros-humble-gtest-vendor (1.10.9006-1jammy.20241125.232503) ...
+Setting up libarchive-zip-perl (1.68-1) ...
+Setting up libglib2.0-0:amd64 (2.72.4-0ubuntu2.5) ...
+No schema files found: doing nothing.
+Setting up libdebhelper-perl (13.6ubuntu1) ...
+Setting up libbrotli1:amd64 (1.0.9-2build6) ...
+Setting up libsqlite3-0:amd64 (3.37.2-2ubuntu0.4) ...
+Setting up libnghttp2-14:amd64 (1.43.0-1ubuntu0.2) ...
+Setting up libmagic1:amd64 (1:5.41-3ubuntu0.1) ...
+Setting up gettext-base (0.21-4ubuntu4) ...
+Setting up file (1:5.41-3ubuntu0.1) ...
+Setting up googletest (1.11.0-3) ...
+Setting up ros-humble-domain-coordinator (0.10.0-3jammy.20250325.170229) ...
+Setting up libfakeroot:amd64 (1.28-1ubuntu1) ...
+Setting up libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up tzdata (2025b-0ubuntu0.22.04.1) ...
+
+Current default time zone: 'Etc/UTC'
+Local time is now:      Wed Jun  4 10:55:35 UTC 2025.
+Universal Time is now:  Wed Jun  4 10:55:35 UTC 2025.
+Run 'dpkg-reconfigure tzdata' if you wish to change it.
+
+Setting up fakeroot (1.28-1ubuntu1) ...
+update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode
+Setting up autotools-dev (20220109.1) ...
+Setting up libuv1:amd64 (1.43.0-1ubuntu0.1) ...
+Setting up emacsen-common (3.0.4) ...
+Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Setting up dh-elpa-helper (2.0.9ubuntu1) ...
+Setting up libsigsegv2:amd64 (2.13-1ubuntu3) ...
+Setting up autopoint (0.21-4ubuntu4) ...
+Setting up libjsoncpp25:amd64 (1.9.5-3) ...
+Setting up pkg-config (0.29.2-1ubuntu3) ...
+Setting up libjpeg-turbo8:amd64 (2.1.2-0ubuntu1) ...
+Setting up libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up libssh-4:amd64 (0.9.6-2ubuntu0.22.04.3) ...
+Setting up google-mock:amd64 (1.11.0-3) ...
+Setting up librhash0:amd64 (1.4.2-1ubuntu1) ...
+Setting up libuchardet0:amd64 (0.0.7-1build2) ...
+Setting up libmpdec3:amd64 (2.5.1-2build2) ...
+Setting up ros-humble-gmock-vendor (1.10.9006-1jammy.20241125.233045) ...
+Setting up libsub-override-perl (0.09-2) ...
+Setting up sgml-base (1.30) ...
+Setting up cmake-data (3.22.1-1ubuntu1.22.04.2) ...
+Setting up libusb-1.0-0:amd64 (2:1.0.25-1ubuntu2) ...
+Setting up libelf1:amd64 (0.186-1ubuntu0.1) ...
+Setting up readline-common (8.1.2-1) ...
+Setting up libicu70:amd64 (70.1-2) ...
+Setting up libjpeg8:amd64 (8c-2ubuntu10) ...
+Setting up libfile-stripnondeterminism-perl (1.13.0-1) ...
+Setting up libdw1:amd64 (0.186-1ubuntu0.1) ...
+Setting up libjpeg-turbo8-dev:amd64 (2.1.2-0ubuntu1) ...
+Setting up libgtest-dev:amd64 (1.11.0-3) ...
+Setting up libtool (2.4.6-15build2) ...
+Setting up libreadline8:amd64 (8.1.2-1) ...
+Setting up libusb-1.0-0-dev:amd64 (2:1.0.25-1ubuntu2) ...
+Setting up m4 (1.4.18-5ubuntu2) ...
+Setting up libldap-2.5-0:amd64 (2.5.19+dfsg-0ubuntu0.22.04.1) ...
+Setting up libpython3.10-stdlib:amd64 (3.10.12-1~22.04.9) ...
+Setting up autoconf (2.71-2) ...
+Setting up dh-strip-nondeterminism (1.13.0-1) ...
+Setting up dwz (0.14-1build2) ...
+Setting up groff-base (1.22.4-8build1) ...
+Setting up xml-core (0.18+nmu1) ...
+Setting up debugedit (1:5.0-4build1) ...
+Setting up libcurl4:amd64 (7.81.0-1ubuntu1.20) ...
+Setting up libjpeg8-dev:amd64 (8c-2ubuntu10) ...
+Setting up libxml2:amd64 (2.9.13+dfsg-1ubuntu0.7) ...
+Setting up libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+Setting up automake (1:1.16.5-1.3) ...
+update-alternatives: using /usr/bin/automake-1.16 to provide /usr/bin/automake (automake) in auto mode
+Setting up gettext (0.21-4ubuntu4) ...
+Setting up python3.10 (3.10.12-1~22.04.9) ...
+Setting up libarchive13:amd64 (3.6.0-1ubuntu1.4) ...
+Setting up libjpeg-dev:amd64 (8c-2ubuntu10) ...
+Setting up python3 (3.10.6-1~22.04.1) ...
+Setting up man-db (2.10.2-1) ...
+Not building database; man-db/auto-update is not 'true'.
+Setting up intltool-debian (0.35.0+20060710.5) ...
+Setting up python3-six (1.16.0-3ubuntu1) ...
+Setting up dh-autoreconf (20) ...
+Setting up python3-roman (3.3-1) ...
+Setting up python3-pyparsing (2.4.7-1) ...
+Setting up python3-toml (0.10.2-1) ...
+Setting up cmake (3.22.1-1ubuntu1.22.04.2) ...
+Setting up python3-dateutil (2.8.1-6) ...
+Setting up python3-lib2to3 (3.10.8-1~22.04) ...
+Setting up python3-pkg-resources (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-distutils (3.10.8-1~22.04) ...
+Setting up python3-more-itertools (8.10.0-2) ...
+Setting up python3-iniconfig (1.1.1-2) ...
+Setting up python3-attr (21.2.0-1) ...
+Setting up python3-setuptools (59.6.0-1.2ubuntu0.22.04.3) ...
+Setting up python3-py (1.10.0-1) ...
+Setting up po-debconf (1.0.21+nmu1) ...
+Setting up debhelper (13.6ubuntu1) ...
+Setting up python3-zipp (1.0.0-3ubuntu0.1) ...
+Setting up python3-packaging (21.3-1) ...
+Setting up python3-importlib-metadata (4.6.4-1) ...
+Setting up ros-humble-ament-package (0.14.0-4jammy.20220421.093117) ...
+Setting up python3-pluggy (0.13.0-7.1) ...
+Setting up python3-pytest (6.2.5-1ubuntu2) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+Processing triggers for sgml-base (1.30) ...
+Setting up docutils-common (0.17.1+dfsg-2) ...
+Processing triggers for sgml-base (1.30) ...
+Setting up python3-docutils (0.17.1+dfsg-2) ...
+Setting up python3-catkin-pkg-modules (1.0.0-1) ...
+Setting up ros-humble-ament-cmake-core (1.3.11-1jammy.20241125.213936) ...
+Setting up ros-humble-ament-cmake-gen-version-h (1.3.11-1jammy.20241125.232841) ...
+Setting up ros-humble-ament-cmake-test (1.3.11-1jammy.20241125.230243) ...
+Setting up ros-humble-ament-cmake-python (1.3.11-1jammy.20241125.230201) ...
+Setting up ros-humble-ament-cmake-export-definitions (1.3.11-1jammy.20241125.230042) ...
+Setting up ros-humble-ament-cmake-export-libraries (1.3.11-1jammy.20241125.230050) ...
+Setting up ros-humble-ament-cmake-include-directories (1.3.11-1jammy.20241125.230103) ...
+Setting up ros-humble-ament-cmake-libraries (1.3.11-1jammy.20241125.230151) ...
+Setting up ros-humble-ament-cmake-export-targets (1.3.11-1jammy.20241125.230138) ...
+Setting up ros-humble-ament-cmake-export-include-directories (1.3.11-1jammy.20241125.230043) ...
+Setting up ros-humble-ament-cmake-export-link-flags (1.3.11-1jammy.20241125.225619) ...
+Setting up ros-humble-ament-cmake-version (1.3.11-1jammy.20241125.230210) ...
+Setting up ros-humble-ament-cmake-pytest (1.3.11-1jammy.20241125.232240) ...
+Setting up ros-humble-ament-cmake-gtest (1.3.11-1jammy.20241125.232737) ...
+Setting up ros-humble-ament-cmake-export-interfaces (1.3.11-1jammy.20241125.230126) ...
+Setting up ros-humble-ament-cmake-export-dependencies (1.3.11-1jammy.20241125.230223) ...
+Setting up ros-humble-ament-cmake-gmock (1.3.11-1jammy.20241125.235057) ...
+Setting up ros-humble-ament-cmake-target-dependencies (1.3.11-1jammy.20241125.230301) ...
+Setting up ros-humble-ament-cmake (1.3.11-1jammy.20241125.233032) ...
+Setting up ros-humble-ament-cmake-ros (0.10.0-3jammy.20250325.172310) ...
+Setting up sbuild-build-depends-main-dummy (0.invalid.0) ...
+
++------------------------------------------------------------------------------+
+| Check architectures                                                          |
++------------------------------------------------------------------------------+
+
+Arch check ok (amd64 included in any)
+
++------------------------------------------------------------------------------+
+| Build environment                                                            |
++------------------------------------------------------------------------------+
+
+Kernel: Linux 6.8.0-1029-azure #34~22.04.1-Ubuntu SMP Thu May  1 02:51:54 UTC 2025 amd64 (x86_64)
+Toolchain package versions: binutils_2.38-4ubuntu2.8 dpkg-dev_1.21.1ubuntu2.3 g++-11_11.4.0-1ubuntu1~22.04 gcc-11_11.4.0-1ubuntu1~22.04 libc6-dev_2.35-0ubuntu3.10 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 linux-libc-dev_5.15.0-141.151
+Package versions: adduser_3.118ubuntu5 apt_2.4.14 autoconf_2.71-2 automake_1:1.16.5-1.3 autopoint_0.21-4ubuntu4 autotools-dev_20220109.1 base-files_12ubuntu4.7 base-passwd_3.5.52build1 bash_5.1-6ubuntu1.1 binutils_2.38-4ubuntu2.8 binutils-common_2.38-4ubuntu2.8 binutils-x86-64-linux-gnu_2.38-4ubuntu2.8 bsdextrautils_2.37.2-4ubuntu3.4 bsdutils_1:2.37.2-4ubuntu3.4 build-essential_12.9ubuntu3 bzip2_1.0.8-5build1 ca-certificates_20240203~22.04.1 ccache_4.5.1-1 cmake_3.22.1-1ubuntu1.22.04.2 cmake-data_3.22.1-1ubuntu1.22.04.2 coreutils_8.32-4.1ubuntu1.2 cpp_4:11.2.0-1ubuntu1 cpp-11_11.4.0-1ubuntu1~22.04 dash_0.5.11+git20210903+057cd650a4ed-3build1 debconf_1.5.79ubuntu1 debhelper_13.6ubuntu1 debianutils_5.5-1ubuntu2 debugedit_1:5.0-4build1 dh-autoreconf_20 dh-elpa-helper_2.0.9ubuntu1 dh-strip-nondeterminism_1.13.0-1 diffutils_1:3.8-0ubuntu2 docutils-common_0.17.1+dfsg-2 dpkg_1.21.1ubuntu2.3 dpkg-dev_1.21.1ubuntu2.3 dwz_0.14-1build2 e2fsprogs_1.46.5-2ubuntu1.2 emacsen-common_3.0.4 fakeroot_1.28-1ubuntu1 file_1:5.41-3ubuntu0.1 findutils_4.8.0-1ubuntu3 g++_4:11.2.0-1ubuntu1 g++-11_11.4.0-1ubuntu1~22.04 gcc_4:11.2.0-1ubuntu1 gcc-11_11.4.0-1ubuntu1~22.04 gcc-11-base_11.4.0-1ubuntu1~22.04 gcc-12-base_12.3.0-1ubuntu1~22.04 gettext_0.21-4ubuntu4 gettext-base_0.21-4ubuntu4 google-mock_1.11.0-3 googletest_1.11.0-3 gpgv_2.2.27-3ubuntu2.3 grep_3.7-1build1 groff-base_1.22.4-8build1 gzip_1.10-4ubuntu4.1 hostname_3.23ubuntu2 init-system-helpers_1.62 intltool-debian_0.35.0+20060710.5 libacl1_2.3.1-1 libapt-pkg6.0_2.4.14 libarchive-zip-perl_1.68-1 libarchive13_3.6.0-1ubuntu1.4 libasan6_11.4.0-1ubuntu1~22.04 libatomic1_12.3.0-1ubuntu1~22.04 libattr1_1:2.5.1-1build1 libaudit-common_1:3.0.7-1build1 libaudit1_1:3.0.7-1build1 libbinutils_2.38-4ubuntu2.8 libblkid1_2.37.2-4ubuntu3.4 libbrotli1_1.0.9-2build6 libbz2-1.0_1.0.8-5build1 libc-bin_2.35-0ubuntu3.10 libc-dev-bin_2.35-0ubuntu3.10 libc6_2.35-0ubuntu3.10 libc6-dev_2.35-0ubuntu3.10 libcap-ng0_0.7.9-2.2build3 libcap2_1:2.44-1ubuntu0.22.04.2 libcc1-0_12.3.0-1ubuntu1~22.04 libcom-err2_1.46.5-2ubuntu1.2 libcrypt-dev_1:4.4.27-1 libcrypt1_1:4.4.27-1 libctf-nobfd0_2.38-4ubuntu2.8 libctf0_2.38-4ubuntu2.8 libcurl4_7.81.0-1ubuntu1.20 libdb5.3_5.3.28+dfsg1-0.8ubuntu3 libdebconfclient0_0.261ubuntu1 libdebhelper-perl_13.6ubuntu1 libdpkg-perl_1.21.1ubuntu2.3 libdw1_0.186-1ubuntu0.1 libelf1_0.186-1ubuntu0.1 libexpat1_2.4.7-1ubuntu0.6 libext2fs2_1.46.5-2ubuntu1.2 libfakeroot_1.28-1ubuntu1 libffi8_3.4.2-4 libfile-stripnondeterminism-perl_1.13.0-1 libgcc-11-dev_11.4.0-1ubuntu1~22.04 libgcc-s1_12.3.0-1ubuntu1~22.04 libgcrypt20_1.9.4-3ubuntu3 libgdbm-compat4_1.23-1 libgdbm6_1.23-1 libglib2.0-0_2.72.4-0ubuntu2.5 libgmp10_2:6.2.1+dfsg-3ubuntu1 libgnutls30_3.7.3-4ubuntu1.6 libgomp1_12.3.0-1ubuntu1~22.04 libgpg-error0_1.43-3 libgssapi-krb5-2_1.19.2-2ubuntu0.7 libgtest-dev_1.11.0-3 libhiredis0.14_0.14.1-2 libhogweed6_3.7.3-1build2 libicu70_70.1-2 libidn2-0_2.3.2-2build1 libisl23_0.24-2build1 libitm1_12.3.0-1ubuntu1~22.04 libjpeg-dev_8c-2ubuntu10 libjpeg-turbo8_2.1.2-0ubuntu1 libjpeg-turbo8-dev_2.1.2-0ubuntu1 libjpeg8_8c-2ubuntu10 libjpeg8-dev_8c-2ubuntu10 libjsoncpp25_1.9.5-3 libk5crypto3_1.19.2-2ubuntu0.7 libkeyutils1_1.6.1-2ubuntu3 libkrb5-3_1.19.2-2ubuntu0.7 libkrb5support0_1.19.2-2ubuntu0.7 libldap-2.5-0_2.5.19+dfsg-0ubuntu0.22.04.1 liblsan0_12.3.0-1ubuntu1~22.04 liblz4-1_1.9.3-2build2 liblzma5_5.2.5-2ubuntu1 libmagic-mgc_1:5.41-3ubuntu0.1 libmagic1_1:5.41-3ubuntu0.1 libmount1_2.37.2-4ubuntu3.4 libmpc3_1.2.1-2build1 libmpdec3_2.5.1-2build2 libmpfr6_4.1.0-3build3 libncurses6_6.3-2ubuntu0.1 libncursesw6_6.3-2ubuntu0.1 libnettle8_3.7.3-1build2 libnghttp2-14_1.43.0-1ubuntu0.2 libnsl-dev_1.3.0-2build2 libnsl2_1.3.0-2build2 libp11-kit0_0.24.0-6build1 libpam-modules_1.4.0-11ubuntu2.5 libpam-modules-bin_1.4.0-11ubuntu2.5 libpam-runtime_1.4.0-11ubuntu2.5 libpam0g_1.4.0-11ubuntu2.5 libpcre2-8-0_10.39-3ubuntu0.1 libpcre3_2:8.39-13ubuntu0.22.04.1 libperl5.34_5.34.0-3ubuntu1.4 libpipeline1_1.5.5-1 libprocps8_2:3.3.17-6ubuntu2.1 libpsl5_0.21.0-1.2build2 libpython3-stdlib_3.10.6-1~22.04.1 libpython3.10-minimal_3.10.12-1~22.04.9 libpython3.10-stdlib_3.10.12-1~22.04.9 libquadmath0_12.3.0-1ubuntu1~22.04 libreadline8_8.1.2-1 librhash0_1.4.2-1ubuntu1 librtmp1_2.4+20151223.gitfa8646d.1-2build4 libsasl2-2_2.1.27+dfsg2-3ubuntu1.2 libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2 libseccomp2_2.5.3-2ubuntu3~22.04.1 libselinux1_3.3-1build2 libsemanage-common_3.3-1build2 libsemanage2_3.3-1build2 libsepol2_3.3-1build1 libsigsegv2_2.13-1ubuntu3 libsmartcols1_2.37.2-4ubuntu3.4 libsqlite3-0_3.37.2-2ubuntu0.4 libss2_1.46.5-2ubuntu1.2 libssh-4_0.9.6-2ubuntu0.22.04.3 libssl3_3.0.2-0ubuntu1.19 libstdc++-11-dev_11.4.0-1ubuntu1~22.04 libstdc++6_12.3.0-1ubuntu1~22.04 libsub-override-perl_0.09-2 libsystemd0_249.11-0ubuntu3.15 libtasn1-6_4.18.0-4ubuntu0.1 libtinfo6_6.3-2ubuntu0.1 libtirpc-common_1.3.2-2ubuntu0.1 libtirpc-dev_1.3.2-2ubuntu0.1 libtirpc3_1.3.2-2ubuntu0.1 libtool_2.4.6-15build2 libtsan0_11.4.0-1ubuntu1~22.04 libubsan1_12.3.0-1ubuntu1~22.04 libuchardet0_0.0.7-1build2 libudev1_249.11-0ubuntu3.15 libunistring2_1.0-1 libusb-1.0-0_2:1.0.25-1ubuntu2 libusb-1.0-0-dev_2:1.0.25-1ubuntu2 libuuid1_2.37.2-4ubuntu3.4 libuv1_1.43.0-1ubuntu0.1 libxml2_2.9.13+dfsg-1ubuntu0.7 libxxhash0_0.8.1-1 libzstd1_1.4.8+dfsg-3build1 linux-libc-dev_5.15.0-141.151 login_1:4.8.1-2ubuntu2.2 logsave_1.46.5-2ubuntu1.2 lsb-base_11.1.0ubuntu4 lto-disabled-list_24 m4_1.4.18-5ubuntu2 make_4.3-4.1build1 man-db_2.10.2-1 mawk_1.3.4.20200120-3 media-types_7.0.0 mount_2.37.2-4ubuntu3.4 ncurses-base_6.3-2ubuntu0.1 ncurses-bin_6.3-2ubuntu0.1 openssl_3.0.2-0ubuntu1.19 passwd_1:4.8.1-2ubuntu2.2 patch_2.7.6-7build2 perl_5.34.0-3ubuntu1.4 perl-base_5.34.0-3ubuntu1.4 perl-modules-5.34_5.34.0-3ubuntu1.4 pkg-config_0.29.2-1ubuntu3 po-debconf_1.0.21+nmu1 procps_2:3.3.17-6ubuntu2.1 python3_3.10.6-1~22.04.1 python3-attr_21.2.0-1 python3-catkin-pkg-modules_1.0.0-1 python3-dateutil_2.8.1-6 python3-distutils_3.10.8-1~22.04 python3-docutils_0.17.1+dfsg-2 python3-importlib-metadata_4.6.4-1 python3-iniconfig_1.1.1-2 python3-lib2to3_3.10.8-1~22.04 python3-minimal_3.10.6-1~22.04.1 python3-more-itertools_8.10.0-2 python3-packaging_21.3-1 python3-pkg-resources_59.6.0-1.2ubuntu0.22.04.3 python3-pluggy_0.13.0-7.1 python3-py_1.10.0-1 python3-pyparsing_2.4.7-1 python3-pytest_6.2.5-1ubuntu2 python3-roman_3.3-1 python3-setuptools_59.6.0-1.2ubuntu0.22.04.3 python3-six_1.16.0-3ubuntu1 python3-toml_0.10.2-1 python3-zipp_1.0.0-3ubuntu0.1 python3.10_3.10.12-1~22.04.9 python3.10-minimal_3.10.12-1~22.04.9 readline-common_8.1.2-1 ros-humble-ament-cmake_1.3.11-1jammy.20241125.233032 ros-humble-ament-cmake-core_1.3.11-1jammy.20241125.213936 ros-humble-ament-cmake-export-definitions_1.3.11-1jammy.20241125.230042 ros-humble-ament-cmake-export-dependencies_1.3.11-1jammy.20241125.230223 ros-humble-ament-cmake-export-include-directories_1.3.11-1jammy.20241125.230043 ros-humble-ament-cmake-export-interfaces_1.3.11-1jammy.20241125.230126 ros-humble-ament-cmake-export-libraries_1.3.11-1jammy.20241125.230050 ros-humble-ament-cmake-export-link-flags_1.3.11-1jammy.20241125.225619 ros-humble-ament-cmake-export-targets_1.3.11-1jammy.20241125.230138 ros-humble-ament-cmake-gen-version-h_1.3.11-1jammy.20241125.232841 ros-humble-ament-cmake-gmock_1.3.11-1jammy.20241125.235057 ros-humble-ament-cmake-gtest_1.3.11-1jammy.20241125.232737 ros-humble-ament-cmake-include-directories_1.3.11-1jammy.20241125.230103 ros-humble-ament-cmake-libraries_1.3.11-1jammy.20241125.230151 ros-humble-ament-cmake-pytest_1.3.11-1jammy.20241125.232240 ros-humble-ament-cmake-python_1.3.11-1jammy.20241125.230201 ros-humble-ament-cmake-ros_0.10.0-3jammy.20250325.172310 ros-humble-ament-cmake-target-dependencies_1.3.11-1jammy.20241125.230301 ros-humble-ament-cmake-test_1.3.11-1jammy.20241125.230243 ros-humble-ament-cmake-version_1.3.11-1jammy.20241125.230210 ros-humble-ament-package_0.14.0-4jammy.20220421.093117 ros-humble-domain-coordinator_0.10.0-3jammy.20250325.170229 ros-humble-gmock-vendor_1.10.9006-1jammy.20241125.233045 ros-humble-gtest-vendor_1.10.9006-1jammy.20241125.232503 ros-humble-ros-workspace_1.0.2-2jammy.20241125.214203 rpcsvc-proto_1.4.2-0ubuntu6 sbuild-build-depends-main-dummy_0.invalid.0 sed_4.8-1ubuntu2 sensible-utils_0.0.17 sgml-base_1.30 sysvinit-utils_3.01-1ubuntu1 tar_1.34+dfsg-1ubuntu0.1.22.04.2 tzdata_2025b-0ubuntu0.22.04.1 ubuntu-keyring_2021.03.26 usrmerge_25ubuntu2 util-linux_2.37.2-4ubuntu3.4 xml-core_0.18+nmu1 xz-utils_5.2.5-2ubuntu1 zlib1g_1:1.2.11.dfsg-2ubuntu9.2
+
++------------------------------------------------------------------------------+
+| Build                                                                        |
++------------------------------------------------------------------------------+
+
+
+Unpack source
+-------------
+
+Format: 1.0
+Source: ros-humble-libuvc
+Binary: ros-humble-libuvc
+Architecture: any
+Version: 2-2025.06.04.10.55
+Maintainer: test <asdf@test.nl>
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9.0.0), libjpeg-dev, libusb-1.0-0, libusb-1.0-0-dev, pkg-config, ros-humble-ament-cmake-ros
+Package-List:
+ ros-humble-libuvc deb misc optional arch=any
+Checksums-Sha1:
+ 6f34432bf8399caa162302f19d154cceb7ae7188 720531 ros-humble-libuvc_2-2025.06.04.10.55.tar.gz
+Checksums-Sha256:
+ 3b2cb07ca3365c97d5bd3c062ce796bd4b1992c90b35e2e372dfd4e5569619a7 720531 ros-humble-libuvc_2-2025.06.04.10.55.tar.gz
+Files:
+ b68fe5b2d667bc6b97233efcce6666c8 720531 ros-humble-libuvc_2-2025.06.04.10.55.tar.gz
+
+dpkg-source: warning: extracting unsigned source package (ros-humble-libuvc_2-2025.06.04.10.55.dsc)
+dpkg-source: info: extracting ros-humble-libuvc in /<<BUILDDIR>>package
+dpkg-source: info: unpacking ros-humble-libuvc_2-2025.06.04.10.55.tar.gz
+
+Check disk space
+----------------
+
+Sufficient free space for build
+
+User Environment
+----------------
+
+APT_CONFIG=/var/lib/sbuild/apt.conf
+CCACHE_DIR=/build/ccache
+DEB_BUILD_OPTIONS=nocheck
+HOME=/var/lib/sbuild
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
+LOGNAME=runner
+OLDPWD=/
+PATH=/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PWD=/<<BUILDDIR>>package
+SHELL=/bin/sh
+USER=runner
+
+dpkg-buildpackage
+-----------------
+
+Command: dpkg-buildpackage --sanitize-env -us -uc -b -rfakeroot
+dpkg-buildpackage: info: source package ros-humble-libuvc
+dpkg-buildpackage: info: source version 2-2025.06.04.10.55
+dpkg-buildpackage: info: source distribution jammy
+dpkg-buildpackage: info: source changed by test <asdf@test.nl>
+ dpkg-source --before-build .
+dpkg-buildpackage: info: host architecture amd64
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+ fakeroot debian/rules clean
+dh clean -v --buildsystem=cmake
+   dh_auto_clean -O-v -O--buildsystem=cmake
+   dh_autoreconf_clean -O-v -O--buildsystem=cmake
+   dh_clean -O-v -O--buildsystem=cmake
+	rm -f debian/debhelper-build-stamp
+	rm -rf debian/.debhelper/
+	rm -f -- debian/ros-humble-libuvc.substvars debian/files
+	rm -fr -- debian/ros-humble-libuvc/ debian/tmp/
+	find .  \( \( \
+		\( -path .\*/.git -o -path .\*/.svn -o -path .\*/.bzr -o -path .\*/.hg -o -path .\*/CVS -o -path .\*/.pc -o -path .\*/_darcs \) -prune -o -type f -a \
+	        \( -name '#*#' -o -name '.*~' -o -name '*~' -o -name DEADJOE \
+		 -o -name '*.orig' -o -name '*.rej' -o -name '*.bak' \
+		 -o -name '.*.orig' -o -name .*.rej -o -name '.SUMS' \
+		 -o -name TAGS -o \( -path '*/.deps/*' -a -name '*.P' \) \
+		\) -exec rm -f {} + \) -o \
+		\( -type d -a -name autom4te.cache -prune -exec rm -rf {} + \) \)
+ debian/rules build
+dh build -v --buildsystem=cmake
+   dh_update_autotools_config -O-v -O--buildsystem=cmake
+   dh_autoreconf -O-v -O--buildsystem=cmake
+   debian/rules override_dh_auto_configure
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_configure -- \
+	-DCMAKE_INSTALL_PREFIX="/opt/ros/humble" \
+	-DAMENT_PREFIX_PATH="/opt/ros/humble" \
+	-DCMAKE_PREFIX_PATH="/opt/ros/humble"
+	install -d obj-x86_64-linux-gnu
+	cd obj-x86_64-linux-gnu && cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=None -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON -DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF -DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON -DCMAKE_INSTALL_RUNSTATEDIR=/run "-GUnix Makefiles" -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu -DCMAKE_INSTALL_PREFIX=/opt/ros/humble -DAMENT_PREFIX_PATH=/opt/ros/humble -DCMAKE_PREFIX_PATH=/opt/ros/humble ..
+-- The C compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/lib/ccache/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- No target type selected, default to both shared and static library
+-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.2") 
+-- Checking for module 'libusb-1.0'
+--   Found libusb-1.0, version 1.0.25
+-- libusb-1.0 found using pkgconfig
+-- Found JPEG: /usr/lib/x86_64-linux-gnu/libjpeg.so (found version "80") 
+-- Found JPEG library using standard module
+CMake Warning (dev) at /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:438 (message):
+  The package name passed to `find_package_handle_standard_args` (JPEG) does
+  not match the name of the calling package (JpegPkg).  This can lead to
+  problems in calling code that expects `find_package` result variables
+  (e.g., `_FOUND`) to follow a certain pattern.
+Call Stack (most recent call first):
+  cmake/FindJpegPkg.cmake:58 (find_package_handle_standard_args)
+  CMakeLists.txt:46 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found JPEG: /usr/lib/x86_64-linux-gnu/libjpeg.so  
+-- Building libuvc with JPEG support.
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+INSTALL TARGETS - target uvc has PUBLIC_HEADER files but no PUBLIC_HEADER DESTINATION.
+INSTALL TARGETS - target uvc_static has PUBLIC_HEADER files but no PUBLIC_HEADER DESTINATION.
+-- Configuring done
+-- Generating done
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    AMENT_PREFIX_PATH
+    CMAKE_EXPORT_NO_PACKAGE_REGISTRY
+    CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
+
+
+-- Build files have been written to: /<<BUILDDIR>>package/obj-x86_64-linux-gnu
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-libuvc.debhelper.log
+   debian/rules override_dh_auto_build
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_build
+	cd obj-x86_64-linux-gnu && make -j4 "INSTALL=install --strip-program=true" VERBOSE=1
+make[2]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+/usr/bin/cmake -S/<<BUILDDIR>>package -B/<<BUILDDIR>>package/obj-x86_64-linux-gnu --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles /<<BUILDDIR>>package/obj-x86_64-linux-gnu//CMakeFiles/progress.marks
+make  -f CMakeFiles/Makefile2 all
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc.dir/build.make CMakeFiles/uvc.dir/depend
+make  -f CMakeFiles/uvc_static.dir/build.make CMakeFiles/uvc_static.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/uvc.dir/DependInfo.cmake --color=
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/uvc_static.dir/DependInfo.cmake --color=
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc.dir/build.make CMakeFiles/uvc.dir/build
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc_static.dir/build.make CMakeFiles/uvc_static.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[ 13%] Building C object CMakeFiles/uvc_static.dir/src/ctrl.c.o
+[ 13%] Building C object CMakeFiles/uvc.dir/src/ctrl-gen.c.o
+[ 13%] Building C object CMakeFiles/uvc.dir/src/ctrl.c.o
+[ 18%] Building C object CMakeFiles/uvc.dir/src/device.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/ctrl.c.o -MF CMakeFiles/uvc_static.dir/src/ctrl.c.o.d -o CMakeFiles/uvc_static.dir/src/ctrl.c.o -c /<<BUILDDIR>>package/src/ctrl.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/ctrl.c.o -MF CMakeFiles/uvc.dir/src/ctrl.c.o.d -o CMakeFiles/uvc.dir/src/ctrl.c.o -c /<<BUILDDIR>>package/src/ctrl.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/ctrl-gen.c.o -MF CMakeFiles/uvc.dir/src/ctrl-gen.c.o.d -o CMakeFiles/uvc.dir/src/ctrl-gen.c.o -c /<<BUILDDIR>>package/src/ctrl-gen.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/device.c.o -MF CMakeFiles/uvc.dir/src/device.c.o.d -o CMakeFiles/uvc.dir/src/device.c.o -c /<<BUILDDIR>>package/src/device.c
+[ 27%] Building C object CMakeFiles/uvc_static.dir/src/ctrl-gen.c.o
+[ 27%] Building C object CMakeFiles/uvc.dir/src/diag.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/ctrl-gen.c.o -MF CMakeFiles/uvc_static.dir/src/ctrl-gen.c.o.d -o CMakeFiles/uvc_static.dir/src/ctrl-gen.c.o -c /<<BUILDDIR>>package/src/ctrl-gen.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/diag.c.o -MF CMakeFiles/uvc.dir/src/diag.c.o.d -o CMakeFiles/uvc.dir/src/diag.c.o -c /<<BUILDDIR>>package/src/diag.c
+[ 31%] Building C object CMakeFiles/uvc.dir/src/frame.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/frame.c.o -MF CMakeFiles/uvc.dir/src/frame.c.o.d -o CMakeFiles/uvc.dir/src/frame.c.o -c /<<BUILDDIR>>package/src/frame.c
+[ 36%] Building C object CMakeFiles/uvc_static.dir/src/device.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/device.c.o -MF CMakeFiles/uvc_static.dir/src/device.c.o.d -o CMakeFiles/uvc_static.dir/src/device.c.o -c /<<BUILDDIR>>package/src/device.c
+[ 40%] Building C object CMakeFiles/uvc_static.dir/src/diag.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/diag.c.o -MF CMakeFiles/uvc_static.dir/src/diag.c.o.d -o CMakeFiles/uvc_static.dir/src/diag.c.o -c /<<BUILDDIR>>package/src/diag.c
+[ 50%] Building C object CMakeFiles/uvc.dir/src/init.c.o
+[ 50%] Building C object CMakeFiles/uvc_static.dir/src/frame.c.o
+[ 54%] Building C object CMakeFiles/uvc_static.dir/src/init.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/frame.c.o -MF CMakeFiles/uvc_static.dir/src/frame.c.o.d -o CMakeFiles/uvc_static.dir/src/frame.c.o -c /<<BUILDDIR>>package/src/frame.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/init.c.o -MF CMakeFiles/uvc.dir/src/init.c.o.d -o CMakeFiles/uvc.dir/src/init.c.o -c /<<BUILDDIR>>package/src/init.c
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/init.c.o -MF CMakeFiles/uvc_static.dir/src/init.c.o.d -o CMakeFiles/uvc_static.dir/src/init.c.o -c /<<BUILDDIR>>package/src/init.c
+[ 59%] Building C object CMakeFiles/uvc.dir/src/stream.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/stream.c.o -MF CMakeFiles/uvc.dir/src/stream.c.o.d -o CMakeFiles/uvc.dir/src/stream.c.o -c /<<BUILDDIR>>package/src/stream.c
+[ 63%] Building C object CMakeFiles/uvc.dir/src/misc.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/misc.c.o -MF CMakeFiles/uvc.dir/src/misc.c.o.d -o CMakeFiles/uvc.dir/src/misc.c.o -c /<<BUILDDIR>>package/src/misc.c
+[ 68%] Building C object CMakeFiles/uvc_static.dir/src/stream.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/stream.c.o -MF CMakeFiles/uvc_static.dir/src/stream.c.o.d -o CMakeFiles/uvc_static.dir/src/stream.c.o -c /<<BUILDDIR>>package/src/stream.c
+[ 72%] Building C object CMakeFiles/uvc.dir/src/frame-mjpeg.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -Duvc_EXPORTS -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -MD -MT CMakeFiles/uvc.dir/src/frame-mjpeg.c.o -MF CMakeFiles/uvc.dir/src/frame-mjpeg.c.o.d -o CMakeFiles/uvc.dir/src/frame-mjpeg.c.o -c /<<BUILDDIR>>package/src/frame-mjpeg.c
+[ 77%] Building C object CMakeFiles/uvc_static.dir/src/misc.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/misc.c.o -MF CMakeFiles/uvc_static.dir/src/misc.c.o.d -o CMakeFiles/uvc_static.dir/src/misc.c.o -c /<<BUILDDIR>>package/src/misc.c
+[ 81%] Building C object CMakeFiles/uvc_static.dir/src/frame-mjpeg.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -isystem /usr/include/libusb-1.0 -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/uvc_static.dir/src/frame-mjpeg.c.o -MF CMakeFiles/uvc_static.dir/src/frame-mjpeg.c.o.d -o CMakeFiles/uvc_static.dir/src/frame-mjpeg.c.o -c /<<BUILDDIR>>package/src/frame-mjpeg.c
+[ 86%] Linking C shared library libuvc.so
+/usr/bin/cmake -E cmake_link_script CMakeFiles/uvc.dir/link.txt --verbose=1
+/usr/lib/ccache/cc -fPIC -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -shared -Wl,-soname,libuvc.so.0 -o libuvc.so.0.0.7 CMakeFiles/uvc.dir/src/ctrl.c.o CMakeFiles/uvc.dir/src/ctrl-gen.c.o CMakeFiles/uvc.dir/src/device.c.o CMakeFiles/uvc.dir/src/diag.c.o CMakeFiles/uvc.dir/src/frame.c.o CMakeFiles/uvc.dir/src/init.c.o CMakeFiles/uvc.dir/src/stream.c.o CMakeFiles/uvc.dir/src/misc.c.o CMakeFiles/uvc.dir/src/frame-mjpeg.c.o  /usr/lib/x86_64-linux-gnu/libusb-1.0.so /usr/lib/x86_64-linux-gnu/libjpeg.so 
+[ 90%] Linking C static library libuvc.a
+/usr/bin/cmake -P CMakeFiles/uvc_static.dir/cmake_clean_target.cmake
+/usr/bin/cmake -E cmake_link_script CMakeFiles/uvc_static.dir/link.txt --verbose=1
+/usr/bin/ar qc libuvc.a CMakeFiles/uvc_static.dir/src/ctrl.c.o CMakeFiles/uvc_static.dir/src/ctrl-gen.c.o CMakeFiles/uvc_static.dir/src/device.c.o CMakeFiles/uvc_static.dir/src/diag.c.o CMakeFiles/uvc_static.dir/src/frame.c.o CMakeFiles/uvc_static.dir/src/init.c.o CMakeFiles/uvc_static.dir/src/stream.c.o CMakeFiles/uvc_static.dir/src/misc.c.o CMakeFiles/uvc_static.dir/src/frame-mjpeg.c.o
+/usr/bin/ranlib libuvc.a
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[ 90%] Built target uvc_static
+/usr/bin/cmake -E cmake_symlink_library libuvc.so.0.0.7 libuvc.so.0 libuvc.so
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[ 90%] Built target uvc
+make  -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/example.dir/DependInfo.cmake --color=
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[ 95%] Building C object CMakeFiles/example.dir/src/example.c.o
+/usr/lib/ccache/cc -DROS_PACKAGE_NAME=\"libuvc\" -I/<<BUILDDIR>>package/include -I/<<BUILDDIR>>package/obj-x86_64-linux-gnu/include -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -MD -MT CMakeFiles/example.dir/src/example.c.o -MF CMakeFiles/example.dir/src/example.c.o.d -o CMakeFiles/example.dir/src/example.c.o -c /<<BUILDDIR>>package/src/example.c
+[100%] Linking C executable example
+/usr/bin/cmake -E cmake_link_script CMakeFiles/example.dir/link.txt --verbose=1
+/usr/lib/ccache/cc -g -O2 -ffile-prefix-map=/<<BUILDDIR>>package=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 CMakeFiles/example.dir/src/example.c.o -o example  -Wl,-rpath,/<<BUILDDIR>>package/obj-x86_64-linux-gnu libuvc.so.0.0.7 
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[100%] Built target example
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles 0
+make[2]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+	rm -f debian/ros-humble-libuvc.debhelper.log
+   debian/rules override_dh_auto_test
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+echo -- Running tests. Even if one of them fails the build is not canceled.
+-- Running tests. Even if one of them fails the build is not canceled.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_test || true
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   create-stamp debian/debhelper-build-stamp
+ fakeroot debian/rules binary
+dh binary -v --buildsystem=cmake
+   dh_testroot -O-v -O--buildsystem=cmake
+   dh_prep -O-v -O--buildsystem=cmake
+	rm -f -- debian/ros-humble-libuvc.substvars
+	rm -fr -- debian/.debhelper/generated/ros-humble-libuvc/ debian/ros-humble-libuvc/ debian/tmp/
+   debian/rules override_dh_auto_install
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_auto_install
+	install -d /<<BUILDDIR>>package/debian/ros-humble-libuvc
+	cd obj-x86_64-linux-gnu && make -j4 install DESTDIR=/<<BUILDDIR>>package/debian/ros-humble-libuvc AM_UPDATE_INFO_DIR=no "INSTALL=install --strip-program=true"
+make[2]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+/usr/bin/cmake -S/<<BUILDDIR>>package -B/<<BUILDDIR>>package/obj-x86_64-linux-gnu --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles /<<BUILDDIR>>package/obj-x86_64-linux-gnu//CMakeFiles/progress.marks
+make  -f CMakeFiles/Makefile2 all
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc.dir/build.make CMakeFiles/uvc.dir/depend
+make  -f CMakeFiles/uvc_static.dir/build.make CMakeFiles/uvc_static.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/uvc.dir/DependInfo.cmake --color=
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/uvc_static.dir/DependInfo.cmake --color=
+Consolidate compiler generated dependencies of target uvc_static
+Consolidate compiler generated dependencies of target uvc
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc_static.dir/build.make CMakeFiles/uvc_static.dir/build
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/uvc.dir/build.make CMakeFiles/uvc.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[4]: Nothing to be done for 'CMakeFiles/uvc_static.dir/build'.
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[4]: Nothing to be done for 'CMakeFiles/uvc.dir/build'.
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[ 90%] Built target uvc
+[ 90%] Built target uvc_static
+make  -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/depend
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+cd /<<BUILDDIR>>package/obj-x86_64-linux-gnu && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /<<BUILDDIR>>package /<<BUILDDIR>>package /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles/example.dir/DependInfo.cmake --color=
+Consolidate compiler generated dependencies of target example
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make  -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/build
+make[4]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[4]: Nothing to be done for 'CMakeFiles/example.dir/build'.
+make[4]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+[100%] Built target example
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+/usr/bin/cmake -E cmake_progress_start /<<BUILDDIR>>package/obj-x86_64-linux-gnu/CMakeFiles 0
+make  -f CMakeFiles/Makefile2 preinstall
+make[3]: Entering directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[3]: Nothing to be done for 'preinstall'.
+make[3]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+Install the project...
+/usr/bin/cmake -P cmake_install.cmake
+-- Install configuration: "None"
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc_config.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.a
+-- Up-to-date: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc.h
+-- Up-to-date: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc_config.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcTargets.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcTargets-none.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/FindLibUSB.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/FindJpegPkg.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcConfigVersion.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/pkgconfig/libuvc.pc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcConfig.cmake
+-- Up-to-date: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc/libuvc_config.h.in
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc/libuvc_internal.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/libuvc/libuvc.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/include/libuvc/utlist.h
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.a
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/libuvc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/libuvc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/environment/ament_prefix_path.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/environment/ament_prefix_path.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/environment/path.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/environment/path.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/local_setup.bash
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/local_setup.sh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/local_setup.zsh
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/local_setup.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/package.dsv
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/ament_index/resource_index/packages/libuvc
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/cmake/uvcExport.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/cmake/uvcExport-none.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/cmake/ament_cmake_export_targets-extras.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/cmake/libuvcConfig.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/cmake/libuvcConfig-version.cmake
+-- Installing: /<<BUILDDIR>>package/debian/ros-humble-libuvc/opt/ros/humble/share/libuvc/package.xml
+make[2]: Leaving directory '/<<BUILDDIR>>package/obj-x86_64-linux-gnu'
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdocs -O-v -O--buildsystem=cmake
+	install -d debian/ros-humble-libuvc/usr/share/doc/ros-humble-libuvc
+	install -d debian/.debhelper/generated/ros-humble-libuvc
+   dh_installchangelogs -O-v -O--buildsystem=cmake
+	install -p -m0644 debian/changelog debian/ros-humble-libuvc/usr/share/doc/ros-humble-libuvc/changelog.Debian
+   dh_installinit -O-v -O--buildsystem=cmake
+   dh_perl -O-v -O--buildsystem=cmake
+   dh_link -O-v -O--buildsystem=cmake
+	rm -f debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so
+	ln -s libuvc.so.0 debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so
+	rm -f debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0
+	ln -s libuvc.so.0.0.7 debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0
+	rm -f debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so
+	ln -s libuvc.so.0 debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so
+	rm -f debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0
+	ln -s libuvc.so.0.0.7 debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0
+   dh_strip_nondeterminism -O-v -O--buildsystem=cmake
+   dh_compress -O-v -O--buildsystem=cmake
+	cd debian/ros-humble-libuvc
+	chmod a-x usr/share/doc/ros-humble-libuvc/changelog.Debian
+	gzip -9nf usr/share/doc/ros-humble-libuvc/changelog.Debian
+	cd '/<<BUILDDIR>>package'
+   dh_fixperms -O-v -O--buildsystem=cmake
+	find debian/ros-humble-libuvc -true -print0 2>/dev/null | xargs -0r chown --no-dereference 0:0
+	find debian/ros-humble-libuvc ! -type l -a -true -a -true -print0 2>/dev/null | xargs -0r chmod go=rX,u+rw,a-s
+	find debian/ros-humble-libuvc/usr/share/doc -type f -a -true -a ! -regex 'debian/ros-humble-libuvc/usr/share/doc/[^/]*/examples/.*' -print0 2>/dev/null | xargs -0r chmod 0644
+	find debian/ros-humble-libuvc/usr/share/doc -type d -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0755
+	find debian/ros-humble-libuvc -type f \( -name '*.so.*' -o -name '*.so' -o -name '*.la' -o -name '*.a' -o -name '*.js' -o -name '*.css' -o -name '*.scss' -o -name '*.sass' -o -name '*.jpeg' -o -name '*.jpg' -o -name '*.png' -o -name '*.gif' -o -name '*.cmxs' -o -name '*.node' \) -a -true -a -true -print0 2>/dev/null | xargs -0r chmod 0644
+   dh_missing -O-v -O--buildsystem=cmake
+   dh_strip -O-v -O--buildsystem=cmake
+	debugedit --build-id --build-id-seed=ros-humble-libuvc/2-2025.06.04.10.55 debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7
+115fc8af799f76dfc63325be2d0af0d185fa24c5
+	install -d debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11
+	objcopy --only-keep-debug --compress-debug-sections debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7 debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug
+	chmod 0644 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug
+	chown 0:0 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded -o /tmp/aW4TZg9Zer/stripigULDz debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7
+	chmod --reference debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/stripigULDz
+	cat '/tmp/aW4TZg9Zer/stripigULDz' > 'debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7'
+	chmod --reference /tmp/aW4TZg9Zer/stripigULDz debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7
+	objcopy --add-gnu-debuglink debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/objcopyKLwK8S
+	chmod --reference debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/objcopyKLwK8S
+	cat '/tmp/aW4TZg9Zer/objcopyKLwK8S' > 'debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7'
+	chmod --reference /tmp/aW4TZg9Zer/objcopyKLwK8S debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7
+	debugedit --build-id --build-id-seed=ros-humble-libuvc/2-2025.06.04.10.55 debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+115fc8af799f76dfc63325be2d0af0d185fa24c5
+	chmod 0644 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug
+	chown 0:0 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded -o /tmp/aW4TZg9Zer/stripTUDDhh debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+	chmod --reference debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/stripTUDDhh
+	cat '/tmp/aW4TZg9Zer/stripTUDDhh' > 'debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7'
+	chmod --reference /tmp/aW4TZg9Zer/stripTUDDhh debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+	objcopy --add-gnu-debuglink debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/lib/debug/.build-id/11/5fc8af799f76dfc63325be2d0af0d185fa24c5.debug debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/objcopyAmgG4D
+	chmod --reference debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7 /tmp/aW4TZg9Zer/objcopyAmgG4D
+	cat '/tmp/aW4TZg9Zer/objcopyAmgG4D' > 'debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7'
+	chmod --reference /tmp/aW4TZg9Zer/objcopyAmgG4D debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+	strip --strip-debug --remove-section=.comment --remove-section=.note --enable-deterministic-archives -R .gnu.lto_\* -R .gnu.debuglto_\* -N __gnu_lto_slim -N __gnu_lto_v1 debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.a
+	readelf -W --section-headers debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.a | sed -n '/^ *\[[ 0-9]*]/s/ *\[[ 0-9]*\] *//p' | awk 'BEGIN {rv=1} /^NULL/ {next} $1 ~ /^.(text|data|(preinit|init|fini)_array$)/ {if ($5 !~ /^0+$/) rv=0} END { exit rv}'
+	strip --strip-debug --remove-section=.comment --remove-section=.note --enable-deterministic-archives -R .gnu.lto_\* -R .gnu.debuglto_\* -N __gnu_lto_slim -N __gnu_lto_v1 debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.a
+	readelf -W --section-headers debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.a | sed -n '/^ *\[[ 0-9]*]/s/ *\[[ 0-9]*\] *//p' | awk 'BEGIN {rv=1} /^NULL/ {next} $1 ~ /^.(text|data|(preinit|init|fini)_array$)/ {if ($5 !~ /^0+$/) rv=0} END { exit rv}'
+	install -d debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/share/doc
+	ln -s ros-humble-libuvc debian/.debhelper/ros-humble-libuvc/dbgsym-root/usr/share/doc/ros-humble-libuvc-dbgsym
+   dh_makeshlibs -O-v -O--buildsystem=cmake
+	rm -f debian/ros-humble-libuvc/DEBIAN/shlibs
+	install -d debian/ros-humble-libuvc/DEBIAN
+	echo "libuvc 0 ros-humble-libuvc" >> debian/ros-humble-libuvc/DEBIAN/shlibs
+	chmod 0644 -- debian/ros-humble-libuvc/DEBIAN/shlibs
+	chown 0:0 -- debian/ros-humble-libuvc/DEBIAN/shlibs
+	mv debian/.debhelper/generated/ros-humble-libuvc/triggers.new debian/.debhelper/generated/ros-humble-libuvc/triggers
+	rm -f debian/ros-humble-libuvc.debhelper.log
+   debian/rules override_dh_shlibdeps
+make[1]: Entering directory '/<<BUILDDIR>>package'
+# In case we're installing to a non-standard location, look for a setup.sh
+# in the install tree and source it.  It will set things like
+# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+if [ -f "/opt/ros/humble/setup.sh" ]; then . "/opt/ros/humble/setup.sh"; fi && \
+dh_shlibdeps -l/<<BUILDDIR>>package/debian/ros-humble-libuvc//opt/ros/humble/lib/
+	dpkg-shlibdeps -Tdebian/ros-humble-libuvc.substvars -l/<<BUILDDIR>>package/debian/ros-humble-libuvc//opt/ros/humble/lib/ debian/ros-humble-libuvc/opt/ros/humble/lib/libuvc.so.0.0.7 debian/ros-humble-libuvc/opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+make[1]: Leaving directory '/<<BUILDDIR>>package'
+   dh_installdeb -O-v -O--buildsystem=cmake
+	install -p -m0644 debian/.debhelper/generated/ros-humble-libuvc/triggers debian/ros-humble-libuvc/DEBIAN/triggers
+   dh_gencontrol -O-v -O--buildsystem=cmake
+	echo misc:Depends= >> debian/ros-humble-libuvc.substvars
+	echo misc:Pre-Depends= >> debian/ros-humble-libuvc.substvars
+	install -d debian/.debhelper/ros-humble-libuvc/dbgsym-root/DEBIAN
+	dpkg-gencontrol -pros-humble-libuvc -ldebian/changelog -Tdebian/ros-humble-libuvc.substvars -Pdebian/.debhelper/ros-humble-libuvc/dbgsym-root -UPre-Depends -URecommends -USuggests -UEnhances -UProvides -UEssential -UConflicts -DPriority=optional -UHomepage -UImportant -UBuilt-Using -DAuto-Built-Package=debug-symbols -UProtected -DPackage=ros-humble-libuvc-dbgsym "-DDepends=ros-humble-libuvc (= \${binary:Version})" "-DDescription=debug symbols for ros-humble-libuvc" -DBuild-Ids=115fc8af799f76dfc63325be2d0af0d185fa24c5 -DSection=debug -DPackage-Type=ddeb -UMulti-Arch -UReplaces -UBreaks
+	chmod 0644 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/DEBIAN/control
+	chown 0:0 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/DEBIAN/control
+	dpkg-gencontrol -pros-humble-libuvc -ldebian/changelog -Tdebian/ros-humble-libuvc.substvars -Pdebian/ros-humble-libuvc
+	chmod 0644 -- debian/ros-humble-libuvc/DEBIAN/control
+	chown 0:0 -- debian/ros-humble-libuvc/DEBIAN/control
+   dh_md5sums -O-v -O--buildsystem=cmake
+	cd debian/ros-humble-libuvc >/dev/null && xargs -r0 md5sum | perl -pe 'if (s@^\\@@) { s/\\\\/\\/g; }' > DEBIAN/md5sums
+	chmod 0644 -- debian/ros-humble-libuvc/DEBIAN/md5sums
+	chown 0:0 -- debian/ros-humble-libuvc/DEBIAN/md5sums
+	cd debian/.debhelper/ros-humble-libuvc/dbgsym-root >/dev/null && xargs -r0 md5sum | perl -pe 'if (s@^\\@@) { s/\\\\/\\/g; }' > DEBIAN/md5sums
+	chmod 0644 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/DEBIAN/md5sums
+	chown 0:0 -- debian/.debhelper/ros-humble-libuvc/dbgsym-root/DEBIAN/md5sums
+   dh_builddeb -O-v -O--buildsystem=cmake
+	dpkg-deb --build debian/ros-humble-libuvc ..
+dpkg-deb: building package 'ros-humble-libuvc' in '../ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb'.
+	install -d debian/.debhelper/scratch-space/build-ros-humble-libuvc
+	dpkg-deb --build debian/.debhelper/ros-humble-libuvc/dbgsym-root debian/.debhelper/scratch-space/build-ros-humble-libuvc
+dpkg-deb: building package 'ros-humble-libuvc-dbgsym' in 'debian/.debhelper/scratch-space/build-ros-humble-libuvc/ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.deb'.
+	Renaming ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.deb to ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+	mv debian/.debhelper/scratch-space/build-ros-humble-libuvc/ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.deb ../ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ dpkg-genbuildinfo --build=binary -O../ros-humble-libuvc_2-2025.06.04.10.55_amd64.buildinfo
+ dpkg-genchanges --build=binary -O../ros-humble-libuvc_2-2025.06.04.10.55_amd64.changes
+dpkg-genchanges: info: binary-only upload (no source code included)
+ dpkg-source --after-build .
+dpkg-source: info: using options from package/debian/source/options: --auto-commit
+dpkg-buildpackage: info: binary-only upload (no source included)
+--------------------------------------------------------------------------------
+Build finished at 2025-06-04T10:55:47Z
+
+Finished
+--------
+
+I: Built successfully
+
++------------------------------------------------------------------------------+
+| Changes                                                                      |
++------------------------------------------------------------------------------+
+
+
+ros-humble-libuvc_2-2025.06.04.10.55_amd64.changes:
+---------------------------------------------------
+
+Format: 1.8
+Date: Wed, 04 Jun 2025 10:55:11 -0000
+Source: ros-humble-libuvc
+Binary: ros-humble-libuvc
+Built-For-Profiles: noudeb
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Distribution: jammy
+Urgency: high
+Maintainer: test <asdf@test.nl>
+Changed-By: test <asdf@test.nl>
+Description:
+ ros-humble-libuvc - libuvc
+Changes:
+ ros-humble-libuvc (2-2025.06.04.10.55) jammy; urgency=high
+ .
+   * Autogenerated, no changelog for this version found in CHANGELOG.rst.
+Checksums-Sha1:
+ d639e49f50383baeef798db184542672f125040c 97358 ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ cc9abd2fff564b3cfed7fb4446ab9e8c2d3d1226 10627 ros-humble-libuvc_2-2025.06.04.10.55_amd64.buildinfo
+ 427a9d8dec3394c99c24cfc46f8b1c7c48aadac6 60012 ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Checksums-Sha256:
+ 511f469e17ddf431cd38a4c783272ad9cff08d6b2ba99057118d9854c8abb3d8 97358 ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ daa2ff6070996931eafb4384d12a3e022a355c7c224be9a03efa082fa5e739de 10627 ros-humble-libuvc_2-2025.06.04.10.55_amd64.buildinfo
+ 98cf2aeda364952fb81f37a4fcc0813824828c2941ba59e43af9863bdc6663f3 60012 ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Files:
+ abe33d85c7b431043198617e357db00a 97358 debug optional ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ 1c8a91408545119d50e98b70440d79b0 10627 misc optional ros-humble-libuvc_2-2025.06.04.10.55_amd64.buildinfo
+ 3fa048654a2de8bb59d90a3ff2a6cea2 60012 misc optional ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+
++------------------------------------------------------------------------------+
+| Buildinfo                                                                    |
++------------------------------------------------------------------------------+
+
+Format: 1.0
+Source: ros-humble-libuvc
+Binary: ros-humble-libuvc ros-humble-libuvc-dbgsym
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Checksums-Md5:
+ abe33d85c7b431043198617e357db00a 97358 ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ 3fa048654a2de8bb59d90a3ff2a6cea2 60012 ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Checksums-Sha1:
+ d639e49f50383baeef798db184542672f125040c 97358 ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ 427a9d8dec3394c99c24cfc46f8b1c7c48aadac6 60012 ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Checksums-Sha256:
+ 511f469e17ddf431cd38a4c783272ad9cff08d6b2ba99057118d9854c8abb3d8 97358 ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+ 98cf2aeda364952fb81f37a4fcc0813824828c2941ba59e43af9863bdc6663f3 60012 ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Build-Origin: Ubuntu
+Build-Architecture: amd64
+Build-Date: Wed, 04 Jun 2025 10:55:47 +0000
+Build-Path: /<<BUILDDIR>>package
+Build-Tainted-By:
+ merged-usr-via-aliased-dirs
+Installed-Build-Depends:
+ autoconf (= 2.71-2),
+ automake (= 1:1.16.5-1.3),
+ autopoint (= 0.21-4ubuntu4),
+ autotools-dev (= 20220109.1),
+ base-files (= 12ubuntu4.7),
+ base-passwd (= 3.5.52build1),
+ bash (= 5.1-6ubuntu1.1),
+ binutils (= 2.38-4ubuntu2.8),
+ binutils-common (= 2.38-4ubuntu2.8),
+ binutils-x86-64-linux-gnu (= 2.38-4ubuntu2.8),
+ bsdextrautils (= 2.37.2-4ubuntu3.4),
+ bsdutils (= 1:2.37.2-4ubuntu3.4),
+ build-essential (= 12.9ubuntu3),
+ bzip2 (= 1.0.8-5build1),
+ cmake (= 3.22.1-1ubuntu1.22.04.2),
+ cmake-data (= 3.22.1-1ubuntu1.22.04.2),
+ coreutils (= 8.32-4.1ubuntu1.2),
+ cpp (= 4:11.2.0-1ubuntu1),
+ cpp-11 (= 11.4.0-1ubuntu1~22.04),
+ dash (= 0.5.11+git20210903+057cd650a4ed-3build1),
+ debconf (= 1.5.79ubuntu1),
+ debhelper (= 13.6ubuntu1),
+ debianutils (= 5.5-1ubuntu2),
+ debugedit (= 1:5.0-4build1),
+ dh-autoreconf (= 20),
+ dh-elpa-helper (= 2.0.9ubuntu1),
+ dh-strip-nondeterminism (= 1.13.0-1),
+ diffutils (= 1:3.8-0ubuntu2),
+ docutils-common (= 0.17.1+dfsg-2),
+ dpkg (= 1.21.1ubuntu2.3),
+ dpkg-dev (= 1.21.1ubuntu2.3),
+ dwz (= 0.14-1build2),
+ emacsen-common (= 3.0.4),
+ file (= 1:5.41-3ubuntu0.1),
+ findutils (= 4.8.0-1ubuntu3),
+ g++ (= 4:11.2.0-1ubuntu1),
+ g++-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc (= 4:11.2.0-1ubuntu1),
+ gcc-11 (= 11.4.0-1ubuntu1~22.04),
+ gcc-11-base (= 11.4.0-1ubuntu1~22.04),
+ gcc-12-base (= 12.3.0-1ubuntu1~22.04),
+ gettext (= 0.21-4ubuntu4),
+ gettext-base (= 0.21-4ubuntu4),
+ google-mock (= 1.11.0-3),
+ googletest (= 1.11.0-3),
+ grep (= 3.7-1build1),
+ groff-base (= 1.22.4-8build1),
+ gzip (= 1.10-4ubuntu4.1),
+ hostname (= 3.23ubuntu2),
+ init-system-helpers (= 1.62),
+ intltool-debian (= 0.35.0+20060710.5),
+ libacl1 (= 2.3.1-1),
+ libarchive-zip-perl (= 1.68-1),
+ libarchive13 (= 3.6.0-1ubuntu1.4),
+ libasan6 (= 11.4.0-1ubuntu1~22.04),
+ libatomic1 (= 12.3.0-1ubuntu1~22.04),
+ libattr1 (= 1:2.5.1-1build1),
+ libaudit-common (= 1:3.0.7-1build1),
+ libaudit1 (= 1:3.0.7-1build1),
+ libbinutils (= 2.38-4ubuntu2.8),
+ libblkid1 (= 2.37.2-4ubuntu3.4),
+ libbrotli1 (= 1.0.9-2build6),
+ libbz2-1.0 (= 1.0.8-5build1),
+ libc-bin (= 2.35-0ubuntu3.10),
+ libc-dev-bin (= 2.35-0ubuntu3.10),
+ libc6 (= 2.35-0ubuntu3.10),
+ libc6-dev (= 2.35-0ubuntu3.10),
+ libcap-ng0 (= 0.7.9-2.2build3),
+ libcap2 (= 1:2.44-1ubuntu0.22.04.2),
+ libcc1-0 (= 12.3.0-1ubuntu1~22.04),
+ libcom-err2 (= 1.46.5-2ubuntu1.2),
+ libcrypt-dev (= 1:4.4.27-1),
+ libcrypt1 (= 1:4.4.27-1),
+ libctf-nobfd0 (= 2.38-4ubuntu2.8),
+ libctf0 (= 2.38-4ubuntu2.8),
+ libcurl4 (= 7.81.0-1ubuntu1.20),
+ libdb5.3 (= 5.3.28+dfsg1-0.8ubuntu3),
+ libdebconfclient0 (= 0.261ubuntu1),
+ libdebhelper-perl (= 13.6ubuntu1),
+ libdpkg-perl (= 1.21.1ubuntu2.3),
+ libdw1 (= 0.186-1ubuntu0.1),
+ libelf1 (= 0.186-1ubuntu0.1),
+ libexpat1 (= 2.4.7-1ubuntu0.6),
+ libffi8 (= 3.4.2-4),
+ libfile-stripnondeterminism-perl (= 1.13.0-1),
+ libgcc-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libgcc-s1 (= 12.3.0-1ubuntu1~22.04),
+ libgcrypt20 (= 1.9.4-3ubuntu3),
+ libgdbm-compat4 (= 1.23-1),
+ libgdbm6 (= 1.23-1),
+ libglib2.0-0 (= 2.72.4-0ubuntu2.5),
+ libgmp10 (= 2:6.2.1+dfsg-3ubuntu1),
+ libgnutls30 (= 3.7.3-4ubuntu1.6),
+ libgomp1 (= 12.3.0-1ubuntu1~22.04),
+ libgpg-error0 (= 1.43-3),
+ libgssapi-krb5-2 (= 1.19.2-2ubuntu0.7),
+ libgtest-dev (= 1.11.0-3),
+ libhogweed6 (= 3.7.3-1build2),
+ libicu70 (= 70.1-2),
+ libidn2-0 (= 2.3.2-2build1),
+ libisl23 (= 0.24-2build1),
+ libitm1 (= 12.3.0-1ubuntu1~22.04),
+ libjpeg-dev (= 8c-2ubuntu10),
+ libjpeg-turbo8 (= 2.1.2-0ubuntu1),
+ libjpeg-turbo8-dev (= 2.1.2-0ubuntu1),
+ libjpeg8 (= 8c-2ubuntu10),
+ libjpeg8-dev (= 8c-2ubuntu10),
+ libjsoncpp25 (= 1.9.5-3),
+ libk5crypto3 (= 1.19.2-2ubuntu0.7),
+ libkeyutils1 (= 1.6.1-2ubuntu3),
+ libkrb5-3 (= 1.19.2-2ubuntu0.7),
+ libkrb5support0 (= 1.19.2-2ubuntu0.7),
+ libldap-2.5-0 (= 2.5.19+dfsg-0ubuntu0.22.04.1),
+ liblsan0 (= 12.3.0-1ubuntu1~22.04),
+ liblz4-1 (= 1.9.3-2build2),
+ liblzma5 (= 5.2.5-2ubuntu1),
+ libmagic-mgc (= 1:5.41-3ubuntu0.1),
+ libmagic1 (= 1:5.41-3ubuntu0.1),
+ libmount1 (= 2.37.2-4ubuntu3.4),
+ libmpc3 (= 1.2.1-2build1),
+ libmpdec3 (= 2.5.1-2build2),
+ libmpfr6 (= 4.1.0-3build3),
+ libncurses6 (= 6.3-2ubuntu0.1),
+ libncursesw6 (= 6.3-2ubuntu0.1),
+ libnettle8 (= 3.7.3-1build2),
+ libnghttp2-14 (= 1.43.0-1ubuntu0.2),
+ libnsl-dev (= 1.3.0-2build2),
+ libnsl2 (= 1.3.0-2build2),
+ libp11-kit0 (= 0.24.0-6build1),
+ libpam-modules (= 1.4.0-11ubuntu2.5),
+ libpam-modules-bin (= 1.4.0-11ubuntu2.5),
+ libpam-runtime (= 1.4.0-11ubuntu2.5),
+ libpam0g (= 1.4.0-11ubuntu2.5),
+ libpcre2-8-0 (= 10.39-3ubuntu0.1),
+ libpcre3 (= 2:8.39-13ubuntu0.22.04.1),
+ libperl5.34 (= 5.34.0-3ubuntu1.4),
+ libpipeline1 (= 1.5.5-1),
+ libprocps8 (= 2:3.3.17-6ubuntu2.1),
+ libpsl5 (= 0.21.0-1.2build2),
+ libpython3-stdlib (= 3.10.6-1~22.04.1),
+ libpython3.10-minimal (= 3.10.12-1~22.04.9),
+ libpython3.10-stdlib (= 3.10.12-1~22.04.9),
+ libquadmath0 (= 12.3.0-1ubuntu1~22.04),
+ libreadline8 (= 8.1.2-1),
+ librhash0 (= 1.4.2-1ubuntu1),
+ librtmp1 (= 2.4+20151223.gitfa8646d.1-2build4),
+ libsasl2-2 (= 2.1.27+dfsg2-3ubuntu1.2),
+ libsasl2-modules-db (= 2.1.27+dfsg2-3ubuntu1.2),
+ libseccomp2 (= 2.5.3-2ubuntu3~22.04.1),
+ libselinux1 (= 3.3-1build2),
+ libsigsegv2 (= 2.13-1ubuntu3),
+ libsmartcols1 (= 2.37.2-4ubuntu3.4),
+ libsqlite3-0 (= 3.37.2-2ubuntu0.4),
+ libssh-4 (= 0.9.6-2ubuntu0.22.04.3),
+ libssl3 (= 3.0.2-0ubuntu1.19),
+ libstdc++-11-dev (= 11.4.0-1ubuntu1~22.04),
+ libstdc++6 (= 12.3.0-1ubuntu1~22.04),
+ libsub-override-perl (= 0.09-2),
+ libsystemd0 (= 249.11-0ubuntu3.15),
+ libtasn1-6 (= 4.18.0-4ubuntu0.1),
+ libtinfo6 (= 6.3-2ubuntu0.1),
+ libtirpc-common (= 1.3.2-2ubuntu0.1),
+ libtirpc-dev (= 1.3.2-2ubuntu0.1),
+ libtirpc3 (= 1.3.2-2ubuntu0.1),
+ libtool (= 2.4.6-15build2),
+ libtsan0 (= 11.4.0-1ubuntu1~22.04),
+ libubsan1 (= 12.3.0-1ubuntu1~22.04),
+ libuchardet0 (= 0.0.7-1build2),
+ libudev1 (= 249.11-0ubuntu3.15),
+ libunistring2 (= 1.0-1),
+ libusb-1.0-0 (= 2:1.0.25-1ubuntu2),
+ libusb-1.0-0-dev (= 2:1.0.25-1ubuntu2),
+ libuuid1 (= 2.37.2-4ubuntu3.4),
+ libuv1 (= 1.43.0-1ubuntu0.1),
+ libxml2 (= 2.9.13+dfsg-1ubuntu0.7),
+ libzstd1 (= 1.4.8+dfsg-3build1),
+ linux-libc-dev (= 5.15.0-141.151),
+ login (= 1:4.8.1-2ubuntu2.2),
+ lsb-base (= 11.1.0ubuntu4),
+ lto-disabled-list (= 24),
+ m4 (= 1.4.18-5ubuntu2),
+ make (= 4.3-4.1build1),
+ man-db (= 2.10.2-1),
+ mawk (= 1.3.4.20200120-3),
+ media-types (= 7.0.0),
+ ncurses-base (= 6.3-2ubuntu0.1),
+ ncurses-bin (= 6.3-2ubuntu0.1),
+ patch (= 2.7.6-7build2),
+ perl (= 5.34.0-3ubuntu1.4),
+ perl-base (= 5.34.0-3ubuntu1.4),
+ perl-modules-5.34 (= 5.34.0-3ubuntu1.4),
+ pkg-config (= 0.29.2-1ubuntu3),
+ po-debconf (= 1.0.21+nmu1),
+ procps (= 2:3.3.17-6ubuntu2.1),
+ python3 (= 3.10.6-1~22.04.1),
+ python3-attr (= 21.2.0-1),
+ python3-catkin-pkg-modules (= 1.0.0-1),
+ python3-dateutil (= 2.8.1-6),
+ python3-distutils (= 3.10.8-1~22.04),
+ python3-docutils (= 0.17.1+dfsg-2),
+ python3-importlib-metadata (= 4.6.4-1),
+ python3-iniconfig (= 1.1.1-2),
+ python3-lib2to3 (= 3.10.8-1~22.04),
+ python3-minimal (= 3.10.6-1~22.04.1),
+ python3-more-itertools (= 8.10.0-2),
+ python3-packaging (= 21.3-1),
+ python3-pkg-resources (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-pluggy (= 0.13.0-7.1),
+ python3-py (= 1.10.0-1),
+ python3-pyparsing (= 2.4.7-1),
+ python3-pytest (= 6.2.5-1ubuntu2),
+ python3-roman (= 3.3-1),
+ python3-setuptools (= 59.6.0-1.2ubuntu0.22.04.3),
+ python3-six (= 1.16.0-3ubuntu1),
+ python3-toml (= 0.10.2-1),
+ python3-zipp (= 1.0.0-3ubuntu0.1),
+ python3.10 (= 3.10.12-1~22.04.9),
+ python3.10-minimal (= 3.10.12-1~22.04.9),
+ readline-common (= 8.1.2-1),
+ ros-humble-ament-cmake (= 1.3.11-1jammy.20241125.233032),
+ ros-humble-ament-cmake-core (= 1.3.11-1jammy.20241125.213936),
+ ros-humble-ament-cmake-export-definitions (= 1.3.11-1jammy.20241125.230042),
+ ros-humble-ament-cmake-export-dependencies (= 1.3.11-1jammy.20241125.230223),
+ ros-humble-ament-cmake-export-include-directories (= 1.3.11-1jammy.20241125.230043),
+ ros-humble-ament-cmake-export-interfaces (= 1.3.11-1jammy.20241125.230126),
+ ros-humble-ament-cmake-export-libraries (= 1.3.11-1jammy.20241125.230050),
+ ros-humble-ament-cmake-export-link-flags (= 1.3.11-1jammy.20241125.225619),
+ ros-humble-ament-cmake-export-targets (= 1.3.11-1jammy.20241125.230138),
+ ros-humble-ament-cmake-gen-version-h (= 1.3.11-1jammy.20241125.232841),
+ ros-humble-ament-cmake-gmock (= 1.3.11-1jammy.20241125.235057),
+ ros-humble-ament-cmake-gtest (= 1.3.11-1jammy.20241125.232737),
+ ros-humble-ament-cmake-include-directories (= 1.3.11-1jammy.20241125.230103),
+ ros-humble-ament-cmake-libraries (= 1.3.11-1jammy.20241125.230151),
+ ros-humble-ament-cmake-pytest (= 1.3.11-1jammy.20241125.232240),
+ ros-humble-ament-cmake-python (= 1.3.11-1jammy.20241125.230201),
+ ros-humble-ament-cmake-ros (= 0.10.0-3jammy.20250325.172310),
+ ros-humble-ament-cmake-target-dependencies (= 1.3.11-1jammy.20241125.230301),
+ ros-humble-ament-cmake-test (= 1.3.11-1jammy.20241125.230243),
+ ros-humble-ament-cmake-version (= 1.3.11-1jammy.20241125.230210),
+ ros-humble-ament-package (= 0.14.0-4jammy.20220421.093117),
+ ros-humble-domain-coordinator (= 0.10.0-3jammy.20250325.170229),
+ ros-humble-gmock-vendor (= 1.10.9006-1jammy.20241125.233045),
+ ros-humble-gtest-vendor (= 1.10.9006-1jammy.20241125.232503),
+ ros-humble-ros-workspace (= 1.0.2-2jammy.20241125.214203),
+ rpcsvc-proto (= 1.4.2-0ubuntu6),
+ sed (= 4.8-1ubuntu2),
+ sensible-utils (= 0.0.17),
+ sgml-base (= 1.30),
+ sysvinit-utils (= 3.01-1ubuntu1),
+ tar (= 1.34+dfsg-1ubuntu0.1.22.04.2),
+ tzdata (= 2025b-0ubuntu0.22.04.1),
+ util-linux (= 2.37.2-4ubuntu3.4),
+ xml-core (= 0.18+nmu1),
+ xz-utils (= 5.2.5-2ubuntu1),
+ zlib1g (= 1:1.2.11.dfsg-2ubuntu9.2)
+Environment:
+ DEB_BUILD_OPTIONS="nocheck parallel=4"
+ DEB_BUILD_PROFILES="noudeb"
+ LANG="C.UTF-8"
+ LC_ALL="C.UTF-8"
+ LC_COLLATE="C.UTF-8"
+ SOURCE_DATE_EPOCH="1749034511"
+
+
++------------------------------------------------------------------------------+
+| Package contents                                                             |
++------------------------------------------------------------------------------+
+
+
+ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+----------------------------------------------
+
+ new Debian package, version 2.0.
+ size 60012 bytes: control archive=1487 bytes.
+     283 bytes,     9 lines      control              
+    3179 bytes,    36 lines      md5sums              
+      27 bytes,     1 lines      shlibs               
+      72 bytes,     2 lines      triggers             
+ Package: ros-humble-libuvc
+ Version: 2-2025.06.04.10.55
+ Architecture: amd64
+ Maintainer: test <asdf@test.nl>
+ Installed-Size: 569
+ Depends: libc6 (>= 2.34), libjpeg8 (>= 8c), libusb-1.0-0 (>= 2:1.0.23~), libjpeg-dev, libusb-1.0-0-dev
+ Section: misc
+ Priority: optional
+ Description: libuvc
+
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/include/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/include/libuvc/
+-rw-r--r-- root/root     30519 2025-06-04 10:53 ./opt/ros/humble/include/libuvc/libuvc.h
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/include/libuvc/libuvc/
+-rw-r--r-- root/root     30519 2025-06-04 10:53 ./opt/ros/humble/include/libuvc/libuvc/libuvc.h
+-rw-r--r-- root/root       802 2025-06-04 10:53 ./opt/ros/humble/include/libuvc/libuvc/libuvc_config.h.in
+-rw-r--r-- root/root     10156 2025-06-04 10:53 ./opt/ros/humble/include/libuvc/libuvc/libuvc_internal.h
+-rw-r--r-- root/root       660 2025-06-04 10:55 ./opt/ros/humble/include/libuvc/libuvc_config.h
+-rw-r--r-- root/root     36984 2025-06-04 10:53 ./opt/ros/humble/include/libuvc/utlist.h
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/
+-rw-r--r-- root/root    108638 2025-06-04 10:55 ./opt/ros/humble/lib/libuvc.a
+lrwxrwxrwx root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/libuvc.so -> libuvc.so.0
+lrwxrwxrwx root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/libuvc.so.0 -> libuvc.so.0.0.7
+-rw-r--r-- root/root     86480 2025-06-04 10:55 ./opt/ros/humble/lib/libuvc.so.0.0.7
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/
+-rw-r--r-- root/root      2294 2025-06-04 10:53 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/FindJpegPkg.cmake
+-rw-r--r-- root/root      1304 2025-06-04 10:53 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/FindLibUSB.cmake
+-rw-r--r-- root/root       473 2025-06-04 10:53 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcConfig.cmake
+-rw-r--r-- root/root      1977 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcConfigVersion.cmake
+-rw-r--r-- root/root      1345 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcTargets-none.cmake
+-rw-r--r-- root/root      3908 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/cmake/libuvc/libuvcTargets.cmake
+-rw-r--r-- root/root    108638 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/libuvc.a
+lrwxrwxrwx root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so -> libuvc.so.0
+lrwxrwxrwx root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0 -> libuvc.so.0.0.7
+-rw-r--r-- root/root     86480 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/libuvc.so.0.0.7
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/pkgconfig/
+-rw-r--r-- root/root       306 2025-06-04 10:55 ./opt/ros/humble/lib/x86_64-linux-gnu/pkgconfig/libuvc.pc
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/
+-rw-r--r-- root/root        33 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/package_run_dependencies/libuvc
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/packages/
+-rw-r--r-- root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/packages/libuvc
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/
+-rw-r--r-- root/root         8 2025-06-04 10:55 ./opt/ros/humble/share/ament_index/resource_index/parent_prefix_path/libuvc
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/
+-rw-r--r-- root/root       953 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/ament_cmake_export_targets-extras.cmake
+-rw-r--r-- root/root       432 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/libuvcConfig-version.cmake
+-rw-r--r-- root/root      1242 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/libuvcConfig.cmake
+-rw-r--r-- root/root      1277 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/uvcExport-none.cmake
+-rw-r--r-- root/root      3840 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/cmake/uvcExport.cmake
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/environment/
+-rw-r--r-- root/root        41 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/environment/ament_prefix_path.dsv
+-rw-r--r-- root/root       160 2024-11-25 17:35 ./opt/ros/humble/share/libuvc/environment/ament_prefix_path.sh
+-rw-r--r-- root/root        41 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/environment/path.dsv
+-rw-r--r-- root/root       185 2024-11-25 17:35 ./opt/ros/humble/share/libuvc/environment/path.sh
+-rw-r--r-- root/root      1594 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/local_setup.bash
+-rw-r--r-- root/root        93 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/local_setup.dsv
+-rw-r--r-- root/root      4977 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/local_setup.sh
+-rw-r--r-- root/root      1957 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/local_setup.zsh
+-rw-r--r-- root/root       144 2025-06-04 10:55 ./opt/ros/humble/share/libuvc/package.dsv
+-rw-r--r-- root/root       712 2025-06-04 10:53 ./opt/ros/humble/share/libuvc/package.xml
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./usr/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./usr/share/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./usr/share/doc/
+drwxr-xr-x root/root         0 2025-06-04 10:55 ./usr/share/doc/ros-humble-libuvc/
+-rw-r--r-- root/root       181 2025-06-04 10:55 ./usr/share/doc/ros-humble-libuvc/changelog.Debian.gz
+
+
++------------------------------------------------------------------------------+
+| Post Build                                                                   |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+| Cleanup                                                                      |
++------------------------------------------------------------------------------+
+
+Purging /<<BUILDDIR>>
+Not cleaning session: cloned chroot in use
+
++------------------------------------------------------------------------------+
+| Summary                                                                      |
++------------------------------------------------------------------------------+
+
+Build Architecture: amd64
+Build Type: binary
+Build-Space: 7868
+Build-Time: 6
+Distribution: jammy
+Host Architecture: amd64
+Install-Time: 19
+Job: /home/runner/work/mirte-ros-packages/mirte-ros-packages/src/ros-humble-libuvc_2-2025.06.04.10.55.dsc
+Machine Architecture: amd64
+Package: ros-humble-libuvc
+Package-Time: 35
+Source-Version: 2-2025.06.04.10.55
+Space: 7868
+Status: successful
+Version: 2-2025.06.04.10.55
+--------------------------------------------------------------------------------
+Finished at 2025-06-04T10:55:47Z
+Build needed 00:00:35, 7868k disk space

@@ -1,0 +1,54 @@
+astra_camera_msgs:
+  ubuntu:
+  - ros-humble-astra-camera-msgs
+libuvc:
+  ubuntu:
+  - ros-humble-libuvc
+astra_camera:
+  ubuntu:
+  - ros-humble-astra-camera
+mirte_bringup:
+  ubuntu:
+  - ros-humble-mirte-bringup
+mirte_fastdds_discovery_setup:
+  ubuntu:
+  - ros-humble-mirte-fastdds-discovery-setup
+mirte_master_description:
+  ubuntu:
+  - ros-humble-mirte-master-description
+mirte_moveit_config:
+  ubuntu:
+  - ros-humble-mirte-moveit-config
+mirte_msgs:
+  ubuntu:
+  - ros-humble-mirte-msgs
+mirte_base_control:
+  ubuntu:
+  - ros-humble-mirte-base-control
+mirte_control:
+  ubuntu:
+  - ros-humble-mirte-control
+mirte_master_arm_control:
+  ubuntu:
+  - ros-humble-mirte-master-arm-control
+mirte_pioneer_description:
+  ubuntu:
+  - ros-humble-mirte-pioneer-description
+mirte_telemetrix_cpp:
+  ubuntu:
+  - ros-humble-mirte-telemetrix-cpp
+mirte_teleop:
+  ubuntu:
+  - ros-humble-mirte-teleop
+mirte_test:
+  ubuntu:
+  - ros-humble-mirte-test
+mirte_zenoh_setup:
+  ubuntu:
+  - ros-humble-mirte-zenoh-setup
+usb_cam:
+  ubuntu:
+  - ros-humble-usb-cam
+web_video_server:
+  ubuntu:
+  - ros-humble-web-video-server

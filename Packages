@@ -1,0 +1,487 @@
+Package: ros-humble-astra-camera-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-astra-camera
+Maintainer: Joe Dong <jian.dong@pobox.com>
+Installed-Size: 13781
+Depends: ros-humble-astra-camera (= 2-2025.06.04.10.55)
+Filename: ./ros-humble-astra-camera-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+Size: 12538580
+MD5sum: 432dfd2fd844c92c0109e7e6efdf0f7c
+SHA1: 4ce69a3c82faf0a0e4f342d5dad92ac33a2b1594
+SHA256: aececa678098ce11b528ddeec6fdbf8fd026433a2954ea580bbbdb0121af5b4e
+SHA512: a95e3c2ef1443f6242cccb3b80ff5ea7eb04a00dcf23bd3d910e8a1543c7ce4fc0d1180c5c1f4776190c9692f8e1c2177c354d4b2a8a2514cee5cf05badc6cc4
+Description: debug symbols for ros-humble-astra-camera
+Build-Ids: 41510050b590122e30d9ace0b0f569d9ea31d824 700128c64a1b1b5465b08689cb70307683b4f0e6 75a5e139415c38566eb74971af5d3f2884006b7f a149010b0f60d126b5684c8edba05677f85e75f8 d0c7a30abd04ccfd053550d032bffd1b170c0334 da669eedc43527d4d0715a04add977a0161f25b6 e689ed8c34e0f2dcd39b7543643d562459ab6b54
+
+Package: ros-humble-astra-camera-msgs-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.10.54
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-astra-camera-msgs
+Maintainer: Joe Dong <mocun@orbbec.com>
+Installed-Size: 1211
+Depends: ros-humble-astra-camera-msgs (= 2-2025.06.04.10.54)
+Filename: ./ros-humble-astra-camera-msgs-dbgsym_2-2025.06.04.10.54_amd64.ddeb
+Size: 838676
+MD5sum: 0faf71372efbb77edf1c11be74fe9aaa
+SHA1: 62cff253727b38da600bb326650afce568f0ed8a
+SHA256: 1bf4d2b5c817524af2d886e1811856bef1b25a300d7b09a73d571a9494f71f60
+SHA512: 9a52ff0e773d8f663c5d6b8c37cbdd877e26af384cf66e14221082301cb609e0071ed88c36df4fe2e3ba559ceb394bf0e842bb4a272647002c46aacf7079c871
+Description: debug symbols for ros-humble-astra-camera-msgs
+Build-Ids: 0c7c9e9425e863151680c1561e2df8948bef0200 0fcd6a46d64a6a9733b3fc6d296e8e3e6744ae4a 3c2241c8962c6b0f4127a0572895428772966b42 534c967a265f3fff0438f9cdf746c5376b828dea 5b6fc616e0dcd8c1013ffc572cf49d800783d2bd 690f445fe40c5ae12e66b488a7c3af763cc1650c 8b897ca8c922cd50ad49746044df3c36c99b12fb 8ba4c70e97532ab71d1e9f766e4cd18d5cca0304 8d850db0a6539605bde4918c4078361e8f105699 9ea41b546cd38f6c7462154812fa33e3fe04fcb9 d2f7886f36f5a6be805cd0c2ba4731088932c0c6 fbe62dd54a6f8230d3c193e118118e806a239886
+
+Package: ros-humble-astra-camera-msgs
+Architecture: amd64
+Version: 2-2025.06.04.10.54
+Priority: optional
+Section: misc
+Maintainer: Joe Dong <mocun@orbbec.com>
+Installed-Size: 1963
+Depends: libc6 (>= 2.14), libgcc-s1 (>= 3.3.1), libpython3.10 (>= 3.10.0), libstdc++6 (>= 5.2), ros-humble-fastcdr, ros-humble-rosidl-default-runtime, ros-humble-sensor-msgs
+Filename: ./ros-humble-astra-camera-msgs_2-2025.06.04.10.54_amd64.deb
+Size: 124152
+MD5sum: 9e245c630d9fc70869290b4b8d73021f
+SHA1: b90307d80cd9ca2719cdd3245d4647722a2b0ac1
+SHA256: 72d1eece919d07967edcc4f668219f2878a7141b2965f8afd217251e4bc24a7a
+SHA512: f763b6a2c24cf6e1d0cb0117060036124fb4a308d042725ac71862f1793d89ee1f896656f17e01d31922e3d114a8cc0dbddd09046548e4fe9504385a9c0d58a1
+Description: A package containing orbbec camera messages definitions.
+
+Package: ros-humble-astra-camera
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Priority: optional
+Section: misc
+Maintainer: Joe Dong <jian.dong@pobox.com>
+Installed-Size: 4848
+Depends: libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libgoogle-glog0v5 (>= 0.5.0+really0.4.0), libopencv-core4.5d (>= 4.5.4+dfsg), libopencv-imgproc4.5d (>= 4.5.4+dfsg), libopencv-stitching4.5d (>= 4.5.4+dfsg), libstdc++6 (>= 11), libudev1 (>= 183), libusb-1.0-0 (>= 2:1.0.8), ros-humble-libuvc, libgoogle-glog-dev, nlohmann-json3-dev, ros-humble-ament-index-cpp, ros-humble-ament-lint-auto, ros-humble-ament-lint-common, ros-humble-astra-camera-msgs, ros-humble-builtin-interfaces, ros-humble-camera-info-manager, ros-humble-class-loader, ros-humble-cv-bridge, ros-humble-draco-point-cloud-transport, ros-humble-image-geometry, ros-humble-image-publisher, ros-humble-image-transport, ros-humble-message-filters, ros-humble-point-cloud-transport, ros-humble-rclcpp, ros-humble-rclcpp-components, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-std-srvs, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-msgs, ros-humble-tf2-ros, ros-humble-tf2-sensor-msgs, ros-humble-zlib-point-cloud-transport, ros-humble-zstd-point-cloud-transport
+Filename: ./ros-humble-astra-camera_2-2025.06.04.10.55_amd64.deb
+Size: 1070444
+MD5sum: 1bffaf53f344a03db8c6bd72af6e04ac
+SHA1: a09b96b70528362d3d7293f65f4852ea57ad4673
+SHA256: 902613186ef785acc9e686460f4318d2b14e87c2dd8e277fd71f25c804c8b950
+SHA512: c2e16b5fb28453e903d25d1133111b60379f1e7f51f1e88f6048752521c4b909777719bbcbff11526b0f119d202e8c1266f81fa59bf2c393eac8f20f4f9f1c0f
+Description: TODO: Package description
+
+Package: ros-humble-libuvc-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-libuvc
+Maintainer: test <asdf@test.nl>
+Installed-Size: 123
+Depends: ros-humble-libuvc (= 2-2025.06.04.10.55)
+Filename: ./ros-humble-libuvc-dbgsym_2-2025.06.04.10.55_amd64.ddeb
+Size: 97358
+MD5sum: abe33d85c7b431043198617e357db00a
+SHA1: d639e49f50383baeef798db184542672f125040c
+SHA256: 511f469e17ddf431cd38a4c783272ad9cff08d6b2ba99057118d9854c8abb3d8
+SHA512: 8b976761208112d88f592dbf1c58382884eb6389c9d7a17e12a2330eff78bcef5634b76ee3d411ba0acf6ae6e88e38f639068e799008cf33d4f020d95823b49d
+Description: debug symbols for ros-humble-libuvc
+Build-Ids: 115fc8af799f76dfc63325be2d0af0d185fa24c5
+
+Package: ros-humble-libuvc
+Architecture: amd64
+Version: 2-2025.06.04.10.55
+Priority: optional
+Section: misc
+Maintainer: test <asdf@test.nl>
+Installed-Size: 569
+Depends: libc6 (>= 2.34), libjpeg8 (>= 8c), libusb-1.0-0 (>= 2:1.0.23~), libjpeg-dev, libusb-1.0-0-dev
+Filename: ./ros-humble-libuvc_2-2025.06.04.10.55_amd64.deb
+Size: 60012
+MD5sum: 3fa048654a2de8bb59d90a3ff2a6cea2
+SHA1: 427a9d8dec3394c99c24cfc46f8b1c7c48aadac6
+SHA256: 98cf2aeda364952fb81f37a4fcc0813824828c2941ba59e43af9863bdc6663f3
+SHA512: ad4ba6631200c90b56d33090545368f4bf2d64bf30dcd4fe3687fc71db224dea93ec46dbc0a06c7c566dd6dab27872663373d39677027cc313e660117c2e2449
+Description: libuvc
+
+Package: ros-humble-mirte-base-control-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.02
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-mirte-base-control
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 3772
+Depends: ros-humble-mirte-base-control (= 2-2025.06.04.11.02)
+Filename: ./ros-humble-mirte-base-control-dbgsym_2-2025.06.04.11.02_amd64.ddeb
+Size: 3354108
+MD5sum: 5d27d497a402f254810e7dd398419f25
+SHA1: 50fc9c59deaca4fe8a0d511f9943899045b0f0bf
+SHA256: c36123cd88f0ee52df3a782865df55cd1589ad0faddda808e3c3b0a57ae34252
+SHA512: f60502993f6df1c3eb9ceb2c3005ad5c7fa06ea77d617dd6b3396b4a6f1ce333414b56e8abfcf2ce52ace6cbea3d7fa29d1d576b01b644b3f80cdf343e384c69
+Description: debug symbols for ros-humble-mirte-base-control
+Build-Ids: ab01d0ba532c428751e34b5206b2c18902a156db
+
+Package: ros-humble-mirte-base-control
+Architecture: amd64
+Version: 2-2025.06.04.11.02
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 743
+Depends: libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 11), libyaml-cpp0.7 (>= 0.7.0), ros-humble-backward-ros, ros-humble-control-toolbox, ros-humble-controller-manager, ros-humble-diff-drive-controller, ros-humble-effort-controllers, ros-humble-filters, ros-humble-forward-command-controller, ros-humble-hardware-interface, ros-humble-joint-state-broadcaster, ros-humble-joint-trajectory-controller, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-robot-state-publisher, ros-humble-ros2-controllers, ros-humble-ros2controlcli, ros-humble-ros2launch, ros-humble-std-msgs, ros-humble-std-srvs, ros-humble-trajectory-msgs, ros-humble-twist-stamper, ros-humble-xacro, ros-humble-yaml-cpp-vendor
+Filename: ./ros-humble-mirte-base-control_2-2025.06.04.11.02_amd64.deb
+Size: 176844
+MD5sum: e0a05ae2bc8cc5b87d0e3a90b05f2074
+SHA1: 8dfbebff3f79119a7430efb0db8856ce79b485d9
+SHA256: 071f9f4f1c3642d2bad1fe14552d2419a39aabb196c0c3eec48e0e0b6ef0144e
+SHA512: d2dae457940907413da8ff7d41f7ce7ff9a21332f94b695d463aa5dec51855444896cde40a1885e12a3f6483e2d8891b912a9ed6ef7fcf2ba3e1d7358f2f93f8
+Description: The mirte_base_control package
+
+Package: ros-humble-mirte-bringup
+Architecture: amd64
+Version: 2-2025.06.04.10.58
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 97
+Depends: ros-humble-image-common, ros-humble-image-transport-plugins, ros-humble-mirte-control, ros-humble-mirte-msgs, ros-humble-mirte-telemetrix-cpp, ros-humble-mirte-teleop, ros-humble-rosbridge-server, ros-humble-usb-cam, ros-humble-web-video-server
+Filename: ./ros-humble-mirte-bringup_2-2025.06.04.10.58_amd64.deb
+Size: 11590
+MD5sum: 938d3e7df5687ca9640280f3f404440a
+SHA1: 0cca2812ff4f714eff95f5959a55983335f26ebf
+SHA256: 73bb3b7ebc5a993912351d8e70bc4893d5f54092d84d5c4c0dc0486c7622f5f7
+SHA512: 934a9eaa29f138e704c491bd1109ffd586adebfec1203c6bc5f60b11fd5ce00a9bc085467e5800094d5780a1165e93f2cb770fc98d9817772c0afc73a23ebbdd
+Description: TODO: Package description
+
+Package: ros-humble-mirte-control-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.04
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-mirte-control
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 786
+Depends: ros-humble-mirte-control (= 2-2025.06.04.11.04)
+Filename: ./ros-humble-mirte-control-dbgsym_2-2025.06.04.11.04_amd64.ddeb
+Size: 745774
+MD5sum: d293f7c6efe2449bb13fc0d1b54eaa74
+SHA1: 0ac25702932c8a4b8d2654cc6a0afa31b1d51539
+SHA256: c09bb469246db332be24ab2cc602369f80d1ac1799fc44a6e189afb0ec860265
+SHA512: 1e26cbe41a2563cf75ee51f940ec11e330762a7f5f4988814c8ba4fdca4183d4c65c25188dbdc7ccee0107fb4022ce0e1ef3f7a2d148b877ba04aa13f4558654
+Description: debug symbols for ros-humble-mirte-control
+Build-Ids: 5f34406e237a73b85b3b584f528304d534a9bd96
+
+Package: ros-humble-mirte-control
+Architecture: amd64
+Version: 2-2025.06.04.11.04
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 236
+Depends: libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 11), ros-humble-controller-manager, ros-humble-diff-drive-controller, ros-humble-hardware-interface, ros-humble-joint-state-broadcaster, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-robot-state-publisher, ros-humble-ros2-controllers-test-nodes, ros-humble-ros2controlcli, ros-humble-twist-stamper
+Filename: ./ros-humble-mirte-control_2-2025.06.04.11.04_amd64.deb
+Size: 55486
+MD5sum: c039ac6b0ce43916901b030863d3bed6
+SHA1: 3c8cee8e8f5f7767cbc3a57cb0a2cb5616cb8887
+SHA256: 9e9d369abe74da0c362aa7d94fa81821db47f974ef0bff2fdc470d24d4c87f3c
+SHA512: 5ffaa5af5e7d528bd0487673dd30feba6b6f6258bf5c14e5b4466f4ec96965e30d0a4b4de487554d5d9aae4c0e21669ffb3905c05a54718a5fa4f5fccd7e82c6
+Description: Mirte Pioneer Hardware interface
+
+Package: ros-humble-mirte-fastdds-discovery-setup
+Architecture: amd64
+Version: 2-2025.06.04.10.59
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 54
+Filename: ./ros-humble-mirte-fastdds-discovery-setup_2-2025.06.04.10.59_amd64.deb
+Size: 6910
+MD5sum: e5e403acb7c564599664493b12c1c444
+SHA1: 1ffd2b350b03b67947d76f3649c3c1cd4e41cbdf
+SHA256: f7dc14c43b1bbd6f299c85c495a9d7fd1dfd5718afe12aa3cc208f38d94005f8
+SHA512: 6104c98b8e197b22150b6b7dc7b5753f6c88a64d2bf4aec20daa261666a28ad904de4b2bb35242ddf84826c1cbfe5ae09e770161461381010612c56a1495581e
+Description: The mirte_fastdds_discovery_setup package
+
+Package: ros-humble-mirte-master-arm-control-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.05
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-mirte-master-arm-control
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 3466
+Depends: ros-humble-mirte-master-arm-control (= 2-2025.06.04.11.05)
+Filename: ./ros-humble-mirte-master-arm-control-dbgsym_2-2025.06.04.11.05_amd64.ddeb
+Size: 3070480
+MD5sum: a7b0f0f839b17fad3dc0bb19e50d0ca9
+SHA1: 670fa9318750f16bf4b022f1f45067e01891c677
+SHA256: 9258fbce5cfc082bacdebc844e52c8b6f62c57f1b089c199d667a36ab9cc8f7f
+SHA512: e5ec43c560cf00c6ab952dbe5063ef8a5c757db25dc45b9e8d1a86def798fb87de971fa7bc68aaa6cfe3d6f3a9f287fdf6f7d4afa779e3c4d4918cec3989c601
+Description: debug symbols for ros-humble-mirte-master-arm-control
+Build-Ids: a73871279c8d653797e536c3adb5cdb6e56610a3
+
+Package: ros-humble-mirte-master-arm-control
+Architecture: amd64
+Version: 2-2025.06.04.11.05
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 696
+Depends: libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 11), libyaml-cpp0.7 (>= 0.7.0), ros-humble-backward-ros, ros-humble-control-toolbox, ros-humble-controller-manager, ros-humble-diff-drive-controller, ros-humble-effort-controllers, ros-humble-forward-command-controller, ros-humble-hardware-interface, ros-humble-joint-state-broadcaster, ros-humble-joint-trajectory-controller, ros-humble-mirte-master-description, ros-humble-mirte-msgs, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-robot-state-publisher, ros-humble-ros2-controllers, ros-humble-ros2controlcli, ros-humble-ros2launch, ros-humble-std-msgs, ros-humble-std-srvs, ros-humble-trajectory-msgs, ros-humble-twist-stamper, ros-humble-xacro, ros-humble-yaml-cpp-vendor
+Filename: ./ros-humble-mirte-master-arm-control_2-2025.06.04.11.05_amd64.deb
+Size: 161662
+MD5sum: ef4e008e9d56957bb67d71ccd271b3c5
+SHA1: 353842b6037e41e23c859b042ce289cd9e13b903
+SHA256: 6834d0575caf68e9e577488c066529d3cfed3a7bad3b8de6406197b5ef38e1f9
+SHA512: ee63cbba8b4046990716846d0e7f43be14bb0c05c1377f0b12e00c4496bda8d38796d2796bc34ee184cd54159360df0ae1f2d80a5edf97ec65da888642825fad
+Description: Simple simulation interface and template for setting up a hardware interface for ros_control
+
+Package: ros-humble-mirte-master-description
+Architecture: amd64
+Version: 2-2025.06.04.11.00
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 32082
+Filename: ./ros-humble-mirte-master-description_2-2025.06.04.11.00_amd64.deb
+Size: 6211316
+MD5sum: a633f616601356e6a69caf18a4888020
+SHA1: 1e66720b4b0824c436d445340e5811d2ea1d4a54
+SHA256: 1fbbd8784955f566f6c6fff5678c040ea2b225fd13108db348b2fabd6b372141
+SHA512: 1ee4243bf957d9c89dec7ca99ead284e654de8e59c5b4545c000a19a425833188340ee2ff0a97b4837c78cd167d2590ff0dce42b31daa41d0eeeb4737e68e853
+Description: TODO: Package description
+
+Package: ros-humble-mirte-moveit-config
+Architecture: amd64
+Version: 2-2025.06.04.11.00
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 83
+Depends: ros-humble-controller-manager, ros-humble-joint-state-publisher, ros-humble-joint-state-publisher-gui, ros-humble-mirte-master-description, ros-humble-moveit-configs-utils, ros-humble-moveit-kinematics, ros-humble-moveit-planners, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-visualization, ros-humble-moveit-setup-assistant, ros-humble-moveit-simple-controller-manager, ros-humble-robot-state-publisher, ros-humble-rviz-common, ros-humble-rviz-default-plugins, ros-humble-rviz2, ros-humble-tf2-ros, ros-humble-xacro
+Filename: ./ros-humble-mirte-moveit-config_2-2025.06.04.11.00_amd64.deb
+Size: 10666
+MD5sum: ed76e9aba10eab9003d93163d3080f2b
+SHA1: b7994975781d6cb15b4ad1fc383ac5556f40d9bc
+SHA256: 59aa134530e51f44a167f4157779b0abd71d6eb5c5bf4daed345aeb04fff5bd8
+SHA512: 9d75e44b69d1c5c8045bfd18449a5d28f6d8e5421ea77786ed84e8c84ffdc4fbe5fae78bbf42fc720badf63baad44192a8863b848c4c9ba8a4c35cc29f1219f3
+Homepage: http://moveit.ros.org/
+Description: An automatically generated package with all the configuration and launch files for using the mirte_master with the MoveIt Motion Planning Framework
+
+Package: ros-humble-mirte-msgs-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.01
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-mirte-msgs
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 3774
+Depends: ros-humble-mirte-msgs (= 2-2025.06.04.11.01)
+Filename: ./ros-humble-mirte-msgs-dbgsym_2-2025.06.04.11.01_amd64.ddeb
+Size: 2540170
+MD5sum: f7b8cee7c00d29b1c595e7cca32e84ea
+SHA1: 72b08773051a8af806ae53b04dcb1d5a34d04292
+SHA256: 8d3ee7ab778924974740fb6da29f6eb28033ec8b12f972b4513654243fccda94
+SHA512: 269567b7c8c480992e9668f04fa73d828433d6f4227408ab08d6109a651307dc46f5a4645e65d9d69e89e36df4a533f0e0d1371b8db44f7075e6e551f31f0be7
+Description: debug symbols for ros-humble-mirte-msgs
+Build-Ids: 0c11c7235e936513b8c9a59fe674d443eb2cdf4d 195d87db422438f607c4b137666afdd112889b17 328cd13947f82c40a1860d4ac8d98ab3d350b4d4 4fc3aef6ee83041b5507abad23ed7eaf2f60bc21 590caa8267ea443d0ac0d991b112b17e0fca3b30 884d41e1e4d5a6d6f2853d699aa0ce5281978dde a6b68d1764bc55c92239bad7aea8997c608c5571 aa69762d35394ad02ac0f721744843bae474030d c1f57d0c0455a1fd3de66401f2529db82b6fb4e5 d8f9aa2cdd260706e664f71d1304ed0c76116f3a f36a674f127fb5777ac3e03365e3c3df66d7768f fd71975d8df6714dfda7be3456a9e8ba1a0b0814
+
+Package: ros-humble-mirte-msgs
+Architecture: amd64
+Version: 2-2025.06.04.11.01
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 6594
+Depends: libc6 (>= 2.14), libgcc-s1 (>= 3.3.1), libpython3.10 (>= 3.10.0), libstdc++6 (>= 5.2), ros-humble-fastcdr, ros-humble-rosidl-default-runtime, ros-humble-sensor-msgs, ros-humble-std-msgs
+Filename: ./ros-humble-mirte-msgs_2-2025.06.04.11.01_amd64.deb
+Size: 338792
+MD5sum: 92066acf4f80fa4fdeabd85f4d126849
+SHA1: 907c087640c7e51ba0cbac6c29de66737b102bed
+SHA256: 082c3fc96324fe95ac45e69f09d50177eebd514868e5d945277753d55a1a8226
+SHA512: cd231553fdbd644cd897e51d28637b1f6ad0b4dad755db0349fd7d4f91e34d0fbea553b3f596da648a2da5db64430c250301525657c3248cde3ed8194070ffeb
+Description: The mirte_msgs package
+
+Package: ros-humble-mirte-pioneer-description
+Architecture: amd64
+Version: 2-2025.06.04.11.06
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 15630
+Filename: ./ros-humble-mirte-pioneer-description_2-2025.06.04.11.06_amd64.deb
+Size: 2414726
+MD5sum: 277fdd2fc6686739505f5bee85e1405c
+SHA1: dff5bbbd78d5fdad9d0aff6078d451dede01c967
+SHA256: ebdc8bfa144ff6ab9dad387f1c99ab55eed35d15d501120e7033a61d8b6c50b3
+SHA512: e28d6a611561adaf8a9ee4384ac7414f0dc4e0d5cb599becc1cbb1889acfca899ddf1efe1dec212ed7e3190fc157e616b5383e7444b8d42460d7b728616cb346
+Description: TODO: Package description
+
+Package: ros-humble-mirte-telemetrix-cpp-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.07
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-mirte-telemetrix-cpp
+Maintainer: Arend-Jan van Hilten <tmxcpp@arend-jan.com>
+Installed-Size: 24334
+Depends: ros-humble-mirte-telemetrix-cpp (= 2-2025.06.04.11.07)
+Filename: ./ros-humble-mirte-telemetrix-cpp-dbgsym_2-2025.06.04.11.07_amd64.ddeb
+Size: 22674340
+MD5sum: f1a58ed7954b6c973247af9bd9deb603
+SHA1: 42e02bf95993894174f344be68ead50eae85e3a3
+SHA256: b2849ff550d48f0fadfaf87b6d85fd6962ddfa8992e760655b13ba305d0a87cd
+SHA512: 2bccbb0060ae4072f06c626b2416427d45ccd5bd7b2fa0f9d1f85ec7c72c697ca76258c3c7e0ca5a14d9cb18258e1d9563daf2377a8ee7b888b81c1fa39b14be
+Description: debug symbols for ros-humble-mirte-telemetrix-cpp
+Build-Ids: 743f76b561b9270f0b3fc216998d8c85a5e93efc
+
+Package: ros-humble-mirte-telemetrix-cpp
+Architecture: amd64
+Version: 2-2025.06.04.11.07
+Priority: optional
+Section: misc
+Maintainer: Arend-Jan van Hilten <tmxcpp@arend-jan.com>
+Installed-Size: 5120
+Depends: libc6 (>= 2.34), libgcc-s1 (>= 3.3.1), libgpiod2 (>= 1.1), libopencv-core4.5d (>= 4.5.4+dfsg), libopencv-imgcodecs4.5d (>= 4.5.4+dfsg), libopencv-stitching4.5d (>= 4.5.4+dfsg), libstdc++6 (>= 11), libboost-all-dev, libgpiod-dev, libopencv-dev, ros-humble-ament-index-cpp, ros-humble-backward-ros, ros-humble-color-util, ros-humble-cv-bridge, ros-humble-launch, ros-humble-launch-ros, ros-humble-mirte-msgs, ros-humble-rclcpp, ros-humble-rcpputils, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-std-srvs
+Filename: ./ros-humble-mirte-telemetrix-cpp_2-2025.06.04.11.07_amd64.deb
+Size: 650948
+MD5sum: 5f1adf7a3b15eb1b4c577bd813b999c5
+SHA1: dc950fb64899991b62022af9b11c37381b9aeae3
+SHA256: ab615268de1e91cd47f4ad3cd273bea7b857e794bdf5c811580e5548acaf8eca
+SHA512: b7002f3a2390ab94ec73dc60cede2661ee2955a6aebea8a88c5be50aa3b1043dd9a5797db2e91f92db12dddc763e6678d6fabb361a359a00361c52ae8a954665
+Description: Telemetrix cpp implementation
+
+Package: ros-humble-mirte-teleop
+Architecture: amd64
+Version: 2-2025.06.04.11.09
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 45
+Depends: ros-humble-diagnostic-updater, ros-humble-teleop-twist-keyboard
+Filename: ./ros-humble-mirte-teleop_2-2025.06.04.11.09_amd64.deb
+Size: 5774
+MD5sum: 8c4e923668305258e89fd2875a77f4a6
+SHA1: a847ec8c50d4e250ddf82ec85d959b1e8901266d
+SHA256: 33f92d1ca9654c8b23017fc3a2d825fefdc27163b5d76db92adbd58ce63d3f3a
+SHA512: 8dbc3f296d93f58101ef5d339ae3d7ea209724b68b7a09791e06f7ad24be670f38afe861d667a99877d4024fde5a4c74817ab8a6b455bee01c93e69aaf58a68b
+Description: The mirte_teleop package
+
+Package: ros-humble-mirte-test
+Architecture: amd64
+Version: 2-2025.06.04.11.10
+Priority: optional
+Section: misc
+Maintainer: Arend-Jan van Hilten <a.j.vanhilten@tudelft.nl>
+Installed-Size: 84
+Filename: ./ros-humble-mirte-test_2-2025.06.04.11.10_amd64.deb
+Size: 15404
+MD5sum: 5c4293e227f9e70bb03f95de30adcbff
+SHA1: 6604a31feb31774b6b32eac1d8d1adf50c1e0b23
+SHA256: 05734b4ffb861e3596381cb761265fa8bcad24604cba9630025e4e2c975e9fbb
+SHA512: a06a4f3c8876826df6a991af05f9fe3556cddaea7c4d36c30c4eeccec75d6e6cc056d91717fa0afe2cb32b9a53b3e022fb6b048175be2df29d71a0f582fa01b4
+Description: TODO: Package description
+
+Package: ros-humble-mirte-zenoh-setup
+Architecture: amd64
+Version: 2-2025.06.04.11.11
+Priority: optional
+Section: misc
+Maintainer: Martin Klomp <m.klomp@tudelft.nl>
+Installed-Size: 136
+Depends: ros-humble-rmw-zenoh-cpp
+Filename: ./ros-humble-mirte-zenoh-setup_2-2025.06.04.11.11_amd64.deb
+Size: 14516
+MD5sum: baa1ada22a72be087d9c2b053d1189f0
+SHA1: 732bd7111d2e26c679156d64b73f75515c96e8f1
+SHA256: f95bade26654e186471788cf5350af21dc1a282eb2096bc0cc87932bdae2065d
+SHA512: b0970ff9f013aeea5947dfd064216293ad0f5aa0f7ef5f0a034777e47c70460c3e87b3369f51f991728cad5724f11a51ad1fb485930493cda2ce56f7500d8d57
+Description: The mirte_zenoh_setup package
+
+Package: ros-humble-usb-cam-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2-2025.06.04.11.11
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-usb-cam
+Maintainer: Evan Flynn <evanflynn.msu@gmail.com>
+Installed-Size: 2636
+Depends: ros-humble-usb-cam (= 2-2025.06.04.11.11)
+Filename: ./ros-humble-usb-cam-dbgsym_2-2025.06.04.11.11_amd64.ddeb
+Size: 2429452
+MD5sum: 026d527346ad372d57cabe130bd44c8a
+SHA1: b0a474958fc2aca6a820a5a0ed54c25c33f7f684
+SHA256: 2df0e5b6f26e03a982ef893fb05527a28cd96635ba2d32ef924991513f584179
+SHA512: 7eb7924e3f03741b6e06826059acc5a1aecc9e0312a57cec159e5e09728fdf5a9e60811aa8cd5b2a11cc3cdee84ca65f612cae6ad05fa3ebb70e22fe67380a61
+Description: debug symbols for ros-humble-usb-cam
+Build-Ids: 0594bd3db918275237e5af6955a49a8b3660c5ae 0b4b7879f51aa32adb76eb647a0363263c2cdbc6 de176608f8589e15f1decf4e6c89e6f949a29b1f
+
+Package: ros-humble-usb-cam
+Architecture: amd64
+Version: 2-2025.06.04.11.11
+Priority: optional
+Section: misc
+Maintainer: Evan Flynn <evanflynn.msu@gmail.com>
+Installed-Size: 692
+Depends: libavcodec58 (>= 7:4.4), libavutil56 (>= 7:4.4), libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libopencv-core4.5d (>= 4.5.4+dfsg), libopencv-imgproc4.5d (>= 4.5.4+dfsg), libstdc++6 (>= 11), libswscale5 (>= 7:4.4), ffmpeg, libavcodec-dev, libavformat-dev, libavutil-dev, libswscale-dev, python3-pydantic, ros-humble-builtin-interfaces, ros-humble-camera-info-manager, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-image-transport-plugins, ros-humble-rclcpp, ros-humble-rclcpp-components, ros-humble-rosidl-default-runtime, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-std-srvs, v4l-utils
+Filename: ./ros-humble-usb-cam_2-2025.06.04.11.11_amd64.deb
+Size: 170724
+MD5sum: 746871c010ed95a35033e0a4a6024601
+SHA1: 21952885e20b3ad7d8ef5b5e9a2e2ab9604fb370
+SHA256: 425a958634b2ee21fe53e43604024f7d52793b8241c82dcadd3da5902a73e02d
+SHA512: 0c98ceaac477e28604611e8bffd976fe8f01676947f16983f4113398b44d1043b220fb7bec0b8566cddd3ac9779590304e0a5fdbf044d454b8e2ea0034eae03b
+Homepage: http://wiki.ros.org/usb_cam
+Description: A ROS Driver for V4L USB Cameras
+
+Package: ros-humble-web-video-server-dbgsym
+Package-Type: ddeb
+Architecture: amd64
+Version: 2.1.0-2-gef682a4-2025.06.04.11.13
+Auto-Built-Package: debug-symbols
+Priority: optional
+Section: debug
+Source: ros-humble-web-video-server
+Maintainer: Błażej Sowa <blazej@fictionlab.pl>
+Installed-Size: 6392
+Depends: ros-humble-web-video-server (= 2.1.0-2-gef682a4-2025.06.04.11.13)
+Filename: ./ros-humble-web-video-server-dbgsym_2.1.0-2-gef682a4-2025.06.04.11.13_amd64.ddeb
+Size: 5966156
+MD5sum: d8f8c476e78b9eb64abe176821a7bc0e
+SHA1: 81e76e5c32354c29e049c4d2a1e3072590997f25
+SHA256: 7dab2d22aef37238ec562f72c16f068cf4b22699ad6c068351d70ed7ebe110bd
+SHA512: e8e263c2c35fe918520d43d4dcddc1e565fad7d9f47f7038c42b1e69c0a742afca79b365dde65f99da2f500b166d705cc11d4cc0f088516745eb4e26f7aa0a5c
+Description: debug symbols for ros-humble-web-video-server
+Build-Ids: 0f272f7e9ad2850f453a22c2f09c627dad0762f2 7d014efb9f87ba6ac120785cca9b9f7bf2ebbabb
+
+Package: ros-humble-web-video-server
+Architecture: amd64
+Version: 2.1.0-2-gef682a4-2025.06.04.11.13
+Priority: optional
+Section: misc
+Maintainer: Błażej Sowa <blazej@fictionlab.pl>
+Installed-Size: 790
+Depends: libavcodec58 (>= 7:4.4), libavformat58 (>= 7:4.4), libavutil56 (>= 7:4.4), libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libopencv-core4.5d (>= 4.5.4+dfsg), libopencv-imgcodecs4.5d (>= 4.5.4+dfsg), libopencv-imgproc4.5d (>= 4.5.4+dfsg), libopencv-stitching4.5d (>= 4.5.4+dfsg), libstdc++6 (>= 11), libswscale5 (>= 7:4.4), ros-humble-async-web-server-cpp, ffmpeg, libavcodec-dev, libavformat-dev, libavutil-dev, libswscale-dev, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-rclcpp, ros-humble-rclcpp-components, ros-humble-sensor-msgs
+Filename: ./ros-humble-web-video-server_2.1.0-2-gef682a4-2025.06.04.11.13_amd64.deb
+Size: 183468
+MD5sum: 2d56d4f089598a7f870dfd80bd5e0592
+SHA1: 7e1bfd1309f5b5ef58b0662696b9bf31d2675aa9
+SHA256: e2db9a0cb5807ace376d3d9066ceca08fab7ea2c68fa745740c3e88dfb0fd1dd
+SHA512: 20111ff345f4bfe7375341c35b7ea826fcbe9c1c8504fd522b181f339219456d0562d382d52b848b7e35c3d06225514d293e033c969e1e845a990b950df11f39
+Homepage: http://ros.org/wiki/web_video_server
+Description: HTTP Streaming of ROS Image Topics in Multiple Formats
+
