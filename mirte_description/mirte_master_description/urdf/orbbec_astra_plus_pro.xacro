@@ -117,10 +117,19 @@
      ========================================================= -->
 
      <xacro:macro name="sensor_orbbec_astra_pro_plus_gazebo">
+
+          <plugin
+               filename="gz-sim-sensors-system"
+               name="gz::sim::systems::Sensors">
+               <render_engine>ogre2</render_engine>
+          </plugin>
+
           <gazebo reference="${name}_link">
-             <sensor name="${name}" type="depth">
+             <sensor name="${name}" type="rgbd_camera">
                 <visualize>true</visualize>
                 <update_rate>60.0</update_rate>
+                <alwaysOn>true</alwaysOn>
+                <topic>rgbd_camera</topic>
                 <camera name="RS_D455">
                     <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
                     <image>
@@ -132,25 +141,15 @@
                         <near>0.05</near>
                         <far>10.0</far>
                     </clip>
+                    <distorsion>
+                         <k1>0.0</k1>
+                         <k2>0.0</k2>
+                         <k3>0.0</k3>
+                         <p1>0.0</p1>
+                         <p2>0.0</p2>
+                    </distorsion>
+                    <optical_frame_id>camera_link</optical_frame_id>
                 </camera>
-                <plugin name="${name}_controller" filename="libgazebo_ros_camera.so">
-                    <baseline>0.1</baseline>
-                    <alwaysOn>true</alwaysOn>
-                    <updateRate>30</updateRate>
-                    <frame_name>${name}_depth_optical_frame</frame_name>
-                    <pointCloudCutoff>0.6</pointCloudCutoff>
-                    <pointCloudCutoffMax>8.0</pointCloudCutoffMax>
-                    <distortionK1>0</distortionK1>
-                    <distortionK2>0</distortionK2>
-                    <distortionK3>0</distortionK3>
-                    <distortionT1>0</distortionT1>
-                    <distortionT2>0</distortionT2>
-                    <CxPrime>0</CxPrime>
-                    <Cx>0</Cx>
-                    <Cy>0</Cy>
-                    <focalLength>0</focalLength>
-                    <hackBaseline>0</hackBaseline>
-                </plugin>
             </sensor>
          </gazebo>
      </xacro:macro>

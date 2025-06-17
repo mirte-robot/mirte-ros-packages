@@ -353,7 +353,6 @@
             upper="3.14"
             effort="0.0"
             velocity="0.0" />
-        <mimic joint="gripper_joint" multiplier="1.4"/>
     </joint>
 
     <link
@@ -466,7 +465,6 @@
             upper="3.14"
             effort="0.0"
             velocity="0.0" />
-        <mimic joint="gripper_joint" multiplier="-1.4"/>
     </joint>
     <link
         name="gripper_finger_l">
@@ -579,7 +577,6 @@
             effort="2.0"
             velocity="2.0"
         />
-        <mimic joint="gripper_joint" multiplier="-1"/>
     </joint>
 
 

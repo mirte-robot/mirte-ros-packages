@@ -18,7 +18,7 @@
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
         <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
@@ -46,7 +46,7 @@
 <ros2_control name="ros2_arm_control" type="system">
       <hardware>
         <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
@@ -88,7 +88,7 @@
 <ros2_control name="ros2_gripper_control" type="system">
      <hardware>
         <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
@@ -104,7 +104,6 @@
     <xacro:if value="$(arg sim)">
 
       <joint name="_Gripper_joint_r">
-        <param name="mimic">gripper_joint</param>
         <param name="multiplier">-1</param>
         <command_interface name="position"/>
         <state_interface name="position" />
@@ -112,7 +111,6 @@
       </joint>
 
       <joint name="_gripper_link_joint_l">
-        <param name="mimic">gripper_joint</param>
         <param name="multiplier">-1.4</param> 
         <command_interface name="position"/>
         <state_interface name="position" />
@@ -120,7 +118,6 @@
       </joint>
 
       <joint name="_gripper_link_joint_r">
-        <param name="mimic">gripper_joint</param>
         <param name="multiplier">1.4</param>  
         <command_interface name="position"/>
         <state_interface name="position" />
@@ -132,25 +129,31 @@
 </ros2_control>
 
 <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
        <parameters>$(find mirte_base_control)/config/mirte_base_control.yaml</parameters>
        <xacro:if value="$(arg arm_enable)">
           <parameters>$(find mirte_master_arm_control)/config/mirte_master_arm_control.yaml</parameters>
        </xacro:if>
     </plugin>
-    <plugin filename="libgazebo_ros_planar_move.so" name="gazebo_planar_move">
-       <robot_base_frame>base_link</robot_base_frame> 
+    <plugin
+      filename="gz-sim-mecanum-drive-system"
+      name="gz::sim::systems::MecanumDrive">
+      <front_left_joint>front_left_wheel_joint</front_left_joint>
+      <front_right_joint>front_right_wheel_joint</front_right_joint>
+      <back_left_joint>rear_left_wheel_joint</back_left_joint>
+      <back_right_joint>rear_right_wheel_joint</back_right_joint>
+      <wheel_separation>1.25</wheel_separation>
+      <wheelbase>1.511</wheelbase>
+      <wheel_radius>0.3</wheel_radius>
+      <min_acceleration>-5</min_acceleration>
+      <max_acceleration>5</max_acceleration>
+      <topic>cmd_vel</topic>
+      <odom_topic>odom</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+      <odom_publisher_frequency>30</odom_publisher_frequency>
+      <tf_topic>/tf</tf_topic>
     </plugin>
-    <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
-        <ros>
-            <namespace>groundtruth</namespace>
-            <remapping>odom:=odom</remapping>
-        </ros> 
-        <frame_name>world</frame_name>
-        <body_name>base_link</body_name>
-        <update_rate>200.0</update_rate>
-        <gaussian_noise>0.0</gaussian_noise>
-     </plugin>
 
 </gazebo>
 
