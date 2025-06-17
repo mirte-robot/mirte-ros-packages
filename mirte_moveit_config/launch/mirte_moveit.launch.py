@@ -13,13 +13,13 @@ def generate_launch_description():
 
     # Declare a launch argument for use_sim_time
     use_sim_time_arg = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='false',
-        description='Use simulation (Gazebo) clock if true'
+        "use_sim_time",
+        default_value="false",
+        description="Use simulation (Gazebo) clock if true",
     )
 
     # Launch configuration variable
-    use_sim_time = LaunchConfiguration('use_sim_time')
+    use_sim_time = LaunchConfiguration("use_sim_time")
 
     moveit_config = (
         MoveItConfigsBuilder("mirte")
@@ -66,7 +66,7 @@ def generate_launch_description():
     return LaunchDescription(
         [
             use_sim_time_arg,
-            SetParameter(name='use_sim_time', value=use_sim_time),
+            SetParameter(name="use_sim_time", value=use_sim_time),
             rviz_node,
             move_group_node,
         ]
