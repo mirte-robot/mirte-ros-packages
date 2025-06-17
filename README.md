@@ -1,33 +1,46 @@
-# Usage
+# mirte-ros-packages
 
-Check the [MIRTE documentation](https://docs.mirte.org/) for usage and ROS API.
+This package provides the ROS2 pcakages for the [MIRTE robot](https://mirte.org).
+Please read the [MIRTE documentation](https://docs.mirte.org/develop/doc/mirte_os/supported_hardware.html) 
+for further documentation of this repository.
 
-# Build
-
-To build all the MIRTE ROS2 packages, you can build them:
+## Install
 
 ```sh
-cd ~/ros2_ws/src
-git clone https://gitub.com/mirte-robot/mirte-ros-packages
-cd ..
-rosdep install --from-paths src --ignore-src -r -y
-colcon build
+git submodule update --init --recursive
+rosdep install -y --from-paths src/ --ignore-src --rosdistro humble
+colcon build --symlink-install
 ```
 
-# Test C++ and python code style
+The mirte-telemetrix-cpp package needs a connected microcontroller with
+the [MIRTE telemetrix server installed](https://docs.mirte.org/develop/doc/mirte_os/install_mirte_software.html#install-mcu-software).
 
-The following checks are done in the github action pipeline. You can also
-run (and fix) these before pushing.
+## Checks
 
-To check the C++ and Python code style run:
-```sh
-pip install black
-black --check **/**.py
-# Fix by using
-black **/**.py
+To contribute to this repository the code needs to pass the python and c++
+style checks.
 
-sudo apt install clang-format # preferably version 14, 10 should be fine
-clang-format --dry-run --Werror ./**/**.cpp -style=llvm
-# Fix by using
-clang-format --Werror ./**/**.cpp -style=llvm -i
-```
+- Python stylechecks:
+
+
+  To check this locally before you commit/push:
+  ```sh
+  pip install black
+  black --check **/**.py
+  # Fix by using
+  black **/**.py
+  ```
+
+- C++ stylechecks:
+
+  To check this locally before you commit/push:
+  ```sh
+  sudo apt install clang-format
+  clang-format --dry-run --Werror ./**/**.cpp -style=llvm
+  # Fix by using
+  clang-format --Werror ./**/**.cpp -style=llvm -i
+  ```
+
+## License
+
+This work is licensed under a Apache-2.0 OSS license.
