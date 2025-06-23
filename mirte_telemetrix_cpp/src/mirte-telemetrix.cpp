@@ -59,10 +59,21 @@ TelemetrixNode::~TelemetrixNode() {
 
 bool TelemetrixNode::start() {
   using namespace std::placeholders;
-
+  
   auto parser = std::make_shared<Parser>(node_);
-
-
+  std::shared_ptr<tmx_cpp::TMX> tmx;
+  if (this->node_->has_parameter("port")) {
+    auto port = this->node_->get_parameter("port").as_string();
+    std::cout << "Using port: " << port << std::endl;
+    if (!tmx_cpp::TMX::check_port(port)) {
+      std::cout << "Port " << port << " is not available" << std::endl;
+      rclcpp::shutdown();
+      return false;
+    }
+    tmx = std::make_shared<tmx_cpp::TMX>([&]() { rclcpp::shutdown(); }, port);
+  } else {
+    std::cout << "No port specified, searching for available ports" << std::endl;
+  
   auto ports = tmx_cpp::TMX::get_available_ports();
   decltype(ports) available_ports;
 
@@ -121,6 +132,8 @@ bool TelemetrixNode::start() {
 
   tmx = std::make_shared<tmx_cpp::TMX>([&]() { rclcpp::shutdown(); },
                                        available_ports[0].port_name);
+  std::cout << "Using port: " << available_ports[0].port_name << std::endl;
+}
   tmx->sendMessage(tmx_cpp::MESSAGE_TYPE::GET_PICO_UNIQUE_ID, {});
   tmx->setScanDelay(1000 / parser->get_frequency());
 
