@@ -73,6 +73,7 @@ add_executable(
   src/boards/atmega328.cpp
   src/boards/pico.cpp
   src/boards/pcb.cpp
+  src/boards/raw.cpp
   src/mirte-actuators.cpp
   src/mirte-modules.cpp
   src/mirte-sensors.cpp

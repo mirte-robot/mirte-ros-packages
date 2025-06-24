@@ -23,7 +23,10 @@ public:
   std::shared_ptr<tmx_cpp::TMX> tmx;
   std::shared_ptr<rclcpp::Node> nh;
   std::shared_ptr<Mirte_Board> board;
+  std::shared_ptr<Parser> parser;
+  NodeData node_data;
   std::vector<std::shared_ptr<TelemetrixDevice>> actuators;
+  void start();
 
 private:
   // Service: set_digital_pin_value
