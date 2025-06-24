@@ -10,10 +10,10 @@ using connector_map = std::map<std::string, pin_map>;
 #include <memory> // for shared_ptr, __shared_ptr_access
 #include <string> // for string, basic_string, operator<
 
-#include "tmx_cpp/tmx.hpp"
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp"
 #include "mirte_telemetrix_cpp/pcbs/v06.hpp"
 #include "mirte_telemetrix_cpp/pcbs/v08.hpp"
+#include "tmx_cpp/tmx.hpp"
 
 #include <mirte_msgs/srv/get_board_characteristics.hpp>
 
@@ -38,8 +38,8 @@ public:
   /// @return True if the pin is PWM capable
   virtual const bool is_pwm_pin(uint8_t pin) const = 0;
 
-  static std::shared_ptr<Mirte_Board> create(std::shared_ptr<Parser> parser, 
-                                              std::shared_ptr<tmx_cpp::TMX> tmx);
+  static std::shared_ptr<Mirte_Board> create(std::shared_ptr<Parser> parser,
+                                             std::shared_ptr<tmx_cpp::TMX> tmx);
 
   void get_board_characteristics_service_callback(
       const mirte_msgs::srv::GetBoardCharacteristics::Request::ConstSharedPtr
@@ -70,7 +70,8 @@ public:
   /// @return True if the pin is PWM capable
   virtual const bool is_pwm_pin(uint8_t pin) const override;
 };
-class Mirte_Board_raw : public Mirte_Board { // add config stuff + read from features.
+class Mirte_Board_raw
+    : public Mirte_Board { // add config stuff + read from features.
 public:
   Mirte_Board_raw(std::shared_ptr<tmx_cpp::TMX> tmx);
   std::map<std::string, int> resolveConnector(std::string connector) override;

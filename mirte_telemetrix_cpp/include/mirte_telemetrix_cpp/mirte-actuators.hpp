@@ -27,6 +27,7 @@ public:
   NodeData node_data;
   std::vector<std::shared_ptr<TelemetrixDevice>> actuators;
   void start();
+
 private:
   // Service: set_digital_pin_value
   rclcpp::Service<mirte_msgs::srv::SetDigitalPinValue>::SharedPtr

@@ -6,7 +6,8 @@
 #include <mirte_telemetrix_cpp/sensors/sonar_monitor.hpp>
 
 Mirte_Sensors::Mirte_Sensors(NodeData node_data, std::shared_ptr<Parser> parser)
-    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board), parser(parser), node_data(node_data) {}
+    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board),
+      parser(parser), node_data(node_data) {}
 void Mirte_Sensors::start() {
   using namespace std::placeholders;
 

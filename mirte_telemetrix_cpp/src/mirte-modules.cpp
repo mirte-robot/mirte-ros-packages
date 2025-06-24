@@ -11,10 +11,10 @@
 #include <mirte_telemetrix_cpp/util.hpp>
 
 Mirte_modules::Mirte_modules(NodeData node_data, std::shared_ptr<Parser> parser)
-    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board), parser(parser), 
-      node_data(node_data) {
+    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board),
+      parser(parser), node_data(node_data) {
   this->module_sys = std::make_shared<tmx_cpp::Modules>(tmx);
-    }
+}
 void Mirte_modules::start() {
   RCLCPP_INFO(nh->get_logger(), "Proccessing HiWonder Modules [ASYNC]");
   auto hiwonder_mods_future =

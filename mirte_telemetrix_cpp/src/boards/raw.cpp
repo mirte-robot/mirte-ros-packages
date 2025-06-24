@@ -11,7 +11,8 @@ Mirte_Board_raw::Mirte_Board_raw(std::shared_ptr<tmx_cpp::TMX> tmx) {
 }
 
 int Mirte_Board_raw::resolvePin(std::string pin_name) {
-    tmx->get_feature((tmx_cpp::MESSAGE_TYPE)((int)tmx_cpp::MESSAGE_TYPE::MAX-1));
+  tmx->get_feature(
+      (tmx_cpp::MESSAGE_TYPE)((int)tmx_cpp::MESSAGE_TYPE::MAX - 1));
 
   // std::cout << "Mirte_Board_raw::resolvePin " << pin_name << std::endl;
   if (auto pin = try_parse_int(pin_name)) {
@@ -25,7 +26,7 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
   } else if (starts_with(pin_name, "A")) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
       auto pin_num = pin.value();
-      if(pin_num >= 0 && pin_num < tmx->board_features.analog_pins) {
+      if (pin_num >= 0 && pin_num < tmx->board_features.analog_pins) {
         return pin_num + tmx->board_features.analog_offset;
       } else {
         std::cerr << "Invalid analog pin number: " << pin_num << std::endl;
@@ -96,22 +97,23 @@ Mirte_Board_raw::resolveConnector(std::string connector) {
 // }
 
 const bool Mirte_Board_raw::is_analog_pin(uint8_t pin) const {
-//   switch (pin) {
-//   case 26:
-//   case 27:
-//   case 28:
-//   case 29: // The internal temperature sensor
-//     return true;
-//   default:
-//     return false;
-//   }
-      if(pin >= tmx->board_features.analog_offset && pin < (tmx->board_features.analog_offset + tmx->board_features.analog_pins)) {
-        return true;
-      } else {
-        
-        return false;
-      }
-    
+  //   switch (pin) {
+  //   case 26:
+  //   case 27:
+  //   case 28:
+  //   case 29: // The internal temperature sensor
+  //     return true;
+  //   default:
+  //     return false;
+  //   }
+  if (pin >= tmx->board_features.analog_offset &&
+      pin < (tmx->board_features.analog_offset +
+             tmx->board_features.analog_pins)) {
+    return true;
+  } else {
+
+    return false;
+  }
 }
 
 const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const { return false; }
