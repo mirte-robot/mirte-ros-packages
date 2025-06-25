@@ -61,90 +61,76 @@ bool TelemetrixNode::start() {
   using namespace std::placeholders;
 
   auto parser = std::make_shared<Parser>(node_);
-  std::shared_ptr<tmx_cpp::TMX> tmx;
-  if (this->node_->has_parameter("port")) {
-    auto port = this->node_->get_parameter("port").as_string();
-    std::cout << "Using port: " << port << std::endl;
-    if (!tmx_cpp::TMX::check_port(port)) {
-      std::cout << "Port " << port << " is not available" << std::endl;
-      rclcpp::shutdown();
-      return false;
-    }
-    tmx = std::make_shared<tmx_cpp::TMX>([&]() { rclcpp::shutdown(); }, port);
-  } else {
-    std::cout << "No port specified, searching for available ports"
-              << std::endl;
 
-    auto ports = tmx_cpp::TMX::get_available_ports();
-    decltype(ports) available_ports;
-
-    for (auto &port : ports) {
-      // maybe move this to a function in tmx
-      std::cout << "try " << port.port_name << std::endl;
-      if (!tmx_cpp::TMX::is_accepted_port(port)) {
-        continue;
-      }
-      if (!tmx_cpp::TMX::check_port(port.port_name)) {
-        continue;
-      }
-      std::cout << "found " << port.port_name << std::endl;
-      available_ports.push_back(port);
-    }
-    if (available_ports.size() == 0) {
-      std::cout << "No ports available" << std::endl;
-      // FIXME: REMOVE DEBUG HACK
-      // rclcpp::spin(s_node);
-      rclcpp::shutdown();
-      return false;
-    }
-    if (available_ports.size() > 1) {
-      std::cout << "More than one port available, picking the first one"
-                << std::endl;
-    }
-
-    if (false) {
-      auto mcu_id = 12; // TODO: add to parsing and config
-      bool found = false;
-      for (auto &port : available_ports) {
-        auto id = tmx_cpp::TMX::get_id(port);
-        std::cout << "ID: " << std::hex << (int)id << std::endl;
-        if (id == 0xff) { // default flash value is 0xff, so no id set
-          auto check = tmx_cpp::TMX::set_id(port, mcu_id);
-          if (!check) {
-            std::cout << "Failed to set MCU ID" << std::endl;
-            rclcpp::shutdown();
-            return false;
-          } else {
-            id = mcu_id;
-          }
-        }
-        if (id == mcu_id) {
-          available_ports = {port};
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        std::cout << "No port with MCU ID " << mcu_id << " found" << std::endl;
-        rclcpp::shutdown();
-        return false;
-      }
-    }
-
-    tmx = std::make_shared<tmx_cpp::TMX>([&]() { rclcpp::shutdown(); },
-                                         available_ports[0].port_name);
-    std::cout << "Using port: " << available_ports[0].port_name << std::endl;
-  }
-  tmx->sendMessage(tmx_cpp::MESSAGE_TYPE::GET_PICO_UNIQUE_ID, {});
-  tmx->setScanDelay(1000 / parser->get_frequency());
-
-  this->board = Mirte_Board::create(parser, tmx);
+  this->board = Mirte_Board::create(parser);
 
   this->characteristics_service =
       node_->create_service<mirte_msgs::srv::GetBoardCharacteristics>(
           "get_board_characteristics",
           std::bind(&Mirte_Board::get_board_characteristics_service_callback,
                     this->board, _1, _2));
+
+  auto ports = tmx_cpp::TMX::get_available_ports();
+  decltype(ports) available_ports;
+
+  for (auto &port : ports) {
+    // maybe move this to a function in tmx
+    std::cout << "try " << port.port_name << std::endl;
+    if (!tmx_cpp::TMX::is_accepted_port(port)) {
+      continue;
+    }
+    if (!tmx_cpp::TMX::check_port(port.port_name)) {
+      continue;
+    }
+    std::cout << "found " << port.port_name << std::endl;
+    available_ports.push_back(port);
+  }
+  if (available_ports.size() == 0) {
+    std::cout << "No ports available" << std::endl;
+    // FIXME: REMOVE DEBUG HACK
+    // rclcpp::spin(s_node);
+    rclcpp::shutdown();
+    return false;
+  }
+  if (available_ports.size() > 1) {
+    std::cout << "More than one port available, picking the first one"
+              << std::endl;
+  }
+
+  if (false) {
+    auto mcu_id = 12; // TODO: add to parsing and config
+    bool found = false;
+    for (auto &port : available_ports) {
+      auto id = tmx_cpp::TMX::get_id(port);
+      std::cout << "ID: " << std::hex << (int)id << std::endl;
+      if (id == 0xff) { // default flash value is 0xff, so no id set
+        auto check = tmx_cpp::TMX::set_id(port, mcu_id);
+        if (!check) {
+          std::cout << "Failed to set MCU ID" << std::endl;
+          rclcpp::shutdown();
+          return false;
+        } else {
+          id = mcu_id;
+        }
+      }
+      if (id == mcu_id) {
+        available_ports = {port};
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      std::cout << "No port with MCU ID " << mcu_id << " found" << std::endl;
+      rclcpp::shutdown();
+      return false;
+    }
+  }
+
+  tmx = std::make_shared<tmx_cpp::TMX>([&]() { rclcpp::shutdown(); },
+                                       available_ports[0].port_name);
+  tmx->sendMessage(tmx_cpp::MESSAGE_TYPE::GET_PICO_UNIQUE_ID, {});
+  tmx->setScanDelay(1000 / parser->get_frequency());
+
   NodeData node_data{node_, tmx, board};
 
   std::cout << "Start adding" << std::endl;
@@ -152,9 +138,6 @@ bool TelemetrixNode::start() {
   this->actuators = std::make_shared<Mirte_Actuators>(node_data, parser);
   this->monitor = std::make_shared<Mirte_Sensors>(node_data, parser);
   this->modules = std::make_shared<Mirte_modules>(node_data, parser);
-  this->actuators->start();
-  this->monitor->start();
-  this->modules->start();
   std::cout << "Done adding" << std::endl;
   return true;
 }
