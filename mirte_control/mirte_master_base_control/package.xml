@@ -75,7 +75,7 @@
   <exec_depend>diff_drive_controller</exec_depend>
   <exec_depend>effort_controllers</exec_depend>
   <exec_depend>twist_stamper</exec_depend>
-
+  <exec_depend>clearpath_mecanum_drive_controller</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

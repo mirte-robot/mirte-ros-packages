@@ -36,7 +36,7 @@ def generate_launch_description():
                     "default_transport": "theora",
                     "port": 8181,
                     "default_stream_type": "ros_compressed",
-                    "address": "0.0.0.0",  # Nginx will proxy it on /ros-video/
+                    "address": "localhost",  # Nginx will proxy it on /ros-video/
                 }
             ],
         ),
