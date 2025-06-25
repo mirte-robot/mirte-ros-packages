@@ -6,11 +6,9 @@
 
 Mirte_Actuators::Mirte_Actuators(NodeData node_data,
                                  std::shared_ptr<Parser> parser)
-    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board),
-      parser(parser), node_data(node_data) {}
-
-void Mirte_Actuators::start() {
+    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board) {
   using namespace std::placeholders;
+
   this->actuators = Motor::get_motors(node_data, parser);
 
   auto servos = Servo::get_servos(node_data, parser);

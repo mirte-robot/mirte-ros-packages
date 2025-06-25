@@ -1,8 +1,7 @@
 #include <mirte_telemetrix_cpp/mirte-board.hpp>
 
 std::shared_ptr<Mirte_Board>
-Mirte_Board::create(std::shared_ptr<Parser> parser,
-                    std::shared_ptr<tmx_cpp::TMX> tmx) {
+Mirte_Board::create(std::shared_ptr<Parser> parser) {
   auto keys = parser->get_params_keys("device.mirte");
   auto values = parser->get_params_name("device.mirte");
   if (keys.count("type")) {
@@ -19,8 +18,6 @@ Mirte_Board::create(std::shared_ptr<Parser> parser,
           return std::make_shared<Mirte_Board_atmega328p>();
         } else if (board == "pico") {
           return std::make_shared<Mirte_Board_pico>();
-        } else if (board == "raw") {
-          return std::make_shared<Mirte_Board_raw>(tmx);
         } else {
           std::cerr << "Unknown board: " << board << std::endl;
         }

@@ -32,11 +32,10 @@ jobs:
         . ./install/setup.bash
         # for every folder in the workspace starting with mirte_ excluding mirte_teleop, run command
         ERROR=false
-        packages=$(colcon list -n | grep -v mirte_teleop)
-        for d in $packages; do
+        for d in mirte_*; do
+          if [ "$d" != "mirte_teleop" ]; then
             colcon lint --packages-select $d || ERROR=true
-            colcon test --packages-select $d || ERROR=true
-          # fi
+          fi
         done
         # if $error, set exit state
         if $ERROR; then

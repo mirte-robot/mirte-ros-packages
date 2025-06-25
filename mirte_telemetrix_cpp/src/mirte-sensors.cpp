@@ -6,9 +6,7 @@
 #include <mirte_telemetrix_cpp/sensors/sonar_monitor.hpp>
 
 Mirte_Sensors::Mirte_Sensors(NodeData node_data, std::shared_ptr<Parser> parser)
-    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board),
-      parser(parser), node_data(node_data) {}
-void Mirte_Sensors::start() {
+    : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board) {
   using namespace std::placeholders;
 
   auto keypads = KeypadMonitor::get_keypad_monitors(node_data, parser);
@@ -142,7 +140,7 @@ void Mirte_Sensors::analog_pin_service_callback(
 
   this->pin_map[pin] = {PIN_USE::ANALOG_IN, -1, true, has_digital_cb};
 
-  this->tmx->setPinMode(pin, tmx_cpp::TMX::PIN_MODES::ANALOG_INPUT, true, 1);
+  this->tmx->setPinMode(pin, tmx_cpp::TMX::PIN_MODES::ANALOG_INPUT, true, 0);
   if (!has_analog_cb) {
     RCLCPP_INFO(this->nh->get_logger(), "Add Analog Callback to Pin %d", pin);
 
