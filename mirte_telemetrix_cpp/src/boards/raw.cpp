@@ -27,7 +27,12 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
       auto pin_num = pin.value();
       if (pin_num >= 0 && pin_num < tmx->board_features.analog_pins) {
-        return pin_num + tmx->board_features.analog_offset;
+        auto pin = tmx->board_features.analog_pins_list[pin_num];
+        if (pin == 0xff) {
+          return -1; // pin not available, some boards have a non-contiguous
+                     // analog pin list, so we return -1 if the pin is not available
+        }
+        return pin; // return the actual pin number
       } else {
         std::cerr << "Invalid analog pin number: " << pin_num << std::endl;
         std::cerr << "Valid range: 0-" << tmx->board_features.analog_pins - 1
@@ -106,14 +111,12 @@ const bool Mirte_Board_raw::is_analog_pin(uint8_t pin) const {
   //   default:
   //     return false;
   //   }
-  if (pin >= tmx->board_features.analog_offset &&
-      pin < (tmx->board_features.analog_offset +
-             tmx->board_features.analog_pins)) {
-    return true;
-  } else {
-
-    return false;
+  for(const auto &p : tmx->board_features.analog_pins_list) {
+    if (p == pin) {
+      return true;
+    }
   }
+  return false;
 }
 
 const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const { return false; }
