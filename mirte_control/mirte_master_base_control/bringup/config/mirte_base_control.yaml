@@ -9,45 +9,36 @@
       type: pid_controller/PidController
 
     mirte_base_controller:
-      type: clearpath_mecanum_drive_controller/MecanumDriveController
+      type: mecanum_drive_controller/MecanumDriveController
 
 /**/mirte_base_controller:
   ros__parameters:
-    # hardware_parameters:
-    # ticks: 1320
-    use_stamped_vel: false  # Stamped will be the future default
     reference_timeout: 0.25
     command_timeout: 0.25
-    command_joint_names: ["pid_wheels_controller/front_left_wheel_joint", "pid_wheels_controller/rear_left_wheel_joint", "pid_wheels_controller/rear_right_wheel_joint", "pid_wheels_controller/front_right_wheel_joint"]
-    state_joint_names: ["front_left_wheel_joint", "rear_left_wheel_joint", "rear_right_wheel_joint", "front_right_wheel_joint"]
+
+    front_left_wheel_command_joint_name: front_left_wheel_joint
+    rear_left_wheel_command_joint_name: rear_left_wheel_joint
+    rear_right_wheel_command_joint_name: rear_right_wheel_joint
+    front_right_wheel_command_joint_name: front_right_wheel_joint
+
+    front_left_wheel_state_joint_name: front_left_wheel_joint
+    rear_left_wheel_state_joint_name: rear_left_wheel_joint
+    rear_right_wheel_state_joint_name: rear_right_wheel_joint
+    front_right_wheel_state_joint_name: front_right_wheel_joint
+
     interface_name: velocity
 
     kinematics:
       base_frame_offset: { x: 0.0, y: 0.0, theta: 0.0 }
-
       wheels_radius: 0.051
+      sum_of_robot_center_projection_on_X_Y_axis: 0.225
 
-        # Wheels kinematic parameters [m]: (from odometry.hpp)
-        # lx and ly represent the distance from the robot's center to the wheels
-        #  projected on the x and y axis with origin at robots center respectively,
-        #  sum_of_robot_center_projection_on_X_Y_axis_ = lx+ly
-
-      sum_of_robot_center_projection_on_X_Y_axis: 0.225 # 0.18/2+0.27/2 = 0.225
-          # wheel_separation_x: 0.18
-          # wheel_separation_y: 0.27
-
-
-    # These need to be evaluated since this controller does not support frame_prefixes
-    base_frame_id: "$(var frame_prefix '')base_link"
-    odom_frame_id: "$(var frame_prefix '')odom"
-
+    base_frame_id: base_link
+    odom_frame_id: odom
     enable_odom_tf: true
 
     twist_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
-
     pose_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
-
-
 
 /**/pid_wheels_controller:
   ros__parameters:

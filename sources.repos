@@ -19,7 +19,3 @@ repositories:
     type: git
     url: https://github.com/ArendJan/usb_cam.git # for lazy publishing
     version: main
-  clearpath_mecanum_drive_controller:
-    type: git
-    url: https://github.com/Juancams/clearpath_mecanum_drive_controller.git
-    version: jazzy

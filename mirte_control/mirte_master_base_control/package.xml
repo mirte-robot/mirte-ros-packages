@@ -72,7 +72,7 @@
   <exec_depend>ros2launch</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>ros2_controllers</exec_depend>
-  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>mecanum_drive_controller</exec_depend>
   <exec_depend>effort_controllers</exec_depend>
   <exec_depend>twist_stamper</exec_depend>
 
