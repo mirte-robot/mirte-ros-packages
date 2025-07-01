@@ -108,7 +108,7 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mirte_master_arm_controller", "mirte_master_gripper_controller"],
+        arguments=["mirte_master_base_control", "mirte_master_arm_controller", "mirte_master_gripper_controller"],
     )
 
     nodes = [
