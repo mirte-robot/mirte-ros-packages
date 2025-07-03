@@ -40,6 +40,9 @@ private:
   // Service: keypad/NAME/get_key
   rclcpp::Service<mirte_msgs::srv::GetKeypad>::SharedPtr keypad_service;
 
+  // Publisher: keypad/NAME/analog
+  rclcpp::Publisher<mirte_msgs::msg::Intensity>::SharedPtr keypad_analog_pub;
+
   void keypad_service_callback(
       const mirte_msgs::srv::GetKeypad::Request::ConstSharedPtr req,
       mirte_msgs::srv::GetKeypad::Response::SharedPtr res);

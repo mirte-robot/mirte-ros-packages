@@ -23,8 +23,10 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
       return pin.value();
     }
-  } else if (starts_with(pin_name, "A")) {
+  } 
+  if (starts_with(pin_name, "A")) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
+      
       auto pin_num = pin.value();
       if (pin_num >= 0 && pin_num < tmx->board_features.analog_pins) {
         auto pin = tmx->board_features.analog_pins_list[pin_num];
@@ -42,11 +44,42 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
     }
   }
   std::cerr << "Not implemented: raw::resolvePin : " << pin_name << std::endl;
+  std::cerr << "Available analog pins: ";
+  for (const auto &p : tmx->board_features.analog_pins_list) {
+    std::cerr << p << " ";
+  }
+  std::cerr << std::endl;
+  std::cerr << "startswith A: " << starts_with(pin_name, "A") << std::endl;
+  std::cerr << "startswith D: " << starts_with(pin_name, "D") << std::endl;
+  std::cerr << "pin_name: " << pin_name << std::endl;
+  std::cerr << "parseint: " << try_parse_int(pin_name.substr(1)).has_value()
+            << std::endl;
+  std::cerr << "pin: " << pin_name << std::endl;
+
+  std::cerr << "pinnum : " << pin_name.substr(1) << std::endl;
   return -1;
 }
 
 std::map<std::string, int>
 Mirte_Board_raw::resolveConnector(std::string connector) {
+  if(starts_with(connector, "I2C")) {
+
+    if (auto conn = try_parse_int(connector.substr(3))) {
+      
+      auto i2c_port = conn.value() -1;// 1 indexed
+      if (i2c_port >= 0 && i2c_port < tmx->board_features.i2c_count) {
+        std::map<std::string, int> resolved_pins;
+        resolved_pins["sda"] = i2c_port; // SDA pin
+        resolved_pins["scl"] = i2c_port; // SCL pin
+        return resolved_pins;
+      } else {
+        std::cerr << "Invalid I2C port number: " << i2c_port << std::endl;
+        std::cerr << "Valid range: 0-" << tmx->board_features.i2c_count - 1
+                  << std::endl;
+      }
+  }
+}
+
   std::cerr << "Not implemented: raw::resolveConnector : " << connector
             << std::endl;
   return {};
@@ -119,4 +152,6 @@ const bool Mirte_Board_raw::is_analog_pin(uint8_t pin) const {
   return false;
 }
 
-const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const { return false; }
+const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const { 
+  std::cout << "We assume " << (int)pin << " has PWM capabilities, microcontroller should handle it if it doesn't." << std::endl;
+  return true; }

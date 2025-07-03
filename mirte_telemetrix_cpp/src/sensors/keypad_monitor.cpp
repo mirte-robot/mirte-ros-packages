@@ -8,6 +8,7 @@
 
 #include <mirte_msgs/msg/keypad.hpp>
 #include <mirte_msgs/srv/get_keypad.hpp>
+#include <mirte_msgs/msg/intensity.hpp>
 
 std::vector<std::shared_ptr<KeypadMonitor>>
 KeypadMonitor::get_keypad_monitors(NodeData node_data,
@@ -37,7 +38,9 @@ KeypadMonitor::KeypadMonitor(NodeData node_data, KeypadData keypad_data)
       "keypad/" + keypad_data.name + "/get_key",
       std::bind(&KeypadMonitor::keypad_service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
-
+  keypad_analog_pub = nh->create_publisher<mirte_msgs::msg::Intensity>(
+      "keypad/" + keypad_data.name + "/analog",
+      rclcpp::SystemDefaultsQoS());
   tmx->setPinMode(keypad_data.pin, tmx_cpp::TMX::PIN_MODES::ANALOG_INPUT, true,
                   0);
   tmx->add_analog_callback(
@@ -50,6 +53,7 @@ void KeypadMonitor::callback(uint16_t value) {
 
   Key key = Key::NONE;
   auto maxValue = std::pow(2, this->board->get_adc_bits()) - 1;
+  
   auto scale = 1024.0 / maxValue;
   // RCLCPP_INFO(logger, "%d", this->value);
   if (value < 70 / scale) {
@@ -69,7 +73,10 @@ void KeypadMonitor::callback(uint16_t value) {
   if (this->last_key != key) {
     this->last_debounce_time = nh->now().seconds();
   }
-
+  this->keypad_analog_pub->publish(
+      mirte_msgs::build<mirte_msgs::msg::Intensity>()
+          .header(get_header())
+          .value(value));
   this->last_key = key;
   this->update();
   this->device_timer->reset();

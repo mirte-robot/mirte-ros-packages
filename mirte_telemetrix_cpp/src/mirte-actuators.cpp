@@ -73,7 +73,8 @@ void Mirte_Actuators::pwm_pin_service_callback(
     // The PWM value is out of range
     res->status = false;
     res->message = "The PWM value '" + std::to_string(req->value) +
-                   "' requested for Pin '" + req->pin + "' is out of range";
+                   "' requested for Pin '" + req->pin + "' is out of range(0-" +
+                   std::to_string(this->board->get_max_pwm()) + ")";
     RCLCPP_ERROR(this->nh->get_logger(),
                  "The PWM value '%d' requested for Pin '%s' is out of range",
                  req->value, req->pin.c_str());

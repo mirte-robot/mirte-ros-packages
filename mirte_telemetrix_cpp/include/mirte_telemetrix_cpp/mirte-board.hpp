@@ -77,9 +77,11 @@ public:
   std::map<std::string, int> resolveConnector(std::string connector) override;
   int resolvePin(std::string pin) override;
   virtual const double get_voltage_level() const override { return 5.0; }
-  virtual const int get_adc_bits() const override { return 10; }
-  virtual const int get_max_pwm() const override { return 255; }
-  virtual uint8_t resolveI2CPort(uint8_t sda) override { return 0; }
+  virtual const int get_adc_bits() const override { return tmx->board_features.analog_bits; }
+  virtual const int get_max_pwm() const override { return tmx->board_features.pwm_max; }
+  virtual uint8_t resolveI2CPort(uint8_t sda) override { 
+    return sda; // resolveconnector will resolve connector to a i2c port that is defined on the board itself.
+   }
 
   virtual uint8_t resolveUARTPort(uint8_t pin) override { return 0; };
 
@@ -105,7 +107,7 @@ public:
   virtual const double get_voltage_level() const override { return 3.3; }
   virtual const int get_adc_bits() const override { return 12; }
   virtual const int get_max_pwm() const override {
-    return 20000;
+    return 1999;
   } // TODO: check with actual board
   virtual uint8_t resolveI2CPort(uint8_t sda) override;
   virtual uint8_t resolveUARTPort(uint8_t pin) override;
