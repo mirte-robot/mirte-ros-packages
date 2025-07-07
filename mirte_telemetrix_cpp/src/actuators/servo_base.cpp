@@ -59,7 +59,7 @@ void ServoBase::set_angle_service_callback(
   uint16_t duty_cycle =
       (uint16_t)(fraction * (data.max_pulse - data.min_pulse)) + data.min_pulse;
   RCLCPP_WARN(logger, "Setting servo %s to angle %.3f degrees (duty cycle: %u)",
-               name.c_str(), angle, duty_cycle);
+              name.c_str(), angle, duty_cycle);
   res->status = set_angle_us(duty_cycle);
 }
 

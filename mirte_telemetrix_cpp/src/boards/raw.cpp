@@ -23,16 +23,17 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
       return pin.value();
     }
-  } 
+  }
   if (starts_with(pin_name, "A")) {
     if (auto pin = try_parse_int(pin_name.substr(1))) {
-      
+
       auto pin_num = pin.value();
       if (pin_num >= 0 && pin_num < tmx->board_features.analog_pins) {
         auto pin = tmx->board_features.analog_pins_list[pin_num];
         if (pin == 0xff) {
           return -1; // pin not available, some boards have a non-contiguous
-                     // analog pin list, so we return -1 if the pin is not available
+                     // analog pin list, so we return -1 if the pin is not
+                     // available
         }
         return pin; // return the actual pin number
       } else {
@@ -62,11 +63,11 @@ int Mirte_Board_raw::resolvePin(std::string pin_name) {
 
 std::map<std::string, int>
 Mirte_Board_raw::resolveConnector(std::string connector) {
-  if(starts_with(connector, "I2C")) {
+  if (starts_with(connector, "I2C")) {
 
     if (auto conn = try_parse_int(connector.substr(3))) {
-      
-      auto i2c_port = conn.value() -1;// 1 indexed
+
+      auto i2c_port = conn.value() - 1; // 1 indexed
       if (i2c_port >= 0 && i2c_port < tmx->board_features.i2c_count) {
         std::map<std::string, int> resolved_pins;
         resolved_pins["sda"] = i2c_port; // SDA pin
@@ -77,8 +78,8 @@ Mirte_Board_raw::resolveConnector(std::string connector) {
         std::cerr << "Valid range: 0-" << tmx->board_features.i2c_count - 1
                   << std::endl;
       }
+    }
   }
-}
 
   std::cerr << "Not implemented: raw::resolveConnector : " << connector
             << std::endl;
@@ -144,7 +145,7 @@ const bool Mirte_Board_raw::is_analog_pin(uint8_t pin) const {
   //   default:
   //     return false;
   //   }
-  for(const auto &p : tmx->board_features.analog_pins_list) {
+  for (const auto &p : tmx->board_features.analog_pins_list) {
     if (p == pin) {
       return true;
     }
@@ -152,6 +153,10 @@ const bool Mirte_Board_raw::is_analog_pin(uint8_t pin) const {
   return false;
 }
 
-const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const { 
-  std::cout << "We assume " << (int)pin << " has PWM capabilities, microcontroller should handle it if it doesn't." << std::endl;
-  return true; }
+const bool Mirte_Board_raw::is_pwm_pin(uint8_t pin) const {
+  std::cout << "We assume " << (int)pin
+            << " has PWM capabilities, microcontroller should handle it if it "
+               "doesn't."
+            << std::endl;
+  return true;
+}
