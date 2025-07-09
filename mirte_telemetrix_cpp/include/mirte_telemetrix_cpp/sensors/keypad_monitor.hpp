@@ -11,7 +11,7 @@
 
 #include <mirte_msgs/msg/keypad.hpp>
 #include <mirte_msgs/srv/get_keypad.hpp>
-
+#include <mirte_msgs/msg/intensity.hpp>
 class KeypadMonitor : public Mirte_Sensor {
 public:
   KeypadMonitor(NodeData node_data, KeypadData keypad_data);

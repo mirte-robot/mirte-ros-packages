@@ -13,25 +13,26 @@
 Mirte_modules::Mirte_modules(NodeData node_data, std::shared_ptr<Parser> parser)
     : tmx(node_data.tmx), nh(node_data.nh), board(node_data.board),
       parser(parser), node_data(node_data) {
-  this->module_sys = std::make_shared<tmx_cpp::Modules>(tmx);
+  this->tmx->module_sys = tmx->module_sys;
+  this->sensor_sys = tmx->sensors_sys;
 }
 void Mirte_modules::start() {
   RCLCPP_INFO(nh->get_logger(), "Proccessing HiWonder Modules [ASYNC]");
   auto hiwonder_mods_future =
       std::async(std::launch::async, HiWonderBus_module::get_hiwonder_modules,
-                 node_data, parser, this->module_sys);
+                 node_data, parser, this->tmx->module_sys);
 
   RCLCPP_INFO(nh->get_logger(), "Adding PCA Modules");
   auto pca_mods =
-      PCA_Module::get_pca_modules(node_data, parser, this->module_sys);
+      PCA_Module::get_pca_modules(node_data, parser, this->tmx->module_sys);
   this->modules.insert(this->modules.end(), pca_mods.begin(), pca_mods.end());
 
   RCLCPP_INFO(nh->get_logger(), "Adding SSD1306 OLED Modules");
   auto oled_mods =
-      SSD1306_module::get_ssd1306_modules(node_data, parser, this->module_sys);
+      SSD1306_module::get_ssd1306_modules(node_data, parser, this->tmx->module_sys);
   this->modules.insert(this->modules.end(), oled_mods.begin(), oled_mods.end());
 
-  this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
+//   this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
   RCLCPP_INFO(nh->get_logger(), "Adding INA226 Modules");
   auto ina_mods =
       INA226_sensor::get_ina_modules(node_data, parser, this->sensor_sys);
