@@ -14,7 +14,9 @@ public:
   std::shared_ptr<rclcpp::Node> nh;
   std::shared_ptr<Mirte_Board> board;
   std::vector<std::shared_ptr<Mirte_Sensor>> sensors;
-
+  std::shared_ptr<Parser> parser;
+  NodeData node_data;
+  void start();
   void stop();
 
   enum class PIN_USE { DIGITAL_IN, DIGITAL_OUT, ANALOG_IN, ANALOG_OUT, UNUSED };
