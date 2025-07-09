@@ -28,11 +28,11 @@ void Mirte_modules::start() {
   this->modules.insert(this->modules.end(), pca_mods.begin(), pca_mods.end());
 
   RCLCPP_INFO(nh->get_logger(), "Adding SSD1306 OLED Modules");
-  auto oled_mods =
-      SSD1306_module::get_ssd1306_modules(node_data, parser, this->tmx->module_sys);
+  auto oled_mods = SSD1306_module::get_ssd1306_modules(node_data, parser,
+                                                       this->tmx->module_sys);
   this->modules.insert(this->modules.end(), oled_mods.begin(), oled_mods.end());
 
-//   this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
+  //   this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
   RCLCPP_INFO(nh->get_logger(), "Adding INA226 Modules");
   auto ina_mods =
       INA226_sensor::get_ina_modules(node_data, parser, this->sensor_sys);
