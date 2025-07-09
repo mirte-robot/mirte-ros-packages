@@ -49,7 +49,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 
 # Specify additional locations of header files Your package locations should be
 # listed before other locations
-add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL)
+add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL) 
 include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
