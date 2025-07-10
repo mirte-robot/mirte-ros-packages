@@ -48,6 +48,10 @@ ADXL345_sensor::ADXL345_sensor(NodeData node_data, ADXL345Data imu_data,
 }
 
 void ADXL345_sensor::update() {
+  if (this->imu_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   if (msg_mutex.try_lock()) {
     const std::lock_guard lock{msg_mutex, std::adopt_lock};
     msg.header = get_header();
@@ -56,13 +60,17 @@ void ADXL345_sensor::update() {
 }
 
 void ADXL345_sensor::data_callback(std::array<float, 3> acceleration) {
+
   const std::lock_guard<std::mutex> lock(msg_mutex);
   msg.header = get_header();
 
   msg.linear_acceleration.x = acceleration[0] * 9.81;
   msg.linear_acceleration.y = acceleration[1] * 9.81;
   msg.linear_acceleration.z = acceleration[2] * 9.81;
-
+  if (this->imu_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   imu_pub->publish(msg);
   this->device_timer->reset();
 }

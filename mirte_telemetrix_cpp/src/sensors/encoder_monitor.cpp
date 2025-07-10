@@ -33,10 +33,13 @@ void EncoderMonitor::data_callback(int16_t value) {
 }
 
 void EncoderMonitor::update() {
+  if (this->encoder_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   auto msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                  .header(get_header()) // Build the message
                  .value(value);
-
   encoder_pub->publish(msg);
 }
 

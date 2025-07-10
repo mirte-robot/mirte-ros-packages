@@ -51,25 +51,23 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
 }
 
 // TODO: Maybe add mutex lock-out although not fully necessary
-void INA226_sensor::update() {
-  auto msg = sensor_msgs::msg::BatteryState();
-  msg.header = get_header();
+void INA226_sensor::update() { // only publish at 1Hz
+  if (this->battery_pub->get_subscription_count() > 0) {
+    auto msg = sensor_msgs::msg::BatteryState();
+    msg.header = get_header();
 
-  msg.voltage = voltage_;
-  msg.current = current_;
-
-  msg.percentage = calc_soc(voltage_);
-  this->battery_pub->publish(msg);
-  this->integrate_usage(current_);
-  this->check_soc(voltage_, current_);
+    msg.voltage = voltage_;
+    msg.current = current_;
+    msg.percentage = calc_soc(voltage_);
+    this->battery_pub->publish(msg);
+  }
 }
 
 void INA226_sensor::data_callback(float voltage, float current) {
   voltage_ = voltage;
   current_ = current;
-  // std::cout << "INA226 data: " << current << " " << voltage << std::endl;
-  this->update();
-  this->device_timer->reset();
+  this->integrate_usage(current_);
+  this->check_soc(voltage_, current_);
 }
 
 float INA226_sensor::calc_soc(float voltage) {
@@ -103,6 +101,10 @@ void INA226_sensor::integrate_usage(float current) {
 
   this->total_used_mAh += used_mAh;
   this->used_time = current_time;
+  if (this->used_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   std_msgs::msg::Int32 msg;
   msg.data = (int32_t)this->total_used_mAh;
   this->used_pub->publish(msg);

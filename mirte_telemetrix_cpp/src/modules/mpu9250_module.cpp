@@ -47,6 +47,10 @@ MPU9250_sensor::MPU9250_sensor(NodeData node_data, MPU9250Data imu_data,
 }
 
 void MPU9250_sensor::update() {
+  if (this->imu_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   if (msg_mutex.try_lock()) {
     const std::lock_guard lock{msg_mutex, std::adopt_lock};
     msg.header = get_header();
@@ -73,7 +77,10 @@ void MPU9250_sensor::data_callback(std::array<float, 3> acceleration,
   msg.orientation.y = quaternion[1];
   msg.orientation.z = quaternion[2];
   msg.orientation.w = quaternion[3];
-
+  if (this->imu_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   imu_pub->publish(msg);
   device_timer->reset();
 }

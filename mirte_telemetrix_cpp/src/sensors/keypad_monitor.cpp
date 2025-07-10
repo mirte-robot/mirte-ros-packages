@@ -115,14 +115,18 @@ void KeypadMonitor::update() {
   }
 
   // Publish the last debounced key
-  this->keypad_pub->publish(msg_builder.key(key_string(debounced_key)));
+  if (this->keypad_pub->get_subscription_count() > 0) {
+    this->keypad_pub->publish(msg_builder.key(key_string(debounced_key)));
+  }
 
   // # check if we need to send a pressed message
   if (this->last_debounced_key != NONE &&
       this->last_debounced_key != debounced_key) // TODO: check this
   {
-    this->keypad_pressed_pub->publish(
-        msg_builder.key(key_string(this->last_debounced_key)));
+    if (this->keypad_pub->get_subscription_count() > 0) {
+      this->keypad_pressed_pub->publish(
+          msg_builder.key(key_string(this->last_debounced_key)));
+    }
   }
 
   this->last_debounced_key = debounced_key;
