@@ -50,7 +50,6 @@ mirte_gripper_controller:
 
 mirte_base_controller:
   ros__parameters:
-    use_stamped_vel: false
     reference_timeout: 0.25
     command_timeout: 0.25
 
