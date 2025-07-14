@@ -111,7 +111,7 @@ def generate_launch_description():
         arguments=[
             "mirte_master_base_control",
             "mirte_master_arm_controller",
-            "mirte_master_gripper_controller"
+            "mirte_master_gripper_controller",
         ],
     )
 
