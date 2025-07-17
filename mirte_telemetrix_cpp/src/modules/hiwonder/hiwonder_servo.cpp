@@ -95,10 +95,6 @@ Hiwonder_servo::Hiwonder_servo(
               "/_set_offset", // hidden service
           std::bind(&Hiwonder_servo::set_offset_service_callback, this, _1, _2),
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
-  // TODO: Maybe add to a separate callbackgroup?
-  // Currently overpublishing slightly
-  // this->servo_timer = nh->create_wall_timer(
-  //     duration, std::bind(&Hiwonder_servo::update, this), callback_group);
     node_data.add_timer(duration, 
                         std::bind(&Hiwonder_servo::update, this));
   if (this->servo_data->enable_motor) {
@@ -116,11 +112,8 @@ Hiwonder_servo::Hiwonder_servo(
 // TODO: Add update en fix time
 void Hiwonder_servo::position_cb(
     tmx_cpp::HiwonderServo_module::Servo_pos &pos) {
-  // servo_timer->call();
   last_angle = calc_angle_in(pos.angle);
   last_raw = pos.angle;
-  // this->update();
-  // servo_timer->reset();
 }
 
 void Hiwonder_servo::update() {

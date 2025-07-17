@@ -48,8 +48,7 @@ KeypadMonitor::KeypadMonitor(NodeData node_data, KeypadData keypad_data)
 
 void KeypadMonitor::callback(uint16_t value) {
   // Prevent the callback from being executed.
-  // this->device_timer->call();
-
+  // TODO: locking
   Key key = Key::NONE;
   auto maxValue = std::pow(2, this->board->get_adc_bits()) - 1;
 
@@ -77,8 +76,6 @@ void KeypadMonitor::callback(uint16_t value) {
           .header(get_header())
           .value(value));
   this->last_key = key;
-  // this->update();
-  // this->device_timer->reset();
 }
 
 void KeypadMonitor::keypad_service_callback(

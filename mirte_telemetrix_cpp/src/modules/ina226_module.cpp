@@ -43,10 +43,9 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
 
 #ifdef WITH_GPIO // LED Battery indicator
   if (this->data.use_percentage_led) {
-    battery_led_timer = nh->create_wall_timer(
-        0.5s, std::bind(&INA226_sensor::battery_led_timer_callback, this),
-        this->callback_group);
-  }
+    node_data.add_timer(
+        0.5s, std::bind(&INA226_sensor::battery_led_timer_callback, this));
+    }
 #endif
 }
 
@@ -66,7 +65,7 @@ void INA226_sensor::update() { // only publish at 1Hz
 void INA226_sensor::data_callback(float voltage, float current) {
   voltage_ = voltage;
   current_ = current;
-  this->integrate_usage(current_);
+  // this->integrate_usage(current_);
   this->check_soc(voltage_, current_);
 }
 

@@ -43,6 +43,7 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
 }
 
 void SonarMonitor::data_callback(uint16_t value) {
+  // TODO: add locking
   // this->device_timer->call();
   // Report Errors as specified in REP0117
   if (value == 0xFFFF) {
@@ -84,15 +85,11 @@ void SonarMonitor::data_callback(uint16_t value) {
           .max_range(this->max_range)
           .range(this->distance);
           this->range = msg;
-  // this->update();
-  // this->device_timer->reset();
 }
 
 void SonarMonitor::update() {
   
-  const std::lock_guard<std::mutex> lock(msg_mutex);
-  // this->range = msg;
-  
+  const std::lock_guard<std::mutex> lock(msg_mutex);  
   if (this->sonar_pub->get_subscription_count() > 0) {
     range.set__header(this->get_header());
     this->sonar_pub->publish(range);

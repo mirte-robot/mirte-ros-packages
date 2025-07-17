@@ -31,8 +31,6 @@ void EncoderMonitor::data_callback(int16_t value) {
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                  .header(get_header()) // Build the message
                  .value(this->value);
-  // this->update();
-  // this->device_timer->reset();
 }
 
 void EncoderMonitor::update() {
