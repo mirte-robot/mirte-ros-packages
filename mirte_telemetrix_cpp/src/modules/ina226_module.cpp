@@ -45,7 +45,7 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
   if (this->data.use_percentage_led) {
     node_data.add_timer(
         0.5s, std::bind(&INA226_sensor::battery_led_timer_callback, this));
-    }
+  }
 #endif
 }
 

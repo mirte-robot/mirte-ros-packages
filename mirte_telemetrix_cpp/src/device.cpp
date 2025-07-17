@@ -26,6 +26,6 @@ TelemetrixDevice::TelemetrixDevice(
   // To compensate for communication latencies, scale the period up by 20% (on
   // my machine with 16 cores)
 
-  node_data.add_timer(
-      data.duration, [this]() { this->device_timer_callback(); });
+  node_data.add_timer(data.duration,
+                      [this]() { this->device_timer_callback(); });
 }

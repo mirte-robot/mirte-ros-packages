@@ -49,23 +49,23 @@ void SonarMonitor::data_callback(uint16_t value) {
   if (value == 0xFFFF) {
     // Should not occure
     this->distance = NAN;
-    //RCLCPP_DEBUG(logger, "Some weird error which shouldn't occure or no new "
-                        //  "data was generated?");
+    // RCLCPP_DEBUG(logger, "Some weird error which shouldn't occure or no new "
+    //   "data was generated?");
   } else if (value == 0xFFFE) {
     // Too long since trigger, resulting in invalid reading
     this->distance = NAN;
-    //RCLCPP_DEBUG(logger, "Too long since trigger");
+    // RCLCPP_DEBUG(logger, "Too long since trigger");
   } else if (value == 0xFFFD) {
     // Timeout, so detection is out of range
     this->distance = INFINITY;
-    //RCLCPP_DEBUG(logger, "Object outside of range");
+    // RCLCPP_DEBUG(logger, "Object outside of range");
   } else if (value == 0xFFFC) {
     this->distance = NAN;
-    //RCLCPP_DEBUG(logger, "No new distance measurement was created in time");
+    // RCLCPP_DEBUG(logger, "No new distance measurement was created in time");
   } else {
     // The reading is possibly valid.
     auto raw_distance = value / 100.0;
-    //RCLCPP_DEBUG(logger, "%d", value);
+    // RCLCPP_DEBUG(logger, "%d", value);
 
     if (raw_distance < min_range) {
       this->distance = -INFINITY;
@@ -84,12 +84,12 @@ void SonarMonitor::data_callback(uint16_t value) {
           .min_range(this->min_range)
           .max_range(this->max_range)
           .range(this->distance);
-          this->range = msg;
+  this->range = msg;
 }
 
 void SonarMonitor::update() {
-  
-  const std::lock_guard<std::mutex> lock(msg_mutex);  
+
+  const std::lock_guard<std::mutex> lock(msg_mutex);
   if (this->sonar_pub->get_subscription_count() > 0) {
     range.set__header(this->get_header());
     this->sonar_pub->publish(range);

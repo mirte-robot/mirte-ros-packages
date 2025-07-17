@@ -49,7 +49,7 @@ public:
 private:
   std::shared_ptr<rclcpp::Node> nh;
 
-//   rclcpp::TimerBase::SharedPtr servo_timer;
+  //   rclcpp::TimerBase::SharedPtr servo_timer;
 
   std::atomic<float> last_angle = 0.0;
   std::atomic<uint16_t> last_raw = 0;

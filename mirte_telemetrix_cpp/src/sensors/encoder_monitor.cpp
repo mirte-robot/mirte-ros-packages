@@ -29,8 +29,8 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
 void EncoderMonitor::data_callback(int16_t value) {
   this->value += value;
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
-                 .header(get_header()) // Build the message
-                 .value(this->value);
+                  .header(get_header()) // Build the message
+                  .value(this->value);
 }
 
 void EncoderMonitor::update() {

@@ -95,8 +95,7 @@ Hiwonder_servo::Hiwonder_servo(
               "/_set_offset", // hidden service
           std::bind(&Hiwonder_servo::set_offset_service_callback, this, _1, _2),
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
-    node_data.add_timer(duration, 
-                        std::bind(&Hiwonder_servo::update, this));
+  node_data.add_timer(duration, std::bind(&Hiwonder_servo::update, this));
   if (this->servo_data->enable_motor) {
     // this->bus_mod->motor_mode_write(this->servo_data->id, 1);
     this->motor_speed_service =
@@ -200,7 +199,7 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
   auto distance =
       pi - std::abs(std::fmod(std::abs(angle - last_angle), 2.0 * pi) - pi);
   auto time = distance / speed;
-  //RCLCPP_DEBUG(nh->get_logger(), "TIME: %.3f", time);
+  // RCLCPP_DEBUG(nh->get_logger(), "TIME: %.3f", time);
   uint16_t time_ms = time * 1000.0;
 
   if (time > 30.0) {
@@ -218,8 +217,8 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
 
   auto angle_out = calc_angle_out(angle);
 
-  //RCLCPP_DEBUG(nh->get_logger(), "Moving Servo from %d to %d in %dms",
-              //  (int)last_raw, (int)angle_out, (int)time_ms);
+  // RCLCPP_DEBUG(nh->get_logger(), "Moving Servo from %d to %d in %dms",
+  //   (int)last_raw, (int)angle_out, (int)time_ms);
 
   res->status =
       this->bus_mod->set_single_servo(this->servo_data->id, angle_out, time_ms);

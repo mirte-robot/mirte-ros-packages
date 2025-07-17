@@ -194,11 +194,11 @@ bool SSD1306_module::set_image_from_path(fs::path path) {
       paths.insert(img_file);
     }
 
-    //RCLCPP_DEBUG(logger, "Loading animation frames from %s", path.c_str());
+    // RCLCPP_DEBUG(logger, "Loading animation frames from %s", path.c_str());
 
     for (auto img_file : paths) {
-      //RCLCPP_DEBUG(logger, "Loading frame %ld: %s", images.size(),
-                  //  img_file.c_str());
+      // RCLCPP_DEBUG(logger, "Loading frame %ld: %s", images.size(),
+      //   img_file.c_str());
       images.push_back(cv::imread(img_file.string(), cv::IMREAD_GRAYSCALE));
     }
 
@@ -267,7 +267,7 @@ void SSD1306_module::set_oled_file_callback(
 }
 
 void SSD1306_module::device_timer_callback() {
-  if(!enabled) {
+  if (!enabled) {
     return;
   }
   if (!default_screen) {
