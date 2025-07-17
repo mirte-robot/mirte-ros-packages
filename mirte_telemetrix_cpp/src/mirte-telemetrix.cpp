@@ -22,7 +22,9 @@ NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
   rclcpp::init(argc, argv);
-
+auto s = "main_thread";
+    
+     pthread_setname_np(pthread_self(), s);
   rclcpp::executors::MultiThreadedExecutor executor;
 
   // Spin the ROS node
@@ -170,8 +172,8 @@ bool TelemetrixNode::start() {
     using namespace std::chrono_literals;
 
     auto timer = node_data.nh->create_wall_timer(
-         100ms, [duration]()  {
-          std::cout << "Timer expired: " << duration.count() << " ms" << std::endl;
+         duration, [duration]()  {
+          // std::cout << "Timer expired: " << duration.count() << " ms" << std::endl;
           for (auto &timer : node_data.timers) {
             if (timer.first == duration) {
               for (auto &cb : timer.second.second) {
@@ -179,8 +181,8 @@ bool TelemetrixNode::start() {
               }
             }
           }
-          std::cout << "Timer expired: " << duration.count() << " ms done" << std::endl;
-        }, node_data.nh->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive));
+          // std::cout << "Timer expired: " << duration.count() << " ms done" << std::endl;
+        });
 
     node_data.timers.push_back(
         {duration, {timer, {callback}}}); // add a new timer with the duration and callback

@@ -28,4 +28,7 @@ TelemetrixDevice::TelemetrixDevice(
 
   node_data.add_timer(
       data.duration, [this]() { this->device_timer_callback(); });
+    // this->device_timer = nh->create_wall_timer(
+    //     data.duration, std::bind(&TelemetrixDevice::device_timer_callback, this),
+    //     this->callback_group);
 }

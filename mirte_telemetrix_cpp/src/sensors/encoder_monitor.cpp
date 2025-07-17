@@ -28,7 +28,10 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
 
 void EncoderMonitor::data_callback(int16_t value) {
   this->value += value;
-  this->update();
+  this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
+                 .header(get_header()) // Build the message
+                 .value(this->value);
+  // this->update();
   // this->device_timer->reset();
 }
 
@@ -37,9 +40,7 @@ void EncoderMonitor::update() {
     // No subscribers, so no need to publish
     return;
   }
-  auto msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
-                 .header(get_header()) // Build the message
-                 .value(value);
+  msg.set__header(get_header());
   encoder_pub->publish(msg);
 }
 

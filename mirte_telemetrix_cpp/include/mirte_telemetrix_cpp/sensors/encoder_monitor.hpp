@@ -29,6 +29,7 @@ private:
 
   // Publisher: encoder/NAME
   rclcpp::Publisher<mirte_msgs::msg::Encoder>::SharedPtr encoder_pub;
+  mirte_msgs::msg::Encoder msg;
   // Service: encoder/NAME/get_encoder
   rclcpp::Service<mirte_msgs::srv::GetEncoder>::SharedPtr encoder_service;
 

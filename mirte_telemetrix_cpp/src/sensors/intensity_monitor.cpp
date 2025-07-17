@@ -35,7 +35,7 @@ IntensityMonitor::get_intensity_monitors(NodeData node_data,
 
 void DigitalIntensityMonitor::data_callback(uint16_t value) {
   this->value = value;
-  this->update();
+  // this->update();
   // this->device_timer->reset();
 }
 
@@ -96,7 +96,7 @@ AnalogIntensityMonitor::AnalogIntensityMonitor(NodeData node_data,
 
 void AnalogIntensityMonitor::data_callback(uint16_t value) {
   this->value = value;
-  this->update();
+  // this->update();
   // this->device_timer->reset();
 }
 

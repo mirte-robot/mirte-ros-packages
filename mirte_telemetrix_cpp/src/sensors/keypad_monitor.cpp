@@ -77,7 +77,7 @@ void KeypadMonitor::callback(uint16_t value) {
           .header(get_header())
           .value(value));
   this->last_key = key;
-  this->update();
+  // this->update();
   // this->device_timer->reset();
 }
 

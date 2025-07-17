@@ -97,9 +97,10 @@ Hiwonder_servo::Hiwonder_servo(
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
   // TODO: Maybe add to a separate callbackgroup?
   // Currently overpublishing slightly
-  this->servo_timer = nh->create_wall_timer(
-      duration, std::bind(&Hiwonder_servo::update, this), callback_group);
-
+  // this->servo_timer = nh->create_wall_timer(
+  //     duration, std::bind(&Hiwonder_servo::update, this), callback_group);
+    node_data.add_timer(duration, 
+                        std::bind(&Hiwonder_servo::update, this));
   if (this->servo_data->enable_motor) {
     // this->bus_mod->motor_mode_write(this->servo_data->id, 1);
     this->motor_speed_service =
@@ -115,11 +116,11 @@ Hiwonder_servo::Hiwonder_servo(
 // TODO: Add update en fix time
 void Hiwonder_servo::position_cb(
     tmx_cpp::HiwonderServo_module::Servo_pos &pos) {
-  servo_timer->call();
+  // servo_timer->call();
   last_angle = calc_angle_in(pos.angle);
   last_raw = pos.angle;
-  this->update();
-  servo_timer->reset();
+  // this->update();
+  // servo_timer->reset();
 }
 
 void Hiwonder_servo::update() {
@@ -206,7 +207,7 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
   auto distance =
       pi - std::abs(std::fmod(std::abs(angle - last_angle), 2.0 * pi) - pi);
   auto time = distance / speed;
-  RCLCPP_DEBUG(nh->get_logger(), "TIME: %.3f", time);
+  //RCLCPP_DEBUG(nh->get_logger(), "TIME: %.3f", time);
   uint16_t time_ms = time * 1000.0;
 
   if (time > 30.0) {
@@ -224,8 +225,8 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
 
   auto angle_out = calc_angle_out(angle);
 
-  RCLCPP_DEBUG(nh->get_logger(), "Moving Servo from %d to %d in %dms",
-               (int)last_raw, (int)angle_out, (int)time_ms);
+  //RCLCPP_DEBUG(nh->get_logger(), "Moving Servo from %d to %d in %dms",
+              //  (int)last_raw, (int)angle_out, (int)time_ms);
 
   res->status =
       this->bus_mod->set_single_servo(this->servo_data->id, angle_out, time_ms);
