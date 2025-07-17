@@ -23,7 +23,7 @@ PCA_Module::PCA_Module(NodeData node_data, PCAData pca_data,
                        std::shared_ptr<tmx_cpp::Modules> modules)
     : Mirte_module(node_data, {pca_data.scl, pca_data.sda},
                    (ModuleData)pca_data) {
-  this->device_timer->cancel();
+  // this->device_timer->cancel();
   tmx->setI2CPins(pca_data.sda, pca_data.scl, pca_data.port);
 
   this->pca9685 = std::make_shared<tmx_cpp::PCA9685_module>(

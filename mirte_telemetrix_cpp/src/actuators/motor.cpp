@@ -57,7 +57,7 @@ Motor::Motor(NodeData node_data, std::vector<pin_t> pins, DeviceData data,
       "motor/" + this->name + "/speed", rclcpp::SystemDefaultsQoS(),
       std::bind(&Motor::speed_subscription_callback, this, _1), options);
 
-  this->device_timer->cancel();
+  // this->device_timer->cancel();
 }
 
 void Motor::set_speed_service_callback(

@@ -48,7 +48,7 @@ public:
   virtual void device_timer_callback(){};
 
 protected:
-  rclcpp::TimerBase::SharedPtr device_timer;
+  // rclcpp::TimerBase::SharedPtr device_timer;
 };
 
 // }  // namespace mirte_telemetrix_cpp

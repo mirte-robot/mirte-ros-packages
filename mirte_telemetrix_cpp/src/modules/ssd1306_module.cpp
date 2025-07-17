@@ -79,7 +79,7 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
           std::bind(&SSD1306_module::set_oled_file_callback, this, _1, _2),
           rmw_qos_profile_services_default, this->callback_group);
 
-  this->device_timer->reset();
+  // this->device_timer->reset();
 
   modules->add_mod(this->ssd1306);
   // Write an initial text to the screen, and instantly kill the timer if it has
@@ -91,13 +91,13 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
                  "Writing to OLED module '%s' failed, shutting down default "
                  "screen timer.",
                  this->data.name.c_str());
-    this->device_timer->cancel();
+    // this->device_timer->cancel();
   }
 }
 
 bool SSD1306_module::prewrite(bool is_default) {
   if (!is_default) {
-    device_timer->cancel();
+    // device_timer->cancel();
   }
 
   if (!enabled) {
@@ -291,7 +291,7 @@ void SSD1306_module::device_timer_callback() {
 
   if (not succes) {
     enabled = false;
-    device_timer->cancel();
+    // device_timer->cancel();
     RCLCPP_ERROR(
         logger,
         "Default screen update failed. Disabling screen and update timer.");

@@ -82,7 +82,7 @@ void MPU9250_sensor::data_callback(std::array<float, 3> acceleration,
     return;
   }
   imu_pub->publish(msg);
-  device_timer->reset();
+  // device_timer->reset();
 }
 
 void MPU9250_sensor::get_imu_service_callback(

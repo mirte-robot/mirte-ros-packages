@@ -72,7 +72,7 @@ void ADXL345_sensor::data_callback(std::array<float, 3> acceleration) {
     return;
   }
   imu_pub->publish(msg);
-  this->device_timer->reset();
+  // this->device_timer->reset();
 }
 
 void ADXL345_sensor::get_imu_service_callback(

@@ -43,7 +43,7 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
 }
 
 void SonarMonitor::data_callback(uint16_t value) {
-  this->device_timer->call();
+  // this->device_timer->call();
   // Report Errors as specified in REP0117
   if (value == 0xFFFF) {
     // Should not occure
@@ -75,7 +75,7 @@ void SonarMonitor::data_callback(uint16_t value) {
     }
   }
   this->update();
-  this->device_timer->reset();
+  // this->device_timer->reset();
 }
 
 void SonarMonitor::update() {

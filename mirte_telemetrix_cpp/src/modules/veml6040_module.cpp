@@ -77,7 +77,7 @@ void VEML6040_sensor::data_callback(uint16_t red, uint16_t green, uint16_t blue,
   using mirte_msgs::msg::ColorRGBWStamped;
 
   const std::unique_lock<std::shared_mutex> lock(msg_mutex);
-  this->device_timer->reset();
+  // this->device_timer->reset();
   // To get to HSI/HSV/HSL we need to set a max to the intensity (setting). This
   // could be 2^16, but to get more resolution, you could also cap this to a
   // lower value.

@@ -29,7 +29,7 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
 void EncoderMonitor::data_callback(int16_t value) {
   this->value += value;
   this->update();
-  this->device_timer->reset();
+  // this->device_timer->reset();
 }
 
 void EncoderMonitor::update() {

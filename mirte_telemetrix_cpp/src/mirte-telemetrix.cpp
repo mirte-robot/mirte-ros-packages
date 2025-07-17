@@ -145,8 +145,35 @@ bool TelemetrixNode::start() {
           "get_board_characteristics",
           std::bind(&Mirte_Board::get_board_characteristics_service_callback,
                     this->board, _1, _2));
-  NodeData node_data{node_, tmx, board};
 
+
+  
+  NodeData node_data{node_, tmx, board};
+  node_data.add_timer = [&node_data](std::chrono::duration<double, std::milli> duration,
+                               std::function<void()> callback) {
+
+                                for (auto &timer : node_data.timers) {
+      if (timer.first == duration) {
+        timer.second.second.push_back(callback);
+        return;
+      }
+    }
+    auto timer = node_data.nh->create_wall_timer(
+        duration, [duration, &node_data]() {
+          for (auto &timer : node_data.timers) {
+            if (timer.first == duration) {
+              for (auto &cb : timer.second.second) {
+                cb();
+              }
+            }
+          }
+        });
+    node_data.timers.push_back(
+        {duration, {timer, {callback}}}); // add a new timer with the duration and callback
+    std::cout << "Adding timer for duration: " << duration.count() << " ms"
+              << std::endl;
+    
+  };
   std::cout << "Start adding" << std::endl;
 
   this->actuators = std::make_shared<Mirte_Actuators>(node_data, parser);

@@ -25,7 +25,7 @@ TelemetrixDevice::TelemetrixDevice(
   // TODO: Compensation could be depended on the amount of cores available.
   // To compensate for communication latencies, scale the period up by 20% (on
   // my machine with 16 cores)
-  this->device_timer = nh->create_wall_timer(
-      data.duration * 1.2, [this]() { this->device_timer_callback(); },
-      this->callback_group);
+
+  node_data.add_timer(
+      data.duration, [this]() { this->device_timer_callback(); });
 }

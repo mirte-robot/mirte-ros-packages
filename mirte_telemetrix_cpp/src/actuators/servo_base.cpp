@@ -32,7 +32,7 @@ ServoBase::ServoBase(NodeData node_data, std::vector<pin_t> pins,
                 std::placeholders::_1, std::placeholders::_2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
 
-  this->device_timer->cancel();
+  // this->device_timer->cancel();
 }
 
 void ServoBase::set_angle_service_callback(
