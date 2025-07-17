@@ -18,7 +18,7 @@
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp" // for Parser
 #include "mirte_telemetrix_cpp/util.hpp"
 #include <mirte_telemetrix_cpp/mirte-telemetrix.hpp>
-
+NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
   rclcpp::init(argc, argv);
@@ -49,7 +49,15 @@ TelemetrixNode::TelemetrixNode(const rclcpp::NodeOptions &options)
   if (!this->start()) {
     rclcpp::shutdown();
   }
+  std::cout << "timers: " << node_data.timers.size() << std::endl;
+  for (const auto &timer : node_data.timers) {
+    std::cout << "Timer: " << timer.first.count() << " ms, "
+               << " ms, "
+              << timer.second.second.size() << " callbacks" << std::endl;
+              timer.second.first->execute_callback();
+              timer.second.first->reset();
 }
+              }
 
 TelemetrixNode::~TelemetrixNode() {
   if (tmx) {
@@ -148,18 +156,22 @@ bool TelemetrixNode::start() {
 
 
   
-  NodeData node_data{node_, tmx, board};
-  node_data.add_timer = [&node_data](std::chrono::duration<double, std::milli> duration,
-                               std::function<void()> callback) {
-
+  node_data = NodeData{node_, tmx, board};
+  node_data.add_timer = [](std::chrono::duration<double, std::milli> duration,
+                               std::function<void()> callback) mutable {
+                                std::cout << "Adding cb for duration: "
+                                          << duration.count() << " ms" << std::endl;
                                 for (auto &timer : node_data.timers) {
       if (timer.first == duration) {
         timer.second.second.push_back(callback);
         return;
       }
     }
+    using namespace std::chrono_literals;
+
     auto timer = node_data.nh->create_wall_timer(
-        duration, [duration, &node_data]() {
+         100ms, [duration]()  {
+          std::cout << "Timer expired: " << duration.count() << " ms" << std::endl;
           for (auto &timer : node_data.timers) {
             if (timer.first == duration) {
               for (auto &cb : timer.second.second) {
@@ -167,7 +179,9 @@ bool TelemetrixNode::start() {
               }
             }
           }
-        });
+          std::cout << "Timer expired: " << duration.count() << " ms done" << std::endl;
+        }, node_data.nh->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive));
+
     node_data.timers.push_back(
         {duration, {timer, {callback}}}); // add a new timer with the duration and callback
     std::cout << "Adding timer for duration: " << duration.count() << " ms"
