@@ -49,7 +49,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 
 # Specify additional locations of header files Your package locations should be
 # listed before other locations
-add_subdirectory(libs/tmx-cpp)
+add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL) 
 include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
@@ -73,6 +73,7 @@ add_executable(
   src/boards/atmega328.cpp
   src/boards/pico.cpp
   src/boards/pcb.cpp
+  src/boards/raw.cpp
   src/mirte-actuators.cpp
   src/mirte-modules.cpp
   src/mirte-sensors.cpp
@@ -174,7 +175,8 @@ install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 # install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
-install(PROGRAMS scripts/default_screen.sh DESTINATION share/${PROJECT_NAME}/scripts/)
+install(PROGRAMS scripts/default_screen.sh
+        DESTINATION share/${PROJECT_NAME}/scripts/)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -6,6 +6,7 @@
 
 #include <mirte_telemetrix_cpp/sensors/keypad_monitor.hpp>
 
+#include <mirte_msgs/msg/intensity.hpp>
 #include <mirte_msgs/msg/keypad.hpp>
 #include <mirte_msgs/srv/get_keypad.hpp>
 
@@ -37,7 +38,8 @@ KeypadMonitor::KeypadMonitor(NodeData node_data, KeypadData keypad_data)
       "keypad/" + keypad_data.name + "/get_key",
       std::bind(&KeypadMonitor::keypad_service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
-
+  keypad_analog_pub = nh->create_publisher<mirte_msgs::msg::Intensity>(
+      "keypad/" + keypad_data.name + "/analog", rclcpp::SystemDefaultsQoS());
   tmx->setPinMode(keypad_data.pin, tmx_cpp::TMX::PIN_MODES::ANALOG_INPUT, true,
                   0);
   tmx->add_analog_callback(
@@ -50,6 +52,7 @@ void KeypadMonitor::callback(uint16_t value) {
 
   Key key = Key::NONE;
   auto maxValue = std::pow(2, this->board->get_adc_bits()) - 1;
+
   auto scale = 1024.0 / maxValue;
   // RCLCPP_INFO(logger, "%d", this->value);
   if (value < 70 / scale) {
@@ -69,7 +72,10 @@ void KeypadMonitor::callback(uint16_t value) {
   if (this->last_key != key) {
     this->last_debounce_time = nh->now().seconds();
   }
-
+  this->keypad_analog_pub->publish(
+      mirte_msgs::build<mirte_msgs::msg::Intensity>()
+          .header(get_header())
+          .value(value));
   this->last_key = key;
   this->update();
   this->device_timer->reset();
@@ -109,14 +115,18 @@ void KeypadMonitor::update() {
   }
 
   // Publish the last debounced key
-  this->keypad_pub->publish(msg_builder.key(key_string(debounced_key)));
+  if (this->keypad_pub->get_subscription_count() > 0) {
+    this->keypad_pub->publish(msg_builder.key(key_string(debounced_key)));
+  }
 
   // # check if we need to send a pressed message
   if (this->last_debounced_key != NONE &&
       this->last_debounced_key != debounced_key) // TODO: check this
   {
-    this->keypad_pressed_pub->publish(
-        msg_builder.key(key_string(this->last_debounced_key)));
+    if (this->keypad_pub->get_subscription_count() > 0) {
+      this->keypad_pressed_pub->publish(
+          msg_builder.key(key_string(this->last_debounced_key)));
+    }
   }
 
   this->last_debounced_key = debounced_key;

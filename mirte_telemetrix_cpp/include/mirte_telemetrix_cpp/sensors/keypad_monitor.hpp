@@ -9,9 +9,9 @@
 
 #include <mirte_telemetrix_cpp/sensors/base_sensor.hpp>
 
+#include <mirte_msgs/msg/intensity.hpp>
 #include <mirte_msgs/msg/keypad.hpp>
 #include <mirte_msgs/srv/get_keypad.hpp>
-
 class KeypadMonitor : public Mirte_Sensor {
 public:
   KeypadMonitor(NodeData node_data, KeypadData keypad_data);
@@ -39,6 +39,9 @@ private:
   rclcpp::Publisher<mirte_msgs::msg::Keypad>::SharedPtr keypad_pressed_pub;
   // Service: keypad/NAME/get_key
   rclcpp::Service<mirte_msgs::srv::GetKeypad>::SharedPtr keypad_service;
+
+  // Publisher: keypad/NAME/analog
+  rclcpp::Publisher<mirte_msgs::msg::Intensity>::SharedPtr keypad_analog_pub;
 
   void keypad_service_callback(
       const mirte_msgs::srv::GetKeypad::Request::ConstSharedPtr req,

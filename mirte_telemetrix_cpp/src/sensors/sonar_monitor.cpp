@@ -88,10 +88,11 @@ void SonarMonitor::update() {
           .min_range(this->min_range)
           .max_range(this->max_range)
           .range(this->distance);
-
-  this->sonar_pub->publish(msg);
   const std::lock_guard<std::mutex> lock(msg_mutex);
   this->range = msg;
+  if (this->sonar_pub->get_subscription_count() > 0) {
+    this->sonar_pub->publish(msg);
+  }
 }
 
 void SonarMonitor::service_callback(
