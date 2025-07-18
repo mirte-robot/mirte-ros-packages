@@ -5,6 +5,7 @@
         type: pcb
         version: 0.8
         max_frequency: 50
+        # port: /dev/ttyUSB0 # force the port to use, otherwise it will try to find the correct one
     distance:
       left:
         name: left
