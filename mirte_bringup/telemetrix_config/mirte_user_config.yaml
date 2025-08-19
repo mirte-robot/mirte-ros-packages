@@ -34,6 +34,22 @@
         pins:
           analog: GP26
           digital: GP16
+    modules:
+      as5600_M:
+        device: mirte
+        
+        type: AS5600
+        connector: I2C1
+        addr: 0x36
+        encoders:
+          wheel1:
+              mux: 3
+          wheel2:
+              mux: 4
+          wheel3:
+              mux: 5
+          wheel4:
+            mux: 6
     # modules:
     oled:
       left:
