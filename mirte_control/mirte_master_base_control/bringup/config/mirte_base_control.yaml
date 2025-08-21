@@ -62,7 +62,7 @@
       - rear_right_wheel_joint
       - front_right_wheel_joint
     gains:
-      front_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
-      rear_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
-      rear_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
-      front_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
+      front_left_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
+      rear_left_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
+      rear_right_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
+      front_right_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}

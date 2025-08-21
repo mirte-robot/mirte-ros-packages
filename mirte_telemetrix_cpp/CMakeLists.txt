@@ -98,6 +98,7 @@ add_executable(
   src/parsers/modules/module_data.cpp
   src/parsers/modules/i2c_module_data.cpp
   src/parsers/modules/ina226_data.cpp
+  src/parsers/modules/as5600_data.cpp
   src/parsers/modules/hiwonder_data.cpp
   src/parsers/modules/hiwonder/hiwonder_servo_data.cpp
   src/parsers/modules/pca_data.cpp
@@ -121,6 +122,7 @@ add_executable(
   src/modules/pca/pca_motor.cpp
   src/modules/pca/pca_servo.cpp
   src/modules/ssd1306_module.cpp
+  src/modules/as5600_module.cpp
   src/modules/veml6040_module.cpp)
 ament_target_dependencies(
   ${PROJECT_NAME}_node
