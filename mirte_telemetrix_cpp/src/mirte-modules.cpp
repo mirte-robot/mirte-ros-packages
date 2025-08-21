@@ -2,9 +2,9 @@
 
 #include <mirte_telemetrix_cpp/mirte-modules.hpp>
 #include <mirte_telemetrix_cpp/modules/adxl345_module.hpp>
+#include <mirte_telemetrix_cpp/modules/as5600_module.hpp>
 #include <mirte_telemetrix_cpp/modules/hiwonder_module.hpp>
 #include <mirte_telemetrix_cpp/modules/ina226_module.hpp>
-#include <mirte_telemetrix_cpp/modules/as5600_module.hpp>
 #include <mirte_telemetrix_cpp/modules/mpu9250_module.hpp>
 #include <mirte_telemetrix_cpp/modules/pca_module.hpp>
 #include <mirte_telemetrix_cpp/modules/ssd1306_module.hpp>
@@ -40,13 +40,12 @@ void Mirte_modules::start() {
   std::cout << "Adding ina modules" << ina_mods.size() << std::endl;
   this->modules.insert(this->modules.end(), ina_mods.begin(), ina_mods.end());
 
-    RCLCPP_INFO(nh->get_logger(), "Adding AS5600 Modules");
-    auto as5600_mods =
-        AS5600_sensor::get_as5600_modules(node_data, parser, this->sensor_sys);
-        std::cout << "Adding as5600 modules" << as5600_mods.size() << std::endl;
-    this->modules.insert(this->modules.end(), as5600_mods.begin(),
-                         as5600_mods.end());
-
+  RCLCPP_INFO(nh->get_logger(), "Adding AS5600 Modules");
+  auto as5600_mods =
+      AS5600_sensor::get_as5600_modules(node_data, parser, this->sensor_sys);
+  std::cout << "Adding as5600 modules" << as5600_mods.size() << std::endl;
+  this->modules.insert(this->modules.end(), as5600_mods.begin(),
+                       as5600_mods.end());
 
   RCLCPP_INFO(nh->get_logger(), "Adding MPU9250 Modules");
   auto mpu_mods =
