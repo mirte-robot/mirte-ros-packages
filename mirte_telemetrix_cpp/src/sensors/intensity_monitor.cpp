@@ -40,6 +40,10 @@ void DigitalIntensityMonitor::data_callback(uint16_t value) {
 }
 
 void DigitalIntensityMonitor::update() {
+  if (this->intensity_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   auto msg = mirte_msgs::build<mirte_msgs::msg::IntensityDigital>()
                  .header(get_header()) // Build the message
                  .value(value);
@@ -97,6 +101,10 @@ void AnalogIntensityMonitor::data_callback(uint16_t value) {
 }
 
 void AnalogIntensityMonitor::update() {
+  if (this->intensity_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   auto msg = mirte_msgs::build<mirte_msgs::msg::Intensity>()
                  .header(get_header()) // Build the message
                  .value(value);

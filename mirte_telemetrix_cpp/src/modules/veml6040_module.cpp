@@ -51,7 +51,12 @@ void VEML6040_sensor::update() {
   using mirte_msgs::msg::ColorHSLStamped;
   using mirte_msgs::msg::ColorRGBAStamped;
   using mirte_msgs::msg::ColorRGBWStamped;
-
+  if (this->rgbw_pub->get_subscription_count() == 0 &&
+      this->rgba_pub->get_subscription_count() == 0 &&
+      this->hsl_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   if (msg_mutex.try_lock_shared()) {
     const std::shared_lock lock{msg_mutex, std::adopt_lock};
     auto header = get_header();
@@ -112,17 +117,19 @@ void VEML6040_sensor::data_callback(uint16_t red, uint16_t green, uint16_t blue,
   last_rgbw.b = b;
   last_rgbw.w = w;
 
-  rgbw_pub->publish(
-      mirte_msgs::build<ColorRGBWStamped>().header(header).color(last_rgbw));
+  if (this->rgbw_pub->get_subscription_count() > 0) {
+    rgbw_pub->publish(
+        mirte_msgs::build<ColorRGBWStamped>().header(header).color(last_rgbw));
+  }
 
   last_rgba.r = r;
   last_rgba.g = g;
   last_rgba.b = b;
   last_rgba.a = 1;
-
-  rgba_pub->publish(
-      mirte_msgs::build<ColorRGBAStamped>().header(header).color(last_rgba));
-  ;
+  if (this->rgba_pub->get_subscription_count() > 0) {
+    rgba_pub->publish(
+        mirte_msgs::build<ColorRGBAStamped>().header(header).color(last_rgba));
+  }
 
   auto color_hsva = color_util::changeColorspace(color_util::ColorRGBA(
       last_rgba.r, last_rgba.g, last_rgba.b, last_rgba.a));
@@ -136,9 +143,10 @@ void VEML6040_sensor::data_callback(uint16_t red, uint16_t green, uint16_t blue,
 
   last_hsl.l = l;
   last_hsl.s = (l >= 1.0 or l <= 0.0) ? 0.0 : ((v - l) / std::min(l, 1 - l));
-
-  hsl_pub->publish(
-      mirte_msgs::build<ColorHSLStamped>().header(header).color(last_hsl));
+  if (this->hsl_pub->get_subscription_count() > 0) {
+    hsl_pub->publish(
+        mirte_msgs::build<ColorHSLStamped>().header(header).color(last_hsl));
+  }
 }
 
 void VEML6040_sensor::get_rgbw_service_callback(

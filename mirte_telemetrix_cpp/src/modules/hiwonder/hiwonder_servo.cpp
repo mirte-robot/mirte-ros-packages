@@ -123,6 +123,10 @@ void Hiwonder_servo::position_cb(
 }
 
 void Hiwonder_servo::update() {
+  if (this->position_pub->get_subscription_count() == 0) {
+    // No subscribers, so no need to publish
+    return;
+  }
   auto msg = mirte_msgs::build<mirte_msgs::msg::ServoPosition>()
                  .header(this->get_header())
                  .angle(this->last_angle)

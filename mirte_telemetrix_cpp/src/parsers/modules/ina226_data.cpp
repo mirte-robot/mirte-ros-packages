@@ -42,6 +42,7 @@ INA226Data::INA226Data(std::shared_ptr<Parser> parser,
                          "enable)");
 #endif
   }
+  this->duration = DeviceDuration(1000.0 / 1.0); // 1Hz default
 }
 
 bool INA226Data::check() {
