@@ -40,6 +40,13 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
   tmx->attach_sonar(
       sonar_data.trigger, sonar_data.echo,
       [this](auto pin, auto value) { this->data_callback(value); });
+
+  range_msg_.header.frame_id = this->frame_id;
+  range_msg_.radiation_type = sensor_msgs::msg::Range::ULTRASOUND;
+  range_msg_.field_of_view =
+      M_PI / 12.0; // 15 degrees, according to the HC-SR04 datasheet
+  range_msg_.min_range = this->min_range;
+  range_msg_.max_range = this->max_range;
 }
 
 void SonarMonitor::data_callback(uint16_t value) {
@@ -79,24 +86,13 @@ void SonarMonitor::data_callback(uint16_t value) {
 }
 
 void SonarMonitor::update() {
-  auto msg =
-      sensor_msgs::build<sensor_msgs::msg::Range>()
-          .header(this->get_header())
-          .radiation_type(sensor_msgs::msg::Range::ULTRASOUND)
-          .field_of_view(M_PI /
-                         12.0) // 15 degrees, according to the HC-SR04 datasheet
-          .min_range(this->min_range)
-          .max_range(this->max_range)
-          .range(this->distance);
-
-  this->sonar_pub->publish(msg);
-  const std::lock_guard<std::mutex> lock(msg_mutex);
-  this->range = msg;
+  range_msg_.header.stamp = this->nh->now();
+  range_msg_.range = this->distance;
+  this->sonar_pub->publish(range_msg_);
 }
 
 void SonarMonitor::service_callback(
     const mirte_msgs::srv::GetRange::Request::ConstSharedPtr req,
     mirte_msgs::srv::GetRange::Response::SharedPtr res) {
-  const std::lock_guard<std::mutex> lock(msg_mutex);
-  res->range = this->range;
+  res->range = range_msg_;
 }
