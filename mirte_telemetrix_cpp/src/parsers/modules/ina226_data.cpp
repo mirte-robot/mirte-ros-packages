@@ -1,11 +1,13 @@
 #include <mirte_telemetrix_cpp/parsers/modules/ina226_data.hpp>
 
+using namespace std::chrono_literals;
+
 INA226Data::INA226Data(std::shared_ptr<Parser> parser,
                        std::shared_ptr<Mirte_Board> board, std::string name,
                        std::map<std::string, rclcpp::ParameterValue> parameters,
                        std::set<std::string> &unused_keys)
     : I2CModuleData(parser, board, name, parameters, unused_keys,
-                    get_module_type()) {
+                    get_module_type(), std::chrono::duration_cast<DeviceDuration>(50s)) {
   auto logger =
       parser->logger.get_child(get_device_class()).get_child(this->name);
 
