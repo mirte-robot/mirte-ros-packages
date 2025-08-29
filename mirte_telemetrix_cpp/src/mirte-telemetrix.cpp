@@ -72,8 +72,8 @@ bool TelemetrixNode::start() {
 
   auto parser = std::make_shared<Parser>(node_);
   std::shared_ptr<tmx_cpp::TMX> tmx;
-  if (this->node_->has_parameter("port")) {
-    auto port = this->node_->get_parameter("port").as_string();
+  if (this->node_->has_parameter("device.mirte.port")) {
+    auto port = this->node_->get_parameter("device.mirte.port").as_string();
     std::cout << "Using port: " << port << std::endl;
     if (!tmx_cpp::TMX::check_port(port)) {
       std::cout << "Port " << port << " is not available" << std::endl;

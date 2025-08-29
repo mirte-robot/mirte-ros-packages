@@ -84,9 +84,19 @@ std::set<std::string> Parser::get_params_keys(std::string name) {
   }
   return out_params;
 }
-
 std::string Parser::build_param_name(std::string name, std::string key) {
   return name + "." + key;
+}
+std::string
+Parser::build_param_name(std::initializer_list<const std::string> keys) {
+  std::string full_name = "";
+  for (const auto &key : keys) {
+    full_name += "." + key;
+  }
+  if (!full_name.empty() && full_name.front() == '.') {
+    full_name.erase(0, 1); // Remove leading dot
+  }
+  return full_name;
 }
 
 int Parser::get_frequency() {
