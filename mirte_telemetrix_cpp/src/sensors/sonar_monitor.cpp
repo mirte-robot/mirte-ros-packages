@@ -26,7 +26,15 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
       sonar_data(sonar_data) {
   this->logger = this->logger.get_child(sonar_data.get_device_class())
                      .get_child(sonar_data.name);
-
+this->range =
+      sensor_msgs::build<sensor_msgs::msg::Range>()
+          .header(this->get_header())
+          .radiation_type(sensor_msgs::msg::Range::ULTRASOUND)
+          .field_of_view(M_PI /
+                         12.0) // 15 degrees, according to the HC-SR04 datasheet
+          .min_range(this->min_range)
+          .max_range(this->max_range)
+          .range(this->distance);
   // Use default QOS for sensor publishers as specified in REP2003
   sonar_pub = nh->create_publisher<sensor_msgs::msg::Range>(
       "distance/" + sonar_data.name, rclcpp::SystemDefaultsQoS());
@@ -75,24 +83,15 @@ void SonarMonitor::data_callback(uint16_t value) {
       this->distance = raw_distance;
     }
   }
-  auto msg =
-      sensor_msgs::build<sensor_msgs::msg::Range>()
-          .header(this->get_header())
-          .radiation_type(sensor_msgs::msg::Range::ULTRASOUND)
-          .field_of_view(M_PI /
-                         12.0) // 15 degrees, according to the HC-SR04 datasheet
-          .min_range(this->min_range)
-          .max_range(this->max_range)
-          .range(this->distance);
-  this->range = msg;
 }
 
 void SonarMonitor::update() {
 
   const std::lock_guard<std::mutex> lock(msg_mutex);
   if (this->sonar_pub->get_subscription_count() > 0) {
-    range.set__header(this->get_header());
-    this->sonar_pub->publish(range);
+    this->range.set__header(this->get_header());
+    this->range.set__range(this->distance);
+    this->sonar_pub->publish(this->range);
   }
 }
 
@@ -100,5 +99,7 @@ void SonarMonitor::service_callback(
     const mirte_msgs::srv::GetRange::Request::ConstSharedPtr req,
     mirte_msgs::srv::GetRange::Response::SharedPtr res) {
   const std::lock_guard<std::mutex> lock(msg_mutex);
+  res->range.header = this->get_header();
+  res->range.set__range(this->distance);
   res->range = this->range;
 }
