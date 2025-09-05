@@ -67,12 +67,6 @@ void ADXL345_sensor::data_callback(std::array<float, 3> acceleration) {
   msg.linear_acceleration.x = acceleration[0] * 9.81;
   msg.linear_acceleration.y = acceleration[1] * 9.81;
   msg.linear_acceleration.z = acceleration[2] * 9.81;
-  if (this->imu_pub->get_subscription_count() == 0) {
-    // No subscribers, so no need to publish
-    return;
-  }
-  imu_pub->publish(msg);
-  this->device_timer->reset();
 }
 
 void ADXL345_sensor::get_imu_service_callback(

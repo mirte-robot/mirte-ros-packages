@@ -36,7 +36,6 @@ jobs:
         for d in $packages; do
             colcon lint --packages-select $d || ERROR=true
             colcon test --packages-select $d || ERROR=true
-          # fi
         done
         # if $error, set exit state
         if $ERROR; then

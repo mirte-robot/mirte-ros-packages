@@ -79,8 +79,6 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
           std::bind(&SSD1306_module::set_oled_file_callback, this, _1, _2),
           rmw_qos_profile_services_default, this->callback_group);
 
-  this->device_timer->reset();
-
   modules->add_mod(this->ssd1306);
   // Write an initial text to the screen, and instantly kill the timer if it has
   // failed.
@@ -91,13 +89,13 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
                  "Writing to OLED module '%s' failed, shutting down default "
                  "screen timer.",
                  this->data.name.c_str());
-    this->device_timer->cancel();
+    this->enabled = false;
   }
 }
 
 bool SSD1306_module::prewrite(bool is_default) {
   if (!is_default) {
-    device_timer->cancel();
+    this->default_screen = false;
   }
 
   if (!enabled) {
@@ -196,11 +194,11 @@ bool SSD1306_module::set_image_from_path(fs::path path) {
       paths.insert(img_file);
     }
 
-    RCLCPP_DEBUG(logger, "Loading animation frames from %s", path.c_str());
+    // RCLCPP_DEBUG(logger, "Loading animation frames from %s", path.c_str());
 
     for (auto img_file : paths) {
-      RCLCPP_DEBUG(logger, "Loading frame %ld: %s", images.size(),
-                   img_file.c_str());
+      // RCLCPP_DEBUG(logger, "Loading frame %ld: %s", images.size(),
+      //   img_file.c_str());
       images.push_back(cv::imread(img_file.string(), cv::IMREAD_GRAYSCALE));
     }
 
@@ -269,6 +267,12 @@ void SSD1306_module::set_oled_file_callback(
 }
 
 void SSD1306_module::device_timer_callback() {
+  if (!enabled) {
+    return;
+  }
+  if (!default_screen) {
+    return;
+  }
   if (!prewrite(true)) {
     return;
   }
@@ -291,7 +295,6 @@ void SSD1306_module::device_timer_callback() {
 
   if (not succes) {
     enabled = false;
-    device_timer->cancel();
     RCLCPP_ERROR(
         logger,
         "Default screen update failed. Disabling screen and update timer.");

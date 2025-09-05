@@ -77,12 +77,6 @@ void MPU9250_sensor::data_callback(std::array<float, 3> acceleration,
   msg.orientation.y = quaternion[1];
   msg.orientation.z = quaternion[2];
   msg.orientation.w = quaternion[3];
-  if (this->imu_pub->get_subscription_count() == 0) {
-    // No subscribers, so no need to publish
-    return;
-  }
-  imu_pub->publish(msg);
-  device_timer->reset();
 }
 
 void MPU9250_sensor::get_imu_service_callback(
