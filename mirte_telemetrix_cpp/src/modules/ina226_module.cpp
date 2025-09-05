@@ -1,5 +1,6 @@
 #include <functional>
 #include <stdint.h>
+#include <fstream>
 
 #ifdef WITH_GPIO
 #include <chrono>
@@ -49,6 +50,19 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
 #endif
 }
 
+void INA226_sensor::write_soc(float soc) {
+  std::ofstream soc_file;
+  soc_file.open("/tmp/batteryState");
+  if (soc_file.is_open()) {
+    soc_file << soc << std::endl;
+    soc_file << soc << std::endl; // for bw compatibility with shutdown script
+    soc_file.close();
+  } else {
+    RCLCPP_ERROR(this->logger, "Could not open soc file for writing");
+  }
+}
+
+
 // TODO: Maybe add mutex lock-out although not fully necessary
 void INA226_sensor::update() { // only publish at 1Hz
   if (this->battery_pub->get_subscription_count() > 0) {
@@ -58,6 +72,7 @@ void INA226_sensor::update() { // only publish at 1Hz
     msg.voltage = voltage_;
     msg.current = current_;
     msg.percentage = calc_soc(voltage_);
+    this->write_soc(msg.percentage);
     this->battery_pub->publish(msg);
   }
 }

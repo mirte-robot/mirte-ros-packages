@@ -24,6 +24,7 @@ public:
   void data_callback(float voltage, float current);
 
   float calc_soc(float voltage);
+  void write_soc(float soc);
   void integrate_usage(float current);
   void check_soc(float voltage, float current);
 
