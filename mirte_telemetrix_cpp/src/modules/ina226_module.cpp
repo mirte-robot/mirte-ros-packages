@@ -1,6 +1,6 @@
+#include <fstream>
 #include <functional>
 #include <stdint.h>
-#include <fstream>
 
 #ifdef WITH_GPIO
 #include <chrono>
@@ -61,7 +61,6 @@ void INA226_sensor::write_soc(float soc) {
     RCLCPP_ERROR(this->logger, "Could not open soc file for writing");
   }
 }
-
 
 // TODO: Maybe add mutex lock-out although not fully necessary
 void INA226_sensor::update() { // only publish at 1Hz

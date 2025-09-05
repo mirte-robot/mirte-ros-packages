@@ -58,13 +58,13 @@ parse_all(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board) {
         std::set(parameter_keys_vector.begin(), parameter_keys_vector.end());
 
     auto data = T(parser, board, name, parameters, parameter_keys);
-    if(parameter_keys.contains("update_rate")) {
+    if (parameter_keys.contains("update_rate")) {
       rclcpp::ParameterValue update_rate = parameters["update_rate"];
       double update_rate_value = 1.0;
-      if(update_rate.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE) {
+      if (update_rate.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE) {
         update_rate_value = update_rate.get<double>();
-      }
-      else if(update_rate.get_type() == rclcpp::ParameterType::PARAMETER_INTEGER) {
+      } else if (update_rate.get_type() ==
+                 rclcpp::ParameterType::PARAMETER_INTEGER) {
         update_rate_value = (double)update_rate.get<int>();
       }
 

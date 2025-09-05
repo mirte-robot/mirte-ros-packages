@@ -26,7 +26,7 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
       sonar_data(sonar_data) {
   this->logger = this->logger.get_child(sonar_data.get_device_class())
                      .get_child(sonar_data.name);
-this->range =
+  this->range =
       sensor_msgs::build<sensor_msgs::msg::Range>()
           .header(this->get_header())
           .radiation_type(sensor_msgs::msg::Range::ULTRASOUND)
