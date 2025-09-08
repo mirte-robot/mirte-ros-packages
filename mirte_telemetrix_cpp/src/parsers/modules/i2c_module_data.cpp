@@ -10,6 +10,9 @@ I2CModuleData::I2CModuleData(
     std::set<std::string> &unused_keys, std::string module_type,
     std::optional<DeviceDuration> duration)
     : ModuleData(parser, board, name, parameters, unused_keys, duration) {
+  for (const auto &key : unused_keys) {
+    std::cout << "Unused key: " << key << std::endl;
+  }
   if (unused_keys.erase("connector")) {
     auto connector = get_string(parameters["connector"]);
     auto pins = board->resolveConnector(connector);

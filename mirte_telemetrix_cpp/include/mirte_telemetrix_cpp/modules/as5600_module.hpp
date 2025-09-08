@@ -31,4 +31,5 @@ private:
   std::vector<rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> angle_pubs;
   std::vector<float> angles;
   std::vector<std_msgs::msg::Float32> angle_msgs;
+  std::vector<int> channels;
 };

@@ -29,13 +29,14 @@ AS5600Data::AS5600Data(std::shared_ptr<Parser> parser,
         auto key = parser->build_param_name(
             {get_device_key(this), "encoders", encoder, "mux"});
         std::cout << "AS5600 encoder key: " << key << std::endl;
-        if (unused_keys.erase(key) == 0) {
-          std::cout << "AS5600 encoder '" << encoder
-                    << "' mux not found in parameters" << std::endl;
-          // continue;
-        }
+        // if (unused_keys.erase(key) == 0) {
+        //   std::cout << "AS5600 encoder '" << encoder << "' mux not found in
+        //   parameters" << std::endl;
+        //   // continue;
+        // }
         auto channel = get_string(
             parameters[parser->build_param_name({"encoders", encoder, "mux"})]);
+        std::cout << "AS5600 encoder channel: " << channel << std::endl;
         this->encoders.push_back(
             std::make_tuple(std::stoi(channel),
                             encoder)); // Store channel and name
