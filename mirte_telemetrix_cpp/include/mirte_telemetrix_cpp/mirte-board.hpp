@@ -112,7 +112,7 @@ public:
   virtual const double get_voltage_level() const override { return 3.3; }
   virtual const int get_adc_bits() const override { return 12; }
   virtual const int get_max_pwm() const override {
-    return 1999;
+    return 19999;
   } // TODO: check with actual board
   virtual uint8_t resolveI2CPort(uint8_t sda) override;
   virtual uint8_t resolveUARTPort(uint8_t pin) override;
