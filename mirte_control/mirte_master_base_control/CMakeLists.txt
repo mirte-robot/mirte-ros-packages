@@ -33,8 +33,7 @@ endforeach()
 
 include_directories(hardware/include/ ${catkin_INCLUDE_DIRS})
 # COMPILE
-add_library(${PROJECT_NAME} SHARED hardware/mirte_base_control.cpp
-                                   hardware/params.cpp)
+add_library(${PROJECT_NAME} SHARED hardware/mirte_base_control.cpp)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
   ${PROJECT_NAME}

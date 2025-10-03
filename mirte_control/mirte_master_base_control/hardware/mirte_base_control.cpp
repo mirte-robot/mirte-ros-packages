@@ -1,5 +1,4 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
-#include "params.hpp"
 #include <algorithm>
 #include <mirte_base_control.hpp>
 namespace mirte_base_control {
@@ -379,6 +378,10 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   // std::cout << "on_init" << __LINE__ << std::endl;
   // this->NUM_JOINTS = detect_joints(nh);
   //  std::cout << "on_init" << __LINE__ << std::endl;
+  if(info.hardware_parameters.find("single_client") != info.hardware_parameters.end()) {
+    this->use_single_client = std::stod(info.hardware_parameters.at("single_client"));
+  } 
+
   this->NUM_JOINTS = info.joints.size();
   if (this->NUM_JOINTS > 2) {
     this->bidirectional = true;
