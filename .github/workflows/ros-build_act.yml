@@ -1,0 +1,107 @@
+name: ros-ci
+on:
+  workflow_dispatch:
+    inputs:
+      pkg_name:
+        description: "A random input name for the workflow"
+        type: string
+
+permissions:
+  contents: write
+jobs:
+  build_testing_act:
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-22.04' || 'ubuntu-24.04' }}
+    strategy:
+        matrix:
+                ros_distro: [humble, 
+                  # jazzy
+                  ]
+                deb_distro: [jammy, 
+                  # noble
+                  ]
+                arch: [
+                    # amd64, 
+                    arm64, 
+                    # armhf
+                    ]
+                exclude:
+                  - ros_distro: humble
+                    deb_distro: noble
+                    # arch: arm64
+                  - ros_distro: jazzy
+                    deb_distro: jammy
+                    # arch: arm64
+
+        fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0 # fetch all history for the self-checkout step
+      - uses: actions/cache@v4
+        with:
+          path: |
+            /root/.cache/sbuild/jammy-arm64.tar
+          key: build
+      - name: self-checkout
+        run: |
+              set -e
+              cat /etc/subuid
+              echo "root:100000:65536" >> /etc/subuid
+              cat /etc/subgid
+              echo "root:100000:65536" >> /etc/subgid
+              # exit 1
+              mkdir -p ./srcO/
+              mv ./mirte_* ./srcO/
+              rm -rf ./src
+                rm ./sources.repos
+                # for all packages in list, check if they are in the last 2 commits
+                packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control")
+                skip_packages=""
+                for package in "${packages[@]}"; do
+                  if "${{ github.event.inputs.pkg_name }}" == "$package"; then
+                    echo "Found $package in last 2 commits, so building it..."
+                  else
+                    echo "Skipping $package, not in last 2 commits."
+                    skip_packages+=" $package"
+                    echo ${skip_packages}
+                    fi
+                  done
+              # fi
+              # export the skip_packages array as a string for the next step
+              echo "SKIP_PACKAGES=\"${skip_packages}\"" >> $GITHUB_ENV
+              # echo $skip_packages
+              # echo "SKIP_PACKAGES=(${{ env.SKIP_PACKAGES }})" # for debugging
+              # cat $GITHUB_ENV
+      # - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
+      #   if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+      #   with:
+      #     ROS_DISTRO: ${{ matrix.ros_distro }}
+      #     DEB_DISTRO: ${{ matrix.deb_distro }}
+      #     DEB_ARCH: ${{ matrix.arch }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     # REPOS_FILE: ./sources.repos
+      #     SKIP_CHECKOUT: true
+      #     PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
+
+      #   #   SBUILD_CONF: "$enable_network = 1;"
+      #   #   Skip pushing to repo when not on main branch
+      #     SKIP_PUSH: false
+      #     UPLOAD_ARTIFACTS: false
+      #     CONTINUE_ON_ERROR: false
+      - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
+        # if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+        with:
+          ROS_DISTRO: ${{ matrix.ros_distro }}
+          DEB_DISTRO: ${{ matrix.deb_distro }}
+          DEB_ARCH: ${{ matrix.arch }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # REPOS_FILE: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}./sources.repos
+          # if not on develop or main, only build the packages from the last 2 commits
+          # SKIP_PACKAGES: ${{ env.SKIP_PACKAGES || '' }}
+          SKIP_CHECKOUT: true
+          PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
+        #   Skip pushing to repo when not on main branch
+          SKIP_PUSH: true
+          UPLOAD_ARTIFACTS: true
+          CONTINUE_ON_ERROR: true

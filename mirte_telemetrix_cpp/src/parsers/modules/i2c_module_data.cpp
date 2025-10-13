@@ -19,9 +19,18 @@ I2CModuleData::I2CModuleData(
     this->scl = pins["scl"];
     this->sda = pins["sda"];
   } else if (unused_keys.erase("pins")) {
+    std::cout << "I2CModuleData: Using direct pin assignment" << std::endl;
+    std::cout << "param name: "
+              << parser->build_param_name(module_type + "." + this->name,
+                                          "pins")
+              << std::endl;
     auto subkeys = parser->get_params_keys(
         parser->build_param_name(module_type + "." + this->name, "pins"));
-
+        std::cout << "Subkeys:";
+        for (const auto &k : subkeys) {
+          std::cout << " " << k;
+        }
+        std::cout << std::endl;
     if (subkeys.erase("scl")) {
       this->scl = board->resolvePin(get_string(parameters["pins.scl"]));
     }
@@ -45,6 +54,11 @@ I2CModuleData::I2CModuleData(
 
 bool I2CModuleData::check(std::string module_type) {
   // Check if I2C address is between the valid range of 0 and 127 (0x7F)
+  std::cout << "I2CModuleData check: " << module_type << std::endl;
+  std::cout << "I2C address: " << (int)addr << std::endl;
+  std::cout << "SCL pin: " << (int)scl << std::endl;
+  std::cout << "SDA pin: " << (int)sda << std::endl;
+  std::cout << "I2C port: " << (int)port << std::endl;
   return scl != (pin_t)-1 && sda != (pin_t)-1 && addr != (uint8_t)-1 &&
          addr <= 0x7F && ModuleData::check(module_type);
 }
