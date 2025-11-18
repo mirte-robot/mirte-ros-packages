@@ -22,7 +22,7 @@ HiWonderBus_module::HiWonderBus_module(
                    (ModuleData)bus_data,
                    rclcpp::CallbackGroupType::MutuallyExclusive),
       data(bus_data) {
-  this->device_timer->cancel();
+  // this->device_timer->cancel();
   this->logger =
       this->logger.get_child(data.get_device_class()).get_child(data.name);
 

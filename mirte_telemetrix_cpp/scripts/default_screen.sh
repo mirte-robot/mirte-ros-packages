@@ -1,6 +1,5 @@
 #!/bin/bash
 # set -x
-echo "IPs: $(hostname -I)"
 
 # Hostname
 echo "Hn:$(cat /etc/hostname)"
@@ -22,6 +21,9 @@ if [ "$(echo $percentage | wc -c)" -gt 1 ]; then
 	soc=$(echo "$percentage * 100" | bc)
 	printf "SOC: %.0f%%\n" "$soc"
 fi
+
+# IPs might be very long, so after hostname and SoC
+echo "IPs: $(hostname -I)"
 
 # if not sure about date, then show uptime, otherwise show date
 if [ "$(timedatectl | grep "synchronized: yes" | wc -l)" -eq 1 ]; then

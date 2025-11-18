@@ -36,6 +36,7 @@ public:
 
 private:
   bool enabled = true;
+  bool default_screen = true;
   std::optional<std::string> last_text;
 
   // Only enabled if legacy is enabled in the config

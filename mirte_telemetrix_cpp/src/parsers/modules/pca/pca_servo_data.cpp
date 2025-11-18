@@ -37,8 +37,9 @@ PCA_Servo_data::parse_pca_servo_data(
       }
 
       if (servo_data.check()) {
-        RCLCPP_DEBUG(parser->logger.get_child(pca_key), "Parsed PCA Servo %s",
-                     servo_data.name.c_str());
+        // RCLCPP_DEBUG(parser->logger.get_child(pca_key), "Parsed PCA Servo
+        // %s",
+        //   servo_data.name.c_str());
         servos.push_back(std::make_shared<PCA_Servo_data>(servo_data));
       }
 
