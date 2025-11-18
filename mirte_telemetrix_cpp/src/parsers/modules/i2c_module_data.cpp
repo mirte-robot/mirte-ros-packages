@@ -26,11 +26,11 @@ I2CModuleData::I2CModuleData(
               << std::endl;
     auto subkeys = parser->get_params_keys(
         parser->build_param_name(module_type + "." + this->name, "pins"));
-        std::cout << "Subkeys:";
-        for (const auto &k : subkeys) {
-          std::cout << " " << k;
-        }
-        std::cout << std::endl;
+    std::cout << "Subkeys:";
+    for (const auto &k : subkeys) {
+      std::cout << " " << k;
+    }
+    std::cout << std::endl;
     if (subkeys.erase("scl")) {
       this->scl = board->resolvePin(get_string(parameters["pins.scl"]));
     }
