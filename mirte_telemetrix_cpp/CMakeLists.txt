@@ -40,6 +40,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(color_util REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(backward_ros REQUIRED)
+find_package(generate_parameter_library REQUIRED)
 
 find_package(OpenCV REQUIRED COMPONENTS core imgcodecs)
 find_package(Boost REQUIRED COMPONENTS system thread)
@@ -53,6 +54,12 @@ add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL)
 include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+
+generate_parameter_library(
+  telemetrix_parameters # cmake target name for the parameter library
+  src/telemetrix_parameters.yaml # path to input yaml file
+)
+
 
 # include(CheckIPOSupported) check_ipo_supported(RESULT supported OUTPUT error)
 
@@ -158,7 +165,7 @@ if(0) # extra strict errors
 endif()
 
 # Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp
+target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp telemetrix_parameters
                       ${MIRTE_EXTRA_LIBS} ${OpenCV_LIBS})
 
 # if(supported) if(CMAKE_BUILD_TYPE STREQUAL "Release") message(STATUS "IPO LTO
@@ -172,6 +179,9 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}_node telemetrix_parameters
+  EXPORT ${PROJECT_NAME}Targets)
+ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 
 # EXPORTS ament_export_targets( ${PROJECT_NAME}_node HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})

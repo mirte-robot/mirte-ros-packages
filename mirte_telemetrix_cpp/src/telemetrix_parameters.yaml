@@ -1,0 +1,20 @@
+turtlesim:
+  background:
+    r:
+      type: int
+      default_value: 0
+      description: "Red color value for the background, 8-bit"
+      validation:
+        bounds<>: [0, 255]
+    g:
+      type: int
+      default_value: 0
+      description: "Green color value for the background, 8-bit"
+      validation:
+        bounds<>: [0, 255]
+    b:
+      type: int
+      default_value: 0
+      description: "Blue color value for the background, 8-bit"
+      validation:
+        bounds<>: [0, 255]
