@@ -117,16 +117,21 @@
      ========================================================= -->
 
      <xacro:macro name="sensor_orbbec_astra_pro_plus_gazebo">
+
+          <plugin
+               filename="gz-sim-sensors-system"
+               name="gz::sim::systems::Sensors">
+               <render_engine>ogre2</render_engine>
+          </plugin>
+
           <gazebo reference="${name}_link">
-             <sensor name="${name}" type="depth_camera">
-                <always_on>true</always_on>
+             <sensor name="${name}" type="rgbd_camera">
                 <visualize>true</visualize>
                 <update_rate>30.0</update_rate>
-                <gz_frame_id>${name}_depth_optical_frame</gz_frame_id>
-                <topic>camera/image_raw</topic> <!-- check later -->
+                <alwaysOn>true</alwaysOn>
+                <topic>rgbd_camera</topic>
                 <camera name="RS_D455">
                     <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
-                    <camera_info_topic>camera/camera_info</camera_info_topic> <!-- check later -->
                     <image>
                         <width>${rgb_w}</width>
                         <height>${rgb_h}</height>
@@ -136,7 +141,15 @@
                         <near>0.05</near>
                         <far>10.0</far>
                     </clip>
-                </camera>  
+                    <distorsion>
+                         <k1>0.0</k1>
+                         <k2>0.0</k2>
+                         <k3>0.0</k3>
+                         <p1>0.0</p1>
+                         <p2>0.0</p2>
+                    </distorsion>
+                    <optical_frame_id>camera_link</optical_frame_id>
+                </camera>
             </sensor>
          </gazebo>
      </xacro:macro>
