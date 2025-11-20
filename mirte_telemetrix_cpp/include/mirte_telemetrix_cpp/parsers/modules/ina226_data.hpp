@@ -26,4 +26,5 @@ public:
   bool check() override;
   using I2CModuleData::check;
   static std::string get_module_type() { return "ina226"; };
+  static std::string get_device_class() { return "power"; };
 };

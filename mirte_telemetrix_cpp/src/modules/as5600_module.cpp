@@ -15,7 +15,6 @@ AS5600_sensor::AS5600_sensor(NodeData node_data, AS5600Data as5600_data,
                    (ModuleData)as5600_data),
       data(as5600_data) {
   tmx->setI2CPins(as5600_data.sda, as5600_data.scl, as5600_data.port);
-  std::vector<int> channels;
   for (const auto &encoder : as5600_data.encoders) {
     channels.push_back(std::get<0>(encoder));
     auto pub = node_data.nh->create_publisher<std_msgs::msg::Float32>(
@@ -47,9 +46,29 @@ void AS5600_sensor::update() {
 }
 
 void AS5600_sensor::data_callback(tmx_cpp::AS5600_cb_t::argument_type data) {
+  // std::cout << "AS5600 data callback with " << data.size() << " entries"
+  //           << std::endl;
   for (int i = 0; i < data.size(); i++) {
     auto &[channel, angle_rad, angle_ticks] = data[i];
-    this->angles[i] = angle_rad;
+    // std::cout << "  Channel: " << channel
+    //           << " Angle (rad): " << angle_rad
+    //           << " Angle (ticks): " << angle_ticks << std::endl;
+    auto channel_index =
+        std::find_if(channels.begin(), channels.end(),
+                     [channel](const int &elem) { return elem == channel; });
+    if (channel_index == channels.end()) {
+      // std::cerr << "Channel " << channel << " not found in data"
+      //           << std::endl;
+      continue;
+    }
+    auto index = std::distance(channels.begin(), channel_index);
+    if (index < 0 || index >= this->angles.size()) {
+      // std::cerr << "Index " << index << " out of bounds for angles"
+      //           << std::endl;
+      continue;
+    }
+    // std::cout << "  Updating angle at index " << index << std::endl;
+    this->angles[index] = angle_rad;
   }
   // this->update();
 }

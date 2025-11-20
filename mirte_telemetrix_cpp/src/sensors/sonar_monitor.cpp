@@ -47,7 +47,7 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
 
   tmx->attach_sonar(
       sonar_data.trigger, sonar_data.echo,
-      [this](auto pin, auto value) { this->data_callback(value); });
+      [this](auto pins, auto value) { this->data_callback(value); });
 }
 
 void SonarMonitor::data_callback(uint16_t value) {

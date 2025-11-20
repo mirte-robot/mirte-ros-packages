@@ -46,5 +46,6 @@ INA226Data::INA226Data(std::shared_ptr<Parser> parser,
 }
 
 bool INA226Data::check() {
+  std::cout << "power low time ok: " << (power_low_time > 0) << std::endl;
   return power_low_time > 0 && I2CModuleData::check(get_module_type());
 }
