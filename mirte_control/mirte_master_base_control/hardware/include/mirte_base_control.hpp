@@ -27,7 +27,7 @@
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-
+#include "mirte_master_base_control/mirte_master_base_control_parameters.hpp"
 // ostringstream
 #include <algorithm>
 #include <cmath>
@@ -45,7 +45,7 @@ const auto service_format = "io/motor/%s/set_speed";
 const auto encoder_format = "io/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
 
-namespace mirte_base_control {
+namespace mirte_master_base_control {
 
 class MirteBaseHWInterface : public hardware_interface::SystemInterface {
 public:
@@ -143,6 +143,7 @@ private:
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
 
   bool use_single_client = true;
+  std::string single_client_service_name;
   std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetMotorSpeed>>>
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetMotorSpeed::Request>>
@@ -195,6 +196,12 @@ private:
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
+
+
+  std::shared_ptr<ParamListener> param_listener_;
+  Params params_;
+  void updateParams(const Params &params, bool init_service_clients = true);
+
 }; // class
 
 } // namespace mirte_base_control

@@ -21,8 +21,8 @@
           <plugin>gazebo_ros2_control/GazeboSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
-          <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-          <param name="ticks">${params['ticks']}</param>
+          <plugin>mirte_master_base_control/MirteBaseHWInterface</plugin>
+          <!-- <param name="ticks">${params['ticks']}</param> -->
           <!-- <param name="enable_pid">asdf${params['enable_pid']}</param>
           <param name="kp">ffds${params['kp']}</param>
           <param name="ki">fdadsfa${params['ki']}</param>

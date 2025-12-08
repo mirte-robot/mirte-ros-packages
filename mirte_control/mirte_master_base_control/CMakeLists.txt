@@ -1,18 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
-project(mirte_base_control)
+project(mirte_master_base_control)
 add_compile_options(-g)
 
 set(CMAKE_CXX_STANDARD 20)
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(mirte_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
     hardware_interface
@@ -22,14 +12,19 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     mirte_msgs
     std_srvs
     std_msgs
+    sensor_msgs
     control_toolbox
-    yaml_cpp_vendor)
+    generate_parameter_library)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
+
+generate_parameter_library(mirte_master_base_control_parameters
+  hardware/mirte_master_base_control_parameters.yaml
+)
 
 include_directories(hardware/include/ ${catkin_INCLUDE_DIRS})
 # COMPILE
@@ -41,7 +36,8 @@ target_include_directories(
          $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 ament_target_dependencies(${PROJECT_NAME} PUBLIC
                           ${THIS_PACKAGE_INCLUDE_DEPENDS})
-
+target_link_libraries(mirte_master_base_control PUBLIC mirte_master_base_control_parameters)
+  
 # Causes the visibility macros to use dllexport rather than dllimport, which is
 # appropriate when building the dll but not consuming it.
 target_compile_definitions(${PROJECT_NAME}
@@ -57,7 +53,7 @@ install(DIRECTORY hardware/include/ DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY bringup/launch bringup/config bringup/urdf
         DESTINATION share/${PROJECT_NAME})
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME} mirte_master_base_control_parameters
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
