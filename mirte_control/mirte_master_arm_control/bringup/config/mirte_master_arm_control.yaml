@@ -39,3 +39,15 @@
 /**/mirte_master_gripper_controller:
   ros__parameters:
     joint: gripper_joint
+
+/**/ros2_arm_control_hw_interface: # Settings for arm interface, others are not read
+  ros__parameters: # default settings
+    servo_target_time: 0.1  # seconds
+    servo_update_dead_band: 0.05  # radians
+    servo_moved_dead_band: 0.05  # radians
+
+/**/ros2_gripper_control_hw_interface: # Settings for gripper interface, somehow these are not shared with arm hw interface.
+  ros__parameters:
+    servo_target_time: 0.1  # seconds
+    servo_update_dead_band: 0.05  # radians
+    servo_moved_dead_band: 0.05  # radians

@@ -335,9 +335,15 @@ void MirteMasterArmHWInterface::updateParams(Params params) {
     service_request->rate =
         std::clamp(static_cast<float>(params.servo_target_time), 0.01f, 10.0f);
   }
-  std::cout << "Updated servo_target_time to " << params.servo_target_time
-            << " seconds." << std::endl;
-
+  RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
+              "Updated servo_target_time to %f seconds.",
+              params.servo_target_time);
+  RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
+              "Updated servo_moved_dead_band to %f radians.",
+              params.servo_moved_dead_band);
+  RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
+              "Updated servo_update_dead_band to %f radians.",
+              params.servo_update_dead_band);
   this->servo_moved_dead_band_ = params.servo_moved_dead_band;
   this->servo_update_dead_band_ = params.servo_update_dead_band;
 }
