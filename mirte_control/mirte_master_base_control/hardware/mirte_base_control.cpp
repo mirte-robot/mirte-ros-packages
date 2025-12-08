@@ -523,23 +523,24 @@ void MirteBaseHWInterface::start_reconnect() {
       std::async(std::launch::async, [this] { this->init_service_clients(); });
 }
 
-  void MirteBaseHWInterface::updateParams(const Params &params, bool init_service_clients) {
-    if(this->use_single_client != params.use_single_update_client || 
-       this->single_client_service_name != params.single_update_service) {
-      this->use_single_client = params.use_single_update_client;
-      this->single_client_service_name = params.single_update_service;
-      if(init_service_clients) {
-        this->init_service_clients();
-      }
+void MirteBaseHWInterface::updateParams(const Params &params,
+                                        bool init_service_clients) {
+  if (this->use_single_client != params.use_single_update_client ||
+      this->single_client_service_name != params.single_update_service) {
+    this->use_single_client = params.use_single_update_client;
+    this->single_client_service_name = params.single_update_service;
+    if (init_service_clients) {
+      this->init_service_clients();
     }
-    this->ticks = params.ticks;
-    RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
-                "Updated params: use_single_client=%d, single_client_service_name=%s, ticks=%.1f",
-                this->use_single_client,
-                this->single_client_service_name.c_str(),
-                this->ticks);
-    this->params_ = params;
   }
+  this->ticks = params.ticks;
+  RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
+              "Updated params: use_single_client=%d, "
+              "single_client_service_name=%s, ticks=%.1f",
+              this->use_single_client, this->single_client_service_name.c_str(),
+              this->ticks);
+  this->params_ = params;
+}
 
 } // namespace mirte_master_base_control
 

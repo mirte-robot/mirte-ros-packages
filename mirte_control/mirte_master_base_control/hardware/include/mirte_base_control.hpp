@@ -24,10 +24,10 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
+#include "mirte_master_base_control/mirte_master_base_control_parameters.hpp"
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-#include "mirte_master_base_control/mirte_master_base_control_parameters.hpp"
 // ostringstream
 #include <algorithm>
 #include <cmath>
@@ -197,11 +197,10 @@ private:
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
 
-
   std::shared_ptr<ParamListener> param_listener_;
   Params params_;
   void updateParams(const Params &params, bool init_service_clients = true);
 
 }; // class
 
-} // namespace mirte_base_control
+} // namespace mirte_master_base_control
