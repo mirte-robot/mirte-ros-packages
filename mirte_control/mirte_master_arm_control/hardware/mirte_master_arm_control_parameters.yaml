@@ -4,3 +4,13 @@ mirte_master_arm_control:
     default_value: 0.1, # seconds
     description: "Target time (seconds) for servo movements, changing this up/down might not work nicely with MoveIt as it expects a certain timing. Might be very jerky movement.",
   }
+  servo_update_dead_band: {
+    type: double,
+    default_value: 0.05, # radians, 2.9 degrees
+    description: "Dead zone for servo updates in radians, if the servo is close enough, the servo will not move.",
+  }
+  servo_moved_dead_band: {
+    type: double,
+    default_value: 0.05, # radians, 2.9 degrees
+    description: "Dead zone for servo movement in radians, if the servo is moved less than this, the controller will not send a 'new' command.",
+  }

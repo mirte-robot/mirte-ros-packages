@@ -39,8 +39,7 @@ endforeach()
 
 include_directories(hardware/include/ ${catkin_INCLUDE_DIRS})
 # COMPILE
-add_library(${PROJECT_NAME} SHARED hardware/mirte_master_arm_control.cpp
-                                   hardware/params.cpp)
+add_library(${PROJECT_NAME} SHARED hardware/mirte_master_arm_control.cpp)
 
 target_link_libraries(mirte_master_arm_control PUBLIC mirte_master_arm_control_parameters)
 

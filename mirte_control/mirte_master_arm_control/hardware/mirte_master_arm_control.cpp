@@ -1,5 +1,4 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
-#include "params.hpp"
 #include <algorithm>
 #include <mirte_master_arm_control.hpp>
 #include <unistd.h>
@@ -28,9 +27,6 @@ std::map<std::string, int> init_steps;
 const auto topic_format = "io/servo/hiwonder/%s/position";
 const auto service_format = "io/servo/hiwonder/%s/set_angle_with_speed";
 const auto enable_format = "enable_arm_control";
-const auto SERVO_COMMAND_DIFF = 0.05; // 2.9 degrees
-const auto SERVO_MOVED_DIFF =
-    0.05; // 0.01 = 0.57 degrees ~= 1 LSB, but it is too sensitive for that.
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
@@ -65,7 +61,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       // hand or gravity.
       auto diff = std::abs(servo.last_request - service_requests[i]->angle);
 
-      if (diff > SERVO_COMMAND_DIFF || servo.moved) {
+      if (diff > this->servo_update_dead_band_ || servo.moved) {
         servo.moved = false;
         servo.last_request = service_requests[i]->angle;
 
@@ -88,8 +84,8 @@ bool MirteMasterArmHWInterface::connectServices() {
     std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
     std::string service_name =
         (boost::format(service_format) % servo_name).str();
-    auto client =
-        nh->create_client<mirte_msgs::srv::SetServoAngleWithSpeed>(service_name);
+    auto client = nh->create_client<mirte_msgs::srv::SetServoAngleWithSpeed>(
+        service_name);
     auto MAX_WAIT_TIME = 10;
     auto wait_time = 0;
     // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
@@ -133,7 +129,8 @@ void MirteMasterArmHWInterface::ServoPositionCallback(
   // The servo should only be written to iff the servo gets a new location or
   // when it's moved by gravity, then it needs the command again this will check
   // that the servo is moved
-  if (std::abs(servo.last_move_update - servo.data) > SERVO_MOVED_DIFF) {
+  if (std::abs(servo.last_move_update - servo.data) >
+      this->servo_moved_dead_band_) {
     servo.last_move_update = servo.data;
     servo.moved = true;
   }
@@ -214,7 +211,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
       hardware_interface::CallbackReturn::SUCCESS) {
     return hardware_interface::CallbackReturn::ERROR;
   }
-  
+
   NUM_SERVOS = info_.joints.size();
   initialized.insert({info_.name, false});
   init_steps.insert({info_.name, 0});
@@ -225,23 +222,15 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   ss << info_.name << "_hw_interface";
   nh = rclcpp::Node::make_shared(ss.str());
   this->ros_thread = std::jthread([this] { this->ros_spin(); });
-try
-  {
+  try {
     // Create the parameter listener and get the parameters
     param_listener_ = std::make_shared<ParamListener>(nh);
-    param_listener_->setUserCallback([this](const auto& params) { 
-      params_ = params;
-      for(auto& service_request : this->service_requests) {
-        service_request->rate =  std::clamp(static_cast<float>(params.servo_target_time), 0.01f, 10.0f);
-      }
-      std::cout << "Updated servo_target_time to " << params.servo_target_time << " seconds." << std::endl;
-    });
-
-    params_ = param_listener_->get_params();
-  }
-  catch (const std::exception & e)
-  {
-    fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
+    param_listener_->setUserCallback(
+        [this](const auto &params) { this->updateParams(params); });
+    this->updateParams(param_listener_->get_params());
+  } catch (const std::exception &e) {
+    fprintf(stderr, "Exception thrown during init stage with message: %s \n",
+            e.what());
     return hardware_interface::CallbackReturn::ERROR;
   }
   // Initialize custom members
@@ -255,8 +244,6 @@ try
 
     service_requests.push_back(
         std::make_shared<mirte_msgs::srv::SetServoAngleWithSpeed::Request>());
-    service_requests[i]->rate = std::clamp(static_cast<float>(params_.servo_target_time), 0.01f, 10.0f);
-    std::cout << "Initial servo_target_time: " << params_.servo_target_time << " seconds." << std::endl;
   }
   servo_data.insert({info_.name, sd_vector});
 
@@ -337,11 +324,22 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
     hw_commands_[i] = 0;
   }
 
-
-
   RCLCPP_INFO(get_logger(), "Successfully configured!");
 
   return hardware_interface::CallbackReturn::SUCCESS;
+}
+
+void MirteMasterArmHWInterface::updateParams(Params params) {
+  this->params_ = params;
+  for (auto &service_request : this->service_requests) {
+    service_request->rate =
+        std::clamp(static_cast<float>(params.servo_target_time), 0.01f, 10.0f);
+  }
+  std::cout << "Updated servo_target_time to " << params.servo_target_time
+            << " seconds." << std::endl;
+
+  this->servo_moved_dead_band_ = params.servo_moved_dead_band;
+  this->servo_update_dead_band_ = params.servo_update_dead_band;
 }
 
 } // namespace mirte_master_arm_control
