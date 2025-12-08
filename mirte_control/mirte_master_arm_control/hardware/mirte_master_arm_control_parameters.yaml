@@ -1,0 +1,6 @@
+mirte_master_arm_control:
+  servo_target_time: {
+    type: double,
+    default_value: 0.1, # seconds
+    description: "Target time (seconds) for servo movements, changing this up/down might not work nicely with MoveIt as it expects a certain timing. Might be very jerky movement.",
+  }

@@ -26,7 +26,7 @@ std::map<std::string, int> init_steps;
 
 // Format of the topics and services
 const auto topic_format = "io/servo/hiwonder/%s/position";
-const auto service_format = "io/servo/hiwonder/%s/set_angle";
+const auto service_format = "io/servo/hiwonder/%s/set_angle_with_speed";
 const auto enable_format = "enable_arm_control";
 const auto SERVO_COMMAND_DIFF = 0.05; // 2.9 degrees
 const auto SERVO_MOVED_DIFF =
@@ -89,7 +89,7 @@ bool MirteMasterArmHWInterface::connectServices() {
     std::string service_name =
         (boost::format(service_format) % servo_name).str();
     auto client =
-        nh->create_client<mirte_msgs::srv::SetServoAngle>(service_name);
+        nh->create_client<mirte_msgs::srv::SetServoAngleWithSpeed>(service_name);
     auto MAX_WAIT_TIME = 10;
     auto wait_time = 0;
     // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
@@ -214,7 +214,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
       hardware_interface::CallbackReturn::SUCCESS) {
     return hardware_interface::CallbackReturn::ERROR;
   }
-
+  
   NUM_SERVOS = info_.joints.size();
   initialized.insert({info_.name, false});
   init_steps.insert({info_.name, 0});
@@ -225,7 +225,25 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   ss << info_.name << "_hw_interface";
   nh = rclcpp::Node::make_shared(ss.str());
   this->ros_thread = std::jthread([this] { this->ros_spin(); });
+try
+  {
+    // Create the parameter listener and get the parameters
+    param_listener_ = std::make_shared<ParamListener>(nh);
+    param_listener_->setUserCallback([this](const auto& params) { 
+      params_ = params;
+      for(auto& service_request : this->service_requests) {
+        service_request->rate =  std::clamp(static_cast<float>(params.servo_target_time), 0.01f, 10.0f);
+      }
+      std::cout << "Updated servo_target_time to " << params.servo_target_time << " seconds." << std::endl;
+    });
 
+    params_ = param_listener_->get_params();
+  }
+  catch (const std::exception & e)
+  {
+    fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
+    return hardware_interface::CallbackReturn::ERROR;
+  }
   // Initialize custom members
   std::vector<Servo_data> sd_vector;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
@@ -236,7 +254,9 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     _servo_position_update_time.push_back(nh->now());
 
     service_requests.push_back(
-        std::make_shared<mirte_msgs::srv::SetServoAngle::Request>());
+        std::make_shared<mirte_msgs::srv::SetServoAngleWithSpeed::Request>());
+    service_requests[i]->rate = std::clamp(static_cast<float>(params_.servo_target_time), 0.01f, 10.0f);
+    std::cout << "Initial servo_target_time: " << params_.servo_target_time << " seconds." << std::endl;
   }
   servo_data.insert({info_.name, sd_vector});
 
@@ -316,6 +336,9 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
     hw_states_[i] = 0;
     hw_commands_[i] = 0;
   }
+
+
+
   RCLCPP_INFO(get_logger(), "Successfully configured!");
 
   return hardware_interface::CallbackReturn::SUCCESS;
