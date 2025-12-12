@@ -1,4 +1,4 @@
-mirte_master_base_control:
+mirte_base_control:
   ticks: {
     type: int,
     default_value: 1320, # TODO: check 11pps*30reduction *4

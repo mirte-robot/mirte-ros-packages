@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(mirte_master_base_control)
+project(mirte_base_control)
 add_compile_options(-g)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -22,7 +22,7 @@ foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
-generate_parameter_library(mirte_master_base_control_parameters
+generate_parameter_library(mirte_base_control_parameters
   hardware/mirte_master_base_control_parameters.yaml
 )
 
@@ -36,7 +36,7 @@ target_include_directories(
          $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 ament_target_dependencies(${PROJECT_NAME} PUBLIC
                           ${THIS_PACKAGE_INCLUDE_DEPENDS})
-target_link_libraries(mirte_master_base_control PUBLIC mirte_master_base_control_parameters)
+target_link_libraries(mirte_base_control PUBLIC mirte_base_control_parameters)
   
 # Causes the visibility macros to use dllexport rather than dllimport, which is
 # appropriate when building the dll but not consuming it.
@@ -53,7 +53,7 @@ install(DIRECTORY hardware/include/ DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY bringup/launch bringup/config bringup/urdf
         DESTINATION share/${PROJECT_NAME})
 install(
-  TARGETS ${PROJECT_NAME} mirte_master_base_control_parameters
+  TARGETS ${PROJECT_NAME} mirte_base_control_parameters
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

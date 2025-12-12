@@ -1,7 +1,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include <algorithm>
 #include <mirte_base_control.hpp>
-namespace mirte_master_base_control {
+namespace mirte_base_control {
 
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
@@ -348,7 +348,7 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   }
 
   std::cout << "starting on_init" << std::endl;
-  nh = rclcpp::Node::make_shared("mirte_master_base_control");
+  nh = rclcpp::Node::make_shared("mirte_base_control");
   this->param_listener_ = std::make_shared<ParamListener>(nh);
   this->params_ = this->param_listener_->get_params();
   this->param_listener_->setUserCallback(
@@ -544,7 +544,7 @@ void MirteBaseHWInterface::updateParams(const Params &params,
   this->params_ = params;
 }
 
-} // namespace mirte_master_base_control
+} // namespace mirte_base_control
 
 /*
 
@@ -552,5 +552,5 @@ MirteBaseHWInterface::
 */
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(mirte_master_base_control::MirteBaseHWInterface,
+PLUGINLIB_EXPORT_CLASS(mirte_base_control::MirteBaseHWInterface,
                        hardware_interface::SystemInterface)
