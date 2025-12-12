@@ -72,3 +72,5 @@
     ticks: 1320  # TODO: check 11pps*30reduction *4
     use_single_update_client: true
     single_update_service: "/io/motor/motorservocontroller/set_multiple_speeds"
+    cmd_vel_deadzone: 10
+    cmd_vel_update_deadzone: 3

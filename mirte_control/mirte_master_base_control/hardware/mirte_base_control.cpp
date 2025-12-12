@@ -3,8 +3,6 @@
 #include <mirte_base_control.hpp>
 namespace mirte_master_base_control {
 
-const auto SPEED_CMD_DIFF = 3; // 3% difference before sending new command.
-const auto SPEED_CMD_DEADZONE = 10;
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
   return std::max(std::min(int(target / (6.0 * M_PI) * 100), 100), -100);
@@ -25,7 +23,7 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         bool &updated) {
   // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
-  if (std::abs(speed_mapped) < SPEED_CMD_DEADZONE) {
+  if (std::abs(speed_mapped) < this->cmd_vel_deadzone) {
     speed_mapped = 0;
   }
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
@@ -33,7 +31,7 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
   // if (diff > SPEED_CMD_DIFF) {
   //   updated = true;
   if (!this->use_single_client) {
-    if (diff > SPEED_CMD_DIFF) {
+    if (diff > this->cmd_vel_update_deadzone) {
       updated = true;
       _last_sent_cmd[joint] = speed_mapped;
 
@@ -49,7 +47,7 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
       // }
     }
   } else {
-    if (diff > SPEED_CMD_DIFF ||
+    if (diff > this->cmd_vel_update_deadzone ||
         (speed_mapped == 0 && _last_sent_cmd[joint] != 0)) {
       updated = true;
       _last_sent_cmd[joint] = speed_mapped;
@@ -529,6 +527,10 @@ void MirteBaseHWInterface::updateParams(const Params &params,
       this->single_client_service_name != params.single_update_service) {
     this->use_single_client = params.use_single_update_client;
     this->single_client_service_name = params.single_update_service;
+
+    this->cmd_vel_deadzone = params.cmd_vel_deadzone;
+    this->cmd_vel_update_deadzone = params.cmd_vel_update_deadzone;
+
     if (init_service_clients) {
       this->init_service_clients();
     }

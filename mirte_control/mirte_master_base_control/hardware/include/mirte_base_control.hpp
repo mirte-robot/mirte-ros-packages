@@ -200,6 +200,9 @@ private:
   std::shared_ptr<ParamListener> param_listener_;
   Params params_;
   void updateParams(const Params &params, bool init_service_clients = true);
+  int cmd_vel_deadzone = 10; // under this value, just write 0 to the motors
+  int cmd_vel_update_deadzone =
+      3; // if diff is less than this value, do not update motor command
 
 }; // class
 
