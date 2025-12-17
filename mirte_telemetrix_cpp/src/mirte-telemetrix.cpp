@@ -72,7 +72,8 @@ bool TelemetrixNode::start() {
   using namespace std::placeholders;
 
   auto parser = std::make_shared<Parser>(node_);
-  auto param_listener = std::make_shared<mirte_telemetrix_cpp::ParamListener>(node_);
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp::ParamListener>(node_);
   auto params = param_listener->get_params();
   parser->params_object = params;
   std::shared_ptr<tmx_cpp::TMX> tmx;

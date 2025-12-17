@@ -9,8 +9,8 @@
 #include <rclcpp/node.hpp>
 #include <rclcpp/parameter.hpp>
 
-#include "mirte_telemetrix_cpp/util.hpp"
 #include "mirte_telemetrix_cpp/telemetrix_parameters.hpp"
+#include "mirte_telemetrix_cpp/util.hpp"
 using pin_t = uint8_t;
 
 class Parser {

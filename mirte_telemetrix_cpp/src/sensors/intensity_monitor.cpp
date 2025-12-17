@@ -7,7 +7,7 @@
 
 #include <mirte_msgs/msg/intensity.hpp>
 #include <mirte_msgs/msg/intensity_digital.hpp>
-
+#include <ranges>
 IntensityMonitor::IntensityMonitor(NodeData node_data, std::vector<pin_t> pins,
                                    IntensityData intensity_data)
     : Mirte_Sensor(node_data, pins, (SensorData)intensity_data),
@@ -16,18 +16,52 @@ IntensityMonitor::IntensityMonitor(NodeData node_data, std::vector<pin_t> pins,
 std::vector<std::shared_ptr<IntensityMonitor>>
 IntensityMonitor::get_intensity_monitors(NodeData node_data,
                                          std::shared_ptr<Parser> parser) {
+  // std::vector<std::shared_ptr<IntensityMonitor>> sensors;
+  // auto ir_sensors = parse_all<IntensityData>(parser, node_data.board);
   std::vector<std::shared_ptr<IntensityMonitor>> sensors;
-  auto ir_sensors = parse_all<IntensityData>(parser, node_data.board);
-  for (auto ir_data : ir_sensors) {
-    if (ir_data.a_pin != (pin_t)-1) {
-      sensors.push_back(
-          std::make_shared<AnalogIntensityMonitor>(node_data, ir_data));
-      // std::cout << "Add Analog Intensity: " << ir_data.name << std::endl;
-    }
-    if (ir_data.d_pin != (pin_t)-1) {
-      sensors.push_back(
-          std::make_shared<DigitalIntensityMonitor>(node_data, ir_data));
-      // std::cout << "Add Digital Intensity: " << ir_data.name << std::endl;
+  auto ir_sensors =
+      parser->params_object.intensity.intensities_map |
+      std::views::transform([&](auto const &pair) {
+        // auto name = item.first;
+        const auto &name = pair.first;
+        const auto &map_encoder = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["device"] = rclcpp::ParameterValue(map_encoder.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_encoder.connector);
+        parameters["pins.digital"] =
+            rclcpp::ParameterValue(map_encoder.pins.digital);
+        parameters["pins.analog"] =
+            rclcpp::ParameterValue(map_encoder.pins.analog);
+        auto unused_keys = parameters |
+                           std::views::filter([&](const auto &pair) {
+                             auto str = get_string(pair.second);
+
+                             return str != "" && str != "-1" && str != "NONE";
+                           }) |
+                           std::views::keys;
+        std::set<std::string> unused_keys_set(unused_keys.begin(),
+                                              unused_keys.end());
+        return IntensityData(parser, node_data.board, name, parameters,
+                             unused_keys_set);
+      }) |
+      std::views::transform(
+          [&](auto const &ir_data)
+              -> std::vector<std::shared_ptr<IntensityMonitor>> {
+            std::vector<std::shared_ptr<IntensityMonitor>> result;
+            if (ir_data.a_pin != (pin_t)-1) {
+              result.push_back(
+                  std::make_shared<AnalogIntensityMonitor>(node_data, ir_data));
+            }
+            if (ir_data.d_pin != (pin_t)-1) {
+              result.push_back(std::make_shared<DigitalIntensityMonitor>(
+                  node_data, ir_data));
+            }
+            return result;
+          });
+  // TODO: use join and std::ranges::to when available
+  for (const auto &ir_sensor_vec : ir_sensors) {
+    for (auto &ir_sensor : ir_sensor_vec) {
+      sensors.push_back(ir_sensor);
     }
   }
   return sensors;
