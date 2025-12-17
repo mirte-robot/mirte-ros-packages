@@ -5,7 +5,7 @@
 
 #include <mirte_msgs/msg/encoder.hpp>
 #include <mirte_msgs/srv/get_encoder.hpp>
-
+#include <ranges>
 EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
     : Mirte_Sensor(node_data, {encoder_data.pinA, encoder_data.pinB},
                    (SensorData)encoder_data),
@@ -52,10 +52,37 @@ std::vector<std::shared_ptr<EncoderMonitor>>
 EncoderMonitor::get_encoder_monitors(NodeData node_data,
                                      std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<EncoderMonitor>> sensors;
-  auto encoders = parse_all<EncoderData>(parser, node_data.board);
-  for (auto encoder : encoders) {
-    sensors.push_back(std::make_shared<EncoderMonitor>(node_data, encoder));
-    // std::cout << "Add Encoder: " << encoder.name << std::endl;
-  }
+  auto encoders = std::views::take(
+      parser->params_object.encoder.encoders_map) | std::views::transform(
+      [&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_encoder = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+
+        parameters["ticks_per_wheel"] =
+            rclcpp::ParameterValue(map_encoder.ticks_per_wheel);
+        parameters["device"] =
+            rclcpp::ParameterValue(map_encoder.device);
+        parameters["connector"] =
+            rclcpp::ParameterValue(map_encoder.connector);
+        parameters["pins.pin"] = 
+            rclcpp::ParameterValue(map_encoder.pins.pin);
+        parameters["pins.A"] =
+            rclcpp::ParameterValue(map_encoder.pins.A);
+        parameters["pins.B"] =
+            rclcpp::ParameterValue(map_encoder.pins.B);
+
+        std::set<std::string> unused_keys = parameters | std::views::filter([](const auto &pair) {
+                        auto str = get_string(pair.second);
+
+                                            return str != "" && str != "-1" && str != "NONE";
+                                        }) | std::views::keys;
+
+        return EncoderData(parser, node_data.board, name, parameters,
+                           unused_keys);
+      }) | std::views::transform([&](const EncoderData &encoder_data) {
+          // return std::views::single(encoder_data);
+          return std::make_shared<EncoderMonitor>(node_data, encoder_data);
+      });
   return sensors;
 }

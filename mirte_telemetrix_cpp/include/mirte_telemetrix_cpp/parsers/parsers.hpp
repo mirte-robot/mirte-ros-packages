@@ -10,12 +10,13 @@
 #include <rclcpp/parameter.hpp>
 
 #include "mirte_telemetrix_cpp/util.hpp"
-
+#include "mirte_telemetrix_cpp/telemetrix_parameters.hpp"
 using pin_t = uint8_t;
 
 class Parser {
 public:
   std::shared_ptr<rclcpp::Node> nh;
+  mirte_telemetrix_cpp::Params params_object;
   std::map<std::string, rclcpp::ParameterValue> params;
   rclcpp::Logger logger;
   Parser(std::shared_ptr<rclcpp::Node> nh);

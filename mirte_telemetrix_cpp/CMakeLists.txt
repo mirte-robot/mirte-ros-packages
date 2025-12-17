@@ -145,6 +145,16 @@ ament_target_dependencies(
   # system_lib
 )
 
+add_executable(${PROJECT_NAME}_test src/test.cpp)
+ament_target_dependencies(
+  ${PROJECT_NAME}_test
+  rclcpp
+  rcpputils
+  mirte_msgs
+  backward_ros
+)
+
+
 if(0) # extra strict errors
   target_compile_options(
     ${PROJECT_NAME}_node
@@ -168,18 +178,19 @@ endif()
 target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp telemetrix_parameters
                       ${MIRTE_EXTRA_LIBS} ${OpenCV_LIBS})
 
+target_link_libraries(${PROJECT_NAME}_test telemetrix_parameters)
 # if(supported) if(CMAKE_BUILD_TYPE STREQUAL "Release") message(STATUS "IPO LTO
 # enabled") set_property(TARGET ${PROJECT_NAME}_node PROPERTY
 # INTERPROCEDURAL_OPTIMIZATION TRUE) endif() else() message(STATUS "IPO  / LTO
 # not supported: <${error}>") endif()
 
 install(
-  TARGETS ${PROJECT_NAME}_node
+  TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
-install(TARGETS ${PROJECT_NAME}_node telemetrix_parameters
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test telemetrix_parameters
   EXPORT ${PROJECT_NAME}Targets)
 ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 

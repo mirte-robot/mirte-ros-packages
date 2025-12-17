@@ -111,22 +111,23 @@
     #   oled:
     #     device: mirte
     #     connector: I2C1
-    # encoder:
-    #   left:
-    #     name: left
-    #     device: mirte
-    #     pins:
-    #       A: 15
-    #   right:
-    #     name: right
-    #     device: mirte
-    #     pins:
-    #       A: 17
+    encoder:
+      left:
+        name: left
+        device: mirte
+        pins:
+          A: 15.0
+          B: 16
+      right:
+        name: right
+        device: mirte
+        pins:
+          A: 17
 
-        # type: SSD1306 # Optional must be 'SSD1306'
+        type: SSD1306 # Optional must be 'SSD1306'
         # default_screen_script can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text.
         # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
         # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
-    # color:
-    #   color:
-    #     connector: I2C2
+    color:
+      color:
+        connector: I2C2
