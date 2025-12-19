@@ -18,25 +18,14 @@ I2CModuleData::I2CModuleData(
     auto pins = board->resolveConnector(connector);
     this->scl = pins["scl"];
     this->sda = pins["sda"];
-  } else if (unused_keys.erase("pins")) {
+  } else if (unused_keys.erase("pins.scl") &&
+             unused_keys.erase("pins.sda")) {
     std::cout << "I2CModuleData: Using direct pin assignment" << std::endl;
-    std::cout << "param name: "
-              << parser->build_param_name(module_type + "." + this->name,
-                                          "pins")
-              << std::endl;
-    auto subkeys = parser->get_params_keys(
-        parser->build_param_name(module_type + "." + this->name, "pins"));
-    std::cout << "Subkeys:";
-    for (const auto &k : subkeys) {
-      std::cout << " " << k;
-    }
-    std::cout << std::endl;
-    if (subkeys.erase("scl")) {
+     
       this->scl = board->resolvePin(get_string(parameters["pins.scl"]));
-    }
-    if (subkeys.erase("sda")) {
+     
       this->sda = board->resolvePin(get_string(parameters["pins.sda"]));
-    }
+  
   } else {
     rcpputils::require_true(
         false,

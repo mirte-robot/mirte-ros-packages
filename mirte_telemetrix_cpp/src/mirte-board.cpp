@@ -1,5 +1,5 @@
 #include <mirte_telemetrix_cpp/mirte-board.hpp>
-
+#include <ranges>
 std::shared_ptr<Mirte_Board>
 Mirte_Board::create(std::shared_ptr<Parser> parser,
                     std::shared_ptr<tmx_cpp::TMX> tmx) {
@@ -42,6 +42,18 @@ void Mirte_Board::get_board_characteristics_service_callback(
   res->max_adc = (1 << this->get_adc_bits()) - 1;
   res->max_pwm = this->get_max_pwm();
   res->max_voltage = this->get_voltage_level();
+}
+
+std::set<std::string>
+get_keys(std::map<std::string, rclcpp::ParameterValue> parameters) {
+
+  auto x = parameters | std::views::filter([](const auto &pair) {
+             auto str = get_string(pair.second);
+             return str != "" && str != "-1" && str != "NONE";
+           }) |
+           std::views::keys;
+  std::set<std::string> keyss(x.begin(), x.end());
+  return keyss;
 }
 
 std::string get_string(rclcpp::ParameterValue param) {

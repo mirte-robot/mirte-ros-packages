@@ -66,14 +66,9 @@ EncoderMonitor::get_encoder_monitors(NodeData node_data,
         parameters["pins.pin"] = rclcpp::ParameterValue(map_encoder.pins.pin);
         parameters["pins.A"] = rclcpp::ParameterValue(map_encoder.pins.A);
         parameters["pins.B"] = rclcpp::ParameterValue(map_encoder.pins.B);
-
-        auto unused_keys = parameters |
-                           std::views::filter([](const auto &pair) {
-                             auto str = get_string(pair.second);
-
-                             return str != "" && str != "-1" && str != "NONE";
-                           }) |
-                           std::views::keys;
+        parameters["frame_id"] =
+            rclcpp::ParameterValue(map_encoder.frame_id);
+        auto unused_keys = get_keys(parameters);
         std::set<std::string> unused_keys_set(unused_keys.begin(),
                                               unused_keys.end());
         return std::make_shared<EncoderMonitor>(
@@ -81,11 +76,5 @@ EncoderMonitor::get_encoder_monitors(NodeData node_data,
                                    unused_keys_set));
       });
   sensors.assign(encoders.begin(), encoders.end());
-
-  // encoders_vector.assign(encoders.cbegin(), encoders.cend()); // when ubu
-  // finally catches up with cpp23, use std::ranges::to for (auto &encoder :
-  // encoders) {
-  //     encoders_vector.push_back(encoder);
-  // }
   return sensors;
 }

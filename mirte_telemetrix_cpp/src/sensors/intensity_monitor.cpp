@@ -20,7 +20,7 @@ IntensityMonitor::get_intensity_monitors(NodeData node_data,
   // auto ir_sensors = parse_all<IntensityData>(parser, node_data.board);
   std::vector<std::shared_ptr<IntensityMonitor>> sensors;
   auto ir_sensors =
-      parser->params_object.intensity.intensities_map |
+      parser->params_object.intensity.intensitys_map |
       std::views::transform([&](auto const &pair) {
         // auto name = item.first;
         const auto &name = pair.first;
@@ -32,17 +32,10 @@ IntensityMonitor::get_intensity_monitors(NodeData node_data,
             rclcpp::ParameterValue(map_encoder.pins.digital);
         parameters["pins.analog"] =
             rclcpp::ParameterValue(map_encoder.pins.analog);
-        auto unused_keys = parameters |
-                           std::views::filter([&](const auto &pair) {
-                             auto str = get_string(pair.second);
-
-                             return str != "" && str != "-1" && str != "NONE";
-                           }) |
-                           std::views::keys;
-        std::set<std::string> unused_keys_set(unused_keys.begin(),
-                                              unused_keys.end());
+        parameters["frame_id"] = rclcpp::ParameterValue(map_encoder.frame_id);
+        auto unused_keys = get_keys(parameters);
         return IntensityData(parser, node_data.board, name, parameters,
-                             unused_keys_set);
+                             unused_keys);
       }) |
       std::views::transform(
           [&](auto const &ir_data)

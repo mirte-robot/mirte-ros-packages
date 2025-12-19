@@ -21,7 +21,7 @@
 
 #include <mirte_telemetrix_cpp/modules/ssd1306_module.hpp>
 #include <mirte_telemetrix_cpp/util.hpp>
-
+#include <ranges>
 using namespace std::placeholders; // for _1, _2, _3...
 using namespace std::chrono_literals;
 
@@ -30,7 +30,28 @@ SSD1306_module::get_ssd1306_modules(NodeData node_data,
                                     std::shared_ptr<Parser> parser,
                                     std::shared_ptr<tmx_cpp::Modules> modules) {
   std::vector<std::shared_ptr<SSD1306_module>> new_modules;
-  auto datas = parse_all<SSD1306Data>(parser, node_data.board);
+  // auto datas = parse_all<SSD1306Data>(parser, node_data.board);
+  auto datas =
+      parser->params_object.oled.oleds_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_oled = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["device"] = rclcpp::ParameterValue(map_oled.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_oled.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_oled.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_oled.pins.scl);
+        parameters["default_screen_script"] =
+            rclcpp::ParameterValue(map_oled.default_screen_script);
+        // parameters["legacy"] = rclcpp::ParameterValue(map_oled.legacy);
+        parameters["addr"] = rclcpp::ParameterValue(map_oled.addr);
+        // parameters["width"] = rclcpp::ParameterValue(map_oled.width);
+        // parameters["height"] = rclcpp::ParameterValue(map_oled.height);
+        // parameters["legacy"] = rclcpp::ParameterValue(map_oled.legacy);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return SSD1306Data(parser, node_data.board, name, parameters,
+                          unused_keys);
+      });
   for (auto data : datas) {
     auto module = std::make_shared<SSD1306_module>(node_data, data, modules);
     new_modules.push_back(module);

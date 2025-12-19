@@ -10,35 +10,32 @@ EncoderData::EncoderData(
     std::set<std::string> &unused_keys)
     : SensorData(parser, board, name, EncoderData::get_device_class(),
                  parameters, unused_keys) {
-  auto key = get_device_key(this);
+  auto key = this->get_device_class() + "." + name;
   auto logger = parser->logger;
-
+  bool got_pins = false;
   if (unused_keys.erase("connector")) {
     auto connector = get_string(parameters["connector"]);
     auto pins = board->resolveConnector(connector);
     this->pinA = pins["pinA"];
     this->pinB = pins["pinB"];
-  } else if (unused_keys.erase("pins")) {
-    auto subkeys =
-        parser->get_params_keys(parser->build_param_name(key, "pins"));
-    // FIXME: Maybe restructure to test if pin A and B or only pin is set.
-    if (subkeys.erase("A")) {
-      this->pinA = board->resolvePin(get_string(parameters["pins.A"]));
-    }
+    got_pins = true;
+  }
+  if (unused_keys.erase("pins.A")) {
+    this->pinA = board->resolvePin(get_string(parameters["pins.A"]));
+    got_pins = true;
+  }
 
-    if (subkeys.erase("B")) {
-      this->pinB = board->resolvePin(get_string(parameters["pins.B"]));
-    }
+  if (unused_keys.erase("pins.B")) {
+    this->pinB = board->resolvePin(get_string(parameters["pins.B"]));
+    got_pins = true;
+  }
 
-    if (subkeys.erase("pin")) {
-      this->pinA = board->resolvePin(get_string(parameters["pins.pin"]));
-      this->pinB = (pin_t)-1;
-    }
-
-    for (auto subkey : subkeys) {
-      unused_keys.insert(parser->build_param_name("pins", subkey));
-    }
-  } else {
+  if (unused_keys.erase("pins.pin")) {
+    this->pinA = board->resolvePin(get_string(parameters["pins.pin"]));
+    this->pinB = (pin_t)-1;
+    got_pins = true;
+  }
+  if (!got_pins) {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
   }

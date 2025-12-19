@@ -3,7 +3,7 @@ project(mirte_telemetrix_cpp)
 
 # Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++20)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 # set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 
 include(CheckIncludeFileCXX)
@@ -55,6 +55,15 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
+ set(config_files ina226 pca)
+set(param_libs "")
+foreach (config_file IN LISTS config_files)
+  generate_parameter_library(
+    ${config_file}_parameters # cmake target name for the parameter library
+    src/parsers/configs/${config_file}_parameters.yaml # path to input yaml file
+  )
+  list(APPEND param_libs ${config_file}_parameters)
+endforeach()
 generate_parameter_library(
   telemetrix_parameters # cmake target name for the parameter library
   src/telemetrix_parameters.yaml # path to input yaml file
@@ -175,10 +184,10 @@ if(0) # extra strict errors
 endif()
 
 # Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp telemetrix_parameters
+target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp telemetrix_parameters ${param_libs}
                       ${MIRTE_EXTRA_LIBS} ${OpenCV_LIBS})
 
-target_link_libraries(${PROJECT_NAME}_test telemetrix_parameters)
+target_link_libraries(${PROJECT_NAME}_test telemetrix_parameters ${param_libs})
 # if(supported) if(CMAKE_BUILD_TYPE STREQUAL "Release") message(STATUS "IPO LTO
 # enabled") set_property(TARGET ${PROJECT_NAME}_node PROPERTY
 # INTERPROCEDURAL_OPTIMIZATION TRUE) endif() else() message(STATUS "IPO  / LTO
@@ -190,7 +199,7 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test DESTINATION lib/${PROJECT_NAME})
-install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test telemetrix_parameters
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test telemetrix_parameters ${param_libs}
   EXPORT ${PROJECT_NAME}Targets)
 ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 

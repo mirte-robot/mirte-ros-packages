@@ -2,6 +2,8 @@
 #include <functional>
 
 #include <mirte_telemetrix_cpp/modules/pca_module.hpp>
+#include <mirte_telemetrix_cpp/pca_parameters.hpp>
+#include <ranges>
 
 using namespace std::placeholders; // for _1, _2, _3...
 
@@ -9,11 +11,54 @@ std::vector<std::shared_ptr<PCA_Module>>
 PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
                             std::shared_ptr<tmx_cpp::Modules> modules) {
   std::vector<std::shared_ptr<PCA_Module>> pca_modules;
-  auto pca_data = parse_all_modules<PCAData>(parser, node_data.board);
-  for (auto pca : pca_data) {
-    auto pca_module = std::make_shared<PCA_Module>(node_data, pca, modules);
-    pca_modules.push_back(pca_module);
+  // auto pca_data = parse_all_modules<PCAData>(parser, node_data.board);
+   // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
+  auto found_modules = parser->update_params_list_type("modules", "pca_module_names", "pca");
+  // as pca has nested lists, rerun for motors struct as well
+  for(auto& found_module : found_modules) {
+    auto module_name = fmt::format("modules.{}", found_module);
+    // no need to filter here, just get all names
+    parser->update_params_list(module_name + ".motors", module_name+ "motor_names", [](const std::string& name){
+        return true;
+    });
+    parser->update_params_list(module_name + ".servos", module_name + "servo_names", [](const std::string& name){
+        return true;
+    });
   }
+   auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_pca::ParamListener>(parser->nh);
+  auto params = param_listener->get_params();
+// get modules list from parser
+// loop over items, get one with type==ina226
+// add paramlistener to those with new parameters yaml
+  auto datas =
+      params.modules.pca_module_names_map |
+      std::views::filter([](const auto &pair) {
+        const auto &map_power = pair.second;
+        return boost::algorithm::to_lower_copy(map_power.type) == "pca9685";
+      }) |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_ina = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["type"] = rclcpp::ParameterValue(map_ina.type);
+        parameters["connector"] =
+            rclcpp::ParameterValue(map_ina.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_ina.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_ina.pins.scl);
+        parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
+        
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return PCAData(parser, node_data.board, name, parameters,
+                          unused_keys);
+      });
+
+
+
+  // for (auto pca : pca_data) {
+  //   auto pca_module = std::make_shared<PCA_Module>(node_data, pca, modules);
+  //   pca_modules.push_back(pca_module);
+  // }
   return pca_modules;
 }
 

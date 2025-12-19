@@ -1,6 +1,6 @@
 /**:
   ros__parameters:
-   
+    test: true
     device:
       mirte:
         type: pcb
@@ -34,22 +34,49 @@
         pins:
           analog: GP26
           digital: GP16
-    # modules:
-    #   as5600_M:
-    #     device: mirte
-        
-    #     type: AS5600
-    #     connector: I2C1
-    #     addr: 0x36
-    #     encoders:
-    #       wheel1:
-    #           mux: 3
-    #       wheel2:
-    #           mux: 4
-    #       wheel3:
-    #           mux: 5
-    #       wheel4:
-    #         mux: 6
+    # module_names:
+    #   - t
+    a:
+      t:
+        test2: false
+      x:
+        test3: 123
+      
+    modules:
+      b:
+        test: 3
+      t:
+        name: t
+        device: mirte
+        type: test_module
+      ina226_1:
+        name: ina226_1
+        device: mirte
+        type: INA226
+        connector: I2C1
+      z: 
+        pins:
+          sda: GP2
+          scl: GP3
+        addr: 0x40
+        port: I2C1
+        min_voltage: 7.0
+        power_low_time: 1.0
+        use_percentage_led: true
+        device: mirte
+      encoders:
+        type: AS5600
+        connector: I2C1
+        addr: 0x36
+        encoders:
+          wheel1:
+              mux: 3
+          wheel2:
+              mux: 4
+          wheel3:
+              mux: 5
+          wheel4:
+            mux: 6
     oled:
       left:
         name: left
@@ -129,5 +156,5 @@
         # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
         # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
     color:
-      color:
+      asdf:
         connector: I2C2

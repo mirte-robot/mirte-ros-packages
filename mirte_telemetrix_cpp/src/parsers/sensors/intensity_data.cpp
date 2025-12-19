@@ -8,7 +8,7 @@ IntensityData::IntensityData(
                  parameters, unused_keys) {
   auto key = get_device_key(this);
   auto logger = parser->logger;
-
+  bool got_pins = false;
   if (unused_keys.erase("connector")) {
     auto connector = get_string(parameters["connector"]);
     auto pins = board->resolveConnector(connector);
@@ -16,26 +16,24 @@ IntensityData::IntensityData(
     // Mirte boards support not connecting either the digital or analog pin.
     if (pins.count("analog")) {
       this->a_pin = pins["analog"];
+      got_pins = true;
     }
     if (pins.count("digital")) {
       this->d_pin = pins["digital"];
+      got_pins = true;
     }
-  } else if (unused_keys.erase("pins")) {
-    auto subkeys =
-        parser->get_params_keys(parser->build_param_name(key, "pins"));
-
-    if (subkeys.erase("analog")) {
+  } else {
+    if (unused_keys.erase("pins.analog")) {
+      got_pins = true;
       this->a_pin = board->resolvePin(get_string(parameters["pins.analog"]));
     }
 
-    if (subkeys.erase("digital")) {
+    if (unused_keys.erase("pins.digital")) {
+      got_pins = true;
       this->d_pin = board->resolvePin(get_string(parameters["pins.digital"]));
     }
-
-    for (auto subkey : subkeys) {
-      unused_keys.insert(parser->build_param_name("pins", subkey));
-    }
-  } else {
+  }
+  if (!got_pins) {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
   }

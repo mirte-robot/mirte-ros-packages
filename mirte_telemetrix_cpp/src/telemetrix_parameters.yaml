@@ -1,28 +1,29 @@
 mirte_telemetrix_cpp:
   device:
-    type:
-      type: string
-      default_value: pcb
-      description: "Type of Mirte device"
-    version:
-      type: string
-      default_value: NONE
-      description: "Version of the Mirte PCB"
-    max_frequency:
-      type: double
-      default_value: 50.0
-      description: "Maximum frequency for device communication in Hz"
-    board:
-      type: string
-      default_value: ""
-      description: "Board type for the Mirte device"
-    port:
-      type: string
-      default_value: ""
-      description: "UART port to which the Mirte device is connected (e.g., /dev/ttyUSB0 or /dev/ttyACM0)"
+    mirte: # TODO: make it a list
+      type:
+        type: string
+        default_value: pcb
+        description: "Type of Mirte device"
+      version:
+        type: string
+        default_value: NONE
+        description: "Version of the Mirte PCB"
+      max_frequency:
+        type: double
+        default_value: 50.0
+        description: "Maximum frequency for device communication in Hz"
+      board:
+        type: string
+        default_value: ""
+        description: "Board type for the Mirte device"
+      port:
+        type: string
+        default_value: ""
+        description: "UART port to which the Mirte device is connected (e.g., /dev/ttyUSB0 or /dev/ttyACM0)"
   encoders: # sonar definition, do not use directly
     type: string_array
-    default_value: ["front", "rear", "left", "right"]
+    default_value: []
     description: "List of distance sensor names"
 
   encoder:
@@ -56,7 +57,10 @@ mirte_telemetrix_cpp:
         type: string
         default_value: NONE
         description: "Connector to which the encoder is connected"
-  
+      frame_id:
+        type: string
+        default_value: ""
+        description: "Frame ID for the encoder data"
   ### Actual usage
   
   # joints:
@@ -66,7 +70,7 @@ mirte_telemetrix_cpp:
 
   distances: # sonar definition, do not use directly
     type: string_array
-    default_value: ["front", "rear", "left", "right"]
+    default_value: []
     description: "List of distance sensor names"
   distance:
     __map_distances:
@@ -108,7 +112,7 @@ mirte_telemetrix_cpp:
 
   motors: # motor definition, do not use directly
     type: string_array
-    default_value: ["left_wheel", "right_wheel"]
+    default_value: []
     description: "List of motor names"
   motor:
     __map_motors:
@@ -143,12 +147,16 @@ mirte_telemetrix_cpp:
         description: "Type of motor driver (pp, dp, ddp)"
         validation:
           one_of<>: [ [ "pp", "dp", "ddp" ] ]
-  intensities: # led definition, do not use directly
+      inverted:
+        type: bool
+        default_value: false
+        description: "Whether the motor direction is inverted"
+  intensitys: # list definition, do not use directly. Yes, its a typo, but easier for processing multiple lists.
     type: string_array
-    default_value: ["left", "right"]
+    default_value: []
     description: "List of intensity sensors"
   intensity:
-    __map_intensities:
+    __map_intensitys:
       device:
         type: string
         default_value: mirte
@@ -166,9 +174,15 @@ mirte_telemetrix_cpp:
         type: string
         default_value: NONE
         description: "Connector to which the intensity sensor is connected"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
   servos: # servo definition, do not use directly
     type: string_array
-    default_value: ["left", "right"]
+    default_value: []
     description: "List of servo names"
   servo:
     __map_servos:
@@ -185,9 +199,21 @@ mirte_telemetrix_cpp:
         type: string
         default_value: NONE
         description: "Connector to which the servo is connected"
+      min_pulse:
+        type: int
+        default_value: 500
+        description: "Minimum pulse width for the servo in microseconds"
+        validation:
+          bounds<>: [500, 2500]
+      max_pulse:
+        type: int
+        default_value: 2500
+        description: "Maximum pulse width for the servo in microseconds"
+        validation:
+          bounds<>: [500, 2500]
   keypads: # keypad definition, do not use directly
     type: string_array
-    default_value: ["keypad1", "keypad2"]
+    default_value: []
     description: "List of keypad names"
   keypad:
     __map_keypads:
@@ -204,9 +230,15 @@ mirte_telemetrix_cpp:
         type: string
         default_value: NONE
         description: "Connector to which the keypad is connected"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
   oleds: # oled definition, do not use directly
     type: string_array
-    default_value: ["left", "right"]
+    default_value: []
     description: "List of oled names"
   oled:
     __map_oleds:
@@ -231,9 +263,20 @@ mirte_telemetrix_cpp:
         type: string
         default_value: ""
         description: "Default screen script for the oled, can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text."
+      addr:
+        type: int
+        default_value: 0x3C
+        description: "I2C address of the oled display"
+
+
+
+
+
+
+
   colors:
     type: string_array
-    default_value: ["left", "right"]
+    default_value: []
     description: "List of color sensor names"
   color:
     __map_colors:
@@ -252,7 +295,33 @@ mirte_telemetrix_cpp:
           description: "Pin number for the color sensor SCL"
       connector:
         type: string
-        default_value: NONEs
+        default_value: NONE
         # required: false
         description: "Connector to which the color sensor is connected"
-    
+      addr:
+        type: int
+        default_value: 0x10
+        description: "I2C address of the color sensor"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
+
+
+
+
+
+
+  module_names:
+    type: string_array
+    default_value: []
+    description: "List of module names"
+  modules:
+    __map_module_names:
+      type:
+        type: string
+        default_value: ina226
+        description: "Type of module (ina226, veml6040, ssd1306)"
+      
