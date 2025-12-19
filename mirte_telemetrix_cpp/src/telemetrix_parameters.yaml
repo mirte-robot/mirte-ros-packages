@@ -10,8 +10,8 @@ mirte_telemetrix_cpp:
         default_value: NONE
         description: "Version of the Mirte PCB"
       max_frequency:
-        type: double
-        default_value: 50.0
+        type: int
+        default_value: 50
         description: "Maximum frequency for device communication in Hz"
       board:
         type: string

@@ -55,7 +55,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca)
+ set(config_files ina226 pca pca_motor)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(

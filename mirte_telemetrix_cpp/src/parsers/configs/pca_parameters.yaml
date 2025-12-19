@@ -4,10 +4,6 @@ mirte_telemetrix_cpp_pca:
       default_value: []
       description: "List of pca module names to be loaded"
   
-  motor_names:
-    type: string_array
-    default_value: []
-    description: "List of motor names controlled by the PCA9685"
   modules:
     
     __map_pca_module_names:
@@ -36,16 +32,21 @@ mirte_telemetrix_cpp_pca:
           type: int
           default_value: 100
           description: "PWM frequency for the PCA9685 module"
-        motors:
-          motor_names:
-            pin_A:
-              type: int
-              default_value: -1
-              description: "Pin number for motor pin A"
-            pin_B:
-              type: int
-              default_value: -1
-              description: "Pin number for motor pin B"
+        # motors:
+        #   motor_names:
+        #     type: string_array
+        #     default_value: []
+        #     description: "List of motor names controlled by the PCA9685"
+
+        #   __map_motor_names:
+        #     pin_A:
+        #       type: int
+        #       default_value: -1
+        #       description: "Pin number for motor pin A"
+        #     pin_B:
+        #       type: int
+        #       default_value: -1
+        #       description: "Pin number for motor pin B"
 
 
 

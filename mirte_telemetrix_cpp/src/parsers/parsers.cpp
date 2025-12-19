@@ -7,7 +7,9 @@
 #include <functional>
 #include <ranges>
 #include <iostream>
-
+#include <algorithm>
+#include <regex>
+#include <memory>
 #include <boost/algorithm/string.hpp>
 std::map<std::string, rclcpp::ParameterValue>
 get_params_name(std::shared_ptr<rclcpp::Node> nh, std::string name) {
@@ -188,7 +190,8 @@ std::set<std::string> &insert_default_param(std::set<std::string> &unused_keys,
 std::vector<std::string> Parser::update_params_list(std::string const& prefix_, std::string const & list_name,  std::function<bool(const std::string& name)> filter_func) {
       // __map_xxxxx does not automatically update the list of names, so we need to do it here
       std::cout << "Updating parameter list for " << list_name << " with prefix " << prefix_ << std::endl;
-   auto x = this->nh->get_node_parameters_interface()->list_parameters({prefix_}, 10).names | std::views::transform([prefix_](const std::string& param_name){
+      std::vector<std::string> names = this->nh->get_node_parameters_interface()->list_parameters({prefix_}, 10).names ;
+   auto x =names | std::views::transform([prefix_](const std::string& param_name){
         // std::cout << "Checking parameter: " << param_name << std::endl;
              std::regex word_regex("^" + prefix_ + "\\.");
                 if( std::regex_search(param_name, word_regex)) {
@@ -200,6 +203,7 @@ std::vector<std::string> Parser::update_params_list(std::string const& prefix_, 
                 } else {
                     return std::pair<std::string, std::string>{};
                 }
+            // return std::pair<std::string, std::string>();
 
         //   return param.get_name().starts_with(prefix_ + "modules.");
       }) | std::views::filter([](const std::pair<std::string, std::string>& s){ return !s.second.empty(); }) | std::views::filter([filter_func](const std::pair<std::string, std::string>& s){

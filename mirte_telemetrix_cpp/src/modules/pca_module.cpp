@@ -3,6 +3,7 @@
 
 #include <mirte_telemetrix_cpp/modules/pca_module.hpp>
 #include <mirte_telemetrix_cpp/pca_parameters.hpp>
+#include <mirte_telemetrix_cpp/pca_motor_parameters.hpp>
 #include <ranges>
 
 using namespace std::placeholders; // for _1, _2, _3...
@@ -13,15 +14,16 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
   std::vector<std::shared_ptr<PCA_Module>> pca_modules;
   // auto pca_data = parse_all_modules<PCAData>(parser, node_data.board);
    // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
-  auto found_modules = parser->update_params_list_type("modules", "pca_module_names", "pca");
+  auto found_modules = parser->update_params_list_type("modules", "pca_module_names", "pca9685");
   // as pca has nested lists, rerun for motors struct as well
   for(auto& found_module : found_modules) {
+    std::cout << "found pca module!!!" << std::endl;
     auto module_name = fmt::format("modules.{}", found_module);
     // no need to filter here, just get all names
-    parser->update_params_list(module_name + ".motors", module_name+ "motor_names", [](const std::string& name){
+    parser->update_params_list(module_name + ".motors", module_name+ ".motor_names", [](const std::string& name){
         return true;
     });
-    parser->update_params_list(module_name + ".servos", module_name + "servo_names", [](const std::string& name){
+    parser->update_params_list(module_name + ".servos", module_name + ".servo_names", [](const std::string& name){
         return true;
     });
   }
@@ -47,7 +49,13 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
         parameters["pins.sda"] = rclcpp::ParameterValue(map_ina.pins.sda);
         parameters["pins.scl"] = rclcpp::ParameterValue(map_ina.pins.scl);
         parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
-        
+
+           auto param_listener_motors =
+      std::make_shared<mirte_telemetrix_cpp_pca_motor::ParamListener>(parser->nh, fmt::format("modules.{}", name));
+  auto params_motors = param_listener_motors->get_params();
+        for(auto & x : params_motors.pca_motor_names) {
+          std::cout << x << std::endl;
+        }
         std::set<std::string> unused_keys = get_keys(parameters);
         return PCAData(parser, node_data.board, name, parameters,
                           unused_keys);

@@ -68,10 +68,10 @@
         connector: I2C1
         addr: 0x40
         min_voltage: 11.1
-        max_current: 5
-        max_voltage: 15
-        turn_off_time: 10
-        power_low_time: 20
+        max_current: 5.0
+        max_voltage: 15.0
+        turn_off_time: 10.0
+        power_low_time: 20.0
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
       movement:
         device: mirte
