@@ -20,10 +20,10 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
     std::cout << "found pca module!!!" << std::endl;
     auto module_name = fmt::format("modules.{}", found_module);
     // no need to filter here, just get all names
-    parser->update_params_list(module_name + ".motors", module_name+ ".motor_names", [](const std::string& name){
+    parser->update_params_list(module_name + ".motors", module_name+ ".pca_motor_names", [](const std::string& name){
         return true;
     });
-    parser->update_params_list(module_name + ".servos", module_name + ".servo_names", [](const std::string& name){
+    parser->update_params_list(module_name + ".servos", module_name + ".pca_servo_names", [](const std::string& name){
         return true;
     });
   }
@@ -53,20 +53,50 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
            auto param_listener_motors =
       std::make_shared<mirte_telemetrix_cpp_pca_motor::ParamListener>(parser->nh, fmt::format("modules.{}", name));
   auto params_motors = param_listener_motors->get_params();
-        for(auto & x : params_motors.pca_motor_names) {
-          std::cout << x << std::endl;
+        std::vector<std::shared_ptr<PCA_Motor_data>> motor_data;
+        std::cout << "Parsing motors for PCA module: " << name << std::endl;
+        std::cout << "motor number of names: " << params_motors.pca_motor_names.size() << std::endl;
+        std::cout << "Motor names found: ";
+        for (auto const &motor_name : params_motors.pca_motor_names) {
+          std::cout << "Parsing motor data for motor name: " << motor_name << std::endl;
+          if(motor_name == "") {
+            continue;
+          }
+          std::shared_ptr<PCA_Motor_data> motor_data_entry = std::make_shared<PCA_Motor_data>();
+          motor_data.push_back(motor_data_entry);
+          auto motor_params = params_motors.motors.pca_motor_names_map.at(motor_name);
+          motor_data_entry->name = motor_name;
+          motor_data_entry->pinA = motor_params.pin_A;
+          motor_data_entry->pinB = motor_params.pin_B;
+          motor_data_entry->invert = motor_params.invert;
+          std::cout << "Parsed motor data for motor " << motor_name << ": pinA=" << (int)motor_data_entry->pinA << ", pinB=" << (int)motor_data_entry->pinB << ", invert=" << motor_data_entry->invert << std::endl;
         }
+        std::vector<std::shared_ptr<PCA_Servo_data>> servo_data;
+        // TODO: add servo parsing again!
+        // for (auto const &servo_name : params_motors.pca_servo_names) {
+        //   if(servo_name == "") {
+        //     continue;
+        //   }
+        //   auto servo_params = params_motors.pca_servos_map.at(servo_name);
+        //   servo_data.name = servo_name;
+        //   servo_data.pin = servo_params.pin;
+        //   servo_data.min_pulse = servo_params.min_pulse;
+        //   servo_data.max_pulse = servo_params.max_pulse;
+        //   servo_data.min_angle = servo_params.min_angle;
+        //   servo_data.max_angle = servo_params.max_angle;
+        // }
         std::set<std::string> unused_keys = get_keys(parameters);
         return PCAData(parser, node_data.board, name, parameters,
-                          unused_keys);
+                          unused_keys, motor_data, servo_data);
       });
 
 
 
-  // for (auto pca : pca_data) {
-  //   auto pca_module = std::make_shared<PCA_Module>(node_data, pca, modules);
-  //   pca_modules.push_back(pca_module);
-  // }
+  for (auto pca : datas) {
+    auto pca_module = std::make_shared<PCA_Module>(node_data, pca, modules);
+    pca_modules.push_back(pca_module);
+  }
+
   return pca_modules;
 }
 

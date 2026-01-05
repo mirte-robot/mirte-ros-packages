@@ -29,6 +29,7 @@ std::vector<
     typename std::enable_if<std::is_base_of<ModuleData, T>::value, T>::type>
 parse_all_modules(std::shared_ptr<Parser> parser,
                   std::shared_ptr<Mirte_Board> board) {
+                    std::cerr << "PARSE ALL MODULES CALLED FOR " << T::get_module_type() << std::endl;
   auto logger = parser->logger;
   const auto device_class = T::get_device_class();
   const auto module_type = boost::to_lower_copy(T::get_module_type());

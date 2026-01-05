@@ -8,9 +8,9 @@
 PCAData::PCAData(std::shared_ptr<Parser> parser,
                  std::shared_ptr<Mirte_Board> board, std::string name,
                  std::map<std::string, rclcpp::ParameterValue> parameters,
-                 std::set<std::string> &unused_keys)
+                 std::set<std::string> &unused_keys, std::vector<std::shared_ptr<PCA_Motor_data>> motorsdata, std::vector<std::shared_ptr<PCA_Servo_data>> servosdata)
     : I2CModuleData(parser, board, name, parameters, unused_keys,
-                    get_module_type()) {
+                    get_module_type()), motors(motorsdata), servos(servosdata) {
   auto key = get_device_key(this);
   // This logger is only used for DEBUG, so it is a child logger.
   auto logger = parser->logger.get_child(key);
@@ -24,19 +24,19 @@ PCAData::PCAData(std::shared_ptr<Parser> parser,
     this->frequency = parameters["frequency"].get<int>();
   }
 
-  if (unused_keys.erase("motors")) {
-    // RCLCPP_DEBUG(logger, "Attempting to find PCA motors [%s]", key.c_str());
-    //  TODO: MOTORS REPARSE
-    this->motors = PCA_Motor_data::parse_pca_motor_data(parser, /* board,*/ key,
-                                                        unused_keys);
-  }
+  // if (unused_keys.erase("motors")) {
+  //   // RCLCPP_DEBUG(logger, "Attempting to find PCA motors [%s]", key.c_str());
+  //   //  TODO: MOTORS REPARSE
+  //   this->motors = PCA_Motor_data::parse_pca_motor_data(parser, /* board,*/ key,
+  //                                                       unused_keys);
+  // }
 
-  if (unused_keys.erase("servos")) {
-    // RCLCPP_DEBUG(logger, "Attempting to find PCA servos [%s]", key.c_str());
-    //  TODO: SERVOS REPARSE
-    this->servos = PCA_Servo_data::parse_pca_servo_data(parser, /*board,*/ key,
-                                                        unused_keys);
-  }
+  // if (unused_keys.erase("servos")) {
+  //   // RCLCPP_DEBUG(logger, "Attempting to find PCA servos [%s]", key.c_str());
+  //   //  TODO: SERVOS REPARSE
+  //   this->servos = PCA_Servo_data::parse_pca_servo_data(parser, /*board,*/ key,
+  //                                                       unused_keys);
+  // }
 }
 
 bool PCAData::check() { return I2CModuleData::check(get_module_type()); }

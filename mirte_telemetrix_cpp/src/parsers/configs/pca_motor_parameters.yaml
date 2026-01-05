@@ -14,3 +14,7 @@ mirte_telemetrix_cpp_pca_motor:
               type: int
               default_value: -1
               description: "Pin number for motor pin B"
+            invert:
+              type: bool
+              default_value: false
+              description: "Invert motor direction"
