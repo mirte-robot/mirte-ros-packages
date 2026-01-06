@@ -66,8 +66,7 @@ EncoderMonitor::get_encoder_monitors(NodeData node_data,
         parameters["pins.pin"] = rclcpp::ParameterValue(map_encoder.pins.pin);
         parameters["pins.A"] = rclcpp::ParameterValue(map_encoder.pins.A);
         parameters["pins.B"] = rclcpp::ParameterValue(map_encoder.pins.B);
-        parameters["frame_id"] =
-            rclcpp::ParameterValue(map_encoder.frame_id);
+        parameters["frame_id"] = rclcpp::ParameterValue(map_encoder.frame_id);
         auto unused_keys = get_keys(parameters);
         std::set<std::string> unused_keys_set(unused_keys.begin(),
                                               unused_keys.end());

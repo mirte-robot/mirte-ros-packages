@@ -170,8 +170,7 @@ VEML6040_sensor::get_veml6040_modules(
         const auto &map_veml = pair.second;
         std::map<std::string, rclcpp::ParameterValue> parameters;
 
-        parameters["connector"] =
-            rclcpp::ParameterValue(map_veml.connector);
+        parameters["connector"] = rclcpp::ParameterValue(map_veml.connector);
         parameters["pins.scl"] = rclcpp::ParameterValue(map_veml.pins.scl);
         parameters["pins.sda"] = rclcpp::ParameterValue(map_veml.pins.sda);
         parameters["addr"] = rclcpp::ParameterValue(map_veml.addr);

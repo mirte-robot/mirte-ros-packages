@@ -183,8 +183,8 @@ void INA226_sensor::shutdown_robot_service_callback(
   res->success = true;
   res->message = "Shutting down";
 }
-#include <ranges>
 #include <mirte_telemetrix_cpp/ina226_parameters.hpp>
+#include <ranges>
 std::vector<std::shared_ptr<INA226_sensor>>
 INA226_sensor::get_ina_modules(NodeData node_data,
                                std::shared_ptr<Parser> parser,
@@ -193,12 +193,12 @@ INA226_sensor::get_ina_modules(NodeData node_data,
   // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
   parser->update_params_list_type("modules", "ina_module_names", "ina226");
 
-   auto param_listener =
+  auto param_listener =
       std::make_shared<mirte_telemetrix_cpp_ina226::ParamListener>(parser->nh);
   auto params = param_listener->get_params();
-// get modules list from parser
-// loop over items, get one with type==ina226
-// add paramlistener to those with new parameters yaml
+  // get modules list from parser
+  // loop over items, get one with type==ina226
+  // add paramlistener to those with new parameters yaml
   auto datas =
       params.modules.ina_module_names_map |
       std::views::filter([](const auto &pair) {
@@ -210,14 +210,12 @@ INA226_sensor::get_ina_modules(NodeData node_data,
         const auto &map_ina = pair.second;
         std::map<std::string, rclcpp::ParameterValue> parameters;
         parameters["type"] = rclcpp::ParameterValue(map_ina.type);
-        parameters["connector"] =
-            rclcpp::ParameterValue(map_ina.connector);
+        parameters["connector"] = rclcpp::ParameterValue(map_ina.connector);
         parameters["pins.sda"] = rclcpp::ParameterValue(map_ina.pins.sda);
         parameters["pins.scl"] = rclcpp::ParameterValue(map_ina.pins.scl);
         parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
         // parameters["port"] = rclcpp::ParameterValue(map_ina.port);
-        parameters["min_voltage"] =
-            rclcpp::ParameterValue(map_ina.min_voltage);
+        parameters["min_voltage"] = rclcpp::ParameterValue(map_ina.min_voltage);
         parameters["power_low_time"] =
             rclcpp::ParameterValue(map_ina.power_low_time);
         parameters["use_percentage_led"] =

@@ -1,13 +1,15 @@
 #include <chrono>
 #include <functional>
+#include <ranges>
 #include <thread>
 
 using namespace std::chrono_literals;
 
 #include <rclcpp/callback_group.hpp>
 
+#include <mirte_telemetrix_cpp/hiwonder_parameters.hpp>
+#include <mirte_telemetrix_cpp/hiwonder_servo_parameters.hpp>
 #include <mirte_telemetrix_cpp/modules/hiwonder_module.hpp>
-
 using namespace std::placeholders; // for _1, _2, _3...
 
 // TODO: USE TO DEVICE_TIMER
@@ -84,13 +86,84 @@ HiWonderBus_module::get_hiwonder_modules(
     NodeData node_data, std::shared_ptr<Parser> parser,
     std::shared_ptr<tmx_cpp::Modules> modules) {
   std::vector<std::shared_ptr<HiWonderBus_module>> hiwonder_modules;
-  auto hiwonder_data =
-      parse_all_modules<HiWonderBusData>(parser, node_data.board);
-  for (auto hiwonder : hiwonder_data) {
-    auto hiwonder_module =
-        std::make_shared<HiWonderBus_module>(node_data, hiwonder, modules);
-    hiwonder_modules.push_back(hiwonder_module);
+  auto found_modules = parser->update_params_list_type(
+      "modules", "hiwonder_module_names", "Hiwonder_Servo");
+  for (auto &found_module : found_modules) {
+    std::cout << "found hiwonder module!!!" << std::endl;
+    auto module_name = fmt::format("modules.{}", found_module);
+    // no need to filter here, just get all names
+    parser->update_params_list(module_name + ".servos",
+                               module_name + ".hiwonder_servo_names",
+                               [](const std::string &name) { return true; });
   }
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_hiwonder::ParamListener>(
+          parser->nh);
+  auto params = param_listener->get_params();
+  // get modules list from parser
+  // loop over items, get one with type==ina226
+  // add paramlistener to those with new parameters yaml
+  auto datas =
+      params.modules.hiwonder_module_names_map |
+      std::views::filter([](const auto &pair) {
+        const auto &map_power = pair.second;
+        return boost::algorithm::to_lower_copy(map_power.type) ==
+               "hiwonder_servo";
+      }) |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_ina = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["type"] = rclcpp::ParameterValue(map_ina.type);
+
+        parameters["pins.rx"] = rclcpp::ParameterValue(map_ina.pins.rx);
+        parameters["pins.tx"] = rclcpp::ParameterValue(map_ina.pins.tx);
+        // parameters["connector"] = rclcpp::ParameterValue(map_ina.connector);
+        // parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
+
+        auto param_listener_motors = std::make_shared<
+            mirte_telemetrix_cpp_hiwonder_servo::ParamListener>(
+            parser->nh, fmt::format("modules.{}", name));
+        auto params_motors = param_listener_motors->get_params();
+        std::vector<std::shared_ptr<HiWonderServoData>> motor_data;
+        std::cout << "Parsing motors for PCA module: " << name << std::endl;
+
+        for (auto const &servo_name : params_motors.hiwonder_servo_names) {
+          auto motor_params =
+              params_motors.servos.hiwonder_servo_names_map.at(servo_name);
+          std::map<std::string, rclcpp::ParameterValue> parameters = {
+              {"id", rclcpp::ParameterValue(motor_params.id)},
+              {"min_angle_out",
+               rclcpp::ParameterValue(motor_params.min_angle_out)},
+              {"max_angle_out",
+               rclcpp::ParameterValue(motor_params.max_angle_out)},
+              {"home_out", rclcpp::ParameterValue(motor_params.home_out)},
+              {"invert", rclcpp::ParameterValue(motor_params.invert)}};
+
+          std::set<std::string> unused_keys = get_keys(parameters);
+          std::shared_ptr<HiWonderServoData> data =
+              std::make_shared<HiWonderServoData>(parser, node_data.board, name,
+                                                  parameters, unused_keys, "");
+          motor_data.push_back(data);
+        }
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return HiWonderBusData(parser, node_data.board, name, parameters,
+                               unused_keys, motor_data);
+      });
+
+  for (auto pca : datas) {
+    auto pca_module =
+        std::make_shared<HiWonderBus_module>(node_data, pca, modules);
+    hiwonder_modules.push_back(pca_module);
+  }
+
+  // // auto hiwonder_data =
+  // //     parse_all_modules<HiWonderBusData>(parser, node_data.board);
+  // for (auto hiwonder : hiwonder_data) {
+  //   auto hiwonder_module =
+  //       std::make_shared<HiWonderBus_module>(node_data, hiwonder, modules);
+  //   hiwonder_modules.push_back(hiwonder_module);
+  // }
   return hiwonder_modules;
 }
 

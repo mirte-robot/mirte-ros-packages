@@ -22,19 +22,25 @@ public:
   Parser(std::shared_ptr<rclcpp::Node> nh);
   std::map<std::string, rclcpp::ParameterValue>
   get_params_name(std::string name);
-  std::set<std::string> get_params_keys(std::string name);
+  // std::set<std::string> get_params_keys(std::string name);
   static std::string
   build_param_name(std::initializer_list<const std::string> keys);
   static std::string build_param_name(std::string name, std::string key);
   int get_frequency();
   std::string get_last(std::string name);
-  std::vector<std::string> update_params_list_type(std::string const& prefix_, std::string const & list_name, std::string const& type_filter) ;
-  std::vector<std::string> update_params_list(std::string const& prefix_, std::string const & list_name,  std::function<bool(const std::string& name)> filter_func) ;
+  std::vector<std::string>
+  update_params_list_type(std::string const &prefix_,
+                          std::string const &list_name,
+                          std::string const &type_filter);
+  std::vector<std::string>
+  update_params_list(std::string const &prefix_, std::string const &list_name,
+                     std::function<bool(const std::string &name)> filter_func);
 };
 
 std::string get_string(rclcpp::ParameterValue param);
 
-std::set<std::string> get_keys(std::map<std::string, rclcpp::ParameterValue> parameters);
+std::set<std::string>
+get_keys(std::map<std::string, rclcpp::ParameterValue> parameters);
 /// Convience function to read float parameters, will still work if parameter is
 /// actually an integer.
 float get_float(rclcpp::ParameterValue param);

@@ -72,7 +72,7 @@ bool TelemetrixNode::start() {
   using namespace std::placeholders;
 
   auto parser = std::make_shared<Parser>(node_);
- 
+
   std::shared_ptr<tmx_cpp::TMX> tmx;
   // rclcpp::spin(node_);
   if (parser->params_object.device.mirte.port != "") {

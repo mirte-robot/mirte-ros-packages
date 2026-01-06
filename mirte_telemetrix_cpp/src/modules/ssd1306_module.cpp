@@ -50,7 +50,7 @@ SSD1306_module::get_ssd1306_modules(NodeData node_data,
         // parameters["legacy"] = rclcpp::ParameterValue(map_oled.legacy);
         std::set<std::string> unused_keys = get_keys(parameters);
         return SSD1306Data(parser, node_data.board, name, parameters,
-                          unused_keys);
+                           unused_keys);
       });
   for (auto data : datas) {
     auto module = std::make_shared<SSD1306_module>(node_data, data, modules);

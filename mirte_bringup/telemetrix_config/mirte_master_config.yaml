@@ -5,7 +5,66 @@
         type: pcb
         version: 0.6
         max_frequency: 50
+    servo:
+      pincher:
+        name: pincher
+        device: mirte
+        pins: 
+          pin: GP15
+    intensity:
+      x_axis:
+        name: x_axis
+        device: mirte
+        pins:
+          analog: GP27
+          # digital: GP17
+      y_axis:
+        name: y_axis
+        device: mirte
+        pins:
+          analog: GP26
+          # digital: GP16
+      flip:
+        name: flip
+        device: mirte
+        pins:
+          # analog: GP28
+          digital: GP19
+      on_off:
+        name: on_off
+        device: mirte
+        pins:
+          # analog: GP29
+          digital: GP18
+      holonomic:
+        name: holonomic
+        device: mirte
+        pins:
+          # analog: GP30
+          digital: GP20
     modules:
+      as5600_M:
+        device: mirte
+        
+        type: AS5600
+        connector: I2C1
+        addr: 0x36
+        encoders:
+          pincher: # pincher
+              mux: 0
+              test: 0
+          shoulder_pan: # shoulder pan
+              mux: 1
+              test: 1
+          shoulder_lift: # shoulder lift
+              mux: 2
+              test: 2
+          elbow: # elbow?
+              mux: 3
+              test: 3
+          wrist: # wrist?
+              mux: 4
+              test: 4      
       motorservocontroller:
         device: mirte
         type: PCA9685

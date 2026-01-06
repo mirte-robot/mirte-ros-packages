@@ -12,33 +12,33 @@ std::vector<std::shared_ptr<SonarMonitor>>
 SonarMonitor::get_sonar_monitors(NodeData node_data,
                                  std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<SonarMonitor>> sensors;
-  auto sonars = parser->params_object.distance.distances_map |
-                std::views::transform([&](const auto &pair) {
-                  const auto &name = pair.first;
-                  const auto &map_distance = pair.second;
-                  std::map<std::string, rclcpp::ParameterValue> parameters;
-                  parameters["max_distance"] =
-                      rclcpp::ParameterValue(map_distance.max_distance);
-                  parameters["min_distance"] =
-                      rclcpp::ParameterValue(map_distance.min_distance);
-                  parameters["frame_id"] =
-                      rclcpp::ParameterValue(map_distance.frame_id);
-                  parameters["connector"] =
-                      rclcpp::ParameterValue(map_distance.connector);
-                  parameters["pins.trigger"] =
-                      rclcpp::ParameterValue(map_distance.pins.trigger);
-                  parameters["pins.echo"] =
-                      rclcpp::ParameterValue(map_distance.pins.echo);
+  auto sonars =
+      parser->params_object.distance.distances_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_distance = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["max_distance"] =
+            rclcpp::ParameterValue(map_distance.max_distance);
+        parameters["min_distance"] =
+            rclcpp::ParameterValue(map_distance.min_distance);
+        parameters["frame_id"] = rclcpp::ParameterValue(map_distance.frame_id);
+        parameters["connector"] =
+            rclcpp::ParameterValue(map_distance.connector);
+        parameters["pins.trigger"] =
+            rclcpp::ParameterValue(map_distance.pins.trigger);
+        parameters["pins.echo"] =
+            rclcpp::ParameterValue(map_distance.pins.echo);
 
         parameters["frame_id"] = rclcpp::ParameterValue(map_distance.frame_id);
-                  std::set<std::string> unused_keys = get_keys(parameters);
+        std::set<std::string> unused_keys = get_keys(parameters);
 
-                  return SonarData(parser, node_data.board, name, parameters,
-                                   unused_keys);
-                }) |
-                std::views::transform([&](const auto &data) {
-                  return std::make_shared<SonarMonitor>(node_data, data);
-                });
+        return SonarData(parser, node_data.board, name, parameters,
+                         unused_keys);
+      }) |
+      std::views::transform([&](const auto &data) {
+        return std::make_shared<SonarMonitor>(node_data, data);
+      });
   sensors.assign(sonars.begin(), sonars.end());
   return sensors;
 }

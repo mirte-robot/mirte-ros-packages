@@ -21,6 +21,10 @@ mirte_telemetrix_cpp:
         type: string
         default_value: ""
         description: "UART port to which the Mirte device is connected (e.g., /dev/ttyUSB0 or /dev/ttyACM0)"
+      frame_prefix:
+        type: string
+        default_value: ""
+        description: "Frame prefix for all frames, need to add your own separator (_) "
   encoders: # sonar definition, do not use directly
     type: string_array
     default_value: []

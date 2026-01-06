@@ -145,44 +145,46 @@ bool HiWonderServoData::check() {
   return id >= 0x00 && id < 0xFE && DeviceData::check();
 }
 
-std::vector<std::shared_ptr<HiWonderServoData>>
-HiWonderServoData::parse_hiwonder_servo_data(std::shared_ptr<Parser> parser,
-                                             std::shared_ptr<Mirte_Board> board,
-                                             std::string bus_name,
-                                             std::set<std::string> &unused_keys,
-                                             std::string base_frame_id) {
-  auto logger = parser->logger;
+// std::vector<std::shared_ptr<HiWonderServoData>>
+// HiWonderServoData::parse_hiwonder_servo_data(std::shared_ptr<Parser> parser,
+//                                              std::shared_ptr<Mirte_Board>
+//                                              board, std::string bus_name,
+//                                              std::set<std::string>
+//                                              &unused_keys, std::string
+//                                              base_frame_id) {
+//   auto logger = parser->logger;
 
-  std::vector<std::shared_ptr<HiWonderServoData>> servos;
-  auto bus_config = parser->get_params_name(bus_name);
-  auto bus_keys = parser->get_params_keys(bus_name);
+//   std::vector<std::shared_ptr<HiWonderServoData>> servos;
+//   // auto bus_config = parser->get_params_name(bus_name);
+//   // auto bus_keys = parser->get_params_keys(bus_name);
 
-  if (bus_keys.count("servos")) {
-    auto servos_name = parser->build_param_name(bus_name, "servos");
+//   if (bus_keys.count("servos")) {
+//     auto servos_name = parser->build_param_name(bus_name, "servos");
 
-    auto servo_config = parser->get_params_name(servos_name);
-    for (auto servo_key : parser->get_params_keys(servos_name)) {
-      auto servo_param_name = parser->build_param_name(servos_name, servo_key);
-      auto servo_config = parser->get_params_name(servo_param_name);
-      auto servo_keys = parser->get_params_keys(servo_param_name);
+//     auto servo_config = parser->get_params_name(servos_name);
+//     for (auto servo_key : parser->get_params_keys(servos_name)) {
+//       auto servo_param_name = parser->build_param_name(servos_name,
+//       servo_key); auto servo_config =
+//       parser->get_params_name(servo_param_name); auto servo_keys =
+//       parser->get_params_keys(servo_param_name);
 
-      auto data = std::make_shared<HiWonderServoData>(
-          parser, board, servo_key, servo_config, servo_keys, base_frame_id);
+//       auto data = std::make_shared<HiWonderServoData>(
+//           parser, board, servo_key, servo_config, servo_keys, base_frame_id);
 
-      if (data->check()) {
-        servos.push_back(data);
-      } else {
-        RCLCPP_ERROR(logger,
-                     "HiWonder Servo '%s' is invalid and will not be active",
-                     data->name.c_str());
-      }
+//       if (data->check()) {
+//         servos.push_back(data);
+//       } else {
+//         RCLCPP_ERROR(logger,
+//                      "HiWonder Servo '%s' is invalid and will not be active",
+//                      data->name.c_str());
+//       }
 
-      auto key_prefix = servo_param_name.substr(bus_name.size() + 1);
-      for (auto subkey : servo_keys) {
-        unused_keys.insert(parser->build_param_name(key_prefix, subkey));
-      }
-    }
-  }
+//       auto key_prefix = servo_param_name.substr(bus_name.size() + 1);
+//       for (auto subkey : servo_keys) {
+//         unused_keys.insert(parser->build_param_name(key_prefix, subkey));
+//       }
+//     }
+//   }
 
-  return servos;
-}
+//   return servos;
+// }

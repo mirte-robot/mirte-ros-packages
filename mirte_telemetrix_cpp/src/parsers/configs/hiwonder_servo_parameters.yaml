@@ -1,0 +1,36 @@
+mirte_telemetrix_cpp_hiwonder_servo:
+  hiwonder_servo_names: 
+      type: string_array
+      default_value: []
+      description: "List of hiwonder` module names to be loaded"
+  
+  servos:
+    __map_hiwonder_servo_names:
+            #  id: 2
+            # home_out: 12000
+            # min_angle_out: 3400
+            # max_angle_out: 21000
+            # invert: false
+        id:
+          type: int
+          validation:
+            bounds<>: [0, 254]
+        home_out:
+          type: int
+          description: "Ticks that correspond to 0.0 rad ROS side"
+          validation:
+            bounds<>: [0, 360000]
+        min_angle_out:
+          type: int
+          description: "Ticks for min angle, used for calculating ROS side min angle"
+          validation:
+            bounds<>: [0, 360000]
+        max_angle_out:
+          type: int
+          description: "Ticks for max angle, used for calculating ROS side max angle"
+          # default: -1
+          validation:
+            bounds<>: [0, 360000]
+        invert:
+          type: bool
+          description: "Invert ROS side range"

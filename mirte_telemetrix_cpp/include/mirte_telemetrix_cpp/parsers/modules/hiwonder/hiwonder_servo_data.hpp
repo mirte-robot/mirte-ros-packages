@@ -61,12 +61,12 @@ public:
                     std::string base_frame_id);
 
   // FIXME: CHANGE
-  static std::vector<std::shared_ptr<HiWonderServoData>>
-  parse_hiwonder_servo_data(std::shared_ptr<Parser> parser,
-                            std::shared_ptr<Mirte_Board> board,
-                            std::string bus_name,
-                            std::set<std::string> &unused_keys,
-                            std::string base_frame_id);
+  // static std::vector<std::shared_ptr<HiWonderServoData>>
+  // parse_hiwonder_servo_data(std::shared_ptr<Parser> parser,
+  //                           std::shared_ptr<Mirte_Board> board,
+  //                           std::string bus_name,
+  //                           std::set<std::string> &unused_keys,
+  //                           std::string base_frame_id);
 
   // static std::string get_module_type() {return "hiwonder_servo.servo"; };
   virtual bool check() override;

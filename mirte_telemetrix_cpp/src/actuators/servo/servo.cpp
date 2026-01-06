@@ -15,10 +15,8 @@ Servo::get_servos(NodeData node_data, std::shared_ptr<Parser> parser) {
         parameters["device"] = rclcpp::ParameterValue(map_servo.device);
         parameters["connector"] = rclcpp::ParameterValue(map_servo.connector);
         parameters["pins.pin"] = rclcpp::ParameterValue(map_servo.pins.pin);
-        parameters["min_pulse"] =
-            rclcpp::ParameterValue(map_servo.min_pulse);
-        parameters["max_pulse"] =
-            rclcpp::ParameterValue(map_servo.max_pulse);
+        parameters["min_pulse"] = rclcpp::ParameterValue(map_servo.min_pulse);
+        parameters["max_pulse"] = rclcpp::ParameterValue(map_servo.max_pulse);
         // parameters["frame_id"] = rclcpp::ParameterValue(map_servo.frame_id);
         std::set<std::string> unused_keys = get_keys(parameters);
         return ServoData(parser, node_data.board, name, parameters,

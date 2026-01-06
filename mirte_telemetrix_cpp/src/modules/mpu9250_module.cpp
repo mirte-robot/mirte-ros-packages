@@ -3,7 +3,8 @@
 #include <numbers>
 
 #include <mirte_telemetrix_cpp/modules/mpu9250_module.hpp>
-
+#include <mirte_telemetrix_cpp/mpu9250_parameters.hpp>
+#include <ranges>
 using namespace std::placeholders;
 
 MPU9250_sensor::MPU9250_sensor(NodeData node_data, MPU9250Data imu_data,
@@ -91,8 +92,36 @@ MPU9250_sensor::get_mpu_modules(NodeData node_data,
                                 std::shared_ptr<Parser> parser,
                                 std::shared_ptr<tmx_cpp::Sensors> sensors) {
   std::vector<std::shared_ptr<MPU9250_sensor>> mpu_modules;
-  auto mpu_data = parse_all_modules<MPU9250Data>(parser, node_data.board);
-  for (auto mpu : mpu_data) {
+
+  parser->update_params_list_type("modules", "mpu9250_module_names", "mpu9250");
+
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_mpu9250::ParamListener>(parser->nh);
+  auto params = param_listener->get_params();
+  // get modules list from parser
+  // loop over items, get one with type==mpu9250
+  // add paramlistener to those with new parameters yaml
+  auto datas =
+      params.modules.mpu9250_module_names_map |
+      std::views::filter([](const auto &pair) {
+        const auto &map_power = pair.second;
+        return boost::algorithm::to_lower_copy(map_power.type) == "mpu9250";
+      }) |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_mpu = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["type"] = rclcpp::ParameterValue(map_mpu.type);
+        parameters["connector"] = rclcpp::ParameterValue(map_mpu.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_mpu.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_mpu.pins.scl);
+        parameters["addr"] = rclcpp::ParameterValue(map_mpu.addr);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return MPU9250Data(parser, node_data.board, name, parameters,
+                           unused_keys);
+      });
+
+  for (auto mpu : datas) {
     auto mpu_module = std::make_shared<MPU9250_sensor>(node_data, mpu, sensors);
     mpu_modules.push_back(mpu_module);
   }
