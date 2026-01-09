@@ -32,5 +32,6 @@
 *.app
 
 build/
+build[0-9]/
 install/
 log/

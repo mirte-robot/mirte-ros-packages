@@ -51,6 +51,10 @@ Hiwonder_servo::Hiwonder_servo(
                 upper);
   }
 
+  if(this->servo_data->set_range) {
+    this->bus_mod->set_range(servo_data->id, servo_data->min_angle_out, servo_data->max_angle_out);
+  }
+
   // create enable service
   this->enable_service = nh->create_service<std_srvs::srv::SetBool>(
       "servo/" + servo_group + this->servo_data->name + "/set_enable",
