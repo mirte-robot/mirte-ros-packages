@@ -5,18 +5,26 @@
         type: pcb
         version: 0.6
         max_frequency: 50
+        frame_prefix: 
+          - mirte__
+          - asdfsadfzxv
     servo:
       pincher:
         name: pincher
         device: mirte
         pins: 
           pin: GP15
+      pincher2:
+        name: pincher2
+        device: mirte
+        pins: 
+          pin: 15
     intensity:
       x_axis:
         name: x_axis
         device: mirte
         pins:
-          analog: GP27
+          analog: 27
           # digital: GP17
       y_axis:
         name: y_axis
@@ -70,6 +78,8 @@
         type: PCA9685
         addr: 0x41
         connector: I2C1
+          # - I2C1
+          # - asdf
         frequency: 100
         motors: # TODO: No Idea which motor configuration is correct.
           rear_left:
@@ -166,6 +176,8 @@
         name: front_left
         device: mirte
         frame_id: front_left_sonar
+        max_distance: 10.01
+        min_distance: 0.2
         pins:
           trigger: 6
           echo: 7

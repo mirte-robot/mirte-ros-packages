@@ -68,6 +68,9 @@ MotorData::MotorData(std::shared_ptr<Parser> parser,
   if (unused_keys.erase("inverted")) {
     this->inverted = parameters["inverted"].get<bool>();
   }
+  if (unused_keys.erase("stop_mode")) {
+    this->stop_mode = get_string(parameters["stop_mode"]) == "high";
+  }
 }
 
 bool MotorData::check() {

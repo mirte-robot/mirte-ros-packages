@@ -220,6 +220,7 @@ INA226_sensor::get_ina_modules(NodeData node_data,
             rclcpp::ParameterValue(map_ina.power_low_time);
         parameters["use_percentage_led"] =
             rclcpp::ParameterValue(map_ina.use_percentage_led);
+        parameters["percentage_led_pin"] = rclcpp::ParameterValue(map_ina.percentage_led_pin);
         std::set<std::string> unused_keys = get_keys(parameters);
         return INA226Data(parser, node_data.board, name, parameters,
                           unused_keys);

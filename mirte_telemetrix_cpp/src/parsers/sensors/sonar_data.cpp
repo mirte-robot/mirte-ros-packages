@@ -3,7 +3,7 @@
 SonarData::SonarData(std::shared_ptr<Parser> parser,
                      std::shared_ptr<Mirte_Board> board, std::string name,
                      std::map<std::string, rclcpp::ParameterValue> parameters,
-                     std::set<std::string> &unused_keys)
+                     std::set<std::string> &unused_keys, const mirte_telemetrix_cpp::Params::Distance::MapDistances& distance_params)
     : SensorData(parser, board, name, SonarData::get_device_class(), parameters,
                  unused_keys, DeviceDuration(1000.0 / 10.0)) {
   auto key = get_device_key(this);
@@ -25,6 +25,9 @@ SonarData::SonarData(std::shared_ptr<Parser> parser,
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
   }
+  this->min_distance = distance_params.min_distance;
+  this->max_distance = distance_params.max_distance;
+  
 }
 
 bool SonarData::check() {

@@ -35,6 +35,10 @@ mirte_telemetrix_cpp_ina226:
           type: bool
           default_value: true
           description: "Whether to use LED indicators for power percentage"
+        percentage_led_pin:
+          type: string
+          default_value: NONE
+          description: "SBC gpio pin for showing percentage, like GPIO4_B4"
         connector:
           type: string
           default_value: NONE

@@ -29,12 +29,10 @@ SonarMonitor::get_sonar_monitors(NodeData node_data,
             rclcpp::ParameterValue(map_distance.pins.trigger);
         parameters["pins.echo"] =
             rclcpp::ParameterValue(map_distance.pins.echo);
-
-        parameters["frame_id"] = rclcpp::ParameterValue(map_distance.frame_id);
         std::set<std::string> unused_keys = get_keys(parameters);
 
         return SonarData(parser, node_data.board, name, parameters,
-                         unused_keys);
+                         unused_keys, map_distance);
       }) |
       std::views::transform([&](const auto &data) {
         return std::make_shared<SonarMonitor>(node_data, data);
@@ -49,6 +47,8 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
       sonar_data(sonar_data) {
   this->logger = this->logger.get_child(sonar_data.get_device_class())
                      .get_child(sonar_data.name);
+  this->min_range = sonar_data.min_distance;
+  this->max_range = sonar_data.max_distance;
   this->range =
       sensor_msgs::build<sensor_msgs::msg::Range>()
           .header(this->get_header())

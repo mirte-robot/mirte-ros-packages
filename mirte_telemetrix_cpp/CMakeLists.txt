@@ -55,7 +55,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor)
+ set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor telemetrix)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(
@@ -64,10 +64,10 @@ foreach (config_file IN LISTS config_files)
   )
   list(APPEND param_libs ${config_file}_parameters)
 endforeach()
-generate_parameter_library(
-  telemetrix_parameters # cmake target name for the parameter library
-  src/telemetrix_parameters.yaml # path to input yaml file
-)
+# generate_parameter_library(
+#   telemetrix_parameters # cmake target name for the parameter library
+#   src/telemetrix_parameters.yaml # path to input yaml file
+# )
 
 
 # include(CheckIPOSupported) check_ipo_supported(RESULT supported OUTPUT error)
@@ -184,10 +184,10 @@ if(0) # extra strict errors
 endif()
 
 # Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp telemetrix_parameters ${param_libs}
+target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp ${param_libs}
                       ${MIRTE_EXTRA_LIBS} ${OpenCV_LIBS})
 
-target_link_libraries(${PROJECT_NAME}_test telemetrix_parameters ${param_libs})
+target_link_libraries(${PROJECT_NAME}_test ${param_libs})
 # if(supported) if(CMAKE_BUILD_TYPE STREQUAL "Release") message(STATUS "IPO LTO
 # enabled") set_property(TARGET ${PROJECT_NAME}_node PROPERTY
 # INTERPROCEDURAL_OPTIMIZATION TRUE) endif() else() message(STATUS "IPO  / LTO
@@ -199,7 +199,7 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test DESTINATION lib/${PROJECT_NAME})
-install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test telemetrix_parameters ${param_libs}
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test ${param_libs}
   EXPORT ${PROJECT_NAME}Targets)
 ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 
