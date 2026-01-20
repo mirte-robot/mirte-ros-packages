@@ -77,6 +77,8 @@ void INA226_sensor::update() { // only publish at 1Hz
 }
 
 void INA226_sensor::data_callback(float voltage, float current) {
+  std::cout << "INA226 Data callback: Voltage: " << voltage
+            << " Current: " << current << std::endl;
   voltage_ = voltage;
   current_ = current;
   // this->integrate_usage(current_);

@@ -32,7 +32,8 @@ parse_all_modules(std::shared_ptr<Parser> parser,
   auto logger = parser->logger;
   const auto device_class = T::get_device_class();
   const auto module_type = boost::to_lower_copy(T::get_module_type());
-
+                    std::cout << "Parsing all modules of type: " << module_type << std::endl;
+                    std::cout << "Device class: " << device_class << std::endl;
   std::vector<T> devices;
   for (auto name : parser->get_params_keys(device_class)) {
     auto device_key = parser->build_param_name(device_class, name);
