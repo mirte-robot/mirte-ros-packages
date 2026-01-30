@@ -47,8 +47,13 @@
 
     pose_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
 
-
-
+/**/mirte_base_control:
+  ros__parameters: # Mirte base control hw interface parameters
+    ticks: 1320  # TODO: check 11pps*30reduction *4
+    use_single_update_client: true
+    single_update_service: "/io/motor/motorservocontroller/set_multiple_speeds"
+    cmd_vel_deadzone: 10
+    cmd_vel_update_deadzone: 3
 # /**/pid_wheels_controller:
 #   ros__parameters:
 #     command_interface: velocity

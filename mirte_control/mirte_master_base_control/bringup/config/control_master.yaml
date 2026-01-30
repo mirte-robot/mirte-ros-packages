@@ -1,4 +1,6 @@
 ---
+# This file is never used, only imported and values not read.
+# TODO: check that it can be removed + also remove the arm and base urdfs, they are also unused???
 # CHECK: is this even used?
 ticks: 1320  # TODO: check 11pps*30reduction *4
 enable_pid: true

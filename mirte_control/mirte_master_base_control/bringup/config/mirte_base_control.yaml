@@ -66,3 +66,11 @@
       rear_left_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
       rear_right_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
       front_right_wheel_joint: {p: 1.5, i: 0.5, d: 0.01, i_clamp_max: 15.0, i_clamp_min: -15.0, antiwindup: true}
+
+/**/mirte_base_control:
+  ros__parameters: # Mirte base control hw interface parameters
+    ticks: 1320  # TODO: check 11pps*30reduction *4
+    use_single_update_client: true
+    single_update_service: "/io/motor/motorservocontroller/set_multiple_speeds"
+    cmd_vel_deadzone: 10
+    cmd_vel_update_deadzone: 3

@@ -14,7 +14,7 @@
 
 // ROS
 #include <mirte_msgs/msg/servo_position.hpp>
-#include <mirte_msgs/srv/set_servo_angle.hpp>
+#include <mirte_msgs/srv/set_servo_angle_with_speed.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
 #include <std_srvs/srv/set_bool.hpp>
@@ -38,9 +38,11 @@
 #include <chrono>
 #include <control_toolbox/pid.hpp>
 #include <future>
+#include <memory>
 #include <mutex>
 #include <thread>
-
+// #include <share
+#include <mirte_master_arm_control/mirte_master_arm_control_parameters.hpp>
 namespace mirte_master_arm_control {
 
 class MirteMasterArmHWInterface : public hardware_interface::SystemInterface {
@@ -117,9 +119,10 @@ private:
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
 
   bool use_single_client = true;
-  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
+  std::vector<
+      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithSpeed>>>
       service_clients;
-  std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngle::Request>>
+  std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngleWithSpeed::Request>>
       service_requests;
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr enable_arm_service;
@@ -134,7 +137,8 @@ private:
   void init_service_clients();
   std::mutex service_clients_mutex;
 
-  std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngle>>>
+  std::vector<
+      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithSpeed>>>
       set_servo_angle_service_clients;
 
   rclcpp::Logger get_logger() const { return *logger_; }
@@ -147,10 +151,8 @@ private:
 
   bool received_servo_data_ = false;
 
-  // Parameters for the RRBot simulation
-  double hw_start_sec_;
-  double hw_stop_sec_;
-  double hw_slowdown_;
+  double servo_update_dead_band_ = 0.05; // radians, 2.9 degrees
+  double servo_moved_dead_band_ = 0.05;  // radians, 2.9 degrees
 
   // Objects for logging
   std::shared_ptr<rclcpp::Logger> logger_;
@@ -160,8 +162,12 @@ private:
   std::vector<double> hw_states_velocities_;
   std::vector<double> hw_commands_;
   std::vector<double> hw_states_;
+  std::shared_ptr<ParamListener> param_listener_;
+  Params params_;
 
   bool connectServices();
+
+  void updateParams(Params params);
 
 }; // class
 

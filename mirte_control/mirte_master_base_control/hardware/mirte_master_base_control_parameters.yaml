@@ -1,0 +1,26 @@
+mirte_base_control:
+  ticks: {
+    type: int,
+    default_value: 1320, # TODO: check 11pps*30reduction *4
+    description: "Ticks per wheel revolution, used for odometry calculations.",
+  }
+  use_single_update_client: {
+    type: bool,
+    default_value: true,
+    description: "Using single update service instead of one per joint.",
+  }
+  single_update_service: {
+    type: string,
+    default_value: "/io/motor/motorservocontroller/set_multiple_speeds",
+    description: "Service for single update service.",
+  }
+  cmd_vel_deadzone: {
+    type: int,
+    default_value: 10,
+    description: "Under this value, just write 0 to the motors.",
+  }
+  cmd_vel_update_deadzone: {
+    type: int,
+    default_value: 3,
+    description: "If diff is less than this value, do not update motor command.",
+  }

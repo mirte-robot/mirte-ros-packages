@@ -22,13 +22,13 @@
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-          <param name="ticks">${params['ticks']}</param>
-          <param name="enable_pid">${params['enable_pid']}</param>
-          <param name="kp">${params['kp']}</param>
-          <param name="ki">${params['ki']}</param>
+          <!-- <param name="ticks">${params['ticks']}</param> -->
+          <!-- <param name="enable_pid">asdf${params['enable_pid']}</param>
+          <param name="kp">ffds${params['kp']}</param>
+          <param name="ki">fdadsfa${params['ki']}</param>
           <param name="kd">${params['kd']}</param>
           <param name="i_clamp">${params['i_clamp']}</param>
-          <param name="antiwindup">${params['antiwindup']}</param>
+          <param name="antiwindup">${params['antiwindup']}</param> -->
         </xacro:unless>
       </hardware>
 

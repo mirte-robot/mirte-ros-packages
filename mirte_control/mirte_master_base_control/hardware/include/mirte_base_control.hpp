@@ -24,10 +24,10 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
+#include "mirte_base_control/mirte_base_control_parameters.hpp"
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-
 // ostringstream
 #include <algorithm>
 #include <cmath>
@@ -143,6 +143,7 @@ private:
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
 
   bool use_single_client = true;
+  std::string single_client_service_name;
   std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetMotorSpeed>>>
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetMotorSpeed::Request>>
@@ -195,6 +196,14 @@ private:
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
+
+  std::shared_ptr<ParamListener> param_listener_;
+  Params params_;
+  void updateParams(const Params &params, bool init_service_clients = true);
+  int cmd_vel_deadzone = 10; // under this value, just write 0 to the motors
+  int cmd_vel_update_deadzone =
+      3; // if diff is less than this value, do not update motor command
+
 }; // class
 
 } // namespace mirte_base_control

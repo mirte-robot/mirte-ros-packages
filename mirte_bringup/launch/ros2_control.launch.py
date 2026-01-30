@@ -26,7 +26,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_base_pid_control",
             default_value="true",
-            description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
+            description="Use speed PID control for the wheels, you might need to change the gains in mirte_base_control/bringup/config/mirte_base_cotnrol.yaml",
         ),
     ]
     use_base_pid_control = LaunchConfiguration("use_base_pid_control")
