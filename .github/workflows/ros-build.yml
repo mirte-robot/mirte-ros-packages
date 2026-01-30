@@ -57,6 +57,8 @@ jobs:
                     fi
                   done
               fi
+              # always skip generate_parameter_library example packages
+              skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
               echo "SKIP_PACKAGES=\"${skip_packages}\"" >> $GITHUB_ENV
               # echo $skip_packages
