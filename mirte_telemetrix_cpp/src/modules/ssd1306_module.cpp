@@ -79,11 +79,14 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
           std::bind(&SSD1306_module::set_oled_file_callback, this, _1, _2),
           rmw_qos_profile_services_default, this->callback_group);
 
-  this->start_default_screen_service = nh->create_service<std_srvs::srv::Trigger>("oled/"+data.name + "/start_default_screen", [&](    const std_srvs::srv::Trigger::Request::ConstSharedPtr req,
-    std_srvs::srv::Trigger::Response::SharedPtr res) {
-    this->default_screen = true;
-    this->retries = 5;
-  });
+  this->start_default_screen_service =
+      nh->create_service<std_srvs::srv::Trigger>(
+          "oled/" + data.name + "/start_default_screen",
+          [&](const std_srvs::srv::Trigger::Request::ConstSharedPtr req,
+              std_srvs::srv::Trigger::Response::SharedPtr res) {
+            this->default_screen = true;
+            this->retries = 5;
+          });
   modules->add_mod(this->ssd1306);
   // Write an initial text to the screen, and instantly kill the timer if it has
   // failed.
@@ -97,7 +100,7 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
                  this->data.name.c_str());
     this->retries--;
   } else {
-    this->retries=3;
+    this->retries = 3;
   }
 }
 
@@ -107,7 +110,8 @@ bool SSD1306_module::prewrite(bool is_default) {
   }
 
   if (this->retries < 0) {
-    // RCLCPP_ERROR(logger, "Writing to OLED Module %s failed", data.name.c_str());
+    // RCLCPP_ERROR(logger, "Writing to OLED Module %s failed",
+    // data.name.c_str());
     return false;
   }
   return true;
@@ -124,7 +128,7 @@ bool SSD1306_module::set_text(std::string text) {
   }
   last_text = escaped_text;
   auto succes = ssd1306->send_text(escaped_text);
-  if (! succes) {
+  if (!succes) {
     this->retries--;
   } else {
     this->retries = 5;
@@ -149,7 +153,7 @@ bool SSD1306_module::set_image(uint8_t width, uint8_t height,
   }
 
   auto succes = ssd1306->send_image(width, height, img_buffer);
-  if (! succes) {
+  if (!succes) {
     this->retries--;
   } else {
     this->retries = 5;
@@ -296,6 +300,8 @@ void SSD1306_module::device_timer_callback() {
     auto text = exec(data.default_screen_script);
 
     auto escaped_text = boost::algorithm::replace_all_copy(text, "\\n", "\n");
+    escaped_text = escaped_text.substr(
+        0, std::min((size_t)ssd1306->character_limit, escaped_text.length()));
     if (escaped_text == last_text) {
       return;
     }
@@ -305,12 +311,10 @@ void SSD1306_module::device_timer_callback() {
     succes = set_image_from_path(data.default_screen_script);
   }
 
-  if (! succes) {
+  if (!succes) {
     this->retries--;
     // enabled = false;
-    RCLCPP_ERROR(
-        logger,
-        "Default screen update failed.");
+    RCLCPP_ERROR(logger, "Default screen update failed.");
   } else {
     this->retries = 5;
   }

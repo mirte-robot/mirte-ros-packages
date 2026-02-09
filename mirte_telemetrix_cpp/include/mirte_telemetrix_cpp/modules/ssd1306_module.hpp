@@ -36,8 +36,8 @@ public:
   virtual void device_timer_callback() override;
 
 private:
-//   bool enabled = true;
-//   int ok_count = 3;
+  //   bool enabled = true;
+  //   int ok_count = 3;
   int retries = 3;
   bool default_screen = true;
   std::optional<std::string> last_text;
