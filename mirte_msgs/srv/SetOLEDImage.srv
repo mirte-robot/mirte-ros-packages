@@ -1,5 +1,4 @@
-string type
-string value
+sensor_msgs/Image image
 ---
 bool status
 

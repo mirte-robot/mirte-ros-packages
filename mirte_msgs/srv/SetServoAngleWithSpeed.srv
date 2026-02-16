@@ -1,0 +1,8 @@
+bool DEGREES=true
+bool RADIANS=false
+
+float32 angle
+float32 rate  # The rate in [degrees/s] or [rad/s]
+bool degrees true
+---
+bool status

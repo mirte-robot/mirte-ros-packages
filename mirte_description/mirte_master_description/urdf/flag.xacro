@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link
+      name="flag">
+      <inertial>
+        <origin
+          xyz="0.0249185518105129 -0.170067519347241 -0.000222734216111346"
+          rpy="0 0 0" />
+        <mass
+          value="0.0374187697708756" />
+        <inertia
+          ixx="0.00108799032272128"
+          ixy="-6.06514391971722E-05"
+          ixz="-2.07236681084901E-07"
+          iyy="7.05873812366136E-05"
+          iyz="-1.13163625013946E-06"
+          izz="0.00115807893485493" />
+      </inertial>
+      <visual>
+        <geometry>
+          <mesh
+            filename="package://mirte_master_description/meshes/flag.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.796078431372549 0.823529411764706 0.937254901960784 1" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh
+            filename="package://mirte_master_description/meshes/flag.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="flag_joint"
+      type="fixed">
+      <origin
+        xyz="-0.0496954854378495 0.124843221166346 0.625600000000005"
+        rpy="1.5707963267949 0 1.61494047314374" />
+      <parent
+        link="frame_link" />
+      <child
+        link="flag" />
+    </joint>
+</robot>

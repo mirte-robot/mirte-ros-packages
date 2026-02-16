@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!-- Copied from github:ArendJan/mirte-gazebo branch rsp -->
+<!-- Modified to remove the collision and change the minimum distance -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="ultrasonic_sensor" params="name *origin">
+    <xacro:property name="sonar_angle_max" value="${radians(15)}"/>
+
+    <joint name="sonar_${name}" type="fixed">
+      <axis xyz="0 1 0"/>
+      <xacro:insert_block name="origin"/>
+      <parent link="link_chassis"/>
+      <child link="${name}_sonar"/>
+    </joint>
+
+    <link name="${name}_sonar">
+      <visual>
+        <origin rpy="0 0 ${radians(-90)}" />
+        <geometry>
+          <mesh filename="package://mirte_master_description/meshes/ultrasonic_fl.STL" />
+        </geometry>
+        <material name="blue" />
+      </visual>
+      <collision>
+        <origin rpy="0 0 ${radians(-90)}" />
+        <geometry>
+          <box size=".045 .025 .02" />
+        </geometry>
+      </collision>
+    </link>
+
+    <gazebo reference="${name}_sonar">
+      <sensor type="ray" name="range_sensor_${name}">
+        <visualize>${visualize_sensors}</visualize>
+          <ray>
+            <scan>
+              <horizontal>
+                <!-- for some reason 1 does not work, we neex 2x2 -->
+                <samples>2</samples>
+                <resolution>1</resolution> 
+                <min_angle>-0.26</min_angle>
+                <max_angle>0.26</max_angle>
+              </horizontal>
+            <vertical>
+              <samples>2</samples>
+              <resolution>1</resolution> 
+              <min_angle>-0.014835</min_angle>
+              <max_angle>0.014835</max_angle> 
+            </vertical>
+         </scan>
+         <range>
+           <min>0.03</min>
+           <max>4</max>
+           <resolution>0.01</resolution>
+         </range>
+         <!-- Using gazebo's noise instead of plugin's -->
+         <noise>
+           <type>gaussian</type>
+           <mean>0.0</mean>
+           <stddev>0.01</stddev>
+         </noise>
+       </ray>
+       <!-- Using gazebo's update rate instead of plugin's -->
+       <update_rate>30</update_rate>
+
+       <plugin name="gazebo_ros_range_controller_${name}" filename="libgazebo_ros_ray_sensor.so">
+         <ros>
+           <namespace>/mirte</namespace>
+           <remapping>~/out:=distance/${name}</remapping>
+         </ros>
+         <output_type>sensor_msgs/Range</output_type>
+         <radiation_type>ultrasound</radiation_type>
+       </plugin>
+
+     </sensor>
+   </gazebo>
+
+  </xacro:macro>
+</robot>

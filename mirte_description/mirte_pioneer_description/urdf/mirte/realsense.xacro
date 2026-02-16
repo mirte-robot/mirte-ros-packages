@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find mirte_pioneer_description)/urdf/mirte/realsense-depth.xacro"/>
+  <xacro:realsense-depth prefix="mirte_" parent="link_chassis">
+    <origin xyz="0.1 0 0.035" rpy="0 0 0"/>
+  </xacro:realsense-depth>
+</robot>

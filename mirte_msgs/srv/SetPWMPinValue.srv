@@ -1,0 +1,5 @@
+string pin
+uint16 value   # The PWM Valu for the microcontroller
+---
+bool status    # indicate successful run
+string message # informational for error messages

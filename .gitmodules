@@ -1,0 +1,4 @@
+[submodule "mirte_telemetrix_cpp/libs/tmx-cpp"]
+	path = mirte_telemetrix_cpp/libs/tmx-cpp
+	url = https://github.com/arendjan/tmx-cpp.git
+	branch = main

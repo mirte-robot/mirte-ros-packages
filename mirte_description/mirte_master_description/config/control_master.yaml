@@ -1,0 +1,9 @@
+---
+
+ticks: 1320  # TODO: check 11pps*30reduction *4
+enable_pid: true
+kp: 1
+ki: 0
+kd: 0
+i_clamp: 50
+antiwindup: true

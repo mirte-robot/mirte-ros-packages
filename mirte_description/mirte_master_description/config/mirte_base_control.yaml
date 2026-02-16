@@ -1,0 +1,105 @@
+/**/controller_manager:
+  ros__parameters:
+    update_rate: 10  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    pid_wheels_controller:
+      type: pid_controller/PidController
+
+    mirte_base_controller:
+      type: clearpath_mecanum_drive_controller/MecanumDriveController
+
+    mirte_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    mirte_gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+mirte_arm_controller:
+  ros__parameters:
+    joints:
+      - arm_Rot_joint
+      - arm_Shoulder_joint
+      - arm_Elbow_joint
+      - arm_Wrist_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+
+mirte_gripper_controller:
+  ros__parameters:
+    joints:
+      - Gripper_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+
+mirte_base_controller:
+  ros__parameters:
+    # hardware_parameters:
+    # ticks: 1320
+    use_stamped_vel: false # This will become the default in the future
+    reference_timeout: 0.25
+    command_timeout: 0.25
+    command_joint_names: ["wheel_left_front_joint", "wheel_left_rear_joint", "wheel_right_rear_joint", "wheel_right_front_joint"]
+    state_joint_names: ["wheel_left_front_joint", "wheel_left_rear_joint", "wheel_right_rear_joint", "wheel_right_front_joint"]
+    interface_name: velocity
+
+    kinematics:
+      base_frame_offset: { x: 0.0, y: 0.0, theta: 0.0 }
+
+      wheels_radius: 0.051
+
+        # Wheels kinematic parameters [m]: (from odometry.hpp)
+        # lx and ly represent the distance from the robot's center to the wheels
+        #  projected on the x and y axis with origin at robots center respectively,
+        #  sum_of_robot_center_projection_on_X_Y_axis_ = lx+ly
+
+      sum_of_robot_center_projection_on_X_Y_axis: 0.225 # 0.18/2+0.27/2 = 0.225
+          # wheel_separation_x: 0.18
+          # wheel_separation_y: 0.27
+
+
+    # These need to be evaluated since this controller does not support frame_prefixes
+    base_frame_id: "$(var frame_prefix '')base_link"
+    odom_frame_id: "$(var frame_prefix '')odom"
+
+    enable_odom_tf: true
+
+#    twist_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
+
+#    pose_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
+
+
+
+/**/pid_wheels_controller:
+  ros__parameters:
+    command_interface: velocity
+
+    reference_and_state_interfaces: ["velocity"]
+
+    # reference_and_state_dof_names:
+    dof_names:
+      - wheel_left_front_joint
+      - wheel_left_rear_joint
+      - wheel_right_rear_joint
+      - wheel_right_front_joint
+    gains:
+      wheel_left_front_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
+      wheel_left_rear_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
+      wheel_right_rear_joint: {p: 1.0, i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}
+      wheel_right_front_joint: {p: 1.0,i: 0.0, d: 0.0, i_clamp_max: 5.0, i_clamp_min: -5.0}

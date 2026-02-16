@@ -1,3 +1,0 @@
-<launch>
-   <param name="robot_description" command="cat $(find mirte_description)/launch/mirte_arm.urdf"/>
-</launch>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <xacro:if value="$(arg imu_enable)">
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+   </gazebo>
+  </xacro:if>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/White</material>
+    <gravity>true</gravity>
+  </gazebo>
+
+  <xacro:include filename="$(find mirte_master_description)/urdf/wheel.gazebo.xacro" />
+
+  <xacro:wheel_gazebo id="front_left" />
+  <xacro:wheel_gazebo id="rear_left" />
+  <xacro:wheel_gazebo id="front_right" />
+  <xacro:wheel_gazebo id="rear_right" />
+
+  <xacro:include filename="$(find mirte_master_description)/urdf/ros2_control.xacro"/>  
+
+</robot>

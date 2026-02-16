@@ -1,0 +1,40 @@
+<launch version="0.1.1">
+  <arg name="config_path"
+    default="$(find-pkg-share mirte_telemetrix_cpp)/config/mirte_user_config.yaml" />
+  <arg name="hardware_namespace" default="io"
+    description="The namespace for the Telemetrix Node and the hardware peripherals" />
+  <arg name="frame_prefix" default="" description="The TF2 frame prefix" />
+
+  <arg name="log_level" default="info"
+    description="Sets the minimal logging level of the Telemetrix Node">
+    <choice value="debug" />
+    <choice value="info" />
+    <choice value="warn" />
+    <choice value="error" />
+    <choice value="fatal" />
+  </arg>
+
+  <arg name="use_debugger" default="False" description="Attach a debugger to the telemetrix process" />
+
+  <group>
+    <keep name="emulate_tty" value="$(var emulate_tty True)" />
+
+    <let name="root-namespace" value="$(var ros_namespace '')" />
+    <let name="full-namespace"
+      value="$(var root-namespace)$(eval 'len(\'$(var root-namespace)\') > 0 and \'.\' or \'\'')$(var hardware_namespace)" />
+    <!-- $(if ...) else only supported in Iron and up-->
+
+    <!-- <let name="launch-prefix" value="gdbserver localhost:3000" if="$(var use_debugger)" /> -->
+    <let name="launch-prefix" value="xterm -e gdb -ex run --args" if="$(var use_debugger)" />
+
+    <node pkg="mirte_telemetrix_cpp" exec="mirte_telemetrix_cpp_node" name="telemetrix"
+      namespace="$(var hardware_namespace)" respawn="true" respawn_delay="5" output="both"
+      ros_args="--log-level $(var full-namespace).telemetrix:=$(var log_level)">
+      <!-- Iron and up: add emulate_tty="true" for color output -->
+      <!-- Iron and up: add on_exit="shutdown", to make node required, this could cause errors -->
+      <!-- Jazzy and up: add respawn_max_retries="10" to make telemetrix stop making attempts -->
+      <param from="$(var config_path)" />
+      <param name="frame_prefix" value="$(var frame_prefix)" />
+    </node>
+  </group>
+</launch>

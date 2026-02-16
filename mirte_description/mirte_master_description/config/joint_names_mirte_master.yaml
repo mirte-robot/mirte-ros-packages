@@ -1,0 +1,1 @@
+controller_joint_names: ['', 'wheel_left_front_joint', 'wheel_right_rear_joint', 'wheel_right_front_joint', 'wheel_left_rear_joint', 'arm_Rot_joint', 'arm_Shoulder_joint', 'arm_Elbow_joint', 'arm_Wrist_joint', 'Gripper_joint', '_gripper_link_joint_r', 'gripper_finger_joint_r', '_gripper_link_joint_l', 'gripper_finger_joint_l', '_Gripper_joint_r', ]

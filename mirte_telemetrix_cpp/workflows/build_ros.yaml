@@ -1,0 +1,32 @@
+# name: ros-ci
+# on:
+#   pull_request:
+#   push:
+# permissions:
+#   contents: write
+# jobs:
+#   build_testing:
+#     runs-on: ubuntu-latest
+#     strategy:
+#         matrix:
+#                 ros_distro: [humble]
+#                 deb_distro: [jammy]
+#                 arch: [amd64, arm64, armhf]
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: self-checkout
+#         run: |
+#               mkdir -p ../srcO/mirte-telemetrix-cpp # move all packages to srcO(riginal), as the ros-deb-builder-action wants to create a fresh src folder
+#               mv ./ ../srcO/mirte-telemetrix-cpp
+#               mv ../srcO ./
+#       - uses: arendjan/ros-deb-builder-action@main
+#         with:
+#           ROS_DISTRO: ${{ matrix.ros_distro }}
+#           DEB_DISTRO: ${{ matrix.deb_distro }}
+#           DEB_ARCH: ${{ matrix.arch }}
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           REPOS_FILE: ./sources.repos
+#           SKIP_CHECKOUT: true
+#           PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}

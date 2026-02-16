@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="mirte_master">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="mirte_arm">
+        <joint name="wrist_joint"/>
+        <joint name="elbow_joint"/>
+        <joint name="shoulder_lift_joint"/>
+        <joint name="shoulder_pan_joint"/>
+        <joint name="frame_base_joint"/>
+    </group>
+    <group name="mirte_gripper">
+        <link name="gripper"/>
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="home" group="mirte_arm">
+        <joint name="elbow_joint" value="0"/>
+        <joint name="shoulder_lift_joint" value="0"/>
+        <joint name="shoulder_pan_joint" value="0"/>
+        <joint name="wrist_joint" value="0"/>
+    </group_state>
+    <group_state name="open" group="mirte_gripper">
+        <joint name="gripper_joint" value="-0.2"/>
+    </group_state>
+    <group_state name="close" group="mirte_gripper">
+        <joint name="gripper_joint" value="0.2102"/>
+    </group_state>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="mirte_gripper" parent_link="wrist" group="mirte_gripper"/>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="_Gripper_r" link2="_gripper_link_l" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="_gripper_link_r" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="camera_link" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="elbow" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="front_left_sonar" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="gripper" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="gripper_finger_l" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="gripper_finger_r" reason="Default"/>
+    <disable_collisions link1="_Gripper_r" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="_Gripper_r" link2="wrist" reason="Adjacent"/>
+    <disable_collisions link1="_gripper_link_l" link2="_gripper_link_r" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="camera_link" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="elbow" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="gripper" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="gripper_finger_l" reason="Adjacent"/>
+    <disable_collisions link1="_gripper_link_l" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="_gripper_link_l" link2="wrist" reason="Adjacent"/>
+    <disable_collisions link1="_gripper_link_r" link2="camera_link" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="elbow" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="front_left_sonar" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="gripper" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="gripper_finger_l" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="gripper_finger_r" reason="Adjacent"/>
+    <disable_collisions link1="_gripper_link_r" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="_gripper_link_r" link2="wrist" reason="Adjacent"/>
+    <disable_collisions link1="camera_link" link2="elbow" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="frame_link" reason="Adjacent"/>
+    <disable_collisions link1="camera_link" link2="front_left_sonar" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="front_left_wheel" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="front_right_wheel" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="gripper" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="gripper_finger_l" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="rear_left_sonar" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="rear_right_sonar" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="camera_link" link2="shoulder_pan" reason="Default"/>
+    <disable_collisions link1="camera_link" link2="wrist" reason="Never"/>
+    <disable_collisions link1="elbow" link2="front_left_sonar" reason="Never"/>
+    <disable_collisions link1="elbow" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="elbow" link2="front_right_wheel" reason="Never"/>
+    <disable_collisions link1="elbow" link2="gripper" reason="Never"/>
+    <disable_collisions link1="elbow" link2="gripper_finger_l" reason="Never"/>
+    <disable_collisions link1="elbow" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="elbow" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="elbow" link2="shoulder_lift" reason="Adjacent"/>
+    <disable_collisions link1="elbow" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="elbow" link2="wrist" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="front_left_sonar" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="front_left_wheel" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="front_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="front_right_wheel" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="lidar_base" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="rear_left_sonar" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="rear_left_wheel" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="rear_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="rear_right_wheel" reason="Adjacent"/>
+    <disable_collisions link1="frame_link" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="frame_link" link2="shoulder_pan" reason="Adjacent"/>
+    <disable_collisions link1="front_left_sonar" link2="front_left_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="front_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="front_left_sonar" link2="front_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="rear_left_sonar" reason="Adjacent"/>
+    <disable_collisions link1="front_left_sonar" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="rear_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="front_left_sonar" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="front_left_sonar" link2="wrist" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="front_right_sonar" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="front_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="rear_left_sonar" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="rear_right_sonar" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="front_left_wheel" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="front_right_wheel" reason="Default"/>
+    <disable_collisions link1="front_right_sonar" link2="gripper" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="rear_left_sonar" reason="Adjacent"/>
+    <disable_collisions link1="front_right_sonar" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="rear_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="front_right_sonar" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="front_right_sonar" link2="wrist" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="rear_left_sonar" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="rear_right_sonar" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="front_right_wheel" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="gripper" link2="gripper_finger_l" reason="Default"/>
+    <disable_collisions link1="gripper" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="gripper" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="gripper" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="gripper" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="gripper" link2="wrist" reason="Adjacent"/>
+    <disable_collisions link1="gripper_finger_l" link2="gripper_finger_r" reason="Never"/>
+    <disable_collisions link1="gripper_finger_l" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="gripper_finger_l" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="gripper_finger_l" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="gripper_finger_l" link2="wrist" reason="Never"/>
+    <disable_collisions link1="gripper_finger_r" link2="lidar_base" reason="Never"/>
+    <disable_collisions link1="gripper_finger_r" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="gripper_finger_r" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="gripper_finger_r" link2="wrist" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="rear_left_sonar" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="rear_right_sonar" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="lidar_base" link2="wrist" reason="Never"/>
+    <disable_collisions link1="rear_left_sonar" link2="rear_left_wheel" reason="Never"/>
+    <disable_collisions link1="rear_left_sonar" link2="rear_right_sonar" reason="Adjacent"/>
+    <disable_collisions link1="rear_left_sonar" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="rear_left_sonar" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="rear_left_sonar" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="rear_left_wheel" link2="rear_right_sonar" reason="Never"/>
+    <disable_collisions link1="rear_left_wheel" link2="rear_right_wheel" reason="Never"/>
+    <disable_collisions link1="rear_left_wheel" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="rear_left_wheel" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="rear_right_sonar" link2="rear_right_wheel" reason="Default"/>
+    <disable_collisions link1="rear_right_sonar" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="rear_right_sonar" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="rear_right_wheel" link2="shoulder_lift" reason="Never"/>
+    <disable_collisions link1="rear_right_wheel" link2="shoulder_pan" reason="Never"/>
+    <disable_collisions link1="shoulder_lift" link2="shoulder_pan" reason="Adjacent"/>
+    <disable_collisions link1="shoulder_lift" link2="wrist" reason="Never"/>
+    <disable_collisions link1="shoulder_pan" link2="wrist" reason="Never"/>
+</robot>

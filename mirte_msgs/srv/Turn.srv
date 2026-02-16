@@ -1,4 +1,0 @@
-float32 angle       # rad
-float32 speed       # rad/s
----
-bool finished

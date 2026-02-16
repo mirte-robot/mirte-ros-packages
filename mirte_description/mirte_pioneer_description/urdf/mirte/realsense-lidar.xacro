@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--Develped by Daniel Ordonez 22.05.2018 - daniels.ordonez@gmail.com
+    INFORMATION:
+        This xacro file a URDF representation of the intel real sense RS200 with the
+        virtual links representing the position of:
+            * The RGB color camera
+            * Infrared 1 camera
+            * Infrared 2 camera
+            * Virtual depth coordinate frame
+        Configured to work with Gazebo if desired.
+    Modified by Arend-Jan van Hilten to not visualize the color image, copied from
+https://github.com/SyrianSpock/realsense_gazebo_plugin
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="realsense-rs200" params="prefix parent *origin">
+    <!-- Camera link -->
+    <link name="${prefix}rs200_camera">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://realsense_gazebo_plugin/models/realsense_camera/meshes/realsense.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.0078 0.130 0.0192"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.0615752"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <inertia ixx="9.108e-05" ixy="0" ixz="0" iyy="2.51e-06" iyz="0" izz="8.931e-05"/>
+      </inertial>
+    </link>
+    <!-- Connect camera to parent frame-->
+    <joint name="${prefix}realsense_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${prefix}rs200_camera"/>
+      <xacro:insert_block name="origin"/>
+    </joint>
+    <!-- Virtual links representing the cameras positons and orientations-->
+    <link name="${prefix}depth"/>
+    <!-- Joints positioning the virtual links with respect to the camera main link-->
+    <joint name="${prefix}depth_joint" type="fixed">
+      <parent link="${prefix}rs200_camera"/>
+      <child link="${prefix}depth"/>
+      <origin xyz="0 -0.03 0.004" rpy="0 0 0"/>
+    </joint>
+    <gazebo reference="${prefix}depth">
+      <sensor name="lidar" type="ray">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>640</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.75</min_angle>
+              <max_angle>0.75</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>48</samples>
+              <resolution>1</resolution>
+              <min_angle>-${radians(30)}</min_angle>
+              <max_angle>0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.15</min>
+            <!-- bit more than the actual min range of the lidar, but otherwise it will detect the
+            mirte itself-->
+            <max>2</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <plugin name="ultra_controller" filename="libgazebo_ros_laser.so">
+          <topicName>/mirte/scan</topicName>
+          <frameName>${prefix}depth</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

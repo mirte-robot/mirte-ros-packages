@@ -1,0 +1,43 @@
+name: colcon-lint
+
+on: [
+    workflow_dispatch, # kind of disabled
+    # push, 
+    # pull_request
+    ]
+
+jobs:
+  colcon-lint:
+    runs-on: ubuntu-latest
+    container: osrf/ros:humble-desktop-jammy #faster than using setup-ros
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    # - uses: ros-tooling/setup-ros@master
+    #   with:
+    #         required-ros-distributions: 'humble'
+    - shell: bash
+      run: |
+        sudo apt update
+        sudo apt install apt-rdepends python3-pip -y
+        pip install colcon-lint
+    - name: colcon lint
+      shell: bash
+      run: |
+        . /opt/ros/humble/setup.bash
+        rosdep update
+        rosdep install --from-paths ./ --ignore-src -y --rosdistro=humble -r
+        colcon build --continue-on-error --cmake-args -Wno-dev --trace-expand --trace-redirect=trace.log || true
+        . ./install/setup.bash
+        # for every folder in the workspace starting with mirte_ excluding mirte_teleop, run command
+        ERROR=false
+        packages=$(colcon list -n | grep -v mirte_teleop)
+        for d in $packages; do
+            colcon lint --packages-select $d || ERROR=true
+            colcon test --packages-select $d || ERROR=true
+        done
+        # if $error, set exit state
+        if $ERROR; then
+        exit 1
+        fi

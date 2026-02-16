@@ -1,4 +1,8 @@
+bool DEGREES=true
+bool RADIANS=false
+
 float32 angle
+bool degrees true
 ---
 bool status
 

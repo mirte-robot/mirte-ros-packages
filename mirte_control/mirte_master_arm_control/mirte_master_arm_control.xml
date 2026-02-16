@@ -1,0 +1,9 @@
+<library path="mirte_master_arm_control">
+  <class name="mirte_master_arm_control/MirteMasterArmHWInterface"
+         type="mirte_master_arm_control::MirteMasterArmHWInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      TODO: Add description
+    </description>
+  </class>
+</library>

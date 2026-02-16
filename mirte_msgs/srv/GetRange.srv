@@ -1,3 +1,2 @@
 ---
-float32 min
-float32 max
+sensor_msgs/Range range

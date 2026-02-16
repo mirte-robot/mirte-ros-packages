@@ -1,0 +1,5 @@
+string pin
+---
+bool status    # indicate successful run
+bool value
+string message # informational for error messages

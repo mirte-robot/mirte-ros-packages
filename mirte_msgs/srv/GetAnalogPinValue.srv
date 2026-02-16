@@ -1,0 +1,6 @@
+# Get the Raw value of the A/D Converter on the specified pin
+string pin
+---
+bool status    # indicate successful run
+uint16 value   # Value of pin from the Analog-Digital Converter of the Mirco Controller
+string message # informational for error messages

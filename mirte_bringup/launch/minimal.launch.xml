@@ -1,0 +1,32 @@
+<launch version="0.1.1">
+  <!-- Maybe replace onliner with script -->
+  <arg name="machine_namespace"
+    default="$(command 'sh -c \'cat /etc/hostname | tr [:upper:] [:lower:] | tr \'-\' \'_\' | tr -d [:space:]\'')"
+    description="The namespace containing all Robot specific ROS communication" />
+  <arg name="hardware_namespace" default="io"
+    description="The namespace for the Telemetrix Node and the hardware peripherals" />
+
+  <!-- Temporary group until scoped including is a thing in ROS 2 (Or that only the top-level launch
+  arguments are shown) -->
+  <group scoped="true" forwarding="false">
+    <keep name="machine_namespace" value="$(var machine_namespace)" />
+    <keep name="hardware_namespace" value="$(var hardware_namespace)" />
+
+    <!-- Enables Color Output -->
+    <keep name="emulate_tty" value="$(var emulate_tty True)" />
+    <keep name="use_debugger" value="$(var use_debugger False)" />
+
+    <let name="frame_prefix" value="" /> <!-- $(var machine_namespace)/ -->
+
+    <push-ros-namespace namespace="$(var machine_namespace)" />
+    <include file="$(find-pkg-share mirte_telemetrix_cpp)/launch/telemetrix.launch.xml">
+      <arg name="hardware_namespace" value="$(var hardware_namespace)" />
+      <arg name="frame_prefix" value="$(var frame_prefix)" />
+      <arg name="config_path" value="$(find-pkg-share mirte_telemetrix_cpp)/config/mirte_user_config.yaml" />
+    </include>
+
+    <include file="$(find-pkg-share mirte_control)/launch/mirte.launch.py">
+      <arg name="frame_prefix" value="$(var frame_prefix)" />
+    </include>
+  </group>
+</launch>
