@@ -16,6 +16,7 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
   // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
   auto found_modules =
       parser->update_params_list_type("modules", "pca_module_names", "pca9685");
+      parser->fix_param_type_str_modules("modules", found_modules, {"pins.sda", "pins.scl"});
   // as pca has nested lists, rerun for motors struct as well
   for (auto &found_module : found_modules) {
     std::cout << "found pca module!!!" << std::endl;

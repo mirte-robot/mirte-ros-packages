@@ -11,6 +11,7 @@
       left:
         name: left
         device: mirte
+        max_distance: 2
         pins:
           trigger: GP9
           echo: GP8
@@ -43,6 +44,16 @@
         test3: 123
       
     modules:
+      x: 3
+      asdf:
+        type: neopixel
+        pins:
+          data: 1
+        num_pixels: 2
+        default_color:
+          r: 255
+          g: 0
+          b: 1
       b:
         test: 3
       t:

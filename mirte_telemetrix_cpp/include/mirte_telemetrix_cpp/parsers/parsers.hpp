@@ -35,6 +35,14 @@ public:
   std::vector<std::string>
   update_params_list(std::string const &prefix_, std::string const &list_name,
                      std::function<bool(const std::string &name)> filter_func);
+
+  bool fix_param_type_str(std::string const &key);
+  void fix_param_type_str(std::vector<std::string> const &keys);
+  void fix_param_type_str_modules(std::string const& prefix_, std::vector<std::string> const &modules, std::vector<std::string> const &keys);
+
+  bool fix_param_type_num(std::string const &key);
+  void fix_param_type_num(std::vector<std::string> const &keys);
+  void fix_param_type_num_modules(std::string const& prefix_, std::vector<std::string> const &modules, std::vector<std::string> const &keys);
 };
 
 std::string get_string(rclcpp::ParameterValue param);

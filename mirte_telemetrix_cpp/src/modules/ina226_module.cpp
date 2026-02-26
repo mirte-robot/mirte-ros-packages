@@ -191,8 +191,8 @@ INA226_sensor::get_ina_modules(NodeData node_data,
                                std::shared_ptr<tmx_cpp::Sensors> modules) {
   std::vector<std::shared_ptr<INA226_sensor>> new_modules;
   // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
-  parser->update_params_list_type("modules", "ina_module_names", "ina226");
-
+  auto found_modules = parser->update_params_list_type("modules", "ina_module_names", "ina226");
+  parser->fix_param_type_str_modules("modules", found_modules, {"pins.sda", "pins.scl", "percentage_led_pin"});
   auto param_listener =
       std::make_shared<mirte_telemetrix_cpp_ina226::ParamListener>(parser->nh);
   auto params = param_listener->get_params();

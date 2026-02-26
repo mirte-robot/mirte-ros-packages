@@ -35,3 +35,6 @@ build/
 install/
 log/
 build2/
+
+debian_aarch64/
+.obj-aarch64-linux-gnu/

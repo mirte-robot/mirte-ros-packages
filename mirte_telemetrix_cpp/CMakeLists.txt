@@ -55,7 +55,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor telemetrix)
+ set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor neopixel telemetrix)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(
@@ -101,6 +101,7 @@ add_executable(
   src/actuators/motor/ddp_motor.cpp
   src/actuators/motor/dp_motor.cpp
   src/actuators/motor/pp_motor.cpp
+  src/actuators/neopixel.cpp
   src/parsers/parsers.cpp
   src/parsers/device_data.cpp
   src/parsers/actuators/motor_data.cpp

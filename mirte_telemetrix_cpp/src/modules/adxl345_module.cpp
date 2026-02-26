@@ -83,7 +83,8 @@ ADXL345_sensor::get_adxl_modules(NodeData node_data,
                                  std::shared_ptr<tmx_cpp::Sensors> sensors) {
   std::vector<std::shared_ptr<ADXL345_sensor>> adxl_modules;
 
-  parser->update_params_list_type("modules", "adxl345_module_names", "adxl345");
+  auto modules = parser->update_params_list_type("modules", "adxl345_module_names", "adxl345");
+  parser->fix_param_type_str_modules("modules", modules, {"pins.scl", "pins.sda"});
 
   auto param_listener =
       std::make_shared<mirte_telemetrix_cpp_adxl345::ParamListener>(parser->nh);
