@@ -18,8 +18,7 @@ class NeopixelData : public DeviceData {
 public:  NeopixelData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
              std::string name,
              std::map<std::string, rclcpp::ParameterValue> parameters,
-             std::set<std::string> &unused_keys)
-    : DeviceData(parser, board, name, "neopixel", parameters, unused_keys) {}
+             std::set<std::string> &unused_keys);
     NeopixelData() = default;
         static std::string get_device_class() { return "neopixel"; }
         int num_leds;

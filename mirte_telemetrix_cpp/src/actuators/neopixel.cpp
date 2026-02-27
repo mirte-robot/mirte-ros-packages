@@ -63,6 +63,7 @@ Neopixel::Neopixel(NodeData node_data, NeopixelData neopixel_data)
     : TelemetrixDevice(node_data, std::vector<uint8_t>{neopixel_data.data_pin}, (DeviceData)neopixel_data) {
         this->num_leds = neopixel_data.num_leds;
         this->data_pin = neopixel_data.data_pin;
+        std::cout << "attachin neopixel with data pin: " << (int)this->data_pin << " and num leds: " << this->num_leds << std::endl;
   node_data.tmx->attach_neopixel(neopixel_data.data_pin, neopixel_data.num_leds, 0, {neopixel_data.default_r, neopixel_data.default_g, neopixel_data.default_b});
 
 
@@ -134,3 +135,38 @@ void Neopixel::set_color_single_service(
 // void Motor::speed_subscription_callback(const std_msgs::msg::Int32 &msg) {
 //   this->set_speed(msg.data);
 // }
+
+
+NeopixelData::NeopixelData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
+             std::string name,
+             std::map<std::string, rclcpp::ParameterValue> parameters,
+             std::set<std::string> &unused_keys)
+    : DeviceData(parser, board, name, "neopixel", parameters, unused_keys) {
+        if(!unused_keys.erase("pins.data")){
+          throw std::runtime_error("Neopixel module " + name + " is missing required parameter: pins.data");
+        }
+        this->data_pin = board->resolvePin(get_string(parameters["pins.data"]));
+
+         if(!unused_keys.erase("num_leds")){
+          throw std::runtime_error("Neopixel module " + name + " is missing required parameter: num_leds");
+        }
+        this->num_leds = parameters["num_leds"].get<int>();
+
+                if(unused_keys.erase("default_color.r")){
+                this->default_r = parameters["default_color.r"].get<int>();
+                } else {
+                  this->default_r = 0;
+                }
+                if(unused_keys.erase("default_color.g")){
+                this->default_g = parameters["default_color.g"].get<int>();
+                } else {
+                  this->default_g = 0;
+                }
+                if(unused_keys.erase("default_color.b")){
+                this->default_b = parameters["default_color.b"].get<int>();
+                } else {
+                  this->default_b = 0;
+                }
+        
+
+}
