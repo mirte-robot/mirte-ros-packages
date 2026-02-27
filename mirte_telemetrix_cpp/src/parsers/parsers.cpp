@@ -60,18 +60,28 @@ Parser::Parser(std::shared_ptr<rclcpp::Node> nh)
               << std::endl;
   }
   // key, string types, num types
-  std::vector<std::tuple<std::string, std::vector<std::string>, std::vector<std::string>>> list_items = {{"encoder", {}, {}}, {"color", {}, {}}, {"distance", {}, {"min_distance", "max_distance"}}, {"intensity", {}, {}},
-                     {"motor", {}, {}},   {"servo", {}, {}}, {"oled", {}, {}},     {"keypad", {}, {}}};
+  std::vector<std::tuple<std::string, std::vector<std::string>,
+                         std::vector<std::string>>>
+      list_items = {{"encoder", {"pins.pin", "pins.A", "pins.B"}, {}},
+                    {"color", {"pins.sda", "pins.scl"}, {}},
+                    {"distance", {"pins.trigger", "pins.echo"}, {"min_distance", "max_distance", }},
+                    {"intensity", {"pins.digital", "pins.analog"}, {}},
+                    {"motor", {"pins.p1", "pins.p2", "pins.d1", "pins.d2"}, {}},
+                    {"servo", {"pins.pin"}, {}},
+                    {"oled", {"pins.sda", "pins.scl"}, {}},
+                    {"keypad", {"pins.pin"}, {}}};
   for (auto item : list_items) {
     auto [list_name, str_types, num_types] = item;
-    auto found_modules = this->update_params_list(fmt::format("{}", list_name), fmt::format("{}s", list_name),
-                             [](std::string x) { return true; });
+    auto found_modules = this->update_params_list(
+        fmt::format("{}", list_name), fmt::format("{}s", list_name),
+        [](std::string x) { return true; });
     // auto str_types = str;
-    this->fix_param_type_str_modules(fmt::format("{}", list_name), found_modules, str_types);
-    this->fix_param_type_num_modules(fmt::format("{}", list_name), found_modules, num_types);
-
+    this->fix_param_type_str_modules(fmt::format("{}", list_name),
+                                     found_modules, str_types);
+    this->fix_param_type_num_modules(fmt::format("{}", list_name),
+                                     found_modules, num_types);
   }
-
+  this->fix_param_type_str("device.mirte.version");
   auto param_listener =
       std::make_shared<mirte_telemetrix_cpp::ParamListener>(nh);
   auto params = param_listener->get_params();
@@ -284,95 +294,99 @@ Parser::update_params_list_type(std::string const &prefix_,
       });
 }
 
-
 bool Parser::fix_param_type_str(std::string const &key) {
-     if(!this->nh->get_node_parameters_interface()->has_parameter(key)) {
-       RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist", key.c_str());
-       return false;
-     }
-
-     auto   param = this->nh->get_node_parameters_interface()->get_parameter(key);
-     std::cout << "Fixing parameter type for " << key
-                << " from " << param.get_type() << " to string" << std::endl;
-    if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
-      std::string out = "";
-      switch(param.get_type()) {
-        case rclcpp::ParameterType::PARAMETER_BOOL:
-        case rclcpp::ParameterType::PARAMETER_INTEGER:     
-           case rclcpp::ParameterType::PARAMETER_DOUBLE:
-
-        case rclcpp::ParameterType::PARAMETER_STRING:
-          out = param.value_to_string();
-          break;
-        default:
-        // dont support arrays
-          std::cout << "  current value: (unsupported type)" << std::endl;
-      }
-      this->nh->get_node_parameters_interface()->set_parameters(
-          {rclcpp::Parameter(key,
-                             out)});
-      return true;
-    }
+  if (!this->nh->get_node_parameters_interface()->has_parameter(key)) {
+    RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist",
+                key.c_str());
     return false;
   }
 
+  auto param = this->nh->get_node_parameters_interface()->get_parameter(key);
+  std::cout << "Fixing parameter type for " << key << " from "
+            << param.get_type() << " to string" << std::endl;
+  if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
+    std::string out = "";
+    switch (param.get_type()) {
+    case rclcpp::ParameterType::PARAMETER_BOOL:
+    case rclcpp::ParameterType::PARAMETER_INTEGER:
+    case rclcpp::ParameterType::PARAMETER_DOUBLE:
 
-  void Parser::fix_param_type_str(std::vector<std::string> const &keys) {
+    case rclcpp::ParameterType::PARAMETER_STRING:
+      out = param.value_to_string();
+      break;
+    default:
+      // dont support arrays
+      std::cout << "  current value: (unsupported type)" << std::endl;
+    }
+    this->nh->get_node_parameters_interface()->set_parameters(
+        {rclcpp::Parameter(key, out)});
+    return true;
+  }
+  return false;
+}
+
+void Parser::fix_param_type_str(std::vector<std::string> const &keys) {
+  for (const auto &key : keys) {
+    this->fix_param_type_str(key);
+  }
+}
+void Parser::fix_param_type_str_modules(std::string const &prefix_,
+                                        std::vector<std::string> const &modules,
+                                        std::vector<std::string> const &keys) {
+  for (const auto &module : modules) {
     for (const auto &key : keys) {
-      this->fix_param_type_str(key);
+      std::string full_key = prefix_ + "." + module + "." + key;
+      this->fix_param_type_str(full_key);
     }
   }
-  void Parser::fix_param_type_str_modules(std::string const& prefix_, std::vector<std::string> const &modules, std::vector<std::string> const &keys){
-    for (const auto &module : modules) {
-      for (const auto &key : keys) {
-        std::string full_key = prefix_ + "." + module + "." + key;
-        this->fix_param_type_str(full_key);
-      }
-    }
-  }
+}
 
-  bool Parser::fix_param_type_num(std::string const &key) {
-     if(!this->nh->get_node_parameters_interface()->has_parameter(key)) {
-       RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist", key.c_str());
-       return false;
-     }
-     auto   param = this->nh->get_node_parameters_interface()->get_parameter(key);
-    if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
-      std::cout << "Fixing parameter type for " << key
-                << " from " << param.get_type() << " to double" << std::endl;
-      double out = 0.0;
-      auto type = param.get_type_name();
-      if (type == "integer") {  
-        out = static_cast<double>(param.as_int());
-       } else if (type == "string") {
-        try {
-          out = std::stod(param.as_string());
-        } catch (const std::exception &e) {
-          std::cout << "  could not convert string to double: " << e.what() << std::endl;
-          return false;
-        }
-      } else if (type == "boolean") {
-        out = param.as_bool() ? 1.0 : 0.0;
-      } else {
-        std::cout << "  unknown parameter type: " << type << std::endl;
+bool Parser::fix_param_type_num(std::string const &key) {
+  if (!this->nh->get_node_parameters_interface()->has_parameter(key)) {
+    RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist",
+                key.c_str());
+    return false;
+  }
+  auto param = this->nh->get_node_parameters_interface()->get_parameter(key);
+  if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
+    std::cout << "Fixing parameter type for " << key << " from "
+              << param.get_type() << " to double" << std::endl;
+    double out = 0.0;
+    auto type = param.get_type_name();
+    if (type == "integer") {
+      out = static_cast<double>(param.as_int());
+    } else if (type == "string") {
+      try {
+        out = std::stod(param.as_string());
+      } catch (const std::exception &e) {
+        std::cout << "  could not convert string to double: " << e.what()
+                  << std::endl;
         return false;
       }
-      this->nh->get_node_parameters_interface()->set_parameters(
-          {rclcpp::Parameter(key, out)});
-      return true;
+    } else if (type == "boolean") {
+      out = param.as_bool() ? 1.0 : 0.0;
+    } else {
+      std::cout << "  unknown parameter type: " << type << std::endl;
+      return false;
     }
-    return false;
+    this->nh->get_node_parameters_interface()->set_parameters(
+        {rclcpp::Parameter(key, out)});
+    return true;
   }
-  void Parser::fix_param_type_num(std::vector<std::string> const &keys) {
+  return false;
+}
+void Parser::fix_param_type_num(std::vector<std::string> const &keys) {
+  for (const auto &key : keys) {
+    this->fix_param_type_num(key);
+  }
+}
+void Parser::fix_param_type_num_modules(std::string const &prefix_,
+                                        std::vector<std::string> const &modules,
+                                        std::vector<std::string> const &keys) {
+  for (const auto &module : modules) {
     for (const auto &key : keys) {
-      this->fix_param_type_num(key);
+      std::string full_key = prefix_ + "." + module + "." + key;
+      this->fix_param_type_num(full_key);
     }
   }
-  void Parser::fix_param_type_num_modules(std::string const& prefix_, std::vector<std::string> const &modules, std::vector<std::string> const &keys){
-    for (const auto &module : modules) {
-      for (const auto &key : keys) {
-        std::string full_key = prefix_ + "." + module + "." + key;
-        this->fix_param_type_num(full_key);
-      }
-    }
-  }
+}

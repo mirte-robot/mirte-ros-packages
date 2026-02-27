@@ -79,7 +79,7 @@ mirte_telemetrix_cpp:
   distance:
     __map_distances:
       max_distance:
-        type: anynumber
+        type: double
         default_value: 4.0
         description: "Maximum distance for the sonar in meters"
         validation:
@@ -133,7 +133,7 @@ mirte_telemetrix_cpp:
           default_value: "-1"
           description: "Pin number for the motor negative pin(pwm)"
         d1:
-          type: anystr 
+          type: string
           default_value: "-1"
           description: "Pin number for the motor digital pin"
         d2:
@@ -201,7 +201,7 @@ mirte_telemetrix_cpp:
         description: "Device to which the servo is connected"
       pins:
         pin:
-          type: anystr
+          type: string
           default_value: "-1"
           description: "Pin number for the servo"
       connector:

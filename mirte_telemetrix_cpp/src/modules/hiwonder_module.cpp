@@ -88,16 +88,18 @@ HiWonderBus_module::get_hiwonder_modules(
   std::vector<std::shared_ptr<HiWonderBus_module>> hiwonder_modules;
   auto found_modules = parser->update_params_list_type(
       "modules", "hiwonder_module_names", "Hiwonder_Servo");
-      parser->fix_param_type_str_modules("modules", found_modules, {"pins.rx", "pins.tx"});
+  parser->fix_param_type_str_modules("modules", found_modules,
+                                     {"pins.rx", "pins.tx"});
 
   for (auto &found_module : found_modules) {
     std::cout << "found hiwonder module!!!" << std::endl;
     auto module_name = fmt::format("modules.{}", found_module);
     // no need to filter here, just get all names
-    auto servo_names = parser->update_params_list(module_name + ".servos",
-                               module_name + ".hiwonder_servo_names",
-                               [](const std::string &name) { return true; });
-                              //  parser->fix_param_type_str_modules("modules."+module_name, servo_names, {"id", "min_angle_out", "max_angle_out", "home_out", "invert"});
+    auto servo_names = parser->update_params_list(
+        module_name + ".servos", module_name + ".hiwonder_servo_names",
+        [](const std::string &name) { return true; });
+    //  parser->fix_param_type_str_modules("modules."+module_name, servo_names,
+    //  {"id", "min_angle_out", "max_angle_out", "home_out", "invert"});
   }
   auto param_listener =
       std::make_shared<mirte_telemetrix_cpp_hiwonder::ParamListener>(

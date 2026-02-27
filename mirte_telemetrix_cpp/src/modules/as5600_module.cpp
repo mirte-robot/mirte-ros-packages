@@ -84,7 +84,8 @@ AS5600_sensor::get_as5600_modules(NodeData node_data,
   std::vector<std::shared_ptr<AS5600_sensor>> as_modules;
   auto found_modules = parser->update_params_list_type(
       "modules", "as5600_module_names", "as5600_M");
-    parser->fix_param_type_str_modules("modules", found_modules, {"pins.scl", "pins.sda"});
+  parser->fix_param_type_str_modules("modules", found_modules,
+                                     {"pins.scl", "pins.sda"});
   // as pca has nested lists, rerun for motors struct as well
   for (auto &found_module : found_modules) {
     // std::cout << "found pca module!!!" << std::endl;
