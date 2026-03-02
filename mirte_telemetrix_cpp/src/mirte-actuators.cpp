@@ -1,6 +1,7 @@
 #include <tmx_cpp/tmx.hpp>
 
 #include <mirte_telemetrix_cpp/actuators/motor.hpp>
+#include <mirte_telemetrix_cpp/actuators/neopixel.hpp>
 #include <mirte_telemetrix_cpp/actuators/servo/servo.hpp>
 #include <mirte_telemetrix_cpp/mirte-actuators.hpp>
 
@@ -15,7 +16,9 @@ void Mirte_Actuators::start() {
 
   auto servos = Servo::get_servos(node_data, parser);
   this->actuators.insert(this->actuators.end(), servos.begin(), servos.end());
-
+  auto neopixels = Neopixel::get_neopixels(node_data, parser);
+  this->actuators.insert(this->actuators.end(), neopixels.begin(),
+                         neopixels.end());
   this->digital_pin_service =
       nh->create_service<mirte_msgs::srv::SetDigitalPinValue>(
           "set_digital_pin_value",

@@ -10,13 +10,31 @@
 #include <mirte_telemetrix_cpp/actuators/motor/dp_motor.hpp>
 #include <mirte_telemetrix_cpp/actuators/motor/pp_motor.hpp>
 #include <mirte_telemetrix_cpp/device.hpp>
-
+#include <ranges>
 using namespace std::placeholders;
 
 std::vector<std::shared_ptr<TelemetrixDevice>>
 Motor::get_motors(NodeData node_data, std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<TelemetrixDevice>> motors;
-  auto motor_datas = parse_all<MotorData>(parser, node_data.board);
+  auto motor_datas =
+      parser->params_object.motor.motors_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_motor = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["device"] = rclcpp::ParameterValue(map_motor.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_motor.connector);
+        parameters["pins.p1"] = rclcpp::ParameterValue(map_motor.pins.p1);
+        parameters["pins.p2"] = rclcpp::ParameterValue(map_motor.pins.p2);
+        parameters["pins.d1"] = rclcpp::ParameterValue(map_motor.pins.d1);
+        parameters["pins.d2"] = rclcpp::ParameterValue(map_motor.pins.d2);
+        parameters["type"] = rclcpp::ParameterValue(map_motor.type);
+        parameters["inverted"] = rclcpp::ParameterValue(map_motor.inverted);
+        parameters["stop_mode"] = rclcpp::ParameterValue(map_motor.stop_mode);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return MotorData(parser, node_data.board, name, parameters,
+                         unused_keys);
+      });
   for (auto motor_data : motor_datas) {
     if (motor_data.check()) {
       if (motor_data.type == MotorData::MotorType::PP) {

@@ -1,0 +1,51 @@
+name: ros-ci
+on:
+  pull_request:
+  push:
+permissions:
+  contents: write
+jobs:
+  test_configs:
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-22.04' || 'ubuntu-22.04-arm' }}
+    container: ros:humble-ros-core
+    steps:
+      - run: apt update && apt install git -y
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0 # fetch all history for the self-checkout step
+      - name: self-checkout
+        run: |
+              set -ex
+              mkdir -p ./src/
+              mv ./mirte_msgs ./src/
+              mv ./mirte_telemetrix_cpp ./src/
+              mv ./mirte_bringup ./src/
+              rm -rf ./mirte_*
+              . /opt/ros/humble/setup.bash
+              apt-get update
+              apt-get install python3-rosdep git python3-colcon-common-extensions build-essential -y
+              rosdep init || true
+              rosdep update
+              rosdep install --from-paths src --ignore-src -r -y
+              # git clone https://github.com/arendjan/generate_parameter_library.git src/generate_parameter_library -b allow_ints_as_string
+              colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+        shell: bash
+      - name: Run tests
+        shell: bash
+        run: |
+              set -ex
+              . install/setup.bash
+              #        for every file in mirte_bringup/telemetrix_config/ that ends with _config.yaml, run the test node with that config to check config parser.
+              for file in src/mirte_bringup/telemetrix_config/*_config.yaml; do
+                echo "Running telemetrix_node with config file: $file"
+                ros2 run mirte_telemetrix_cpp mirte_telemetrix_cpp_test --ros-args --params-file $file
+                if [ $? -ne 0 ]; then
+                  echo "Test failed for config file: $file"
+                  exit 1
+                else
+                  echo "Test succeeded for config file: $file"
+                fi
+                done
+
+      

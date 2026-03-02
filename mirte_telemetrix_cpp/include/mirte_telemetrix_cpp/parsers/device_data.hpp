@@ -42,56 +42,60 @@ public:
   virtual ~DeviceData(){};
 };
 
-template <class T>
-std::vector<
-    typename std::enable_if<std::is_base_of<DeviceData, T>::value, T>::type>
-parse_all(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board) {
-  auto logger = parser->logger;
-  const auto device_class = T::get_device_class();
+// template <class T>
+// std::vector<
+//     typename std::enable_if<std::is_base_of<DeviceData, T>::value, T>::type>
+// parse_all(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board)
+// {
+//   auto logger = parser->logger;
+//   const auto device_class = T::get_device_class();
 
-  std::vector<T> devices;
-  for (auto name : parser->get_params_keys(device_class)) {
-    auto device_key = parser->build_param_name(device_class, name);
-    auto parameters = parser->get_params_name(device_key);
-    auto parameter_keys_vector = std::set(parser->get_params_keys(device_key));
-    std::set<std::string> parameter_keys =
-        std::set(parameter_keys_vector.begin(), parameter_keys_vector.end());
+//   std::vector<T> devices;
+//   for (auto name : parser->get_params_keys(device_class)) {
+//     auto device_key = parser->build_param_name(device_class, name);
+//     auto parameters = parser->get_params_name(device_key);
+//     auto parameter_keys_vector =
+//     std::set(parser->get_params_keys(device_key)); std::set<std::string>
+//     parameter_keys =
+//         std::set(parameter_keys_vector.begin(), parameter_keys_vector.end());
 
-    auto data = T(parser, board, name, parameters, parameter_keys);
-    if (parameter_keys.contains("update_rate")) {
-      rclcpp::ParameterValue update_rate = parameters["update_rate"];
-      double update_rate_value = 1.0;
-      if (update_rate.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE) {
-        update_rate_value = update_rate.get<double>();
-      } else if (update_rate.get_type() ==
-                 rclcpp::ParameterType::PARAMETER_INTEGER) {
-        update_rate_value = (double)update_rate.get<int>();
-      }
+//     auto data = T(parser, board, name, parameters, parameter_keys);
+//     if (parameter_keys.contains("update_rate")) {
+//       rclcpp::ParameterValue update_rate = parameters["update_rate"];
+//       double update_rate_value = 1.0;
+//       if (update_rate.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE)
+//       {
+//         update_rate_value = update_rate.get<double>();
+//       } else if (update_rate.get_type() ==
+//                  rclcpp::ParameterType::PARAMETER_INTEGER) {
+//         update_rate_value = (double)update_rate.get<int>();
+//       }
 
-      data.duration = DeviceData::DeviceDuration(1000.0 / update_rate_value);
-    }
-    if (parameter_keys.size() > 0) {
-      RCLCPP_WARN(logger, "%s device \"%s\" has unused parameters!",
-                  device_class.c_str(), name.c_str());
-      for (auto &key : parameter_keys) {
-        RCLCPP_WARN(logger, "Unused key: %s.%s.%s", device_class.c_str(),
-                    name.c_str(), key.c_str());
-      }
-    }
+//       data.duration = DeviceData::DeviceDuration(1000.0 / update_rate_value);
+//     }
+//     if (parameter_keys.size() > 0) {
+//       RCLCPP_WARN(logger, "%s device \"%s\" has unused parameters!",
+//                   device_class.c_str(), name.c_str());
+//       for (auto &key : parameter_keys) {
+//         RCLCPP_WARN(logger, "Unused key: %s.%s.%s", device_class.c_str(),
+//                     name.c_str(), key.c_str());
+//       }
+//     }
 
-    if (data.check()) {
-      devices.push_back(data);
-      RCLCPP_INFO(logger, "Added device %s.%s (kind: %s)", device_class.c_str(),
-                  name.c_str(), device_class.c_str());
-    } else {
-      RCLCPP_ERROR(logger,
-                   "%s device \"%s\" is invalid, skipping configuration.",
-                   device_class.c_str(), name.c_str());
-    }
-  }
+//     if (data.check()) {
+//       devices.push_back(data);
+//       RCLCPP_INFO(logger, "Added device %s.%s (kind: %s)",
+//       device_class.c_str(),
+//                   name.c_str(), device_class.c_str());
+//     } else {
+//       RCLCPP_ERROR(logger,
+//                    "%s device \"%s\" is invalid, skipping configuration.",
+//                    device_class.c_str(), name.c_str());
+//     }
+//   }
 
-  return devices;
-}
+//   return devices;
+// }
 
 template <class T>
 typename std::enable_if<std::is_base_of<DeviceData, T>::value,

@@ -2,13 +2,13 @@
 
 # TODO check with the documentation and the config files
 ranges = {
-    2: {
-        "min": 3400,
-        "max": 21000,
-        "home": 12000,
-        "name": "shoulder_pan",
-        "position": 0,
-    },
+    # 2: {
+    #     "min": 3400,
+    #     "max": 21000,
+    #     "home": 12000,
+    #     "name": "shoulder_pan",
+    #     "position": 0,
+    # },
     3: {
         "min": 2832,
         "max": 20000,

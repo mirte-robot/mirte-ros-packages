@@ -1,0 +1,34 @@
+mirte_telemetrix_cpp_hiwonder:
+  hiwonder_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of hiwonder module names to be loaded"
+  
+  modules:
+    
+    __map_hiwonder_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of module (Hiwonder)"
+        pins:
+          rx:
+            type: string
+            default_value: "-1"
+            description: "Pin number for rx line"
+          tx:
+            type: string
+            default_value: "-1"
+            description: "Pin number for tx line"
+        # addr:
+        #   type: int
+        #   default_value: 0x40
+        #   description: "I2C address of the PCA9685"
+        # connector:
+        #   type: string
+        #   default_value: NONE
+        #   description: "Connector to which the PCA9685 module is connected"
+        # frequency:
+        #   type: int
+        #   default_value: 100
+        #   description: "PWM frequency for the PCA9685 module"

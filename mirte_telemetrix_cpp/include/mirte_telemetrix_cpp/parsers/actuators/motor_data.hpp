@@ -13,6 +13,8 @@ public:
   bool inverted = false;
   // Default to PP motor
   MotorType type = MotorType::PP;
+  bool stop_mode =
+      false; // stop mode low -> pwm pins low when 0%, high -> pins high when 0%
 
   bool check();
 

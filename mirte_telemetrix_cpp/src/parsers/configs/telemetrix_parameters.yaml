@@ -1,0 +1,336 @@
+mirte_telemetrix_cpp:
+  device:
+    mirte: # TODO: make it a list
+      type:
+        type: string
+        default_value: pcb
+        description: "Type of Mirte device"
+      version:
+        type: string
+        default_value: NONE
+        description: "Version of the Mirte PCB"
+      max_frequency:
+        type: int
+        default_value: 50
+        description: "Maximum frequency for device communication in Hz"
+      board:
+        type: string
+        default_value: ""
+        description: "Board type for the Mirte device"
+      port:
+        type: string
+        default_value: ""
+        description: "UART port to which the Mirte device is connected (e.g., /dev/ttyUSB0 or /dev/ttyACM0)"
+      frame_prefix:
+        type: string
+        default_value: ""
+        description: "Frame prefix for all frames, need to add your own separator (_) "
+  encoders: # sonar definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of distance sensor names"
+
+  encoder:
+    __map_encoders:
+      ticks_per_wheel:
+        type: int
+        default_value: 20
+        description: "Number of ticks per wheel revolution, TODO: implement"
+        validation:
+          bounds<>: [1, 100000]
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the encoder is connected"
+      pins:
+        pin:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the encoder if using single pin encoder"
+          # validation:
+          #   bounds<>: [0, 255]
+        A:
+          type: string
+          default_value: "-1"
+          description: "Pin number for encoder channel A if using quadrature encoder"
+        B:
+          type: string
+          default_value: "-1"
+          description: "Pin number for encoder channel B if using quadrature encoder"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the encoder is connected"
+      frame_id:
+        type: string
+        default_value: ""
+        description: "Frame ID for the encoder data"
+  ### Actual usage
+  
+  # joints:
+  #   type: string_array
+  #   default_value: ["joint1", "joint2", "joint3"]
+  #   description: "specifies which joints will be used by the controller"
+
+  distances: # sonar definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of distance sensor names"
+  distance:
+    __map_distances:
+      max_distance:
+        type: double
+        default_value: 4.0
+        description: "Maximum distance for the sonar in meters"
+        validation:
+          any_bounds: [0.2, 10.0]
+      min_distance:
+        type: double
+        default_value: 0.02
+        description: "Minimum distance for the sonar in meters"
+        validation:
+          bounds<>: [0.01, 2.0]
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the sonar is connected"
+      frame_id:
+        type: string
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
+      pins:
+        trigger:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the sonar trigger"
+        echo:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the sonar echo"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the sonar is connected"
+
+  motors: # motor definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of motor names"
+  motor:
+    __map_motors:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the motor is connected"
+      pins:
+        p1:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the motor positive pin(pwm)"
+        p2:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the motor negative pin(pwm)"
+        d1:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the motor digital pin"
+        d2:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the motor digital pin"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the motor is connected"
+      type:
+        type: string
+        default_value: pp
+        description: "Type of motor driver (pp, dp, ddp)"
+        validation:
+          one_of<>: [ [ "pp", "dp", "ddp" ] ]
+      inverted:
+        type: bool
+        default_value: false
+        description: "Whether the motor direction is inverted"
+      stop_mode:
+        type: string
+        default_value: low
+        description: "Type of stop value(low/high) when motor is set to 0%. Some drivers have a coast/brake function. Only for pp motor."
+        validation:
+          one_of<>: [[ "low", "high" ]]
+  intensitys: # list definition, do not use directly. Yes, its a typo, but easier for processing multiple lists.
+    type: string_array
+    default_value: []
+    description: "List of intensity sensors"
+  intensity:
+    __map_intensitys:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the intensity sensor is connected"
+      pins:
+        digital:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the intensity sensor"
+        analog:
+          type: string
+          default_value: "-1"
+          description: "Analog pin number for the intensity sensor"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the intensity sensor is connected"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
+  servos: # servo definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of servo names"
+  servo:
+    __map_servos:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the servo is connected"
+      pins:
+        pin:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the servo"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the servo is connected"
+      min_pulse:
+        type: int
+        default_value: 500
+        description: "Minimum pulse width for the servo in microseconds"
+        validation:
+          bounds<>: [500, 2500]
+      max_pulse:
+        type: int
+        default_value: 2500
+        description: "Maximum pulse width for the servo in microseconds"
+        validation:
+          bounds<>: [500, 2500]
+  keypads: # keypad definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of keypad names"
+  keypad:
+    __map_keypads:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the keypad is connected"
+      pins:
+        pin:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the keypad"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the keypad is connected"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
+  oleds: # oled definition, do not use directly
+    type: string_array
+    default_value: []
+    description: "List of oled names"
+  oled:
+    __map_oleds:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the oled is connected"
+      pins:
+        sda:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the oled SDA"
+        scl:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the oled SCL"
+      connector:
+        type: string
+        default_value: NONE
+        description: "Connector to which the oled is connected"
+      default_screen_script:
+        type: string
+        default_value: ""
+        description: "Default screen script for the oled, can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text."
+      addr:
+        type: int
+        default_value: 0x3C
+        description: "I2C address of the oled display"
+
+
+
+
+
+
+
+  colors:
+    type: string_array
+    default_value: []
+    description: "List of color sensor names"
+  color:
+    __map_colors:
+      device:
+        type: string
+        default_value: mirte
+        description: "Device to which the color sensor is connected"
+      pins:
+        sda:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the color sensor SDA"
+        scl:
+          type: string
+          default_value: "-1"
+          description: "Pin number for the color sensor SCL"
+      connector:
+        type: string
+        default_value: NONE
+        # required: false
+        description: "Connector to which the color sensor is connected"
+      addr:
+        type: int
+        default_value: 0x10
+        description: "I2C address of the color sensor"
+      frame_id:
+        type: string
+        # required: false
+        default_value: ""
+        description: "Frame ID for the sonar data"
+
+
+
+
+
+
+
+  module_names:
+    type: string_array
+    default_value: []
+    description: "List of module names"
+  modules:
+    __map_module_names:
+      type:
+        type: string
+        default_value: ina226
+        description: "Type of module (ina226, veml6040, ssd1306)"
+      

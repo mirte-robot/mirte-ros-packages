@@ -136,7 +136,7 @@ void INA226_sensor::check_soc(float voltage, float current) {
   //  trigger voltage, then shut down
   // this makes sure that a short dip (motor start) does not trigger it
 
-  if (voltage != 0.1 && voltage < this->data.min_voltage) {
+  if (voltage > 0.1 && voltage < this->data.min_voltage) {
     if (!this->in_power_dip) {
       this->turn_off_trigger_time = this->nh->now();
       this->in_power_dip = true;
@@ -183,13 +183,55 @@ void INA226_sensor::shutdown_robot_service_callback(
   res->success = true;
   res->message = "Shutting down";
 }
-
+#include <mirte_telemetrix_cpp/ina226_parameters.hpp>
+#include <ranges>
 std::vector<std::shared_ptr<INA226_sensor>>
 INA226_sensor::get_ina_modules(NodeData node_data,
                                std::shared_ptr<Parser> parser,
                                std::shared_ptr<tmx_cpp::Sensors> modules) {
   std::vector<std::shared_ptr<INA226_sensor>> new_modules;
-  auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
+  // auto datas = parse_all_modules<INA226Data>(parser, node_data.board);
+  auto found_modules =
+      parser->update_params_list_type("modules", "ina_module_names", "ina226");
+  parser->fix_param_type_str_modules(
+      "modules", found_modules, {"pins.sda", "pins.scl", "percentage_led_pin"});
+  parser->fix_param_type_num_modules("modules", found_modules,
+                                     {"min_voltage", "max_voltage",
+                                      "max_current", "turn_off_time",
+                                      "power_low_time"});
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_ina226::ParamListener>(parser->nh);
+  auto params = param_listener->get_params();
+  // get modules list from parser
+  // loop over items, get one with type==ina226
+  // add paramlistener to those with new parameters yaml
+  auto datas =
+      params.modules.ina_module_names_map |
+      std::views::filter([](const auto &pair) {
+        const auto &map_power = pair.second;
+        return boost::algorithm::to_lower_copy(map_power.type) == "ina226";
+      }) |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_ina = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["type"] = rclcpp::ParameterValue(map_ina.type);
+        parameters["connector"] = rclcpp::ParameterValue(map_ina.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_ina.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_ina.pins.scl);
+        parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
+        // parameters["port"] = rclcpp::ParameterValue(map_ina.port);
+        parameters["min_voltage"] = rclcpp::ParameterValue(map_ina.min_voltage);
+        parameters["power_low_time"] =
+            rclcpp::ParameterValue(map_ina.power_low_time);
+        parameters["use_percentage_led"] =
+            rclcpp::ParameterValue(map_ina.use_percentage_led);
+        parameters["percentage_led_pin"] =
+            rclcpp::ParameterValue(map_ina.percentage_led_pin);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return INA226Data(parser, node_data.board, name, parameters,
+                          unused_keys);
+      });
   for (auto data : datas) {
     auto module = std::make_shared<INA226_sensor>(node_data, data, modules);
     new_modules.push_back(module);

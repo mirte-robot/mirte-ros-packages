@@ -1,0 +1,45 @@
+mirte_telemetrix_cpp_ina226:
+  ina_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of module names to be loaded"
+  modules:
+    
+    __map_ina_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of power sensor (INA226)"
+        pins:
+          sda:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SDA line"
+          scl:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SCL line"
+        addr:
+          type: int
+          default_value: 0x40
+          description: "I2C address of the INA226 sensor"
+        min_voltage:
+          type: double
+          default_value: 7.0
+          description: "Minimum voltage threshold in Volts"
+        power_low_time:
+          type: double
+          default_value: 1.0
+          description: "Time in seconds the voltage must be below min_voltage to trigger a power dip"
+        use_percentage_led:
+          type: bool
+          default_value: true
+          description: "Whether to use LED indicators for power percentage"
+        percentage_led_pin:
+          type: string
+          default_value: NONE
+          description: "SBC gpio pin for showing percentage, like GPIO4_B4"
+        connector:
+          type: string
+          default_value: NONE
+          description: "Connector to which the INA226 sensor is connected"

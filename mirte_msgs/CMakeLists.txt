@@ -21,7 +21,8 @@ set(msg_files
     "msg/IntensityDigital.msg"
     "msg/Keypad.msg"
     "msg/ServoPosition.msg"
-    "msg/SetSpeedNamed.msg")
+    "msg/SetSpeedNamed.msg"
+    "msg/NeopixelColor.msg")
 
 set(srv_files
     "srv/GetAnalogPinValue.srv"
@@ -51,6 +52,8 @@ set(srv_files
     "srv/GetServoOffset.srv"
     "srv/SetServoOffset.srv"
     "srv/AddHiwonderServo.srv"
+    "srv/SetNeopixel.srv"
+    "srv/SetNeopixelSingle.srv"
     )
 
 rosidl_generate_interfaces(
