@@ -64,7 +64,12 @@ Parser::Parser(std::shared_ptr<rclcpp::Node> nh)
                          std::vector<std::string>>>
       list_items = {{"encoder", {"pins.pin", "pins.A", "pins.B"}, {}},
                     {"color", {"pins.sda", "pins.scl"}, {}},
-                    {"distance", {"pins.trigger", "pins.echo"}, {"min_distance", "max_distance", }},
+                    {"distance",
+                     {"pins.trigger", "pins.echo"},
+                     {
+                         "min_distance",
+                         "max_distance",
+                     }},
                     {"intensity", {"pins.digital", "pins.analog"}, {}},
                     {"motor", {"pins.p1", "pins.p2", "pins.d1", "pins.d2"}, {}},
                     {"servo", {"pins.pin"}, {}},
