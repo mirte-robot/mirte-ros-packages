@@ -77,11 +77,15 @@
   </xacro:unless>
 
   <gazebo reference="lidar_link">
-        <sensor name="lidar" type="ray">
+        <sensor name="lidar" type="gpu_lidar">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>${visualize_sensors}</visualize>
             <update_rate>10</update_rate>
-            <ray>
+            <frame>lidar_link</frame>
+            <gz_frame_id>lidar_link</gz_frame_id>
+            <always_on>true</always_on>
+            <topic>/scan</topic>
+            <lidar>
                 <scan>
                     <horizontal>
                         <samples>360</samples>
@@ -93,16 +97,16 @@
                 <range>
                     <min>0.03</min>
                     <max>12</max>
-                    <resolution>0.01</resolution>
+                    <resolution>0.015</resolution>
                 </range>
-            </ray>
-            <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
-                <ros>
-                    <remapping>~/out:=scan</remapping>
-                </ros>
-                <output_type>sensor_msgs/LaserScan</output_type>
-                <frame_name>lidar_link</frame_name>
-            </plugin>
+                <xacro:if value="$(arg noise)">
+                  <noise>
+                    <type>gaussian</type>
+                    <mean>0</mean>
+                    <stddev>0.0165</stddev>
+                  </noise>
+                </xacro:if>
+            </lidar>
         </sensor>
     </gazebo>
 

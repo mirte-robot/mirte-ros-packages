@@ -14,12 +14,9 @@
 
 </xacro:macro>
 
-
+  <xacro:unless value="$(arg sim)">
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
-        <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-        </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
           <param name="ticks">${params['ticks']}</param>
@@ -40,13 +37,14 @@
 
 
     </ros2_control>
+    </xacro:unless>
 
 
 
 <ros2_control name="ros2_arm_control" type="system">
       <hardware>
         <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>ign_ros2_control/IgnitionSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
@@ -88,7 +86,7 @@
 <ros2_control name="ros2_gripper_control" type="system">
      <hardware>
         <xacro:if value="$(arg sim)">
-          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>ign_ros2_control/IgnitionSystem</plugin>
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
@@ -132,16 +130,35 @@
 </ros2_control>
 
 <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+    <plugin filename="ignition-gazebo-odometry-publisher-system"
+            name="ignition::gazebo::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame> 
+      <odom_topic>odom</odom_topic>
+      <tf_topic>tf</tf_topic>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <xacro:if value="$(arg noise)">
+        <gaussian_noise>0.05</gaussian_noise>
+      </xacro:if>
+    </plugin>
+    
+    <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
        <parameters>$(find mirte_base_control)/config/mirte_base_control.yaml</parameters>
        <xacro:if value="$(arg arm_enable)">
           <parameters>$(find mirte_master_arm_control)/config/mirte_master_arm_control.yaml</parameters>
        </xacro:if>
     </plugin>
-    <plugin filename="libgazebo_ros_planar_move.so" name="gazebo_planar_move">
-       <robot_base_frame>base_link</robot_base_frame> 
+    
+    <plugin
+      filename="ignition-gazebo-velocity-control-system"
+      name="gz::sim::systems::VelocityControl">
+      <topic>cmd_vel</topic>
     </plugin>
-    <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+
+    <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher">
+      <topic>mirte/joint_states</topic>
+    </plugin>
+    <!-- <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
         <ros>
             <namespace>groundtruth</namespace>
             <remapping>odom:=odom</remapping>
@@ -150,7 +167,7 @@
         <body_name>base_link</body_name>
         <update_rate>200.0</update_rate>
         <gaussian_noise>0.0</gaussian_noise>
-     </plugin>
+     </plugin> -->  
 
 </gazebo>
 

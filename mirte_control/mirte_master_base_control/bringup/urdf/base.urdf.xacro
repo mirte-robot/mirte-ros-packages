@@ -36,6 +36,8 @@
         <xacro:wheel name="rear_right" prefix="$(arg prefix)" />
         <xacro:wheel name="front_right" prefix="$(arg prefix)" />
 
+
+   <xacro:unless value="$(arg sim)">
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
         <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
@@ -52,5 +54,6 @@
         <xacro:joint prefix="$(arg prefix)" name="rear_left"  />
         <xacro:joint prefix="$(arg prefix)" name="rear_right"  />
     </ros2_control>
+    </xacro:unless>
 
 </robot>

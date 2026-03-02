@@ -13,6 +13,7 @@
   <xacro:arg name="depth_camera_enable" default="True" />
   <xacro:arg name="imu_enable" default="True" />
   <xacro:arg name="sim" default="False" />
+  <xacro:arg name="noise" default="True" />
 
   <xacro:property name="camera_name" value="camera" lazy_eval="False"/>
   <xacro:property name="namespace" value="" scope="global" lazy_eval="False"/>
@@ -191,7 +192,15 @@
       <axis xyz="0 0 0" />
     </joint>
   </xacro:if>
-
+  
+  <xacro:property name="wheel_zoff" value="0.05"/>
+   <link name="base_footprint"/>
+   <joint name="base_joint" type="fixed">
+     <parent link="base_link"/>
+     <child link="base_footprint"/>
+     <origin xyz="0.0 0.0 ${-(wheel_radius + wheel_zoff)}" rpy="0 0 0"/>
+   </joint>
+  
   <xacro:if value="$(arg sonar_enable)">
     <xacro:include filename="$(find mirte_master_description)/urdf/ultrasonic.xacro" />
 
