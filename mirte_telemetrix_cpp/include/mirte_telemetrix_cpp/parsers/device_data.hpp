@@ -39,7 +39,7 @@ public:
   /// 'keypad' for keypads, etc.
   /// @return The device class string
   static std::string get_device_class() { return "no_type"; }
-  virtual ~DeviceData(){};
+  virtual ~DeviceData() {};
 };
 
 // template <class T>

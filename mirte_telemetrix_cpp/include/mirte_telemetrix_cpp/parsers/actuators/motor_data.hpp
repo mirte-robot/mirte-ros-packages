@@ -22,6 +22,6 @@ public:
             std::string name,
             std::map<std::string, rclcpp::ParameterValue> parameters,
             std::set<std::string> &unused_keys);
-  ~MotorData(){};
+  ~MotorData() {};
   static std::string get_device_class() { return "motor"; }
 };

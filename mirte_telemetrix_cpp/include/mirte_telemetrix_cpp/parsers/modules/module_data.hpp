@@ -20,7 +20,7 @@ public:
 
   static std::string get_device_class() { return "modules"; }
   static std::string get_module_type() { return "no_type"; }
-  ~ModuleData(){};
+  ~ModuleData() {};
 };
 
 // // TODO: Redo this for modules so we do not have to dump 3 times
