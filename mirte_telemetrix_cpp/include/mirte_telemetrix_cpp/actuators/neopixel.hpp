@@ -27,7 +27,7 @@ public:
   int default_r;
   int default_g;
   int default_b;
-  ~NeopixelData(){};
+  ~NeopixelData() {};
   using DeviceData::check;
   bool check() { return true; }
 };

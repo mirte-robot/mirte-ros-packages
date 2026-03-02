@@ -207,7 +207,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_deactivate(
 void MirteMasterArmHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 using namespace std::placeholders;
-MirteMasterArmHWInterface::MirteMasterArmHWInterface(){};
+MirteMasterArmHWInterface::MirteMasterArmHWInterface() {};
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     const hardware_interface::HardwareInfo &info) {
   if (hardware_interface::SystemInterface::on_init(info) !=

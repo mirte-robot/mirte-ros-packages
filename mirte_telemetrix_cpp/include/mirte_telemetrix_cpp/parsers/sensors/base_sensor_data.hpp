@@ -15,7 +15,7 @@ public:
              std::map<std::string, rclcpp::ParameterValue> parameters,
              std::set<std::string> &unused_keys,
              std::optional<DeviceDuration> duration = {});
-  ~SensorData(){};
+  ~SensorData() {};
   // bool check();
 
   // / @brief Get the sensor class of this type. So 'distance' for sonars and

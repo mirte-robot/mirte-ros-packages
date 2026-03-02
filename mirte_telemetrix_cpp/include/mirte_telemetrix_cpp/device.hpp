@@ -25,7 +25,7 @@ public:
   std::vector<uint8_t> pins;
   rclcpp::Logger logger;
 
-  virtual void update(){};
+  virtual void update() {};
   std::string name;
   std::string frame_id = "";
 
@@ -45,7 +45,7 @@ public:
                    DeviceData data,
                    rclcpp::CallbackGroupType callback_group_type);
 
-  virtual void device_timer_callback(){};
+  virtual void device_timer_callback() {};
 
 protected:
   rclcpp::TimerBase::SharedPtr device_timer;
