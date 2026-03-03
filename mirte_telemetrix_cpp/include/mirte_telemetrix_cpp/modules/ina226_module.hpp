@@ -10,11 +10,11 @@
 #include <sensor_msgs/msg/battery_state.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <std_srvs/srv/set_bool.hpp>
-
+#include <tmx_cpp/modules/Shutdown_relay.hpp>
 class INA226_sensor : public Mirte_module {
 public:
   INA226_sensor(NodeData node_data, INA226Data ina_data,
-                std::shared_ptr<tmx_cpp::Sensors> modules);
+                std::shared_ptr<tmx_cpp::Sensors> sensors, std::shared_ptr<tmx_cpp::Modules> modules);
 
   INA226Data data;
   std::shared_ptr<tmx_cpp::INA226_module> ina226;
@@ -32,7 +32,7 @@ public:
 
   static std::vector<std::shared_ptr<INA226_sensor>>
   get_ina_modules(NodeData node_data, std::shared_ptr<Parser> parser,
-                  std::shared_ptr<tmx_cpp::Sensors> sensors);
+                  std::shared_ptr<tmx_cpp::Sensors> sensors, std::shared_ptr<tmx_cpp::Modules> modules);
 
 private:
   std::atomic<float> total_used_mAh = 0;
@@ -43,7 +43,6 @@ private:
   rclcpp::Time turn_off_trigger_time = rclcpp::Time(0, 0);
   std::atomic<bool> in_power_dip = false;
   rclcpp::Time turn_off_time = rclcpp::Time(0, 0);
-
   std::atomic<float> voltage_ = 0;
   std::atomic<float> current_ = 0;
 
@@ -57,9 +56,15 @@ private:
   void shutdown_robot_service_callback(
       const std_srvs::srv::SetBool::Request::ConstSharedPtr req,
       std_srvs::srv::SetBool::Response::SharedPtr res);
-
+std::shared_ptr<tmx_cpp::Shutdown_relay_module> shutdown_relay_module;
 #ifdef WITH_GPIO
   rclcpp::TimerBase::SharedPtr battery_led_timer;
   void battery_led_timer_callback();
 #endif
+
+
+    // switch part:
+    void switch_cb(bool signal);
+    rclcpp::Time switch_turn_off_time = rclcpp::Time(0, 0);
+    bool switch_pin_started = false; // to prevent triggering on startup if the switch is already in the off position
 };
