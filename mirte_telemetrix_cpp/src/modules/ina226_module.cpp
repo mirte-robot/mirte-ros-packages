@@ -12,7 +12,8 @@ using namespace std::chrono_literals;
 
 using namespace std::placeholders; // for _1, _2, _3...
 
-INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data, std::shared_ptr<tmx_cpp::Sensors> sensors,
+INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
+                             std::shared_ptr<tmx_cpp::Sensors> sensors,
                              std::shared_ptr<tmx_cpp::Modules> modules)
     : Mirte_module(node_data, {ina_data.scl, ina_data.sda},
                    (ModuleData)ina_data),
@@ -40,17 +41,27 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data, std::share
   sensors->add_sens(this->ina226);
   // TODO: add shutdown service
 
-  if(!ina_data.disable_shutdown_relay) {
-        this->shutdown_relay_module = std::make_shared<tmx_cpp::Shutdown_relay_module>(ina_data.shutdown_relay_pin, ina_data.turn_off_time, ina_data.shutdown_relay_off_value);
-        modules->add_mod(this->shutdown_relay_module);
-        std::cout << "Attached shutdown relay to pin: " << (int)ina_data.shutdown_relay_pin << std::endl;
-        std::cout << "Shutdown relay off value: " << ina_data.shutdown_relay_off_value << std::endl;
-        std::cout << "Shutdown relay turn off time: " << ina_data.turn_off_time << "s" << std::endl;
-        if(ina_data.shutdown_switch_in_pin != 0xFF) {
-          tmx->setPinMode(ina_data.shutdown_switch_in_pin, tmx_cpp::TMX::PIN_MODES::DIGITAL_INPUT);
+  if (!ina_data.disable_shutdown_relay) {
+    this->shutdown_relay_module =
+        std::make_shared<tmx_cpp::Shutdown_relay_module>(
+            ina_data.shutdown_relay_pin, ina_data.turn_off_time,
+            ina_data.shutdown_relay_off_value);
+    modules->add_mod(this->shutdown_relay_module);
+    std::cout << "Attached shutdown relay to pin: "
+              << (int)ina_data.shutdown_relay_pin << std::endl;
+    std::cout << "Shutdown relay off value: "
+              << ina_data.shutdown_relay_off_value << std::endl;
+    std::cout << "Shutdown relay turn off time: " << ina_data.turn_off_time
+              << "s" << std::endl;
+    if (ina_data.shutdown_switch_in_pin != 0xFF) {
+      tmx->setPinMode(ina_data.shutdown_switch_in_pin,
+                      tmx_cpp::TMX::PIN_MODES::DIGITAL_INPUT);
 
-          this->tmx->add_digital_callback(ina_data.shutdown_switch_in_pin, std::bind(&INA226_sensor::switch_cb, this, _1));
-        }
+      this->tmx->add_digital_callback(
+          ina_data.shutdown_switch_in_pin,
+          std::bind(&INA226_sensor::switch_cb, this, _1, _2));
+      node_data.add_timer(0.2s, std::bind(&INA226_sensor::update_sw, this));
+    }
   }
 #ifdef WITH_GPIO // LED Battery indicator
   if (this->data.use_percentage_led) {
@@ -84,15 +95,22 @@ void INA226_sensor::update() { // only publish at 1Hz
     this->write_soc(msg.percentage);
     this->battery_pub->publish(msg);
   }
-  if(this->turn_off_trigger_time != rclcpp::Time(0, 0)) {
+}
+
+void INA226_sensor::update_sw() {
+  if (this->switch_turn_off_time.seconds() > 0) {
+    std::cout
+        << "Shutdown switch has been triggered, checking if should turn off"
+        << std::endl;
     auto current_time = this->nh->now();
-    auto duration = current_time - this->turn_off_trigger_time;
-    std::cout << "Triggering turn off maybe" << duration.seconds() << std::endl;
-    std::cout << "you have " << (this->data.shutdown_switch_time_sec - duration.seconds())
+    auto duration = current_time - this->switch_turn_off_time;
+    std::cout << "Triggering turn off maybe by switch" << duration.seconds()
+              << std::endl;
+    std::cout << "you have "
+              << (this->data.shutdown_switch_time_sec - duration.seconds())
               << "s left" << std::endl;
     if (duration.seconds() > this->data.shutdown_switch_time_sec) {
       std::cout << "Turning off by switch" << std::endl;
-      // this->tmx->shutdown();
       this->shutdown_robot();
     }
   }
@@ -182,9 +200,7 @@ void INA226_sensor::check_soc(float voltage, float current) {
       this->shutdown_robot();
     }
   }
-
 }
-
 
 void INA226_sensor::shutdown_robot() {
   if (this->shutdown_triggered) {
@@ -192,16 +208,20 @@ void INA226_sensor::shutdown_robot() {
   }
   this->shutdown_triggered = true;
   std::cout << "Shutting down robot" << std::endl;
-  if(!this->data.disable_shutdown_relay) {
+  if (!this->data.disable_shutdown_relay) {
     std::cout << "Sending shutdown signal to relay" << std::endl;
     this->shutdown_relay_module->send_shutdown_signal(true);
   }
-  // run shutdown command
-  #if false
+// run shutdown command
+#ifndef MIRTE_TESTING_ON_X86
   exec("sudo bash -c \"wall 'Shutting down.'\""); // TODO: check if this works
                                                   // with sudo on a mirte
   exec("sudo shutdown now");
-  #endif
+#else
+  std::cout << "MIRTE_TESTING_ON_X86 is defined, not actually shutting down "
+               "the robot, just printing a message."
+            << std::endl;
+#endif
 }
 
 void INA226_sensor::shutdown_robot_service_callback(
@@ -225,11 +245,14 @@ INA226_sensor::get_ina_modules(NodeData node_data,
   auto found_modules =
       parser->update_params_list_type("modules", "ina_module_names", "ina226");
   parser->fix_param_type_str_modules(
-      "modules", found_modules, {"pins.sda", "pins.scl", "percentage_led_pin", "shutdown_relay_pin", "shutdown_switch_in_pin"});
-  parser->fix_param_type_num_modules("modules", found_modules,
-                                     {"min_voltage", "max_voltage",
-                                      "max_current", "turn_off_time",
-                                      "power_low_time", "shutdown_switch_time_sec", "shutdown_switch_off_time", "turn_off_time"});
+      "modules", found_modules,
+      {"pins.sda", "pins.scl", "percentage_led_pin", "shutdown_relay_pin",
+       "shutdown_switch_in_pin"});
+  parser->fix_param_type_num_modules(
+      "modules", found_modules,
+      {"min_voltage", "max_voltage", "max_current", "turn_off_time",
+       "power_low_time", "shutdown_switch_time_sec", "shutdown_switch_off_time",
+       "turn_off_time"});
   auto param_listener =
       std::make_shared<mirte_telemetrix_cpp_ina226::ParamListener>(parser->nh);
   auto params = param_listener->get_params();
@@ -278,7 +301,8 @@ INA226_sensor::get_ina_modules(NodeData node_data,
                           unused_keys);
       });
   for (auto data : datas) {
-    auto module = std::make_shared<INA226_sensor>(node_data, data, sensors, modules);
+    auto module =
+        std::make_shared<INA226_sensor>(node_data, data, sensors, modules);
     new_modules.push_back(module);
   }
   return new_modules;
@@ -302,24 +326,19 @@ void INA226_sensor::battery_led_timer_callback() {
 }
 #endif
 
-
-
-
-
-
-
-
-void INA226_sensor::switch_cb(bool signal) {
-  std::cout << "Shutdown switch signal: " << signal << std::endl;
-  if (signal == this->data.shutdown_switch_off_value) {
-    if(!this->switch_pin_started) {
+void INA226_sensor::switch_cb(uint8_t pin, uint8_t signal) {
+  std::cout << "Shutdown switch signal: " << (int)signal << std::endl;
+  bool sig = (bool)signal;
+  if (sig == this->data.shutdown_switch_off_value) {
+    if (!this->switch_pin_started) {
       return;
     }
     std::cout << "Shutdown switch triggered, shutting down robot" << std::endl;
-    if(this->switch_turn_off_time == rclcpp::Time(0, 0)) {
+    if (this->switch_turn_off_time == rclcpp::Time(0, 0)) {
       this->switch_turn_off_time = this->nh->now();
     }
   } else {
+    std::cout << "Shutdown switch turned back on" << std::endl;
     this->switch_pin_started = true; // has been not triggered at least once
     this->switch_turn_off_time = rclcpp::Time(0, 0);
   }

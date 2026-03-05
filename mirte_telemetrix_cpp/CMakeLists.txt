@@ -17,6 +17,11 @@ if(HAVE_GPIOD_HPP)
   add_compile_definitions(WITH_GPIO)
   add_compile_options(-lgpiodcxx)
 endif()
+
+# if x86, dont shutdown the robot, just print a message. This is for testing on x86 machines without a shutdown relay.
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|i386|i686")
+  add_compile_definitions(MIRTE_TESTING_ON_X86)
+endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # for iwyu, use iwyu_tool.py -p . -j 8
 if(CMAKE_EXPORT_COMPILE_COMMANDS)

@@ -53,7 +53,8 @@ private:
   int num_leds;
   uint8_t data_pin;
   std::shared_ptr<NeopixelData> neopixel_data;
-  std::tuple<uint8_t, uint8_t, uint8_t> order_color(const std::tuple<uint8_t, uint8_t, uint8_t> &rgb_color);
+  std::tuple<uint8_t, uint8_t, uint8_t>
+  order_color(const std::tuple<uint8_t, uint8_t, uint8_t> &rgb_color);
 
   // Service: leds/NAME/set_color
   rclcpp::Service<mirte_msgs::srv::SetNeopixel>::SharedPtr set_neopixel_service;
