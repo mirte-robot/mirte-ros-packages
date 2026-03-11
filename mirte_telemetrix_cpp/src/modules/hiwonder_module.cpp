@@ -64,6 +64,54 @@ HiWonderBus_module::HiWonderBus_module(
       "servo/" + servo_group + "enable_all_servos",
       std::bind(&HiWonderBus_module::enable_service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
+
+  this->angle_service = nh->create_service<mirte_msgs::srv::SetAngleMultiple>(
+      "servo/" + servo_group + "set_multiple_angles",
+      std::bind(&HiWonderBus_module::set_angle_multiple_service_callback, this,
+                _1, _2),
+      rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
+
+  rclcpp::SubscriptionOptions options;
+  options.callback_group = this->callback_group;
+  this->angle_callback =
+      nh->create_subscription<mirte_msgs::msg::SetAngleMultiple>(
+          "servo/" + servo_group + "set_multiple_angles_callback", 1,
+          [this](const mirte_msgs::msg::SetAngleMultiple::SharedPtr msg) {
+            // Create dummy request and response objects
+            auto req =
+                std::make_shared<mirte_msgs::srv::SetAngleMultiple::Request>();
+            auto res =
+                std::make_shared<mirte_msgs::srv::SetAngleMultiple::Response>();
+
+            // Fill the request with data from the message
+            req->angles = msg->angles;
+
+            // Call the service callback directly
+            this->set_angle_multiple_service_callback(req, res);
+          },
+          options);
+}
+
+void HiWonderBus_module::set_angle_multiple_service_callback(
+    const mirte_msgs::srv::SetAngleMultiple::Request::ConstSharedPtr req,
+    mirte_msgs::srv::SetAngleMultiple::Response::SharedPtr res) {
+  bool success = true;
+  for (const auto &angle_named : req->angles) {
+    auto servo_it = std::find_if(
+        this->servos.begin(), this->servos.end(),
+        [&angle_named](const std::shared_ptr<Hiwonder_servo> &servo) {
+          return servo->servo_data->name == angle_named.name;
+        });
+
+    if (servo_it != this->servos.end()) {
+      success &= (*servo_it)->set_angle(angle_named.angle);
+    } else {
+      RCLCPP_WARN(this->logger, "Servo with name '%s' not found.",
+                  angle_named.name.c_str());
+      success = false;
+    }
+  }
+  res->success = success;
 }
 
 // TODO: Make result actually Reflect reality
