@@ -160,7 +160,7 @@ ament_target_dependencies(
   # system_lib
 )
 
-add_executable(${PROJECT_NAME}_test src/test.cpp)
+add_executable(${PROJECT_NAME}_test src/test.cpp src/parsers/parsers.cpp)
 ament_target_dependencies(
   ${PROJECT_NAME}_test
   rclcpp

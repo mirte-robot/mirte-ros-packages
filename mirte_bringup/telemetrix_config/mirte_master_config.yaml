@@ -5,9 +5,7 @@
         type: pcb
         version: 0.6
         max_frequency: 50
-        frame_prefix: 
-          - mirte__
-          - asdfsadfzxv
+        frame_prefix: mirte
     servo:
       pincher:
         name: pincher
@@ -176,7 +174,7 @@
         name: front_left
         device: mirte
         frame_id: front_left_sonar
-        max_distance: 10.01
+        max_distance: 10.0
         min_distance: 0.2
         pins:
           trigger: 6
