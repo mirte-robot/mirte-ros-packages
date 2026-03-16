@@ -31,13 +31,13 @@ void Mirte_Actuators::start() {
 
   this->set_multiple_motors_service =
       nh->create_service<mirte_msgs::srv::SetSpeedMultiple>(
-          "set_multiple_motors_speed",
+          "set_multiple_motor_speeds",
           std::bind(&Mirte_Actuators::set_multiple_motors_service_callback,
                     this, _1, _2));
 
   this->set_speed_multiple_subscription =
       nh->create_subscription<mirte_msgs::msg::SetSpeedMultiple>(
-          "set_multiple_motors_speed", 1,
+          "set_multiple_motor_speeds", 1,
           [this](const mirte_msgs::msg::SetSpeedMultiple::SharedPtr msg) {
             // Create dummy request and response objects to pass to the service
             // callback

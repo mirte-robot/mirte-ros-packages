@@ -1,0 +1,205 @@
+/**:
+  ros__parameters:
+    device:
+      mirte:
+        type: pcb
+        version: 0.6
+        max_frequency: 50
+        frame_prefix: mirte/
+    motor:
+      front_left:
+        name: front_left
+        device: mirte
+        type: pp
+        pins:
+          p1: 17
+          p2: 16
+      rear_right:
+        name: rear_right
+        device: mirte
+        pins:
+          p1: 11
+          p2: 10
+      rear_left:
+        name: rear_left
+        device: mirte
+        pins:
+          p1: 20
+          p2: 21
+      front_right:
+        name: front_right
+        device: mirte
+        pins:
+          p1: 15
+          p2: 14
+    # servo:
+    #   pincher:
+    #     name: pincher
+    #     device: mirte
+    #     pins: 
+    #       pin: GP15
+    #   pincher2:
+    #     name: pincher2
+    #     device: mirte
+    #     pins: 
+    #       pin: 15
+    # intensity:
+    #   x_axis:
+    #     name: x_axis
+    #     device: mirte
+    #     pins:
+    #       analog: 27
+    #       # digital: GP17
+    #   y_axis:
+    #     name: y_axis
+    #     device: mirte
+    #     pins:
+    #       analog: GP26
+    #       # digital: GP16
+    #   flip:
+    #     name: flip
+    #     device: mirte
+    #     pins:
+    #       # analog: GP28
+    #       digital: GP19
+    #   on_off:
+    #     name: on_off
+    #     device: mirte
+    #     pins:
+    #       # analog: GP29
+    #       digital: GP18
+    #   holonomic:
+    #     name: holonomic
+    #     device: mirte
+    #     pins:
+    #       # analog: GP30
+    #       digital: GP20
+    modules:
+
+      servo_controller:
+        device: mirte
+        type: Hiwonder_Servo
+        pins:
+          rx: 0
+          tx: 1
+        servos:
+          shoulder_pan:
+            id: 2
+            home_out: 12000
+            min_angle_out: 3400
+            max_angle_out: 21000
+            invert: false
+          shoulder_lift:
+            id: 3
+            home_out: 11450
+            min_angle_out: 2832
+            max_angle_out: 20000
+            invert: false
+          elbow:
+            id: 4
+            home_out: 11750
+            min_angle_out: 120
+            max_angle_out: 21000
+            invert: false
+          wrist:
+            id: 5
+            home_out: 12200
+            min_angle_out: 1128
+            max_angle_out: 21000
+            invert: false
+          gripper:
+            id: 6
+            home_out: 10524
+            min_angle_out: 6168
+            max_angle_out: 14224
+            invert: false
+      power_watcher:
+        device: mirte
+        type: INA226
+        connector: I2C3
+        addr: 0x40
+        min_voltage: 11.1
+        max_current: 5.0
+        max_voltage: 15.0
+        turn_off_time: 10.0
+        power_low_time: 20.0
+        percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
+      movement:
+        device: mirte
+        type: MPU9250
+        connector: I2C3
+      leds:
+        type: neopixel
+        pins:
+          data: 6
+        num_pixels: 12
+        default_color:
+          r: 255
+          g: 0
+          b: 1
+    encoder:
+      front_left:
+        name: front_left
+        device: mirte
+        pins:
+          A: 19
+          B: 18
+      rear_left:
+        name: rear_left
+        device: mirte
+        pins:
+          A: 22
+          B: 26
+      front_right:
+        name: front_right
+        device: mirte
+        pins:
+          A: 12
+          B: 13
+      rear_right:
+        name: rear_right
+        device: mirte
+        pins:
+          A: 8
+          B: 9
+    distance:
+      rear_left:
+        name: rear_left
+        device: mirte
+        frame_id: rear_left_sonar
+        max_distance: 10.0
+        min_distance: 0.2
+        pins:
+          trigger: 4
+          echo: 4
+      rear_right:
+        name: rear_right
+        device: mirte
+        frame_id: rear_right_sonar
+        pins:
+          trigger: 5
+          echo: 5
+    intensity:
+      emergency_button:
+        name: emergency_button
+        device: mirte
+        pins:
+          digital: GP7
+    #   front_right:
+    #     name: front_right
+    #     device: mirte
+    #     frame_id: front_right_sonar
+    #     pins:
+    #       trigger: 10
+    #       echo: 11
+    #   rear_right:
+    #     name: rear_right
+    #     device: mirte
+    #     frame_id: rear_right_sonar
+    #     pins:
+    #       trigger: 12
+    #       echo: 13
+    # oled:
+    #   oled:
+    #     device: mirte
+    #     connector: I2C1
