@@ -1,4 +1,4 @@
-name: ros-ci
+name: ros-check-configs
 on:
   pull_request:
   push:
