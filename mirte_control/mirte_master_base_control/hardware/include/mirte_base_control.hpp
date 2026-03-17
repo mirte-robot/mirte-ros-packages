@@ -14,10 +14,10 @@
 
 // ROS
 #include <mirte_msgs/msg/encoder.hpp>
-#include <mirte_msgs/srv/set_motor_speed.hpp>
-#include <mirte_msgs/srv/set_speed_multiple.hpp>
 #include <mirte_msgs/msg/set_speed.hpp>
 #include <mirte_msgs/msg/set_speed_multiple.hpp>
+#include <mirte_msgs/srv/set_motor_speed.hpp>
+#include <mirte_msgs/srv/set_speed_multiple.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
 // ros_control
@@ -42,9 +42,6 @@
 #include <future>
 #include <mutex>
 #include <thread>
-// const unsigned int NUM_JOINTS = 4;
-// const auto service_format = "io/motor/%s/set_speed";
-// const auto encoder_format = "io/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
 
 namespace mirte_base_control {
@@ -131,30 +128,31 @@ private:
 
   // settings from hw interface params
   struct SETTINGS {
-  double ticks = 40.0;
-  std::string separate_update_format = "/io/motor/set_%s_speed";
-  std::string single_update_name = "/io/set_multiple_motor_speeds";
-  std::string encoder_topic_format = "/encoder/%s";
-  bool use_topic_update = true;
-  bool use_single_update = true;
-  double cmd_vel_deadzone = 10.0;
-  double cmd_vel_update_deadzone = 3.0;
-  double max_speed = 6 * M_PI; // TODO!!
+    double ticks = 40.0;
+    std::string separate_update_format = "/io/motor/set_%s_speed";
+    std::string single_update_name = "/io/set_multiple_motor_speeds";
+    std::string encoder_topic_format = "/encoder/%s";
+    bool use_topic_update = true;
+    bool use_single_update = true;
+    double cmd_vel_deadzone = 10.0;
+    double cmd_vel_update_deadzone = 3.0;
+    double max_rot_speed = 6 * M_PI;
   } settings;
 
   void read_settings();
 
   // PARAM NAMES
   const std::string TICKS_PARAM_NAME = "ticks";
-  const std::string SEPARATE_UPDATE_FORMAT_PARAM_NAME = "separate_update_format";
+  const std::string SEPARATE_UPDATE_FORMAT_PARAM_NAME =
+      "separate_update_format";
   const std::string SINGLE_UPDATE_NAME_PARAM_NAME = "single_update_name";
   const std::string ENCODER_TOPIC_FORMAT_PARAM_NAME = "encoder_topic_format";
   const std::string USE_TOPIC_UPDATE_PARAM_NAME = "use_topic_update";
   const std::string USE_SINGLE_UPDATE_PARAM_NAME = "use_single_update";
   const std::string CMD_VEL_DEADZONE_PARAM_NAME = "cmd_vel_deadzone";
-  const std::string CMD_VEL_UPDATE_DEADZONE_PARAM_NAME = "cmd_vel_update_deadzone";
-
-
+  const std::string CMD_VEL_UPDATE_DEADZONE_PARAM_NAME =
+      "cmd_vel_update_deadzone";
+  const std::string MAX_ROT_SPEED_PARAM_NAME = "max_rot_speed";
 
   std::vector<int> _wheel_encoder;
   std::vector<rclcpp::Time> _wheel_encoder_update_time;
@@ -175,7 +173,7 @@ private:
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetMotorSpeed::Request>>
       service_requests;
-  
+
   // Services and single:
   std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
       set_speed_multiple_client;
@@ -184,12 +182,14 @@ private:
 
   // When using topics:
   // Topics and multiple:
-  std::vector<std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeed>>> speed_publishers;
+  std::vector<std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeed>>>
+      speed_publishers;
   std::vector<std::shared_ptr<mirte_msgs::msg::SetSpeed>> publish_msgs;
   // Topics and single:
-  std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeedMultiple>> set_speed_multiple_publisher;
-  std::shared_ptr<mirte_msgs::msg::SetSpeedMultiple> set_speed_multiple_publish_msg;
-
+  std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeedMultiple>>
+      set_speed_multiple_publisher;
+  std::shared_ptr<mirte_msgs::msg::SetSpeedMultiple>
+      set_speed_multiple_publish_msg;
 
   std::vector<std::string> joints;
   // bool enablePID = false;

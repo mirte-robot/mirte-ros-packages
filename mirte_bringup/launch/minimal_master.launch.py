@@ -238,16 +238,16 @@ def generate_launch_description():
         GroupAction(
             [
                 PushRosNamespace(machine_namespace),
-                telemetrix,
+                # telemetrix,
                 ros2_control,
                 state_publishers,
-                cameras,
-                web_video_server,
-                lidar,
-                depth_cam,
+                # cameras,
+                # web_video_server,
+                # lidar,
+                # depth_cam,
                 arm_control,
                 mecanum_drive_control,
-                rosbridge,
+                # rosbridge,
             ],
             launch_configurations={
                 arg.name: LaunchConfiguration(arg.name)

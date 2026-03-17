@@ -40,14 +40,15 @@
       <hardware>
         <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
         <param name="ticks">${params['ticks']}</param>
-        <param name="separate_update_name">${params['separate_update_name']}</param>
+        <param name="separate_update_name">${params['separate_update_format']}</param>
         <!-- Use %s in format strings to replace with joint names -->
-        <param name="single_update_format">${params['single_update_format']}</param>
+        <param name="single_update_name">${params['single_update_name']}</param>
         <param name="encoder_topic_format">${params['encoder_topic_format']}</param>
         <param name="use_topic_update">${params['use_topic_update']}</param>
         <param name="use_single_update">${params['use_single_update']}</param>
         <param name="cmd_vel_deadzone">${params['cmd_vel_deadzone']}</param>
         <param name="cmd_vel_update_deadzone">${params['cmd_vel_update_deadzone']}</param>
+        <param name="max_rot_speed">${params['max_rot_speed']}</param>
       </hardware>
       <xacro:joint prefix="$(arg prefix)" name="front_left"  />
       <xacro:joint prefix="$(arg prefix)" name="front_right"  />

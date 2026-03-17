@@ -1,5 +1,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+
 #include <mirte_base_control.hpp>
 namespace mirte_base_control {
 
@@ -7,7 +9,8 @@ namespace mirte_base_control {
 // const auto SPEED_CMD_DEADZONE = 10;
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
-  return std::max(std::min(int(target / this->settings.max_speed * 100), 100), -100);
+  return std::max(
+      std::min(int(target / this->settings.max_rot_speed * 100), 100), -100);
 }
 
 int MirteBaseHWInterface::calculate_single_speed(
@@ -25,28 +28,40 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         bool &updated) {
   // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
-  bool in_deadzone = std::abs(speed_mapped) < this->settings.cmd_vel_deadzone;
-  bool to_deadzone = speed_mapped != 0 && in_deadzone;
+  bool in_deadzone =
+      std::abs(speed_mapped) <
+      this->settings.cmd_vel_deadzone; // if set to 0 bc too low percentage
+  bool to_deadzone =
+      _last_sent_cmd[joint] != 0 &&
+      in_deadzone; // if moving from moving to deadzone, force update
+  if (to_deadzone) {
+    std::cout << "joint" << this->joints[joint] << " to deadzone with speed "
+              << speed_mapped << " from original cmd " << speed << "last cmd"
+              << _last_sent_cmd[joint] << std::endl;
+  }
   if (in_deadzone) {
     speed_mapped = 0;
   }
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
   if (!this->settings.use_single_update) {
-    if (diff > this->settings.cmd_vel_update_deadzone || to_deadzone) {
+    if (diff >= this->settings.cmd_vel_update_deadzone || to_deadzone) {
       updated = true;
-      _last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed_mapped;
 
-      service_requests[joint]->speed = (int)speed_mapped;
-      if(this->settings.use_topic_update) {
-
+      if (this->settings.use_topic_update) {
+        // publish topic
+        this->publish_msgs[joint]->speed = speed_mapped;
+        this->speed_publishers[joint]->publish(*this->publish_msgs[joint]);
       } else {
-        service_clients[joint]->async_send_request(service_requests[joint]);
+        this->service_requests[joint]->speed = (int)speed_mapped;
+        this->service_clients[joint]->async_send_request(
+            this->service_requests[joint]);
       }
     }
   } else {
-    if (to_deadzone || diff> this->settings.cmd_vel_update_deadzone) {
+    if (to_deadzone || diff > this->settings.cmd_vel_update_deadzone) {
       updated = true;
-      _last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed_mapped;
     }
     // if another joint is sending an update, then just send all joints,
     // otherwise wait for the next loop.
@@ -80,15 +95,18 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
       }
     }
     if (updated && this->settings.use_single_update) {
-      if(this->settings.use_topic_update) {
+      if (this->settings.use_topic_update) {
         // publish topic
         for (size_t i = 0; i < NUM_JOINTS; i++) {
-          this->set_speed_multiple_publish_msg->speeds[i].speed = this->set_speed_multiple_request->speeds[i].speed;
+          this->set_speed_multiple_publish_msg->speeds[i].speed =
+              this->set_speed_multiple_request->speeds[i].speed;
         }
-        this->set_speed_multiple_publisher->publish(*this->set_speed_multiple_publish_msg);
+        this->set_speed_multiple_publisher->publish(
+            *this->set_speed_multiple_publish_msg);
       } else {
-      this->set_speed_multiple_client->async_send_request(
-          this->set_speed_multiple_request);
+        this->set_speed_multiple_client->async_send_request(
+            this->set_speed_multiple_request);
+      }
     }
     // Set the direction in so the read() can use it
     // TODO: this does not work properly, because at the end of a series
@@ -178,34 +196,55 @@ MirteBaseHWInterface::read(const rclcpp::Time &time,
 using namespace std::chrono_literals;
 
 bool MirteBaseHWInterface::init_service_clients() {
+
+  std::cout << "init_service_clients" << std::endl;
+  std::cout << "settings.use_single_update: "
+            << this->settings.use_single_update << std::endl;
+  std::cout << "settings.use_topic_update: " << this->settings.use_topic_update
+            << std::endl;
+
+  service_clients.clear();
+  service_requests.clear();
   if (!this->settings.use_single_update) {
     {
       const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-      service_clients.clear();
-      service_requests.clear();
-      for (size_t i = 0; i < NUM_JOINTS; i++) {
-        auto motor_service =
-            (boost::format(this->settings.separate_update_format) % this->joints[i]).str();
-        auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
-            motor_service); // TODO: add persistent connection
+      if (this->settings.use_topic_update) {
+        this->publish_msgs.clear();
+        this->speed_publishers.clear();
+        for (size_t i = 0; i < NUM_JOINTS; i++) {
+          auto pub = (boost::format(this->settings.separate_update_format) %
+                      this->joints[i])
+                         .str();
+          auto publisher =
+              nh->template create_publisher<mirte_msgs::msg::SetSpeed>(pub, 1);
+          auto msg = std::make_shared<mirte_msgs::msg::SetSpeed>();
+          this->publish_msgs.push_back(msg);
+          this->speed_publishers.push_back(publisher);
+        }
+      } else {
+        service_clients.clear();
+        service_requests.clear();
+        for (size_t i = 0; i < NUM_JOINTS; i++) {
+          auto motor_service =
+              (boost::format(this->settings.separate_update_format) %
+               this->joints[i])
+                  .str();
+          auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
+              motor_service); // TODO: add persistent connection
 
-        auto MAX_WAIT_TIME = 10;
-        auto wait_time = 0;
-        service_clients.push_back(client);
-        service_requests.push_back(
-            std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>());
+          auto MAX_WAIT_TIME = 10;
+          auto wait_time = 0;
+          service_clients.push_back(client);
+          service_requests.push_back(
+              std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>());
+        }
       }
     }
 
   } else {
-    service_clients.clear();
-    service_requests.clear();
-    this->set_speed_multiple_client =
-        nh->create_client<mirte_msgs::srv::SetSpeedMultiple>(
-            this->settings.single_update_name);
-    auto MAX_WAIT_TIME = 10;
-    auto wait_time = 0;
-   
+    // single
+    // set speed multiple request is always filled by each motor, if topic, then
+    // copied to publish msg, if service, then sent as service request
     this->set_speed_multiple_request =
         std::make_shared<mirte_msgs::srv::SetSpeedMultiple::Request>();
     this->set_speed_multiple_request->speeds.resize(NUM_JOINTS);
@@ -217,12 +256,40 @@ bool MirteBaseHWInterface::init_service_clients() {
       this->set_speed_multiple_request->speeds[i].speed = 0;
       this->set_speed_multiple_request->speeds[i].name = this->joints[i];
     }
-    this->set_speed_multiple_client->async_send_request(
-        this->set_speed_multiple_request);
+
+    if (this->settings.use_topic_update) {
+      this->set_speed_multiple_publish_msg =
+          std::make_shared<mirte_msgs::msg::SetSpeedMultiple>();
+      this->set_speed_multiple_publish_msg->speeds.resize(NUM_JOINTS);
+      for (auto i = 0; i < NUM_JOINTS; i++) {
+        this->set_speed_multiple_publish_msg->speeds[i].name = this->joints[i];
+      }
+      this->set_speed_multiple_publisher =
+          nh->template create_publisher<mirte_msgs::msg::SetSpeedMultiple>(
+              this->settings.single_update_name, 1);
+    } else {
+      this->set_speed_multiple_client =
+          nh->create_client<mirte_msgs::srv::SetSpeedMultiple>(
+              this->settings.single_update_name);
+      this->set_speed_multiple_client->async_send_request(
+          this->set_speed_multiple_request);
+    }
+
+    auto MAX_WAIT_TIME = 10;
+    auto wait_time = 0;
   }
+
+  assert(this->service_clients.size() == NUM_JOINTS ||
+         this->settings.use_single_update || this->settings.use_topic_update);
+  assert(this->service_requests.size() == NUM_JOINTS ||
+         this->settings.use_single_update || this->settings.use_topic_update);
+  assert(this->publish_msgs.size() == NUM_JOINTS ||
+         !this->settings.use_topic_update || this->settings.use_single_update);
+  assert(this->speed_publishers.size() == NUM_JOINTS ||
+         !this->settings.use_topic_update || this->settings.use_single_update);
+
   return true;
 }
-
 
 hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
@@ -230,7 +297,6 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
   // your production code
   RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
               "Activating ...please wait...");
-
 
   RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
               "Successfully activated!");
@@ -240,6 +306,15 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
 
 hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
+  this->running_ =
+      true; // write 0s to all motors in write() and set running_ to false, so
+            // that it only sends the stop command once
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
+    cmd[i] = 0;
+  }
+  auto dur = rclcpp::Duration(0, 100);
+  this->write(rclcpp::Time(),
+              rclcpp::Duration(0, 100)); // send stop command to motors
   // BEGIN: This part here is for exemplary purposes - Please do not copy to
   // your production code
   // RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"), "Deactivating
@@ -264,41 +339,54 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
 void MirteBaseHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 void MirteBaseHWInterface::read_settings() {
-  if(! info_.hardware_parameters.count(TICKS_PARAM_NAME)) {
+  if (!info_.hardware_parameters.count(TICKS_PARAM_NAME)) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
                         "Missing required hardware parameter: ticks");
     throw std::runtime_error("Missing required hardware parameter: ticks");
   }
-  this->settings.ticks = std::stod(info_.hardware_parameters.at(TICKS_PARAM_NAME));
-  if(info_.hardware_parameters.count(SEPARATE_UPDATE_FORMAT_PARAM_NAME)) {
-    this->settings.separate_update_format = info_.hardware_parameters.at(SEPARATE_UPDATE_FORMAT_PARAM_NAME);
+  this->settings.ticks =
+      std::stod(info_.hardware_parameters.at(TICKS_PARAM_NAME));
+  if (info_.hardware_parameters.count(SEPARATE_UPDATE_FORMAT_PARAM_NAME)) {
+    this->settings.separate_update_format =
+        info_.hardware_parameters.at(SEPARATE_UPDATE_FORMAT_PARAM_NAME);
   }
   if (info_.hardware_parameters.count(SINGLE_UPDATE_NAME_PARAM_NAME)) {
-  this->settings.single_update_name =
-      info_.hardware_parameters.at(SINGLE_UPDATE_NAME_PARAM_NAME);
+    this->settings.single_update_name =
+        info_.hardware_parameters.at(SINGLE_UPDATE_NAME_PARAM_NAME);
   }
-  if(info_.hardware_parameters.count(USE_TOPIC_UPDATE_PARAM_NAME)) {
+  if (info_.hardware_parameters.count(USE_TOPIC_UPDATE_PARAM_NAME)) {
     this->settings.use_topic_update =
-        info_.hardware_parameters.at(USE_TOPIC_UPDATE_PARAM_NAME) == "true";
+        boost::algorithm::to_lower_copy(info_.hardware_parameters.at(
+            USE_TOPIC_UPDATE_PARAM_NAME)) == "true";
   }
-  if(info_.hardware_parameters.count(USE_SINGLE_UPDATE_PARAM_NAME)) {
+  if (info_.hardware_parameters.count(USE_SINGLE_UPDATE_PARAM_NAME)) {
+    std::cout << "use_single_update: "
+              << info_.hardware_parameters.at(USE_SINGLE_UPDATE_PARAM_NAME)
+              << std::endl;
     this->settings.use_single_update =
-        info_.hardware_parameters.at(USE_SINGLE_UPDATE_PARAM_NAME) == "true";
+        boost::algorithm::to_lower_copy(info_.hardware_parameters.at(
+            USE_SINGLE_UPDATE_PARAM_NAME)) == "true";
   }
-  if(info_.hardware_parameters.count(CMD_VEL_DEADZONE_PARAM_NAME)) {
+  if (info_.hardware_parameters.count(CMD_VEL_DEADZONE_PARAM_NAME)) {
     this->settings.cmd_vel_deadzone =
         std::stod(info_.hardware_parameters.at(CMD_VEL_DEADZONE_PARAM_NAME));
   }
-  if(info_.hardware_parameters.count(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME)) {
-    this->settings.cmd_vel_update_deadzone =
-        std::stod(info_.hardware_parameters.at(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME));
+  if (info_.hardware_parameters.count(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME)) {
+    this->settings.cmd_vel_update_deadzone = std::stod(
+        info_.hardware_parameters.at(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME));
+    if (this->settings.cmd_vel_update_deadzone == 0) {
+      this->settings.cmd_vel_update_deadzone = 1;
+    }
   }
   if (info_.hardware_parameters.count(ENCODER_TOPIC_FORMAT_PARAM_NAME)) {
-  this->settings.encoder_topic_format =
-      info_.hardware_parameters.at(ENCODER_TOPIC_FORMAT_PARAM_NAME);
+    this->settings.encoder_topic_format =
+        info_.hardware_parameters.at(ENCODER_TOPIC_FORMAT_PARAM_NAME);
+  }
+  if (info_.hardware_parameters.count(MAX_ROT_SPEED_PARAM_NAME)) {
+    this->settings.max_rot_speed =
+        std::stod(info_.hardware_parameters.at(MAX_ROT_SPEED_PARAM_NAME));
   }
 }
-
 
 using namespace std::placeholders;
 MirteBaseHWInterface::MirteBaseHWInterface() {};
@@ -335,8 +423,8 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
     _wheel_encoder_update_time.push_back(nh->now());
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
-    _last_cmd.push_back(0);
-    _last_sent_cmd.push_back(0);
+    // _last_cmd.push_back(0);
+    _last_sent_cmd.push_back(-1000);
 
     pos.push_back(0);
     vel.push_back(0);
@@ -346,7 +434,7 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   assert(_wheel_encoder.size() == NUM_JOINTS);
   assert(_last_value.size() == NUM_JOINTS);
   assert(_last_wheel_cmd_direction.size() == NUM_JOINTS);
-  assert(_last_cmd.size() == NUM_JOINTS);
+  // assert(_last_cmd.size() == NUM_JOINTS);
   assert(pos.size() == NUM_JOINTS);
   assert(vel.size() == NUM_JOINTS);
   assert(eff.size() == NUM_JOINTS);
@@ -360,7 +448,13 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   // }
   this->joints.clear();
   for (size_t i = 0; i < NUM_JOINTS; i++) {
-    this->joints.push_back(info.joints[i].name);
+    auto name = info.joints[i].name;
+    // remove _wheel_joint suffix if it exists, to get the joint name (e.g.
+    // left, right), needed for the topic and service names formatting
+    if (name.ends_with("_wheel_joint")) {
+      name = name.substr(0, name.size() - std::string("_wheel_joint").size());
+    }
+    this->joints.push_back(name);
   }
   std::cout << "Initializing MirteBaseHWInterface with " << NUM_JOINTS
             << " joints" << std::endl;
@@ -411,11 +505,11 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
     }
   }
 
-
   // Initialize publishers and subscribers
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     auto encoder_topic =
-        (boost::format(this->settings.encoder_topic_format) % this->joints[i]).str();
+        (boost::format(this->settings.encoder_topic_format) % this->joints[i])
+            .str();
     std::cout << "add encoder topic: " << encoder_topic << std::endl;
     wheel_encoder_subs_.push_back(
         nh->create_subscription<mirte_msgs::msg::Encoder>(
