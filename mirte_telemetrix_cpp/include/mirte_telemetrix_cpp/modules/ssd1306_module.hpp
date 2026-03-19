@@ -12,6 +12,7 @@
 #include <mirte_msgs/srv/set_oled_image.hpp>
 #include <mirte_msgs/srv/set_oled_image_legacy.hpp>
 #include <mirte_msgs/srv/set_oled_text.hpp>
+#include <std_srvs/srv/trigger.hpp>
 
 namespace fs = std::filesystem;
 
@@ -35,7 +36,9 @@ public:
   virtual void device_timer_callback() override;
 
 private:
-  bool enabled = true;
+  //   bool enabled = true;
+  //   int ok_count = 3;
+  int retries = 3;
   bool default_screen = true;
   std::optional<std::string> last_text;
 
@@ -54,6 +57,8 @@ private:
   rclcpp::Service<mirte_msgs::srv::SetOLEDFile>::SharedPtr
       set_oled_file_service;
 
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr
+      start_default_screen_service;
   bool prewrite(bool is_default = false);
 
   void set_oled_callback_legacy(

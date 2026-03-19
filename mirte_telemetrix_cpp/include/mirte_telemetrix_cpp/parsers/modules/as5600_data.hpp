@@ -13,7 +13,8 @@ public:
   AS5600Data(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
              std::string name,
              std::map<std::string, rclcpp::ParameterValue> parameters,
-             std::set<std::string> &unused_keys);
+             std::set<std::string> &unused_keys,
+             std::vector<std::tuple<int, std::string>> encoders);
 
   bool check() override;
   using I2CModuleData::check;

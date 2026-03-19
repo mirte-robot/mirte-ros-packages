@@ -16,4 +16,5 @@ public:
 
   pin_t pwmA_pin;
   pin_t pwmB_pin;
+  bool stop_mode = false; // low->0%==low output, high->0==high output
 };

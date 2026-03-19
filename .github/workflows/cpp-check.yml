@@ -13,5 +13,5 @@ jobs:
         source: '.'
         exclude: './mirte_telemetrix_cpp/libs/*'
         extensions: 'c,h,cpp,hpp'
-        clangFormatVersion: 14
+        clangFormatVersion: 18
         style: llvm

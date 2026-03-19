@@ -68,7 +68,7 @@ def generate_launch_description():
                 [
                     FindPackageShare("mirte_bringup"),
                     "telemetrix_config",
-                    "mirte_master_config.yaml",
+                    "mirte_masterv3_config.yaml",
                 ]
             ),
             "hardware_namespace": hardware_namespace,

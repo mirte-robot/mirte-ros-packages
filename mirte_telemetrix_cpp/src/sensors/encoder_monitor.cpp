@@ -5,7 +5,7 @@
 
 #include <mirte_msgs/msg/encoder.hpp>
 #include <mirte_msgs/srv/get_encoder.hpp>
-
+#include <ranges>
 EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
     : Mirte_Sensor(node_data, {encoder_data.pinA, encoder_data.pinB},
                    (SensorData)encoder_data),
@@ -27,7 +27,7 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
 }
 
 void EncoderMonitor::data_callback(int16_t value) {
-  this->value += value;
+  this->value += (int32_t)value;
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                   .header(get_header()) // Build the message
                   .value(this->value);
@@ -52,10 +52,28 @@ std::vector<std::shared_ptr<EncoderMonitor>>
 EncoderMonitor::get_encoder_monitors(NodeData node_data,
                                      std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<EncoderMonitor>> sensors;
-  auto encoders = parse_all<EncoderData>(parser, node_data.board);
-  for (auto encoder : encoders) {
-    sensors.push_back(std::make_shared<EncoderMonitor>(node_data, encoder));
-    // std::cout << "Add Encoder: " << encoder.name << std::endl;
-  }
+  auto encoders =
+      parser->params_object.encoder.encoders_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_encoder = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+
+        parameters["ticks_per_wheel"] =
+            rclcpp::ParameterValue(map_encoder.ticks_per_wheel);
+        parameters["device"] = rclcpp::ParameterValue(map_encoder.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_encoder.connector);
+        parameters["pins.pin"] = rclcpp::ParameterValue(map_encoder.pins.pin);
+        parameters["pins.A"] = rclcpp::ParameterValue(map_encoder.pins.A);
+        parameters["pins.B"] = rclcpp::ParameterValue(map_encoder.pins.B);
+        parameters["frame_id"] = rclcpp::ParameterValue(map_encoder.frame_id);
+        auto unused_keys = get_keys(parameters);
+        std::set<std::string> unused_keys_set(unused_keys.begin(),
+                                              unused_keys.end());
+        return std::make_shared<EncoderMonitor>(
+            node_data, EncoderData(parser, node_data.board, name, parameters,
+                                   unused_keys_set));
+      });
+  sensors.assign(encoders.begin(), encoders.end());
   return sensors;
 }

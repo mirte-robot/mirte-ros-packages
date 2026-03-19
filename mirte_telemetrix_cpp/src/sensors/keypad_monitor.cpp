@@ -9,17 +9,31 @@
 #include <mirte_msgs/msg/intensity.hpp>
 #include <mirte_msgs/msg/keypad.hpp>
 #include <mirte_msgs/srv/get_keypad.hpp>
-
+#include <ranges>
+// #include <view
 std::vector<std::shared_ptr<KeypadMonitor>>
 KeypadMonitor::get_keypad_monitors(NodeData node_data,
                                    std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<KeypadMonitor>> sensors;
-  auto keypads = parse_all<KeypadData>(parser, node_data.board);
 
-  for (auto keypad : keypads) {
-    sensors.push_back(std::make_shared<KeypadMonitor>(node_data, keypad));
-    // std::cout << "Add Keypad: " << keypad.name << std::endl;
-  }
+  auto keypads =
+      parser->params_object.keypad.keypads_map |
+      std::views::transform([&](auto const &pair) {
+        const auto &name = pair.first;
+        const auto &map_keypad = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["device"] = rclcpp::ParameterValue(map_keypad.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_keypad.connector);
+        parameters["pins.pin"] = rclcpp::ParameterValue(map_keypad.pins.pin);
+        parameters["frame_id"] = rclcpp::ParameterValue(map_keypad.frame_id);
+        auto unused_keys = get_keys(parameters);
+        return KeypadData(parser, node_data.board, name, parameters,
+                          unused_keys);
+      }) |
+      std::views::transform([&](const auto &data) {
+        return std::make_shared<KeypadMonitor>(node_data, data);
+      });
+  sensors.assign(keypads.begin(), keypads.end());
   return sensors;
 }
 

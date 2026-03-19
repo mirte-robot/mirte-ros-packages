@@ -6,17 +6,38 @@
 #include <mirte_telemetrix_cpp/sensors/sonar_monitor.hpp>
 
 #include <mirte_msgs/srv/get_range.hpp>
+#include <ranges>
 #include <sensor_msgs/msg/range.hpp>
-
 std::vector<std::shared_ptr<SonarMonitor>>
 SonarMonitor::get_sonar_monitors(NodeData node_data,
                                  std::shared_ptr<Parser> parser) {
   std::vector<std::shared_ptr<SonarMonitor>> sensors;
-  auto sonars = parse_all<SonarData>(parser, node_data.board);
-  for (auto sonar : sonars) {
-    sensors.push_back(std::make_shared<SonarMonitor>(node_data, sonar));
-    // std::cout << "Add Sonar: " << sonar.name << std::endl;
-  }
+  auto sonars = parser->params_object.distance.distances_map |
+                std::views::transform([&](const auto &pair) {
+                  const auto &name = pair.first;
+                  const auto &map_distance = pair.second;
+                  std::map<std::string, rclcpp::ParameterValue> parameters;
+                  parameters["max_distance"] =
+                      rclcpp::ParameterValue(map_distance.max_distance);
+                  parameters["min_distance"] =
+                      rclcpp::ParameterValue(map_distance.min_distance);
+                  parameters["frame_id"] =
+                      rclcpp::ParameterValue(map_distance.frame_id);
+                  parameters["connector"] =
+                      rclcpp::ParameterValue(map_distance.connector);
+                  parameters["pins.trigger"] =
+                      rclcpp::ParameterValue(map_distance.pins.trigger);
+                  parameters["pins.echo"] =
+                      rclcpp::ParameterValue(map_distance.pins.echo);
+                  std::set<std::string> unused_keys = get_keys(parameters);
+
+                  return SonarData(parser, node_data.board, name, parameters,
+                                   unused_keys, map_distance);
+                }) |
+                std::views::transform([&](const auto &data) {
+                  return std::make_shared<SonarMonitor>(node_data, data);
+                });
+  sensors.assign(sonars.begin(), sonars.end());
   return sensors;
 }
 
@@ -26,6 +47,8 @@ SonarMonitor::SonarMonitor(NodeData node_data, SonarData sonar_data)
       sonar_data(sonar_data) {
   this->logger = this->logger.get_child(sonar_data.get_device_class())
                      .get_child(sonar_data.name);
+  this->min_range = sonar_data.min_distance;
+  this->max_range = sonar_data.max_distance;
   this->range =
       sensor_msgs::build<sensor_msgs::msg::Range>()
           .header(this->get_header())

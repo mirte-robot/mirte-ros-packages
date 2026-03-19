@@ -18,6 +18,7 @@
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp" // for Parser
 #include "mirte_telemetrix_cpp/util.hpp"
 #include <mirte_telemetrix_cpp/mirte-telemetrix.hpp>
+#include <mirte_telemetrix_cpp/telemetrix_parameters.hpp> // auto-generated parameter file from telemetrix_parameters.yaml
 NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
@@ -71,9 +72,11 @@ bool TelemetrixNode::start() {
   using namespace std::placeholders;
 
   auto parser = std::make_shared<Parser>(node_);
+
   std::shared_ptr<tmx_cpp::TMX> tmx;
-  if (this->node_->has_parameter("device.mirte.port")) {
-    auto port = this->node_->get_parameter("device.mirte.port").as_string();
+  // rclcpp::spin(node_);
+  if (parser->params_object.device.mirte.port != "") {
+    auto port = parser->params_object.device.mirte.port;
     std::cout << "Using port: " << port << std::endl;
     if (!tmx_cpp::TMX::check_port(port)) {
       std::cout << "Port " << port << " is not available" << std::endl;

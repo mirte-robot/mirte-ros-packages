@@ -21,7 +21,7 @@
 
 #include <mirte_telemetrix_cpp/modules/ssd1306_module.hpp>
 #include <mirte_telemetrix_cpp/util.hpp>
-
+#include <ranges>
 using namespace std::placeholders; // for _1, _2, _3...
 using namespace std::chrono_literals;
 
@@ -30,7 +30,28 @@ SSD1306_module::get_ssd1306_modules(NodeData node_data,
                                     std::shared_ptr<Parser> parser,
                                     std::shared_ptr<tmx_cpp::Modules> modules) {
   std::vector<std::shared_ptr<SSD1306_module>> new_modules;
-  auto datas = parse_all<SSD1306Data>(parser, node_data.board);
+  // auto datas = parse_all<SSD1306Data>(parser, node_data.board);
+  auto datas =
+      parser->params_object.oled.oleds_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_oled = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["device"] = rclcpp::ParameterValue(map_oled.device);
+        parameters["connector"] = rclcpp::ParameterValue(map_oled.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_oled.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_oled.pins.scl);
+        parameters["default_screen_script"] =
+            rclcpp::ParameterValue(map_oled.default_screen_script);
+        // parameters["legacy"] = rclcpp::ParameterValue(map_oled.legacy);
+        parameters["addr"] = rclcpp::ParameterValue(map_oled.addr);
+        // parameters["width"] = rclcpp::ParameterValue(map_oled.width);
+        // parameters["height"] = rclcpp::ParameterValue(map_oled.height);
+        // parameters["legacy"] = rclcpp::ParameterValue(map_oled.legacy);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return SSD1306Data(parser, node_data.board, name, parameters,
+                           unused_keys);
+      });
   for (auto data : datas) {
     auto module = std::make_shared<SSD1306_module>(node_data, data, modules);
     new_modules.push_back(module);
@@ -79,17 +100,28 @@ SSD1306_module::SSD1306_module(NodeData node_data, SSD1306Data oled_data,
           std::bind(&SSD1306_module::set_oled_file_callback, this, _1, _2),
           rmw_qos_profile_services_default, this->callback_group);
 
+  this->start_default_screen_service =
+      nh->create_service<std_srvs::srv::Trigger>(
+          "oled/" + data.name + "/start_default_screen",
+          [&](const std_srvs::srv::Trigger::Request::ConstSharedPtr req,
+              std_srvs::srv::Trigger::Response::SharedPtr res) {
+            this->default_screen = true;
+            this->retries = 5;
+          });
   modules->add_mod(this->ssd1306);
   // Write an initial text to the screen, and instantly kill the timer if it has
   // failed.
   /* NOTE: This needs to use the raw send_text, because otherwise the
    * default_screen_timer will be canceled. */
+
   if (!this->ssd1306->send_text("Booting...", 500ms)) {
     RCLCPP_ERROR(this->logger,
                  "Writing to OLED module '%s' failed, shutting down default "
                  "screen timer.",
                  this->data.name.c_str());
-    this->enabled = false;
+    this->retries--;
+  } else {
+    this->retries = 3;
   }
 }
 
@@ -98,8 +130,9 @@ bool SSD1306_module::prewrite(bool is_default) {
     this->default_screen = false;
   }
 
-  if (!enabled) {
-    RCLCPP_ERROR(logger, "Writing to OLED Module %s failed", data.name.c_str());
+  if (this->retries < 0) {
+    // RCLCPP_ERROR(logger, "Writing to OLED Module %s failed",
+    // data.name.c_str());
     return false;
   }
   return true;
@@ -116,8 +149,10 @@ bool SSD1306_module::set_text(std::string text) {
   }
   last_text = escaped_text;
   auto succes = ssd1306->send_text(escaped_text);
-  if (not succes) {
-    enabled = false;
+  if (!succes) {
+    this->retries--;
+  } else {
+    this->retries = 5;
   }
 
   return succes;
@@ -139,8 +174,10 @@ bool SSD1306_module::set_image(uint8_t width, uint8_t height,
   }
 
   auto succes = ssd1306->send_image(width, height, img_buffer);
-  if (not succes) {
-    enabled = false;
+  if (!succes) {
+    this->retries--;
+  } else {
+    this->retries = 5;
   }
 
   return succes;
@@ -267,7 +304,7 @@ void SSD1306_module::set_oled_file_callback(
 }
 
 void SSD1306_module::device_timer_callback() {
-  if (!enabled) {
+  if (!this->retries < 0) {
     return;
   }
   if (!default_screen) {
@@ -284,6 +321,8 @@ void SSD1306_module::device_timer_callback() {
     auto text = exec(data.default_screen_script);
 
     auto escaped_text = boost::algorithm::replace_all_copy(text, "\\n", "\n");
+    escaped_text = escaped_text.substr(
+        0, std::min((size_t)ssd1306->character_limit, escaped_text.length()));
     if (escaped_text == last_text) {
       return;
     }
@@ -293,10 +332,11 @@ void SSD1306_module::device_timer_callback() {
     succes = set_image_from_path(data.default_screen_script);
   }
 
-  if (not succes) {
-    enabled = false;
-    RCLCPP_ERROR(
-        logger,
-        "Default screen update failed. Disabling screen and update timer.");
+  if (!succes) {
+    this->retries--;
+    // enabled = false;
+    RCLCPP_ERROR(logger, "Default screen update failed.");
+  } else {
+    this->retries = 5;
   }
 }

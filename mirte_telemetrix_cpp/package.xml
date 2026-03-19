@@ -22,6 +22,8 @@
   <depend>ament_index_cpp</depend>
   <depend>color_util</depend>
   <depend>std_srvs</depend>
+  <depend>generate_parameter_library</depend>
+
   <!-- <build_depend condition="$MIRTE_TYPE == 'mirte-master'">libgpiod-dev</build_depend> -->
   
   <!-- Just added to fix online deb build -->

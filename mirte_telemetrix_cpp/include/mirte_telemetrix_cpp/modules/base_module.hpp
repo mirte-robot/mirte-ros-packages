@@ -14,6 +14,6 @@ public:
                rclcpp::CallbackGroupType callback_group_type);
 
   virtual ~Mirte_module() = default;
-  virtual void update() override{};
+  virtual void update() override {};
   virtual void device_timer_callback() override;
 };

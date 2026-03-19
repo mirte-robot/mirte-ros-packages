@@ -9,28 +9,50 @@
 #include <rclcpp/node.hpp>
 #include <rclcpp/parameter.hpp>
 
+#include "mirte_telemetrix_cpp/telemetrix_parameters.hpp"
 #include "mirte_telemetrix_cpp/util.hpp"
-
 using pin_t = uint8_t;
 
 class Parser {
 public:
   std::shared_ptr<rclcpp::Node> nh;
+  mirte_telemetrix_cpp::Params params_object;
   std::map<std::string, rclcpp::ParameterValue> params;
   rclcpp::Logger logger;
   Parser(std::shared_ptr<rclcpp::Node> nh);
   std::map<std::string, rclcpp::ParameterValue>
   get_params_name(std::string name);
-  std::set<std::string> get_params_keys(std::string name);
+  // std::set<std::string> get_params_keys(std::string name);
   static std::string
   build_param_name(std::initializer_list<const std::string> keys);
   static std::string build_param_name(std::string name, std::string key);
   int get_frequency();
   std::string get_last(std::string name);
+  std::vector<std::string>
+  update_params_list_type(std::string const &prefix_,
+                          std::string const &list_name,
+                          std::string const &type_filter);
+  std::vector<std::string>
+  update_params_list(std::string const &prefix_, std::string const &list_name,
+                     std::function<bool(const std::string &name)> filter_func);
+
+  bool fix_param_type_str(std::string const &key);
+  void fix_param_type_str(std::vector<std::string> const &keys);
+  void fix_param_type_str_modules(std::string const &prefix_,
+                                  std::vector<std::string> const &modules,
+                                  std::vector<std::string> const &keys);
+
+  bool fix_param_type_num(std::string const &key);
+  void fix_param_type_num(std::vector<std::string> const &keys);
+  void fix_param_type_num_modules(std::string const &prefix_,
+                                  std::vector<std::string> const &modules,
+                                  std::vector<std::string> const &keys);
 };
 
 std::string get_string(rclcpp::ParameterValue param);
 
+std::set<std::string>
+get_keys(std::map<std::string, rclcpp::ParameterValue> parameters);
 /// Convience function to read float parameters, will still work if parameter is
 /// actually an integer.
 float get_float(rclcpp::ParameterValue param);
