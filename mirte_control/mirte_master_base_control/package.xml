@@ -59,7 +59,6 @@
   <depend>mirte_msgs</depend>
   <depend>controller_manager</depend>
   <depend>trajectory_msgs</depend>
-  <depend>generate_parameter_library</depend>
 
   <depend>control_toolbox</depend>
   <depend>filters</depend>

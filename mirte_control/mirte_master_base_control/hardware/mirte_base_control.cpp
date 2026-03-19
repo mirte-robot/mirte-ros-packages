@@ -415,11 +415,6 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
 
   std::cout << "starting on_init" << std::endl;
   nh = rclcpp::Node::make_shared("mirte_base_control");
-  this->param_listener_ = std::make_shared<ParamListener>(nh);
-  this->params_ = this->param_listener_->get_params();
-  this->param_listener_->setUserCallback(
-      std::bind(&MirteBaseHWInterface::updateParams, this, _1, true));
-  this->updateParams(this->params_, false);
   std::cout << "on_init" << __LINE__ << std::endl;
   running_ = true;
   start_srv_ = nh->create_service<std_srvs::srv::Empty>(

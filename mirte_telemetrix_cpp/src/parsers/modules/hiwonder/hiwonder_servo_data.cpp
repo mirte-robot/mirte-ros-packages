@@ -139,7 +139,7 @@ HiWonderServoData::HiWonderServoData(
   if (!parameters.count("frame_id")) {
     this->frame_id = base_frame_id + "/" + name;
   }
-  if(unused_keys.erase("set_range")) {
+  if (unused_keys.erase("set_range")) {
     this->set_range = parameters["set_range"].get<bool>();
   }
 }

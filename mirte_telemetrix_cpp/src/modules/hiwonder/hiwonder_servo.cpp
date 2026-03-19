@@ -51,8 +51,9 @@ Hiwonder_servo::Hiwonder_servo(
                 upper);
   }
 
-  if(this->servo_data->set_range) {
-    this->bus_mod->set_range(servo_data->id, servo_data->min_angle_out, servo_data->max_angle_out);
+  if (this->servo_data->set_range) {
+    this->bus_mod->set_range(servo_data->id, servo_data->min_angle_out,
+                             servo_data->max_angle_out);
   }
 
   // create enable service
