@@ -1,11 +1,10 @@
 ---
-# CHECK: is this even used?
 ticks: 1320  # TODO: check 11pps*30reduction *4
 separate_update_format: "/io/motor/set_%s_speed" # use %s for motor name
 single_update_name: "/io/set_multiple_motor_speeds"
-use_topic_update: false
+use_topic_update: true
 use_single_update: true
-cmd_vel_deadzone: 0
-cmd_vel_update_deadzone: 0
+cmd_vel_deadzone: 10  # in %, lower than that, send 0, to prevent motor burning out when not moving
+cmd_vel_update_deadzone: 1 # only send update if cmd_vel changes by this much, in %, if 0, always send updates. (1: only on change)
 encoder_topic_format: "/io/encoder/%s" # use %s for encoder name
 max_rot_speed: 18.84 # 6*pi, in rad/s, this is for the conversion of rad/s to -100..100 for the motor commands, not a real limit on the robot
