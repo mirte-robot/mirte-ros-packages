@@ -51,7 +51,9 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
       }
     }
   } else {
-    if (to_deadzone || diff >= this->settings.cmd_vel_update_deadzone) { // if upd_deadzone == 0, then always upd
+    if (to_deadzone ||
+        diff >= this->settings.cmd_vel_update_deadzone) { // if upd_deadzone ==
+                                                          // 0, then always upd
       updated = true;
       this->_last_sent_cmd[joint] = speed_mapped;
     }
@@ -117,7 +119,8 @@ void MirteBaseHWInterface::read_single(int joint,
 
   // if (_last_value[joint] == 0) {
   //   _last_value[joint] = _wheel_encoder[joint];
-  //   // when starting, the encoders dont have to be at 0. Without this, the odom
+  //   // when starting, the encoders dont have to be at 0. Without this, the
+  //   odom
   //   // can jump at the first loop
   // }
   // int16_t diff_ticks = _wheel_encoder[joint] - _last_value[joint];
@@ -125,18 +128,20 @@ void MirteBaseHWInterface::read_single(int joint,
   // _last_value[joint] = _wheel_encoder[joint];
 
   auto latest_msg = this->latest_msgs_[joint].readFromRT();
-  
-  if (latest_msg == nullptr || latest_msg->first == nullptr || latest_msg->second == nullptr) {
+
+  if (latest_msg == nullptr || latest_msg->first == nullptr ||
+      latest_msg->second == nullptr) {
     // no message received yet, do nothing
     // diff_ticks = 0;
     return;
-  } 
+  }
   auto latest_encoder_val = latest_msg->first->value;
-  auto  diff_ticks = latest_msg->first->value - latest_msg->second->value;
-    auto period_sec = (rclcpp::Time(latest_msg->first->header.stamp) - rclcpp::Time(latest_msg->second->header.stamp)).seconds();
-    // velo = diff_ticks
-    // _last_value[joint] = latest_msg->first->value;
-  
+  auto diff_ticks = latest_msg->first->value - latest_msg->second->value;
+  auto period_sec = (rclcpp::Time(latest_msg->first->header.stamp) -
+                     rclcpp::Time(latest_msg->second->header.stamp))
+                        .seconds();
+  // velo = diff_ticks
+  // _last_value[joint] = latest_msg->first->value;
 
   double radPerEncoderTick = rad_per_enc_tick();
   double distance_rad;
@@ -149,8 +154,9 @@ void MirteBaseHWInterface::read_single(int joint,
         diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
   }
 
-  // Doesn't work with single pin encoders, but no'ones using pos for odom with those anyways.
-  double distance_pos_rad= latest_encoder_val * radPerEncoderTick * 1.0;
+  // Doesn't work with single pin encoders, but no'ones using pos for odom with
+  // those anyways.
+  double distance_pos_rad = latest_encoder_val * radPerEncoderTick * 1.0;
 
   pos[joint] = distance_pos_rad; // TODO: fix with last pos
   if (period_sec < 0.01) {
@@ -319,7 +325,7 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
 hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
   // write 0s to all motors in write() to stop the robot
-  
+
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     cmd[i] = 0;
   }
@@ -430,7 +436,10 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
-    latest_msgs_.push_back(realtime_tools::RealtimeBuffer<std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr, mirte_msgs::msg::Encoder::ConstSharedPtr>>{});
+    latest_msgs_.push_back(
+        realtime_tools::RealtimeBuffer<
+            std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr,
+                      mirte_msgs::msg::Encoder::ConstSharedPtr>>{});
     // _wheel_encoder_update_time.push_back(nh->now());
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);

@@ -221,8 +221,8 @@ private:
     // std::cout << "Encoder value: " << msg->value << std::endl;
     // _wheel_encoder[joint] = msg->value;
     // _wheel_encoder_update_time[joint] = msg->header.stamp;
-    this->latest_msgs_[joint].writeFromNonRT({msg, this->latest_msgs_[joint].readFromNonRT()->first});
-
+    this->latest_msgs_[joint].writeFromNonRT(
+        {msg, this->latest_msgs_[joint].readFromNonRT()->first});
   }
 
   // Thread and function to restart service clients when the service server has
@@ -232,8 +232,10 @@ private:
   void start_reconnect();
   std::mutex service_clients_mutex;
   std::mutex encoder_mutex;
-  std::vector<realtime_tools::RealtimeBuffer<std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr, mirte_msgs::msg::Encoder::ConstSharedPtr>>>
-    latest_msgs_{};
+  std::vector<realtime_tools::RealtimeBuffer<
+      std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr,
+                mirte_msgs::msg::Encoder::ConstSharedPtr>>>
+      latest_msgs_{};
   // thread for ros spinning
   std::jthread ros_thread;
   void ros_spin();
