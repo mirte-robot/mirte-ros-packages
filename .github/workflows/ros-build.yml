@@ -35,6 +35,7 @@ jobs:
           submodules: 'recursive'
           fetch-depth: 0 # fetch all history for the self-checkout step
       - name: self-checkout
+        id: self-checkout
         run: |
               set -e
               mkdir -p ./srcO/
@@ -57,8 +58,11 @@ jobs:
                     fi
                   done
               fi
+              # always skip generate_parameter_library example packages
+              skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
-              echo "SKIP_PACKAGES=\"${skip_packages}\"" >> $GITHUB_ENV
+              echo "SKIP_PACKAGES=\"${skip_packages}\"" >> $GITHUB_OUTPUT
+              echo "SKIP_PACKAGES=${skip_packages}" >> $GITHUB_ENV
               # echo $skip_packages
               # echo "SKIP_PACKAGES=(${{ env.SKIP_PACKAGES }})" # for debugging
               # cat $GITHUB_ENV
@@ -72,7 +76,7 @@ jobs:
           REPOS_FILE: ./sources.repos
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
-
+          SKIP_PACKAGES:  ${{ steps.self-checkout.outputs.SKIP_PACKAGES || '' }}
         #   SBUILD_CONF: "$enable_network = 1;"
         #   Skip pushing to repo when not on main branch
           SKIP_PUSH: false
@@ -87,7 +91,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # REPOS_FILE: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}./sources.repos
           # if not on develop or main, only build the packages from the last 2 commits
-          SKIP_PACKAGES: ${{ env.SKIP_PACKAGES || '' }}
+          SKIP_PACKAGES: ${{ steps.self-checkout.outputs.SKIP_PACKAGES || '' }}
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
         #   Skip pushing to repo when not on main branch

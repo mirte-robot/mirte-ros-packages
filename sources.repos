@@ -19,3 +19,12 @@ repositories:
     type: git
     url: https://github.com/ArendJan/usb_cam.git # for lazy publishing
     version: main
+  orbbecsdk_ros2:
+    type: git
+    url: https://github.com/orbbec/OrbbecSDK_ROS2.git
+    version: main # v2-main doesn't support astra mini pro yet
+  generate_parameter_library:
+    type: git
+    url: https://github.com/ArendJan/generate_parameter_library.git
+    version: test-any-string
+  

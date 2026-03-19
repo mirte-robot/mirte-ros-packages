@@ -221,7 +221,10 @@ def generate_launch_description():
                     [FindPackageShare("rplidar_ros"), "launch", "rplidar_c1_launch.py"]
                 )
             ]
-        )
+        ),
+        launch_arguments={
+            "auto_standby": "true",
+        }.items(),
     )
     rosbridge = IncludeLaunchDescription(
         PathJoinSubstitution(
