@@ -18,30 +18,31 @@ MotorData::MotorData(std::shared_ptr<Parser> parser,
     this->P2 = pins["P2"];
     this->D1 = pins["D1"];
     this->D2 = pins["D2"];
-  } else if (unused_keys.erase("pins")) {
-    auto subkeys = parser->get_params_keys(
-        parser->build_param_name(get_device_key(this), "pins"));
-
-    if (subkeys.erase("p1")) {
-      this->P1 = board->resolvePin(get_string(parameters["pins.p1"]));
-    }
-    if (subkeys.erase("p2")) {
-      this->P2 = board->resolvePin(get_string(parameters["pins.p2"]));
-    }
-
-    if (subkeys.erase("d1")) {
-      this->D1 = board->resolvePin(get_string(parameters["pins.d1"]));
-    }
-    if (subkeys.erase("d2")) {
-      this->D2 = board->resolvePin(get_string(parameters["pins.d2"]));
-    }
-
-    for (auto subkey : subkeys) {
-      unused_keys.insert(parser->build_param_name("pins", subkey));
-    }
   } else {
-    RCLCPP_ERROR(logger, "Device %s.%s has no a connector or pins specified.",
-                 get_device_class().c_str(), name.c_str());
+    auto pins_count = 0;
+    if (unused_keys.erase("pins.p1")) {
+      this->P1 = board->resolvePin(get_string(parameters["pins.p1"]));
+      pins_count++;
+    }
+    if (unused_keys.erase("pins.p2")) {
+      this->P2 = board->resolvePin(get_string(parameters["pins.p2"]));
+      pins_count++;
+    }
+
+    if (unused_keys.erase("pins.d1")) {
+      this->D1 = board->resolvePin(get_string(parameters["pins.d1"]));
+      pins_count++;
+    }
+    if (unused_keys.erase("pins.d2")) {
+      this->D2 = board->resolvePin(get_string(parameters["pins.d2"]));
+      pins_count++;
+    }
+    if (pins_count < 2) {
+      RCLCPP_ERROR(
+          logger,
+          "Device %s.%s has no a connector or not enough pins specified.",
+          get_device_class().c_str(), name.c_str());
+    }
   }
 
   if (unused_keys.erase("type")) {
@@ -66,6 +67,9 @@ MotorData::MotorData(std::shared_ptr<Parser> parser,
 
   if (unused_keys.erase("inverted")) {
     this->inverted = parameters["inverted"].get<bool>();
+  }
+  if (unused_keys.erase("stop_mode")) {
+    this->stop_mode = get_string(parameters["stop_mode"]) == "high";
   }
 }
 

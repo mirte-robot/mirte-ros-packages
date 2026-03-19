@@ -19,9 +19,9 @@ public:
     this->invert = invert;
   }
   PCA_Motor_data() {}
-  static std::vector<std::shared_ptr<PCA_Motor_data>> parse_pca_motor_data(
-      std::shared_ptr<Parser> parser,
-      /*std::shared_ptr<Mirte_Board> board,*/ std::string pca_key,
-      std::set<std::string> &unused_keys);
+  // static std::vector<std::shared_ptr<PCA_Motor_data>> parse_pca_motor_data(
+  //     std::shared_ptr<Parser> parser,
+  //     /*std::shared_ptr<Mirte_Board> board,*/ std::string pca_key,
+  //     std::set<std::string> &unused_keys);
   bool check() { return pinA != (pin_t)-1 && pinB != (pin_t)-1 && name != ""; }
 };

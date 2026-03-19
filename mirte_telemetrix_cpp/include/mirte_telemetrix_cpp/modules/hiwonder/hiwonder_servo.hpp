@@ -43,7 +43,8 @@ public:
   float calc_angle_in(uint16_t angle_out);
 
   std_msgs::msg::Header get_header();
-
+  bool set_angle(float angle, const bool radians = true,
+                 const float rate = NAN);
   void update();
 
 private:

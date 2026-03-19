@@ -1,0 +1,30 @@
+mirte_telemetrix_cpp_as5600:
+  as5600_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of as5600 module names to be loaded"
+  
+  modules:
+    
+    __map_as5600_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of module (as5600)"
+        pins:
+          sda:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SDA line"
+          scl:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SCL line"
+        addr:
+          type: int
+          default_value: 0x36
+          description: "I2C address of the as5600 multiplexer"
+        connector:
+          type: string
+          default_value: NONE
+          description: "Connector to which the as5600 module is connected"

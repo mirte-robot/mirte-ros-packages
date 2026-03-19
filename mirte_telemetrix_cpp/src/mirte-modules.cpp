@@ -35,8 +35,8 @@ void Mirte_modules::start() {
 
   //   this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
   RCLCPP_INFO(nh->get_logger(), "Adding INA226 Modules");
-  auto ina_mods =
-      INA226_sensor::get_ina_modules(node_data, parser, this->sensor_sys);
+  auto ina_mods = INA226_sensor::get_ina_modules(
+      node_data, parser, this->sensor_sys, this->tmx->module_sys);
   std::cout << "Adding ina modules" << ina_mods.size() << std::endl;
   this->modules.insert(this->modules.end(), ina_mods.begin(), ina_mods.end());
 

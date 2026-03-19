@@ -14,9 +14,9 @@
 class SonarMonitor : public Mirte_Sensor {
 public:
   /// @brief The minimum range in meters. 0.02 Meters for the HC-SR04.
-  const double min_range = 0.02;
+  double min_range = 0.02;
   /// @brief The maximum range in meters. 4.50 Meters for the HC-SR04.
-  const double max_range = 4.5;
+  double max_range = 4.5;
 
   SonarMonitor(NodeData node_data, SonarData sonar_data);
 
