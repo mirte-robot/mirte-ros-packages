@@ -64,7 +64,9 @@ MotorData::MotorData(std::shared_ptr<Parser> parser,
     RCLCPP_WARN(logger, "No motor type found for %s defaulting to PP motor",
                 name.c_str());
   }
-
+  if (unused_keys.erase("dp_type")) {
+    this->dp_type = get_string(parameters["dp_type"]);
+  }
   if (unused_keys.erase("inverted")) {
     this->inverted = parameters["inverted"].get<bool>();
   }

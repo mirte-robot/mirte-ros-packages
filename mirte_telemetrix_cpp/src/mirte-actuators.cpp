@@ -119,6 +119,7 @@ void Mirte_Actuators::set_multiple_motors_service_callback(
     mirte_msgs::srv::SetSpeedMultiple::Response::SharedPtr res) {
   // Only works for motors directly connected, not for pca motors.
   res->success = true;
+  std::vector<std::pair<uint8_t, uint16_t>> pin_values;
   for (size_t i = 0; i < req->speeds.size(); i++) {
     auto motor_name = req->speeds[i].name;
     auto motor_speed = req->speeds[i].speed;
@@ -127,11 +128,17 @@ void Mirte_Actuators::set_multiple_motors_service_callback(
                                    return motor->name == motor_name;
                                  });
     if (motor_it != this->motors.end()) {
-      (*motor_it)->set_speed(motor_speed);
+      auto it = (*motor_it)->get_speed_multi(motor_speed);
+      for (const auto &i : it) {
+        pin_values.push_back(i);
+      }
     } else {
       RCLCPP_ERROR(this->nh->get_logger(), "Motor '%s' not found",
                    motor_name.c_str());
       res->success = false;
     }
+  }
+  if (res->success) {
+    this->tmx->pwmWrite(pin_values);
   }
 }

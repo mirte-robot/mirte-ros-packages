@@ -42,3 +42,21 @@ void DDPMotor::set_speed(int speed) {
     tmx->digitalWrite(A_pin, true);
   }
 }
+
+std::vector<std::pair<uint8_t, uint16_t>> DDPMotor::get_speed_multi(int speed) {
+  this->set_speed(speed);
+  return {};
+  // int32_t speed_ = (int32_t)((float)speed * (this->max_pwm) / 100.0);
+
+  // if (inverted) {
+  //   speed_ = -speed_;
+  // }
+
+  // if (speed > 0) {
+  //   return {{this->pwm_pin, speed_}, {this->A_pin, 0}, {this->B_pin, 1}};
+  // } else if (speed < 0) {
+  //   return {{this->pwm_pin, -speed_}, {this->A_pin, 1}, {this->B_pin, 0}};
+  // } else {
+  //   return {{this->pwm_pin, 0}, {this->A_pin, 0}, {this->B_pin, 0}};
+  // }
+}

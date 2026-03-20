@@ -12,8 +12,8 @@
         device: mirte
         type: pp
         pins:
-          p1: 17
-          p2: 16
+          p1: 16
+          p2: 17
       rear_right:
         name: rear_right
         device: mirte
@@ -124,6 +124,11 @@
         turn_off_time: 10.0
         power_low_time: 20.0
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
+        shutdown_switch_in_pin: GP27
+        shutdown_relay_pin: GP28
+        shutdown_switch_off_value: false
+        shutdown_relay_off_value: false
+        shutdown_switch_off_time: 2.0
       movement:
         device: mirte
         type: MPU9250

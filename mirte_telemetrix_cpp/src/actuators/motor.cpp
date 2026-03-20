@@ -31,6 +31,7 @@ Motor::get_motors(NodeData node_data, std::shared_ptr<Parser> parser) {
         parameters["type"] = rclcpp::ParameterValue(map_motor.type);
         parameters["inverted"] = rclcpp::ParameterValue(map_motor.inverted);
         parameters["stop_mode"] = rclcpp::ParameterValue(map_motor.stop_mode);
+        parameters["dp_type"] = rclcpp::ParameterValue(map_motor.dp_type);
         std::set<std::string> unused_keys = get_keys(parameters);
         return MotorData(parser, node_data.board, name, parameters,
                          unused_keys);

@@ -28,7 +28,8 @@ public:
   get_motors(NodeData node_data, std::shared_ptr<Parser> parser);
 
   virtual void set_speed(int speed) = 0;
-
+  virtual std::vector<std::pair<uint8_t, uint16_t>>
+  get_speed_multi(int speed) = 0;
   std::string get_name() const { return this->name; }
 
   // TODO: Maybe add start to TelemetrixDevice

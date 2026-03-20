@@ -150,6 +150,12 @@ mirte_telemetrix_cpp:
         description: "Type of motor driver (pp, dp, ddp)"
         validation:
           one_of<>: [ [ "pp", "dp", "ddp" ] ]
+      dp_type:
+        type: string
+        default_value: normal
+        description: "Normal (2x inputs, inverted speed if !d1) or dir and speed input (normal, dir_speed)"
+        validation:
+          one_of<>: [["normal", "dir_speed"]]
       inverted:
         type: bool
         default_value: false
