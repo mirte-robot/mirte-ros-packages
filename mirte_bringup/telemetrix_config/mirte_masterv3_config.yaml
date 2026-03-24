@@ -204,7 +204,7 @@
     #     pins:
     #       trigger: 12
     #       echo: 13
-    # oled:
-    #   oled:
-    #     device: mirte
-    #     connector: I2C1
+    oled:
+      oled:
+        device: mirte
+        connector: I2C3
