@@ -23,7 +23,7 @@
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
           <param name="ticks">${params['ticks']}</param>
-        <param name="separate_update_name">${params['separate_update_format']}</param>
+        <param name="separate_update_format">${params['separate_update_format']}</param>
         <!-- Use %s in format strings to replace with joint names -->
         <param name="single_update_name">${params['single_update_name']}</param>
         <param name="encoder_topic_format">${params['encoder_topic_format']}</param>

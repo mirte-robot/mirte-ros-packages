@@ -402,6 +402,26 @@ void MirteBaseHWInterface::read_settings() {
     this->settings.max_rot_speed =
         std::stod(info_.hardware_parameters.at(MAX_ROT_SPEED_PARAM_NAME));
   }
+
+  // print all settings:
+  rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
+  RCLCPP_INFO_STREAM(logger, "ticks: " << this->settings.ticks);
+  RCLCPP_INFO_STREAM(logger, "separate_update_format: "
+                             << this->settings.separate_update_format);
+  RCLCPP_INFO_STREAM(logger, "single_update_name: "
+                             << this->settings.single_update_name);
+  RCLCPP_INFO_STREAM(logger, "use_topic_update: "
+                             << this->settings.use_topic_update);
+  RCLCPP_INFO_STREAM(logger, "use_single_update: "
+                             << this->settings.use_single_update);
+  RCLCPP_INFO_STREAM(logger, "cmd_vel_deadzone: " << this->settings.cmd_vel_deadzone);
+  RCLCPP_INFO_STREAM(logger, "cmd_vel_update_deadzone: "
+                             << this->settings.cmd_vel_update_deadzone);
+  RCLCPP_INFO_STREAM(logger, "encoder_topic_format: "
+                             << this->settings.encoder_topic_format);
+  RCLCPP_INFO_STREAM(logger, "max_rot_speed: " << this->settings.max_rot_speed);
+
+
 }
 
 using namespace std::placeholders;
