@@ -195,7 +195,7 @@ HiWonderBus_module::get_hiwonder_modules(
 
           std::set<std::string> unused_keys = get_keys(parameters);
           std::shared_ptr<HiWonderServoData> data =
-              std::make_shared<HiWonderServoData>(parser, node_data.board, name,
+              std::make_shared<HiWonderServoData>(parser, node_data.board, servo_name,
                                                   parameters, unused_keys, "");
           motor_data.push_back(data);
         }
