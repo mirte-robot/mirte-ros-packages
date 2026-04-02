@@ -12,68 +12,26 @@
         device: mirte
         type: pp
         pins:
-          p1: 16
-          p2: 17
+          p1: 17
+          p2: 16
       rear_right:
         name: rear_right
         device: mirte
         pins:
-          p1: 11
-          p2: 10
+          p1: 10
+          p2: 11
       rear_left:
         name: rear_left
         device: mirte
         pins:
-          p1: 20
-          p2: 21
+          p1: 21
+          p2: 20
       front_right:
         name: front_right
         device: mirte
         pins:
-          p1: 15
-          p2: 14
-    # servo:
-    #   pincher:
-    #     name: pincher
-    #     device: mirte
-    #     pins: 
-    #       pin: GP15
-    #   pincher2:
-    #     name: pincher2
-    #     device: mirte
-    #     pins: 
-    #       pin: 15
-    # intensity:
-    #   x_axis:
-    #     name: x_axis
-    #     device: mirte
-    #     pins:
-    #       analog: 27
-    #       # digital: GP17
-    #   y_axis:
-    #     name: y_axis
-    #     device: mirte
-    #     pins:
-    #       analog: GP26
-    #       # digital: GP16
-    #   flip:
-    #     name: flip
-    #     device: mirte
-    #     pins:
-    #       # analog: GP28
-    #       digital: GP19
-    #   on_off:
-    #     name: on_off
-    #     device: mirte
-    #     pins:
-    #       # analog: GP29
-    #       digital: GP18
-    #   holonomic:
-    #     name: holonomic
-    #     device: mirte
-    #     pins:
-    #       # analog: GP30
-    #       digital: GP20
+          p1: 14
+          p2: 15
     modules:
 
       servo_controller:
@@ -118,7 +76,7 @@
         type: INA226
         connector: I2C3
         addr: 0x40
-        min_voltage: 11.1
+        min_voltage: 9.1
         max_current: 5.0
         max_voltage: 15.0
         turn_off_time: 10.0
@@ -126,7 +84,7 @@
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
         shutdown_switch_in_pin: GP27
         shutdown_relay_pin: GP28
-        shutdown_switch_off_value: false
+        shutdown_switch_off_value: true
         shutdown_relay_off_value: false
         shutdown_switch_off_time: 2.0
       movement:
@@ -147,8 +105,8 @@
         name: front_left
         device: mirte
         pins:
-          A: 19
-          B: 18
+          A: 18
+          B: 19
       rear_left:
         name: rear_left
         device: mirte
@@ -159,14 +117,14 @@
         name: front_right
         device: mirte
         pins:
-          A: 12
-          B: 13
+          A: 13
+          B: 12
       rear_right:
         name: rear_right
         device: mirte
         pins:
-          A: 8
-          B: 9
+          A: 9
+          B: 8
     distance:
       rear_left:
         name: rear_left
