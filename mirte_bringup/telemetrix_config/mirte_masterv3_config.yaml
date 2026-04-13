@@ -76,10 +76,10 @@
         type: INA226
         connector: I2C3
         addr: 0x40
-        min_voltage: 9.1
+        min_voltage: 10.6 # according to the datasheet of Parkside battery.
         max_current: 5.0
         max_voltage: 15.0
-        turn_off_time: 10.0
+        turn_off_time: 200.0 # shutdown service will let it know that it should turn it off when usb power is lost.
         power_low_time: 20.0
         percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
         shutdown_switch_in_pin: GP27
@@ -130,8 +130,6 @@
         name: rear_left
         device: mirte
         frame_id: rear_left_sonar
-        max_distance: 10.0
-        min_distance: 0.2
         pins:
           trigger: 4
           echo: 4
