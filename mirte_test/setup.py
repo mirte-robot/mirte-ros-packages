@@ -21,6 +21,7 @@ setup(
         "console_scripts": [
             "mirte_master_calibrate = mirte_test.mirte_master_calibrate:main",
             "mirte_master_hw_check = mirte_test.mirte_master_hw_check:main",
+            "mirte_master_set_voltage_ranges = mirte_test.mirte_master_set_voltage_ranges:main",
         ],
     },
 )
