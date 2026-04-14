@@ -1,0 +1,5 @@
+float32 low
+float32 high
+---
+bool success
+string message

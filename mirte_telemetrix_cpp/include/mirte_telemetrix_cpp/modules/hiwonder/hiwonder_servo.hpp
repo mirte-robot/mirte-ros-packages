@@ -21,6 +21,7 @@
 #include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <mirte_msgs/srv/set_servo_angle_with_speed.hpp>
 #include <mirte_msgs/srv/set_servo_offset.hpp>
+#include <mirte_msgs/srv/set_servo_voltage_range.hpp>
 #include <std_msgs/msg/header.hpp>
 #include <std_srvs/srv/set_bool.hpp>
 
@@ -74,6 +75,7 @@ private:
   rclcpp::Service<mirte_msgs::srv::SetServoOffset>::SharedPtr
       set_offset_service;
 
+    rclcpp::Service<mirte_msgs::srv::SetServoVoltageRange>::SharedPtr voltage_range_service;
   void enable_service_callback(
       const std_srvs::srv::SetBool::Request::ConstSharedPtr req,
       std_srvs::srv::SetBool::Response::SharedPtr res);
