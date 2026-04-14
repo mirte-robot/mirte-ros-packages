@@ -100,6 +100,24 @@ Hiwonder_servo::Hiwonder_servo(
               "/_set_offset", // hidden service
           std::bind(&Hiwonder_servo::set_offset_service_callback, this, _1, _2),
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
+  
+
+  this->voltage_range_service =
+      nh->create_service<mirte_msgs::srv::SetServoVoltageRange>(
+          "servo/" + servo_group + this->servo_data->name +
+              "/_set_voltage_range", // hidden service
+          [this](const mirte_msgs::srv::SetServoVoltageRange::Request::ConstSharedPtr req,
+                 mirte_msgs::srv::SetServoVoltageRange::Response::SharedPtr res) {
+                bool success = this->bus_mod->set_voltage_range(
+                    this->servo_data->id, req->low, req->high);
+                res->success = success;
+                res->message =
+                    success ? "Voltage range set successfully"
+                            : "Failed to set voltage range. Check logs for details.";
+              },
+          rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
+
+
   node_data.add_timer(duration, std::bind(&Hiwonder_servo::update, this));
   if (this->servo_data->enable_motor) {
     // this->bus_mod->motor_mode_write(this->servo_data->id, 1);
