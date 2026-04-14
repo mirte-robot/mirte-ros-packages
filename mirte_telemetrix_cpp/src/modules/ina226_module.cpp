@@ -84,15 +84,16 @@ void INA226_sensor::write_soc(float soc) {
 }
 
 // TODO: Maybe add mutex lock-out although not fully necessary
-void INA226_sensor::update() { // only publish at 1Hz
-  if (this->battery_pub->get_subscription_count() > 0) {
-    auto msg = sensor_msgs::msg::BatteryState();
-    msg.header = get_header();
+void INA226_sensor::update() { // only published at 1Hz
 
+    auto msg = sensor_msgs::msg::BatteryState();
     msg.voltage = voltage_;
     msg.current = current_;
     msg.percentage = calc_soc(voltage_);
     this->write_soc(msg.percentage);
+
+  if (this->battery_pub->get_subscription_count() > 0) {
+    msg.header = get_header();
     this->battery_pub->publish(msg);
   }
 }
