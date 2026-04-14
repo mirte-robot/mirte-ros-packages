@@ -179,9 +179,9 @@ class HWNode(Node):
         # check multiple speed (done by cmd_vel)
 
     def check_sonars(self):
-        sonars = ["front_left", "rear_left", "front_right", "rear_right"]
-        min_vals = [100, 100, 100, 100]
-        max_vals = [0, 0, 0, 0]
+        sonars = ["rear_left", "rear_right"]
+        min_vals = [100, 100]
+        max_vals = [0, 0]
 
         def update_sonar(msg, s):
             nonlocal min_vals, max_vals
@@ -439,8 +439,8 @@ class HWNode(Node):
         # check if service exists
         if enable_service not in self.all_services:
             self.get_logger().error("Service %s does not exist" % enable_service)
-            self.ok = False
-            return
+            # self.ok = False
+            # return
         # check if service is callable
         enable_client = self.create_client(SetBool, enable_service)
         if not enable_client.wait_for_service(timeout_sec=1.0):

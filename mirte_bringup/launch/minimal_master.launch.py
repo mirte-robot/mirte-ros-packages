@@ -13,6 +13,7 @@ from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node, PushRosNamespace, SetRemap
+from pathlib import Path
 
 
 def generate_launch_description():
@@ -194,26 +195,57 @@ def generate_launch_description():
         output="screen",
     )
 
-    depth_cam = GroupAction(
-        actions=[
-            # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
-            # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
-            # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
-            IncludeLaunchDescription(
-                XMLLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("astra_camera"),
-                                "launch",
-                                "astra_pro_plus.launch.xml",
-                            ]
-                        )
-                    ]
+    
+    # use lsusb to detect which depth cam is connected
+    astra_devices = [
+        device.name
+        for device in Path("/dev").glob("astra*")
+    ]
+    print(astra_devices)
+    if("astradepth" in astra_devices and "astfrauvc" in astra_devices):
+        depth_cam = GroupAction(
+            actions=[
+                # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
+                # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
+                # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
+                IncludeLaunchDescription(
+                    XMLLaunchDescriptionSource(
+                        [
+                            PathJoinSubstitution(
+                                [
+                                    FindPackageShare("astra_camera"),
+                                    "launch",
+                                    "astra_pro_plus.launch.xml",
+                                ]
+                            )
+                        ]
+                    ),
                 ),
-            ),
-        ]
-    )
+            ]
+        )
+    elif(False): # TODO: fix this for the newer camera
+        depth_cam = GroupAction(
+            actions=[
+                # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
+                # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
+                # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(
+                        [
+                            PathJoinSubstitution(
+                                [
+                                    FindPackageShare("orbbec_camera"),
+                                    "launch",
+                                    "astra.launch.py", # for the astra mini S pro
+                                ]
+                            )
+                        ]
+                    ),
+                ),
+            ]
+        )
+    else:
+        depth_cam = None
     lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -247,7 +279,7 @@ def generate_launch_description():
                 cameras,
                 web_video_server,
                 lidar,
-                depth_cam,
+                *([depth_cam] if depth_cam is not None else []), # if no cam is found, just not start it as it is unknown which one to start.
                 arm_control,
                 mecanum_drive_control,
                 rosbridge,
