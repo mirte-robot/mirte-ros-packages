@@ -75,7 +75,8 @@ private:
   rclcpp::Service<mirte_msgs::srv::SetServoOffset>::SharedPtr
       set_offset_service;
 
-    rclcpp::Service<mirte_msgs::srv::SetServoVoltageRange>::SharedPtr voltage_range_service;
+  rclcpp::Service<mirte_msgs::srv::SetServoVoltageRange>::SharedPtr
+      voltage_range_service;
   void enable_service_callback(
       const std_srvs::srv::SetBool::Request::ConstSharedPtr req,
       std_srvs::srv::SetBool::Response::SharedPtr res);
