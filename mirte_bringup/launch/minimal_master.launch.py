@@ -202,7 +202,7 @@ def generate_launch_description():
         for device in Path("/dev").glob("astra*")
     ]
     print(astra_devices)
-    if("astradepth" in astra_devices and "astfrauvc" in astra_devices):
+    if("astradepth" in astra_devices and "astrauvc" in astra_devices):
         depth_cam = GroupAction(
             actions=[
                 # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
