@@ -223,12 +223,9 @@ def generate_launch_description():
                 ),
             ]
         )
-    elif(False): # TODO: fix this for the newer camera
+    elif("astra_mini_pro" in astra_devices):
         depth_cam = GroupAction(
             actions=[
-                # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
-                # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
-                # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
                 IncludeLaunchDescription(
                     PythonLaunchDescriptionSource(
                         [
@@ -245,6 +242,7 @@ def generate_launch_description():
             ]
         )
     else:
+        print("No compatible depth camera found, not launching any depth camera node.")
         depth_cam = None
     lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
