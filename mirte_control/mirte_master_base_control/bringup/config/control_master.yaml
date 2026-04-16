@@ -1,5 +1,5 @@
 ---
-ticks: 1320  # TODO: check 11pps*30reduction *4
+ticks: 1320  # This value is overwritten in xacro, by value from launch file.
 separate_update_format: "/io/motor/set_%s_speed" # use %s for motor name
 single_update_name: "/io/set_multiple_motor_speeds"
 use_topic_update: true

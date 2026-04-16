@@ -29,7 +29,12 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from std_srvs.srv import SetBool
 from mirte_msgs.msg import ServoPosition
-from mirte_msgs.srv import GetServoOffset, SetServoOffset, SetServoAngle, SetServoVoltageRange
+from mirte_msgs.srv import (
+    GetServoOffset,
+    SetServoOffset,
+    SetServoAngle,
+    SetServoVoltageRange,
+)
 import time
 import sys
 
@@ -69,18 +74,16 @@ class CalibrateNode(Node):
 
         for servo_id in ranges:
             servo_data = ranges[servo_id]
-            
+
             topic = "/io/servo/hiwonder/%s/_set_voltage_range" % servo_data["name"]
             set_pos = self.create_client(SetServoVoltageRange, topic)
             req = SetServoVoltageRange.Request()
             req.low = float(voltage_min)
-            req.high =float(voltage_max)
+            req.high = float(voltage_max)
             fut = set_pos.call_async(req)
             rclpy.spin_until_future_complete(self, fut)
             print(fut.result())
-        print(
-            "done setting voltages!"
-        )
+        print("done setting voltages!")
         self.enable_arm_control(True)
 
 

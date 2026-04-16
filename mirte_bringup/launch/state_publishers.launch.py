@@ -15,10 +15,19 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-
+    # Declare arguments
+    declared_arguments = [
+        DeclareLaunchArgument(
+            "ticks",
+            default_value="1320",
+            description="The number of ticks per wheel revolution, used for odometry and control. Defaults to 1320, which is 11 pulses per second * 30 reduction * 4 (quadrature encoding)",
+        ),
+    ]
     robot_description_content = Command(
         [
             FindExecutable(name="xacro"),
+            f" ticks:=",
+            LaunchConfiguration("ticks"),
             " ",
             PathJoinSubstitution(
                 [
@@ -53,4 +62,4 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
     ]
 
-    return LaunchDescription(nodes)
+    return LaunchDescription(declared_arguments + nodes)

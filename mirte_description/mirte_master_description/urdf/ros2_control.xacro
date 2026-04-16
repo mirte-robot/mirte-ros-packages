@@ -4,6 +4,7 @@
 <xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
 <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
 <xacro:arg name="prefix" default="" />
+<xacro:arg name="ticks" default="${params['ticks']}" />
 
 <xacro:macro name="joint" params="name prefix">
       <joint name="${prefix}${name}_wheel_joint">
@@ -22,7 +23,7 @@
         </xacro:if>
         <xacro:unless value="$(arg sim)">
           <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-          <param name="ticks">${params['ticks']}</param>
+          <param name="ticks">$(arg ticks)</param>
         <param name="separate_update_format">${params['separate_update_format']}</param>
         <!-- Use %s in format strings to replace with joint names -->
         <param name="single_update_name">${params['single_update_name']}</param>
