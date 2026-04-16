@@ -84,8 +84,8 @@ def generate_launch_description():
                     "overlay_config_path": PathJoinSubstitution(
                         [
                             FindPackageShare("mirte_bringup"),
-                            "telemetrix_config/overlay",
-                            "200rpm_wheels.yaml",
+                            "telemetrix_config/overlays",
+                            "invert_wheels.yaml",
                         ]
                     )
                 }

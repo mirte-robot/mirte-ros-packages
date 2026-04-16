@@ -2,20 +2,20 @@
   ros__parameters:
     motor:
       front_left:
-        invert: true
+        inverted: true
       rear_right:
-        invert: true
+        inverted: true
       rear_left:
-        invert: true
+        inverted: true
       front_right:
-        invert: true
+        inverted: true
     encoder:
       front_left:
-        invert: true
+        inverted: true
       rear_right:
-        invert: true
+        inverted: true
       rear_left:
-        invert: true
+        inverted: true
       front_right:
-        invert: true
+        inverted: true
 
