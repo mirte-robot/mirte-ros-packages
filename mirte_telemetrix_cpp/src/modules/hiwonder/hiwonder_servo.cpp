@@ -186,16 +186,18 @@ bool Hiwonder_servo::set_angle(float angle, const bool radians,
   // Require speed to be positive, since sending 0.0 rad/s results in moving at
   // the max speed
   float speed = rate;
-  if (isnan(rate)) {
-    speed = 1; // dummy value to calc with
-  }
+  bool default_speed = isnan(rate);
+ 
   if (rate <= 0.0 && !isnan(rate)) {
     RCLCPP_ERROR(
         nh->get_logger(),
         "Speed must be positive. Provided speed was non-positive (%.3f <= 0.0)",
         speed);
-    // res->status = false;
-    return false;
+        if(rate == 0.0) {
+          default_speed = true;          
+        } else {
+          return false;
+        }
   }
 
   if (!radians) {
@@ -212,18 +214,20 @@ bool Hiwonder_servo::set_angle(float angle, const bool radians,
     // res->status = false;
     return false;
   }
-
+ if (default_speed ) {
+    speed = 1; // dummy value to calc with
+  }
   // Distance calculation based on: https://stackoverflow.com/a/52432897
   auto distance =
       pi - std::abs(std::fmod(std::abs(angle - last_angle), 2.0 * pi) - pi);
   auto time = distance / speed;
   // RCLCPP_DEBUG(nh->get_logger(), "TIME: %.3f", time);
-  if (isnan(rate)) {
+  if (default_speed) {
     time = 0.1;
   }
   uint16_t time_ms = time * 1000.0;
 
-  if (time > 30.0 && !isnan(rate)) {
+  if (time > 30.0 && !default_speed) {
     std::string unit = !radians ? "°" : "rad";
     RCLCPP_ERROR(nh->get_logger(),
                  "The speed angle combo (%.1f%s, %.2f%s/s) results in a move "
