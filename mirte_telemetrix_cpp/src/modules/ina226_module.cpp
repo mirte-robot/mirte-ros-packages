@@ -30,8 +30,9 @@ INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
   this->battery_pub = nh->create_publisher<sensor_msgs::msg::BatteryState>(
       "power/" + this->name, rclcpp::SystemDefaultsQoS());
 
-  this->used_pub = nh->create_publisher<std_msgs::msg::Int32>(
-      "power/" + this->name + "/used", rclcpp::SystemDefaultsQoS());
+  // not that accurate and no-one is using it.
+  // this->used_pub = nh->create_publisher<std_msgs::msg::Int32>(
+  //     "power/" + this->name + "/used", rclcpp::SystemDefaultsQoS());
 
   this->shutdown_service = nh->create_service<std_srvs::srv::SetBool>(
       "power/" + this->name + "/shutdown",
@@ -118,8 +119,8 @@ void INA226_sensor::update_sw() {
 }
 
 void INA226_sensor::data_callback(float voltage, float current) {
-  std::cout << "INA226 Data callback: Voltage: " << voltage
-            << " Current: " << current << std::endl;
+  // std::cout << "INA226 Data callback: Voltage: " << voltage
+  //           << " Current: " << current << std::endl;
   voltage_ = voltage;
   current_ = current;
   // this->integrate_usage(current_);
