@@ -27,6 +27,9 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
 }
 
 void EncoderMonitor::data_callback(int16_t value) {
+  if (this->encoder_data.inverted) {
+    value = -value;
+  }
   this->value += (int32_t)value;
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                   .header(get_header()) // Build the message
@@ -67,6 +70,7 @@ EncoderMonitor::get_encoder_monitors(NodeData node_data,
         parameters["pins.A"] = rclcpp::ParameterValue(map_encoder.pins.A);
         parameters["pins.B"] = rclcpp::ParameterValue(map_encoder.pins.B);
         parameters["frame_id"] = rclcpp::ParameterValue(map_encoder.frame_id);
+        parameters["inverted"] = rclcpp::ParameterValue(map_encoder.inverted);
         auto unused_keys = get_keys(parameters);
         std::set<std::string> unused_keys_set(unused_keys.begin(),
                                               unused_keys.end());
