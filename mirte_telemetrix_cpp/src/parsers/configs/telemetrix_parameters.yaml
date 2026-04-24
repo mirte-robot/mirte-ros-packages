@@ -65,6 +65,10 @@ mirte_telemetrix_cpp:
         type: string
         default_value: ""
         description: "Frame ID for the encoder data"
+      inverted:
+        type: bool
+        default_value: false
+        description: "Whether the encoder counts are inverted"
   ### Actual usage
   
   # joints:

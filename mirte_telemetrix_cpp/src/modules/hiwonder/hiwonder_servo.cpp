@@ -187,17 +187,17 @@ bool Hiwonder_servo::set_angle(float angle, const bool radians,
   // the max speed
   float speed = rate;
   bool default_speed = isnan(rate);
- 
+
   if (rate <= 0.0 && !isnan(rate)) {
     RCLCPP_ERROR(
         nh->get_logger(),
         "Speed must be positive. Provided speed was non-positive (%.3f <= 0.0)",
         speed);
-        if(rate == 0.0) {
-          default_speed = true;          
-        } else {
-          return false;
-        }
+    if (rate == 0.0) {
+      default_speed = true;
+    } else {
+      return false;
+    }
   }
 
   if (!radians) {
@@ -214,7 +214,7 @@ bool Hiwonder_servo::set_angle(float angle, const bool radians,
     // res->status = false;
     return false;
   }
- if (default_speed ) {
+  if (default_speed) {
     speed = 1; // dummy value to calc with
   }
   // Distance calculation based on: https://stackoverflow.com/a/52432897
