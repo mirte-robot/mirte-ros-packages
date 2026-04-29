@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
 project(mirte_base_control)
-add_compile_options(-g)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-g)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 find_package(ament_cmake REQUIRED)
