@@ -39,6 +39,8 @@
 /**/mirte_master_gripper_controller:
   ros__parameters:
     joint: gripper_joint
+    goal_tolerance: 0.05
+    
 
 /**/ros2_arm_control_hw_interface: # Settings for arm interface, others are not read
   ros__parameters: # default settings
