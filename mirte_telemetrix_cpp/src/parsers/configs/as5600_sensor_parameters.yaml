@@ -1,0 +1,12 @@
+mirte_telemetrix_cpp_as5600_sensors:
+  as5600_sensor_names: 
+      type: string_array
+      default_value: []
+      description: "List of as5600 sensor names to be loaded"
+  
+  encoders:
+    __map_as5600_sensor_names:
+            mux:
+              type: int
+              default_value: 0
+              description: "Multiplexer id"

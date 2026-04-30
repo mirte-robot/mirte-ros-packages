@@ -21,11 +21,7 @@ DeviceData::DeviceData(std::shared_ptr<Parser> parser,
             .str());
   }
 
-  std::string frame_prefix =
-      (parser->params.count("frame_prefix") &&
-       !get_string(parser->params["frame_prefix"]).empty())
-          ? get_string(parser->params["frame_prefix"])
-          : "";
+  std::string frame_prefix = parser->params_object.device.mirte.frame_prefix;
 
   if (unused_keys.erase("frame_id")) {
     this->frame_id = frame_prefix + get_string(parameters["frame_id"]);

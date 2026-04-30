@@ -1,0 +1,68 @@
+mirte_telemetrix_cpp_pca:
+  pca_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of pca module names to be loaded"
+  
+  modules:
+    
+    __map_pca_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of module (PCA9685)"
+        pins:
+          sda:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SDA line"
+          scl:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SCL line"
+        addr:
+          type: int
+          default_value: 0x40
+          description: "I2C address of the PCA9685"
+        connector:
+          type: string
+          default_value: NONE
+          description: "Connector to which the PCA9685 module is connected"
+        frequency:
+          type: int
+          default_value: 100
+          description: "PWM frequency for the PCA9685 module"
+        # motors:
+        #   motor_names:
+        #     type: string_array
+        #     default_value: []
+        #     description: "List of motor names controlled by the PCA9685"
+
+        #   __map_motor_names:
+        #     pin_A:
+        #       type: int
+        #       default_value: -1
+        #       description: "Pin number for motor pin A"
+        #     pin_B:
+        #       type: int
+        #       default_value: -1
+        #       description: "Pin number for motor pin B"
+
+
+
+
+
+# frequency: 100
+# motors:
+#   rear_left:
+#     pin_A: 6 #0
+#     pin_B: 7 #1
+#   front_left:
+#     pin_A: 2
+#     pin_B: 3
+#   rear_right:
+#     pin_A: 5
+#     pin_B: 4
+#   front_right:
+#     pin_A: 1
+#     pin_B: 0

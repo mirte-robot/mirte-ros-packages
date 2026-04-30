@@ -1,0 +1,53 @@
+mirte_telemetrix_cpp_neopixel:
+  neopixel_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of neopixel module names to be loaded"
+  
+  modules:
+    
+    __map_neopixel_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of module (neopixel)"
+        pins:
+          data:
+            type: string
+            default_value: "-1"
+            description: "Pin number for the neopixel data line"
+        default_color:
+          r:
+            type: int
+            default_value: 0
+            description: "Default red color value (0-255)"
+          g:
+            type: int
+            default_value: 0
+            description: "Default green color value (0-255)"
+          b:
+            type: int
+            default_value: 0
+            description: "Default blue color value (0-255)"
+        num_pixels:
+          type: int
+          default_value: 1
+          description: "Number of neopixels in the strip(1-255)"
+
+
+
+
+# frequency: 100
+# motors:
+#   rear_left:
+#     pin_A: 6 #0
+#     pin_B: 7 #1
+#   front_left:
+#     pin_A: 2
+#     pin_B: 3
+#   rear_right:
+#     pin_A: 5
+#     pin_B: 4
+#   front_right:
+#     pin_A: 1
+#     pin_B: 0

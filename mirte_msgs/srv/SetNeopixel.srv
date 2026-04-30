@@ -1,0 +1,3 @@
+mirte_msgs/NeopixelColor color
+---
+bool status

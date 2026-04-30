@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
 project(mirte_master_arm_control)
-add_compile_options(-g)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-g)
+endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-fexperimental-library -D_LIBCPP_DISABLE_AVAILABILITY)

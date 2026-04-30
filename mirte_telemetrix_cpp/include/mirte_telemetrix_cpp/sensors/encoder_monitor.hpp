@@ -20,7 +20,7 @@ public:
 
   static std::vector<std::shared_ptr<EncoderMonitor>>
   get_encoder_monitors(NodeData node_data, std::shared_ptr<Parser> parser);
-  ~EncoderMonitor(){};
+  ~EncoderMonitor() {};
 
   void data_callback(int16_t value);
 

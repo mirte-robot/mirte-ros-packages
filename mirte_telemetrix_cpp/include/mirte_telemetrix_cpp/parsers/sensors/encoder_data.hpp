@@ -1,7 +1,7 @@
 #pragma once
 
 #include <mirte_telemetrix_cpp/parsers/sensors/base_sensor_data.hpp>
-
+#include <mirte_telemetrix_cpp/telemetrix_parameters.hpp>
 class EncoderData : public SensorData {
 public:
   pin_t pinA = (pin_t)-1;

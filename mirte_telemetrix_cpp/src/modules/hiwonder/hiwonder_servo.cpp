@@ -171,7 +171,7 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
 
   // Require speed to be positive, since sending 0.0 rad/s results in moving at
   // the max speed
-  if (!speed > 0.0) {
+  if (speed <= 0.0) {
     RCLCPP_ERROR(
         nh->get_logger(),
         "Speed must be positive. Provided speed was non-positive (%.3f <= 0.0)",

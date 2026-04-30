@@ -19,7 +19,9 @@ public:
   PCAData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
           std::string name,
           std::map<std::string, rclcpp::ParameterValue> parameters,
-          std::set<std::string> &unused_keys);
+          std::set<std::string> &unused_keys,
+          std::vector<std::shared_ptr<PCA_Motor_data>> motorsdata,
+          std::vector<std::shared_ptr<PCA_Servo_data>> servosdata);
 
   bool check() override;
   using I2CModuleData::check;

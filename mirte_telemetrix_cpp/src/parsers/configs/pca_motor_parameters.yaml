@@ -1,0 +1,20 @@
+mirte_telemetrix_cpp_pca_motor:
+  pca_motor_names: 
+      type: string_array
+      default_value: []
+      description: "List of pca module names to be loaded"
+  
+  motors:
+    __map_pca_motor_names:
+            pin_A:
+              type: int
+              default_value: -1
+              description: "Pin number for motor pin A"
+            pin_B:
+              type: int
+              default_value: -1
+              description: "Pin number for motor pin B"
+            invert:
+              type: bool
+              default_value: false
+              description: "Invert motor direction"

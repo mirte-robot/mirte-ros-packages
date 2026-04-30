@@ -341,7 +341,7 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
 void MirteBaseHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 using namespace std::placeholders;
-MirteBaseHWInterface::MirteBaseHWInterface(){};
+MirteBaseHWInterface::MirteBaseHWInterface() {};
 hardware_interface::CallbackReturn
 MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   if (hardware_interface::SystemInterface::on_init(info) !=
