@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.9)
 project(mirte_base_control)
 add_compile_options(-g)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-fexperimental-library -D_LIBCPP_DISABLE_AVAILABILITY)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)

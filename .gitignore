@@ -4,3 +4,4 @@ COLCON_IGNORE
 mirte_control/mirte_master_base_control/old/
 mirte_telemetrix_cpp/.obj-aarch64-linux-gnu/
 mirte_telemetrix_cpp/debian_aarch64/
+.DS_Store
