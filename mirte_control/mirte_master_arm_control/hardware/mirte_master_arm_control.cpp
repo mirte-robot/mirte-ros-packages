@@ -158,8 +158,8 @@ bool MirteMasterArmHWInterface::connectServices() {
 void MirteMasterArmHWInterface::ServoPositionCallback(
     std::shared_ptr<mirte_msgs::msg::ServoPosition> msg, int joint) {
   if (msg->angle == 0 && msg->raw == 0) {
-    std::cout << "Received default servo position for joint " << joint
-              << ", ignoring this message." << std::endl;
+    // std::cout << "Received default servo position for joint " << joint
+    //           << ", ignoring this message." << std::endl;
     // This is the default value when the servo position is not yet published,
     // ignore this
     return;
