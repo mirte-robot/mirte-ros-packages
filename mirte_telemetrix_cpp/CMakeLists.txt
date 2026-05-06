@@ -60,7 +60,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor neopixel telemetrix)
+ set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(
@@ -128,6 +128,7 @@ add_executable(
   src/parsers/modules/pca/pca_servo_data.cpp
   src/parsers/modules/ssd1306_data.cpp
   src/parsers/modules/mpu9250_data.cpp
+  src/parsers/modules/mpu6050_data.cpp
   src/parsers/modules/veml6040_data.cpp
   src/sensors/base_sensor.cpp
   src/sensors/encoder_monitor.cpp
@@ -145,7 +146,9 @@ add_executable(
   src/modules/pca/pca_servo.cpp
   src/modules/ssd1306_module.cpp
   src/modules/as5600_module.cpp
-  src/modules/veml6040_module.cpp)
+  src/modules/veml6040_module.cpp
+  src/modules/mpu6050_module.cpp
+  )
 ament_target_dependencies(
   ${PROJECT_NAME}_node
   std_msgs
