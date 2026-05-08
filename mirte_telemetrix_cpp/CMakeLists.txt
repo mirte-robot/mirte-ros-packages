@@ -60,7 +60,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
+ set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 bno055 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(
@@ -130,6 +130,7 @@ add_executable(
   src/parsers/modules/mpu9250_data.cpp
   src/parsers/modules/mpu6050_data.cpp
   src/parsers/modules/veml6040_data.cpp
+  src/parsers/modules/bno055_data.cpp
   src/sensors/base_sensor.cpp
   src/sensors/encoder_monitor.cpp
   src/sensors/intensity_monitor.cpp
@@ -148,6 +149,8 @@ add_executable(
   src/modules/as5600_module.cpp
   src/modules/veml6040_module.cpp
   src/modules/mpu6050_module.cpp
+  src/modules/bno055_module.cpp
+
   )
 ament_target_dependencies(
   ${PROJECT_NAME}_node
@@ -163,7 +166,7 @@ ament_target_dependencies(
   # system_lib
 )
 
-add_executable(${PROJECT_NAME}_test src/test.cpp src/parsers/parsers.cpp)
+add_executable(${PROJECT_NAME}_test src/test.cpp src/parsers/parsers.cpp libs/tmx-cpp/src/serialization.cpp)
 ament_target_dependencies(
   ${PROJECT_NAME}_test
   rclcpp
