@@ -10,6 +10,7 @@
 
 #include <mirte_msgs/srv/get_servo_range.hpp>
 #include <mirte_msgs/srv/set_servo_angle.hpp>
+#include <mirte_msgs/srv/set_servo_us.hpp>
 
 class ServoBase : public TelemetrixDevice {
 public:
@@ -27,6 +28,7 @@ private:
   rclcpp::Service<mirte_msgs::srv::SetServoAngle>::SharedPtr set_angle_service;
   // Service: servo/NAME/get_range
   rclcpp::Service<mirte_msgs::srv::GetServoRange>::SharedPtr get_range_service;
+  rclcpp::Service<mirte_msgs::srv::SetServoUS>::SharedPtr set_us_service;
 
   void set_angle_service_callback(
       const mirte_msgs::srv::SetServoAngle::Request::ConstSharedPtr req,
@@ -35,4 +37,8 @@ private:
   void get_range_service_callback(
       const mirte_msgs::srv::GetServoRange::Request::ConstSharedPtr req,
       mirte_msgs::srv::GetServoRange::Response::SharedPtr res);
+
+  void set_us_service_callback(
+      const mirte_msgs::srv::SetServoUS::Request::ConstSharedPtr req,
+      mirte_msgs::srv::SetServoUS::Response::SharedPtr res);
 };

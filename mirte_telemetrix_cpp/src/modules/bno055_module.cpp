@@ -7,32 +7,6 @@
 #include <ranges>
 using namespace std::placeholders;
 
-struct Quaterniond {
-  double w, x, y, z;
-};
-Quaterniond toQuaternion(double yaw, double pitch,
-                         double roll) // yaw (Z), pitch (Y), roll (X)
-{
-  // Degree to radius:
-  yaw = yaw * M_PI / 180;
-  pitch = pitch * M_PI / 180;
-  roll = roll * M_PI / 180;
-
-  // Abbreviations for the various angular functions
-  double cy = cos(yaw * 0.5);
-  double sy = sin(yaw * 0.5);
-  double cp = cos(pitch * 0.5);
-  double sp = sin(pitch * 0.5);
-  double cr = cos(roll * 0.5);
-  double sr = sin(roll * 0.5);
-
-  Quaterniond q;
-  q.w = cy * cp * cr + sy * sp * sr;
-  q.x = cy * cp * sr - sy * sp * cr;
-  q.y = sy * cp * sr + cy * sp * cr;
-  q.z = sy * cp * cr - cy * sp * sr;
-  return q;
-}
 BNO055_sensor::BNO055_sensor(NodeData node_data, BNO055Data imu_data,
                              std::shared_ptr<tmx_cpp::Sensors> sensors)
     : Mirte_module(node_data, {imu_data.scl, imu_data.sda},

@@ -10,7 +10,7 @@
 | **Sensors**            |                           |                      |                                                                                       |
 | Sonar                  | ✅                        | ✅                   |                                                                                       |
 | intensity              | ✅                        | ✅                   |                                                                                       |
-| encoders               | ✅                        | ✅ ?                 |                                                                                       |
+| encoders               | ✅                        | ✅                   |                                                                                       |
 | get pin service        | ✅                        | ✅                   | Reading output pins results in undefined behavior (Tested digital read a digital out) |
 | **Actuators**          |                           |                      |                                                                                       |
 | oled                   | ✅                        | 🔷                   | OLED is now a Module. (Maybe the parsing can be improved to be more like old style)   |
@@ -19,11 +19,11 @@
 | motors                 | ✅                        | ❓                   | L9110S (PP) & L298N (DDP) work                                                        |
 | set pin service        | ✅                        | ✅                   | Digital not tested as much                                                            |
 | **Mirte-master parts** |                           |                      |                                                                                       |
-| hiwonder servo         | ✅                        | ✅ ?Needs more testing|                                                                                      |
+| hiwonder servo         | ✅                        | ✅                   |                                                                                      |
 | pca9685 pwm            | ✅                        | ✅                   |                                                                                       |
 | ina226                 | ✅                        | ✅                   | shutdown relay not implemented as hw is not working.                                  |
-| imu                    | ✅                        | ✅                   |                                                                                       |
-| ledstrip               | ✅                        | ❌                   |                                                                                       |
+| imu                    | ✅                        | ✅                   | mpu9250                                                                               |
+| ledstrip               | ✅                        | ✅                   |                                                                                       |
 | oled module            | ✅                        | ✅                   |                                                                                       |
 
 

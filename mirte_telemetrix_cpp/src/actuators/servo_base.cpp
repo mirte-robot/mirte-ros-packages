@@ -31,8 +31,11 @@ ServoBase::ServoBase(NodeData node_data, std::vector<pin_t> pins,
       std::bind(&ServoBase::get_range_service_callback, this,
                 std::placeholders::_1, std::placeholders::_2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
-
-  // this->device_timer->cancel();
+  this->set_us_service = nh->create_service<mirte_msgs::srv::SetServoUS>(
+      "servo/" + name + "/_set_us",
+      std::bind(&ServoBase::set_us_service_callback, this,
+                std::placeholders::_1, std::placeholders::_2),
+      rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
 }
 
 void ServoBase::set_angle_service_callback(
@@ -68,4 +71,25 @@ void ServoBase::get_range_service_callback(
     mirte_msgs::srv::GetServoRange::Response::SharedPtr res) {
   res->max = data.max_angle;
   res->min = data.min_angle;
+}
+
+void ServoBase::set_us_service_callback(
+    const mirte_msgs::srv::SetServoUS::Request::ConstSharedPtr req,
+    mirte_msgs::srv::SetServoUS::Response::SharedPtr res) {
+  uint16_t time_us = req->time_us;
+
+  if (time_us > data.max_pulse || time_us < data.min_pulse) {
+    RCLCPP_WARN(
+        logger,
+        "The provided time in microseconds is out of range. Time %u us "
+        "was requested, but range is [%u, "
+        "%u]. Set min_pulse and max_pulse parameters to change this range.",
+        time_us, data.min_pulse, data.max_pulse);
+    res->status = false;
+    return;
+  }
+
+  RCLCPP_WARN(logger, "Setting servo %s to %u microseconds pulse width",
+              name.c_str(), time_us);
+  res->status = set_angle_us(time_us);
 }

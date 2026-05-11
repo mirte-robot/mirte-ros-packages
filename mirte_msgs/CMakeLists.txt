@@ -60,6 +60,7 @@ set(srv_files
     "srv/SetNeopixelSingle.srv"
     "srv/SetAngleMultiple.srv"
     "srv/SetServoVoltageRange.srv"
+    "srv/SetServoUS.srv"
     )
 
 rosidl_generate_interfaces(
