@@ -4,6 +4,7 @@
 #include <mirte_telemetrix_cpp/modules/pca_module.hpp>
 #include <mirte_telemetrix_cpp/pca_motor_parameters.hpp>
 #include <mirte_telemetrix_cpp/pca_parameters.hpp>
+#include <mirte_telemetrix_cpp/pca_servo_parameters.hpp>
 #include <ranges>
 
 using namespace std::placeholders; // for _1, _2, _3...
@@ -82,19 +83,49 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
                     << ", invert=" << motor_data_entry->invert << std::endl;
         }
         std::vector<std::shared_ptr<PCA_Servo_data>> servo_data;
-        // TODO: add servo parsing again!
-        // for (auto const &servo_name : params_motors.pca_servo_names) {
-        //   if(servo_name == "") {
-        //     continue;
-        //   }
-        //   auto servo_params = params_motors.pca_servos_map.at(servo_name);
-        //   servo_data.name = servo_name;
-        //   servo_data.pin = servo_params.pin;
-        //   servo_data.min_pulse = servo_params.min_pulse;
-        //   servo_data.max_pulse = servo_params.max_pulse;
-        //   servo_data.min_angle = servo_params.min_angle;
-        //   servo_data.max_angle = servo_params.max_angle;
-        // }
+        auto param_listener_servos =
+            std::make_shared<mirte_telemetrix_cpp_pca_servo::ParamListener>(
+                parser->nh, fmt::format("modules.{}", name));
+
+        auto params_servos = param_listener_servos->get_params();
+        std::cout << "Parsing servos for PCA module: " << name << std::endl;
+        std::cout << "servo number of names: "
+                  << params_servos.pca_servo_names.size() << std::endl;
+        std::cout << "Servo names found: ";
+        for (auto const &servo_name : params_servos.pca_servo_names) {
+          std::cout << "Parsing servo data for servo name: " << servo_name
+                    << std::endl;
+          if (servo_name == "") {
+            continue;
+          }
+          std::shared_ptr<PCA_Servo_data> servo_data_entry =
+              std::make_shared<PCA_Servo_data>();
+          servo_data.push_back(servo_data_entry);
+          auto servo_params =
+              params_servos.servos.pca_servo_names_map.at(servo_name);
+          servo_data_entry->name = servo_name;
+          servo_data_entry->pin = servo_params.pin;
+          servo_data_entry->invert = servo_params.invert;
+          servo_data_entry->min_pulse = servo_params.min_pulse;
+          servo_data_entry->max_pulse = servo_params.max_pulse;
+          servo_data_entry->min_angle = servo_params.min_angle;
+          servo_data_entry->max_angle = servo_params.max_angle;
+          servo_data_entry->pin_mode = servo_params.pin_mode;
+          servo_data_entry->min_speed = servo_params.min_speed;
+          servo_data_entry->max_speed = servo_params.max_speed;
+          std::cout << "Parsed servo data for servo " << servo_name
+                    << ": pin=" << (int)servo_data_entry->pin
+                    << ", invert=" << servo_data_entry->invert
+                    << ", min_pulse=" << servo_data_entry->min_pulse
+                    << ", max_pulse=" << servo_data_entry->max_pulse
+                    << ", min_angle=" << servo_data_entry->min_angle
+                    << ", max_angle=" << servo_data_entry->max_angle
+                    << ", pin_mode=" << servo_data_entry->pin_mode
+                    << ", min_speed=" << servo_data_entry->min_speed
+                    << ", max_speed=" << servo_data_entry->max_speed
+                    << std::endl;
+        }
+
         std::set<std::string> unused_keys = get_keys(parameters);
         return PCAData(parser, node_data.board, name, parameters, unused_keys,
                        motor_data, servo_data);
@@ -153,10 +184,20 @@ void PCA_Module::set_multi_speed_service_callback(
     });
 
     if (motor == motors.end()) {
-      RCLCPP_ERROR(logger,
-                   "PCA Motor '%s' could not be found. Ignored for set multi "
-                   "speed command",
-                   name.c_str());
+      auto servo =
+          std::find_if(servos.begin(), servos.end(), [name](auto servo) {
+            return servo->servo_data->name == name &&
+                   servo->servo_data->pin_mode == "motor";
+          });
+      if (servo == servos.end()) {
+        RCLCPP_ERROR(logger,
+                     "PCA Servo(motor mode) or Motor '%s' could not be found. "
+                     "Ignored for set multi "
+                     "speed command",
+                     name.c_str());
+        continue;
+      }
+      (*servo)->set_speed(speed.speed);
       continue;
     }
 

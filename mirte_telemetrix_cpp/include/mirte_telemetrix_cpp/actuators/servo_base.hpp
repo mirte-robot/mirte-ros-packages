@@ -9,7 +9,9 @@
 #include <mirte_telemetrix_cpp/parsers/actuators/servo_data.hpp>
 
 #include <mirte_msgs/srv/get_servo_range.hpp>
+#include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <mirte_msgs/srv/set_servo_angle.hpp>
+#include <mirte_msgs/srv/set_servo_pwm.hpp>
 #include <mirte_msgs/srv/set_servo_us.hpp>
 
 class ServoBase : public TelemetrixDevice {
@@ -19,9 +21,10 @@ public:
                 rclcpp::CallbackGroupType::Reentrant);
 
   virtual bool set_angle_us(uint16_t duty_cycle) = 0;
+  virtual bool set_percentage(float percentage) = 0;
 
-  // TODO: Still storing this specific data, I'm unsure if that is good or bad.
   ServoData data;
+  void set_speed(float speed);
 
 private:
   // Service: servo/NAME/set_angle
@@ -29,6 +32,8 @@ private:
   // Service: servo/NAME/get_range
   rclcpp::Service<mirte_msgs::srv::GetServoRange>::SharedPtr get_range_service;
   rclcpp::Service<mirte_msgs::srv::SetServoUS>::SharedPtr set_us_service;
+
+  void setup_servo();
 
   void set_angle_service_callback(
       const mirte_msgs::srv::SetServoAngle::Request::ConstSharedPtr req,
@@ -41,4 +46,17 @@ private:
   void set_us_service_callback(
       const mirte_msgs::srv::SetServoUS::Request::ConstSharedPtr req,
       mirte_msgs::srv::SetServoUS::Response::SharedPtr res);
+
+  void setup_motor();
+  rclcpp::Service<mirte_msgs::srv::SetMotorSpeed>::SharedPtr set_speed_service;
+  void set_speed_service_callback(
+      const mirte_msgs::srv::SetMotorSpeed::Request::ConstSharedPtr req,
+      mirte_msgs::srv::SetMotorSpeed::Response::SharedPtr res);
+
+  void setup_pwm(); // only really for pca servo, but can be used for regular
+                    // servo as well.
+  void set_pwm_service_callback(
+      const mirte_msgs::srv::SetServoPWM::Request::ConstSharedPtr req,
+      mirte_msgs::srv::SetServoPWM::Response::SharedPtr res);
+  rclcpp::Service<mirte_msgs::srv::SetServoPWM>::SharedPtr set_pwm_service;
 };

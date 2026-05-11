@@ -1,0 +1,46 @@
+mirte_telemetrix_cpp_pca_servo:
+  pca_servo_names: 
+      type: string_array
+      default_value: []
+      description: "List of pca module names to be loaded"
+  
+  servos:
+    __map_pca_servo_names:
+            pin:
+              type: int
+              default_value: -1
+              description: "Pin number for servo (or motor) pin"
+            invert:
+              type: bool
+              default_value: false
+              description: "Invert servo direction"
+            min_pulse:
+              type: int
+              default_value: 500
+              description: "Minimum pulse width for the servo in microseconds"
+            max_pulse:
+              type: int
+              default_value: 2500
+              description: "Maximum pulse width for the servo in microseconds"
+            min_angle:
+              type: int
+              default_value: 0
+              description: "Minimum angle for the servo in degrees"
+            max_angle:
+              type: int
+              default_value: 180
+              description: "Maximum angle for the servo in degrees"
+            pin_mode:
+              type: string
+              default_value: "servo"
+              description: "Mode of operation for the servo, either 'servo', 'motor' or 'pwm'. Change min/max speed accordingly when using motor. PWM is for direct pulse width modulation, uses percentage."
+              validation:
+                  one_of<>: [ ["servo", "motor", "pwm"] ]
+            min_speed:
+              type: int
+              default_value: -100
+              description: "Minimum speed for motor mode, typically between -100 and 100"
+            max_speed:
+              type: int
+              default_value: 100
+              description: "Maximum speed for motor mode, typically between -100 and 100"

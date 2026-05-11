@@ -60,7 +60,7 @@ include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor hiwonder hiwonder_servo mpu9250 bno055 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
+ set(config_files ina226 pca pca_motor pca_servo hiwonder hiwonder_servo mpu9250 bno055 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
 set(param_libs "")
 foreach (config_file IN LISTS config_files)
   generate_parameter_library(

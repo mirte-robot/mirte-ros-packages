@@ -230,6 +230,32 @@ mirte_telemetrix_cpp:
         description: "Maximum pulse width for the servo in microseconds"
         validation:
           bounds<>: [500, 2500]
+      min_angle:
+        type: int
+        default_value: 0
+        description: "Minimum angle for the servo in degrees, only used for mapping"
+      max_angle:
+        type: int
+        default_value: 180
+        description: "Maximum angle for the servo in degrees, only for mapping"
+      invert:
+        type: bool
+        default_value: false
+        description: "Whether the servo direction is inverted"
+      pin_mode:
+        type: string
+        default_value: "servo"
+        description: "Mode of operation for the servo, either 'servo', 'motor' or 'pwm'. Change min/max speed accordingly when using motor. PWM is for direct pulse width modulation, uses percentage."
+        validation:
+          one_of<>: [ ["servo", "motor", "pwm"] ]
+      min_speed:
+        type: int
+        default_value: -100
+        description: "Minimum speed for motor mode, typically between -100 and 100"
+      max_speed:
+        type: int
+        default_value: 100
+        description: "Maximum speed for motor mode, typically between -100 and 100"
   keypads: # keypad definition, do not use directly
     type: string_array
     default_value: []

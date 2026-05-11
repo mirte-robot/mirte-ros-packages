@@ -61,6 +61,7 @@ set(srv_files
     "srv/SetAngleMultiple.srv"
     "srv/SetServoVoltageRange.srv"
     "srv/SetServoUS.srv"
+    "srv/SetServoPWM.srv"
     )
 
 rosidl_generate_interfaces(
