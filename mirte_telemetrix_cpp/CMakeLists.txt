@@ -18,7 +18,8 @@ if(HAVE_GPIOD_HPP)
   add_compile_options(-lgpiodcxx)
 endif()
 
-# if x86, dont shutdown the robot, just print a message. This is for testing on x86 machines without a shutdown relay.
+# if x86, dont shutdown the robot, just print a message. This is for testing on
+# x86 machines without a shutdown relay.
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|i386|i686")
   add_compile_definitions(MIRTE_TESTING_ON_X86)
 endif()
@@ -55,25 +56,36 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 
 # Specify additional locations of header files Your package locations should be
 # listed before other locations
-add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL) 
+add_subdirectory(libs/tmx-cpp EXCLUDE_FROM_ALL)
 include_directories(
   include/ libs/tmx-cpp/include/ libs/tmx-cpp/libs/async_serial/include/
   ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
- set(config_files ina226 pca pca_motor pca_servo hiwonder hiwonder_servo mpu9250 bno055 adxl345 as5600 as5600_sensor neopixel mpu6050 telemetrix)
+set(config_files
+    ina226
+    pca
+    pca_motor
+    pca_servo
+    hiwonder
+    hiwonder_servo
+    mpu9250
+    bno055
+    adxl345
+    as5600
+    as5600_sensor
+    neopixel
+    mpu6050
+    telemetrix)
 set(param_libs "")
-foreach (config_file IN LISTS config_files)
+foreach(config_file IN LISTS config_files)
   generate_parameter_library(
     ${config_file}_parameters # cmake target name for the parameter library
     src/parsers/configs/${config_file}_parameters.yaml # path to input yaml file
   )
   list(APPEND param_libs ${config_file}_parameters)
 endforeach()
-# generate_parameter_library(
-#   telemetrix_parameters # cmake target name for the parameter library
-#   src/telemetrix_parameters.yaml # path to input yaml file
-# )
-
+# generate_parameter_library( telemetrix_parameters # cmake target name for the
+# parameter library src/telemetrix_parameters.yaml # path to input yaml file )
 
 # include(CheckIPOSupported) check_ipo_supported(RESULT supported OUTPUT error)
 
@@ -149,9 +161,7 @@ add_executable(
   src/modules/as5600_module.cpp
   src/modules/veml6040_module.cpp
   src/modules/mpu6050_module.cpp
-  src/modules/bno055_module.cpp
-
-  )
+  src/modules/bno055_module.cpp)
 ament_target_dependencies(
   ${PROJECT_NAME}_node
   std_msgs
@@ -166,15 +176,10 @@ ament_target_dependencies(
   # system_lib
 )
 
-add_executable(${PROJECT_NAME}_test src/test.cpp src/parsers/parsers.cpp libs/tmx-cpp/src/serialization.cpp)
-ament_target_dependencies(
-  ${PROJECT_NAME}_test
-  rclcpp
-  rcpputils
-  mirte_msgs
-  backward_ros
-)
-
+add_executable(${PROJECT_NAME}_test src/test.cpp src/parsers/parsers.cpp
+                                    libs/tmx-cpp/src/serialization.cpp)
+ament_target_dependencies(${PROJECT_NAME}_test rclcpp rcpputils mirte_msgs
+                          backward_ros)
 
 if(0) # extra strict errors
   target_compile_options(
@@ -196,8 +201,14 @@ if(0) # extra strict errors
 endif()
 
 # Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node Boost::system Boost::thread tmx_cpp ${param_libs}
-                      ${MIRTE_EXTRA_LIBS} ${OpenCV_LIBS})
+target_link_libraries(
+  ${PROJECT_NAME}_node
+  Boost::system
+  Boost::thread
+  tmx_cpp
+  ${param_libs}
+  ${MIRTE_EXTRA_LIBS}
+  ${OpenCV_LIBS})
 
 target_link_libraries(${PROJECT_NAME}_test ${param_libs})
 # if(supported) if(CMAKE_BUILD_TYPE STREQUAL "Release") message(STATUS "IPO LTO
@@ -210,9 +221,10 @@ install(
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test
+        DESTINATION lib/${PROJECT_NAME})
 install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_test ${param_libs}
-  EXPORT ${PROJECT_NAME}Targets)
+        EXPORT ${PROJECT_NAME}Targets)
 ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 
 # EXPORTS ament_export_targets( ${PROJECT_NAME}_node HAS_LIBRARY_TARGET)
