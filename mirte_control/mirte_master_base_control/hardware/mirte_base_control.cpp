@@ -69,9 +69,10 @@ hardware_interface::return_type
 MirteBaseHWInterface::write(const rclcpp::Time &time,
                             const rclcpp::Duration &period) {
   if (!running_) {
-    for(size_t i = 0; i < NUM_JOINTS; i++) {
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
       cmd[i] = 0.0;
-      // this will stop the motors, but will not block other nodes from sending speed commands to the motors.
+      // this will stop the motors, but will not block other nodes from sending
+      // speed commands to the motors.
     }
   }
 
