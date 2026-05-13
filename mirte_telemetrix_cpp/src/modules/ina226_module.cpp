@@ -228,7 +228,7 @@ void INA226_sensor::shutdown_robot() {
 #endif
 
 // call /stop service to stop the base control
-  auto client = this->nh->create_client<std_srvs::srv::Empty>("stop");
+  auto client = this->nh->create_client<std_srvs::srv::Empty>("/stop");
   if (client->wait_for_service(std::chrono::seconds(5))) {
     auto request = std::make_shared<std_srvs::srv::Empty::Request>();
     client->async_send_request(request);
