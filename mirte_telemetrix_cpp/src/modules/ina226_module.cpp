@@ -9,7 +9,7 @@ using namespace std::chrono_literals;
 #endif
 
 #include <mirte_telemetrix_cpp/modules/ina226_module.hpp>
-
+#include <std_srvs/srv/empty.hpp>
 using namespace std::placeholders; // for _1, _2, _3...
 
 INA226_sensor::INA226_sensor(NodeData node_data, INA226Data ina_data,
@@ -226,6 +226,17 @@ void INA226_sensor::shutdown_robot() {
                "the robot, just printing a message."
             << std::endl;
 #endif
+
+  // call /stop service to stop the base control
+  auto client = this->nh->create_client<std_srvs::srv::Empty>("/stop");
+  if (client->wait_for_service(std::chrono::seconds(5))) {
+    auto request = std::make_shared<std_srvs::srv::Empty::Request>();
+    client->async_send_request(request);
+  } else {
+    std::cout << "Stop service not available, could not send stop command to "
+                 "base control."
+              << std::endl;
+  }
 }
 
 void INA226_sensor::shutdown_robot_service_callback(
