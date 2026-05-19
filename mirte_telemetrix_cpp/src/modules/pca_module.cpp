@@ -52,7 +52,7 @@ PCA_Module::get_pca_modules(NodeData node_data, std::shared_ptr<Parser> parser,
         parameters["pins.sda"] = rclcpp::ParameterValue(map_ina.pins.sda);
         parameters["pins.scl"] = rclcpp::ParameterValue(map_ina.pins.scl);
         parameters["addr"] = rclcpp::ParameterValue(map_ina.addr);
-
+        parameters["frequency"] = rclcpp::ParameterValue(map_ina.frequency);
         auto param_listener_motors =
             std::make_shared<mirte_telemetrix_cpp_pca_motor::ParamListener>(
                 parser->nh, fmt::format("modules.{}", name));
