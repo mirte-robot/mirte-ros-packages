@@ -69,13 +69,6 @@ mirte_telemetrix_cpp:
         type: bool
         default_value: false
         description: "Whether the encoder counts are inverted"
-  ### Actual usage
-  
-  # joints:
-  #   type: string_array
-  #   default_value: ["joint1", "joint2", "joint3"]
-  #   description: "specifies which joints will be used by the controller"
-
   distances: # sonar definition, do not use directly
     type: string_array
     default_value: []
@@ -368,5 +361,5 @@ mirte_telemetrix_cpp:
       type:
         type: string
         default_value: ina226
-        description: "Type of module (ina226, veml6040, ssd1306)"
+        description: "Type of module (ina226, veml6040, ssd1306, ...)"
       
