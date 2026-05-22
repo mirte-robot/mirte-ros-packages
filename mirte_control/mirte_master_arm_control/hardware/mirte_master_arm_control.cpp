@@ -74,6 +74,10 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
            !std::isnan(
                service_requests[i]->angle)) // going from nan to some value
       ) {
+        if (std::isnan(service_requests[i]->angle)) {
+          continue; // don't send nan commands, wait for a real command to come
+                    // in
+        }
         servo.moved = false;
         servo.last_request = service_requests[i]->angle;
         servo.last_command_time = time;
@@ -81,6 +85,9 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         service_requests[i]->rate = NAN; // use default rate (0.1s target time)
         servo.sent_stuck_command = false;
         if (this->enable) {
+          // std::cout << "Sending command to servo " << i
+          //           << ": " << service_requests[i]->angle
+          //           << " (diff: " << diff << ")" << std::endl;
           service_clients[i]->async_send_request(service_requests[i]);
         }
       }
