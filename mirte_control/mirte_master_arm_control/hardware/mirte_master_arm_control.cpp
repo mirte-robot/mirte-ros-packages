@@ -4,14 +4,22 @@
 #include <unistd.h>
 
 namespace mirte_master_arm_control {
+using namespace std::chrono_literals;
 
 // The data we store per servo
 struct Servo_data {
-  double data;
+  double data = NAN; // unknown position, so hw_control will also not send 0
+                     // (otherwise default) back.
   bool init = false;
   bool moved = false;
   double last_move_update = -100;
   double last_request = -100;
+  // timestamp for last commanded position, if it's too old and the position is
+  // different, the servo might be stuck and need to send safe commands to
+  // prevent damage
+  rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
+  bool sent_stuck_command = false; // only send it once to go to the current
+                                   // position (cancel original command)
 };
 
 // Since the plugin itself is loaded once, the member variables
@@ -61,11 +69,45 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       // hand or gravity.
       auto diff = std::abs(servo.last_request - service_requests[i]->angle);
 
-      if (diff > this->servo_update_dead_band_ || servo.moved) {
+      if (diff > this->servo_update_dead_band_ || servo.moved ||
+          (std::isnan(servo.last_request) &&
+           !std::isnan(
+               service_requests[i]->angle)) // going from nan to some value
+      ) {
+        if (std::isnan(service_requests[i]->angle)) {
+          continue; // don't send nan commands, wait for a real command to come
+                    // in
+        }
         servo.moved = false;
         servo.last_request = service_requests[i]->angle;
-
+        servo.last_command_time = time;
         service_requests[i]->degrees = false;
+        service_requests[i]->rate = NAN; // use default rate (0.1s target time)
+        servo.sent_stuck_command = false;
+        if (this->enable) {
+          // std::cout << "Sending command to servo " << i
+          //           << ": " << service_requests[i]->angle
+          //           << " (diff: " << diff << ")" << std::endl;
+          service_clients[i]->async_send_request(service_requests[i]);
+        }
+      }
+
+      if (servo.last_command_time + rclcpp::Duration(1s) < time &&
+          std::abs(servo.data - servo.last_request) >
+              (2.0 * this->servo_update_dead_band_) &&
+          !servo.sent_stuck_command) {
+        // The servo might be stuck, resend the command to prevent damage
+        // when the servo is 'moved', then the original command is resent.
+        RCLCPP_WARN(get_logger(),
+                    "Servo %d might be stuck, resending command. Current: %f "
+                    "OriginalTarget: %f",
+                    i, servo.data, servo.last_request);
+        servo.last_command_time = time;
+        servo.sent_stuck_command = true; // only do this once
+        service_requests[i]->degrees = false;
+        service_requests[i]->rate = NAN; // use default rate (0.1s target time)
+        // send the current position as command to prevent damage
+        service_requests[i]->angle = servo.data;
         if (this->enable) {
           service_clients[i]->async_send_request(service_requests[i]);
         }
@@ -76,7 +118,6 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
   return hardware_interface::return_type::OK;
 }
 
-using namespace std::chrono_literals;
 bool MirteMasterArmHWInterface::connectServices() {
   service_clients.clear();
   for (size_t i = 0; i < NUM_SERVOS; i++) {
@@ -123,6 +164,13 @@ bool MirteMasterArmHWInterface::connectServices() {
 
 void MirteMasterArmHWInterface::ServoPositionCallback(
     std::shared_ptr<mirte_msgs::msg::ServoPosition> msg, int joint) {
+  if (msg->angle == 0 && msg->raw == 0) {
+    // std::cout << "Received default servo position for joint " << joint
+    //           << ", ignoring this message." << std::endl;
+    // This is the default value when the servo position is not yet published,
+    // ignore this
+    return;
+  }
   auto &servo = servo_data[info_.name][joint];
   servo.data = msg->angle;
   servo.init = true;
@@ -135,9 +183,6 @@ void MirteMasterArmHWInterface::ServoPositionCallback(
     servo.moved = true;
   }
 }
-
-void MirteMasterArmHWInterface::read_single(int joint,
-                                            const rclcpp::Duration &period) {}
 
 std::vector<hardware_interface::StateInterface>
 MirteMasterArmHWInterface::export_state_interfaces() {
@@ -320,8 +365,8 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 
   // reset values always when configuring hardware
   for (uint i = 0; i < hw_states_.size(); i++) {
-    hw_states_[i] = 0;
-    hw_commands_[i] = 0;
+    hw_states_[i] = NAN;
+    hw_commands_[i] = NAN;
   }
 
   RCLCPP_INFO(get_logger(), "Successfully configured!");
@@ -332,8 +377,15 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 void MirteMasterArmHWInterface::updateParams(Params params) {
   this->params_ = params;
   for (auto &service_request : this->service_requests) {
-    service_request->rate =
-        std::clamp(static_cast<float>(params.servo_target_time), 0.01f, 10.0f);
+    // NOTE: This doesnt work as the service_requests are empty at the
+    // beginning.
+    //  NOTE: Also rate doesnt work as wanted, rate is rad/s, but this
+    // is target time.
+    // RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),"Setting
+    // servo_target_time to %f seconds.", params.servo_target_time);
+    // service_request->rate =
+    // std::clamp(static_cast<float>(params.servo_target_time),
+    // 0.01f, 10.0f);
   }
   RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
               "Updated servo_target_time to %f seconds.",
@@ -346,6 +398,12 @@ void MirteMasterArmHWInterface::updateParams(Params params) {
               params.servo_update_dead_band);
   this->servo_moved_dead_band_ = params.servo_moved_dead_band;
   this->servo_update_dead_band_ = params.servo_update_dead_band;
+  // TODO: make it configurable, right now it's 1s and 2x
+  // servo_update_dead_band_
+
+  // this->servo_stuck_timeout_ =
+  // rclcpp::Duration::from_seconds(params.servo_stuck_timeout);
+  // this->servo_stuck_trigger_diff_ = params.servo_stuck_trigger_diff;
 }
 
 } // namespace mirte_master_arm_control
