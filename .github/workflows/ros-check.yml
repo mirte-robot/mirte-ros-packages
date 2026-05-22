@@ -14,6 +14,11 @@ jobs:
           fetch-depth: 0 # fetch all history for the self-checkout step
       - name: self-checkout
         run: |
+              git config --global --add safe.directory /__w/mirte-ros-packages/mirte-ros-packages
+              GIT_SHA1=$(git describe --match=NeVeRmAtCh --always --abbrev=40)
+              echo "GIT_SHA1=${GIT_SHA1}" >> $GITHUB_ENV
+              echo "${GIT_SHA1}" > ./mirte_telemetrix_cpp/git_sha1.txt
+
               set -ex
               mkdir -p ./src/
               mv ./mirte_msgs ./src/
@@ -26,7 +31,6 @@ jobs:
               rosdep init || true
               rosdep update
               rosdep install --from-paths src --ignore-src -r -y
-              # git clone https://github.com/arendjan/generate_parameter_library.git src/generate_parameter_library -b allow_ints_as_string
               colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
         shell: bash
       - name: Run tests
