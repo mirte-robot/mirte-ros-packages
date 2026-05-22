@@ -23,8 +23,8 @@ NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
   rclcpp::init(argc, argv);
+  std::cout << "Mirte_telemetrix_cpp version " << GIT_SHA1 << std::endl;
   auto s = "main_thread";
-
   pthread_setname_np(pthread_self(), s);
   rclcpp::executors::MultiThreadedExecutor executor;
 
