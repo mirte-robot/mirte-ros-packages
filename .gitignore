@@ -8,3 +8,4 @@ mirte_telemetrix_cpp/debian_aarch64/
 debian/
 .deb
 mirte_telemetrix_cpp/git_sha1.txt
+.DS_Store

@@ -5,6 +5,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-g)
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-fexperimental-library -D_LIBCPP_DISABLE_AVAILABILITY)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
