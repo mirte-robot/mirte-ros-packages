@@ -20,7 +20,7 @@ public:
                std::shared_ptr<Mirte_Board> board, std::string name,
                std::map<std::string, rclcpp::ParameterValue> parameters,
                std::set<std::string> &unused_keys);
-  NeopixelData() = default;
+  NeopixelData() = delete;
   static std::string get_device_class() { return "neopixel"; }
   int num_leds;
   uint8_t data_pin;

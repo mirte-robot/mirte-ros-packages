@@ -7,4 +7,5 @@ mirte_telemetrix_cpp/debian_aarch64/
 .obj-x86_64-linux-gnu/
 debian/
 .deb
+mirte_telemetrix_cpp/git_sha1.txt
 .DS_Store

@@ -45,11 +45,31 @@ ServoData::ServoData(std::shared_ptr<Parser> parser,
   if (unused_keys.erase("max_angle")) {
     this->max_angle = get_float(parameters["max_angle"]);
   }
+
+  if (unused_keys.erase("invert")) {
+    this->invert = parameters["invert"].get<bool>();
+  }
+
+  if (unused_keys.erase("pin_mode")) {
+    this->pin_mode = get_string(parameters["pin_mode"]);
+  }
+
+  if (unused_keys.erase("min_speed")) {
+    this->min_speed = get_float(parameters["min_speed"]);
+  }
+
+  if (unused_keys.erase("max_speed")) {
+    this->max_speed = get_float(parameters["max_speed"]);
+  }
 }
 
 ServoData::ServoData(pin_t pin, int min_pulse, int max_pulse, float min_angle,
-                     float max_angle, std::string name, std::string frame_id)
+                     float max_angle, std::string name, std::string frame_id,
+                     bool invert, std::string pin_mode, float min_speed,
+                     float max_speed)
     : DeviceData(name, frame_id), pin(pin), min_pulse(min_pulse),
-      max_pulse(max_pulse), min_angle(min_angle), max_angle(max_angle) {}
+      max_pulse(max_pulse), min_angle(min_angle), max_angle(max_angle),
+      invert(invert), pin_mode(pin_mode), min_speed(min_speed),
+      max_speed(max_speed) {}
 
 bool ServoData::check() { return pin != (pin_t)-1 && DeviceData::check(); }

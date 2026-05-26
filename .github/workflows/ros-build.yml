@@ -66,6 +66,12 @@ jobs:
               # echo $skip_packages
               # echo "SKIP_PACKAGES=(${{ env.SKIP_PACKAGES }})" # for debugging
               # cat $GITHUB_ENV
+
+              # builder copies source without git info, so need to add the git info to the source for versioning
+              # get the git sha1 of the current commit
+              GIT_SHA1=$(git describe --match=NeVeRmAtCh --always --abbrev=40)
+              echo "GIT_SHA1=${GIT_SHA1}" >> $GITHUB_ENV
+              echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         with:

@@ -19,4 +19,5 @@ public:
   std::shared_ptr<tmx_cpp::PCA9685_module> pca9685_mod;
 
   virtual bool set_angle_us(uint16_t duty_cycle) override;
+  virtual bool set_percentage(float percentage) override;
 };
