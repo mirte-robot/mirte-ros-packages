@@ -210,6 +210,8 @@ if(0) # extra strict errors
             -Wextra
             -Wpedantic
             -Wconversion
+            -Wno-ignored-qualifiers
+            -Wno-unused-command-line-argument
             -Wno-sign-conversion
             -Wdouble-promotion
             -Wno-unused-parameter

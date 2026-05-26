@@ -304,7 +304,7 @@ void SSD1306_module::set_oled_file_callback(
 }
 
 void SSD1306_module::device_timer_callback() {
-  if (!this->retries < 0) {
+  if (this->retries < 0) {
     return;
   }
   if (!default_screen) {

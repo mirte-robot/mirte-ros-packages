@@ -159,7 +159,12 @@ bool TelemetrixNode::start() {
           std::bind(&Mirte_Board::get_board_characteristics_service_callback,
                     this->board, _1, _2));
 
-  node_data = NodeData{node_, tmx, board};
+  node_data = NodeData{node_,
+                       tmx,
+                       board,
+                       [](std::chrono::duration<double, std::milli> duration,
+                          std::function<void()> callback) {},
+                       {}};
   node_data.add_timer = [](std::chrono::duration<double, std::milli> duration,
                            std::function<void()> callback) mutable {
     std::cout << "Adding cb for duration: " << duration.count() << " ms"

@@ -69,7 +69,7 @@ ServoData::ServoData(pin_t pin, int min_pulse, int max_pulse, float min_angle,
                      float max_speed)
     : DeviceData(name, frame_id), pin(pin), min_pulse(min_pulse),
       max_pulse(max_pulse), min_angle(min_angle), max_angle(max_angle),
-      pin_mode(pin_mode), invert(invert), min_speed(min_speed),
+      invert(invert), pin_mode(pin_mode), min_speed(min_speed),
       max_speed(max_speed) {}
 
 bool ServoData::check() { return pin != (pin_t)-1 && DeviceData::check(); }
