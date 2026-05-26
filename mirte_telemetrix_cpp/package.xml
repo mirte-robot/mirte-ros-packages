@@ -10,6 +10,8 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
 
+  <build_depend>git</build_depend>
+
   <depend>rclcpp</depend>
   <depend>rcpputils</depend>
   <depend>boost</depend>
