@@ -10,14 +10,20 @@ public:
   // Min/Max angle in degrees
   float min_angle = 0;
   float max_angle = 180;
-
+  bool invert = false;
+  std::string pin_mode = "servo"; // or "motor" or "pwm"
+  std::string frame_id = "";
+  float min_speed = -100; // Only used when pin_mode is motor
+  float max_speed = 100;  // Only used when pin_mode is motor
   ServoData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
             std::string name,
             std::map<std::string, rclcpp::ParameterValue> parameters,
             std::set<std::string> &unused_keys);
 
   ServoData(pin_t pin, int min_pulse, int max_pulse, float min_angle,
-            float max_angle, std::string name, std::string frame_id = "");
+            float max_angle, std::string name, std::string frame_id = "",
+            bool invert = false, std::string pin_mode = "servo",
+            float min_speed = -100, float max_speed = 100);
 
   bool check();
   using DeviceData::check;

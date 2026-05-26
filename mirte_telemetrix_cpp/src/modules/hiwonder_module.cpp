@@ -76,7 +76,7 @@ HiWonderBus_module::HiWonderBus_module(
   this->angle_callback =
       nh->create_subscription<mirte_msgs::msg::SetAngleMultiple>(
           "servo/" + servo_group + "set_multiple_angles_callback", 1,
-          [this](const mirte_msgs::msg::SetAngleMultiple::SharedPtr msg) {
+          [this](std::shared_ptr<const mirte_msgs::msg::SetAngleMultiple> msg) {
             // Create dummy request and response objects
             auto req =
                 std::make_shared<mirte_msgs::srv::SetAngleMultiple::Request>();

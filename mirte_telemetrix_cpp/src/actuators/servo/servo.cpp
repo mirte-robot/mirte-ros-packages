@@ -17,7 +17,13 @@ Servo::get_servos(NodeData node_data, std::shared_ptr<Parser> parser) {
         parameters["pins.pin"] = rclcpp::ParameterValue(map_servo.pins.pin);
         parameters["min_pulse"] = rclcpp::ParameterValue(map_servo.min_pulse);
         parameters["max_pulse"] = rclcpp::ParameterValue(map_servo.max_pulse);
+        parameters["min_angle"] = rclcpp::ParameterValue(map_servo.min_angle);
+        parameters["max_angle"] = rclcpp::ParameterValue(map_servo.max_angle);
+        parameters["invert"] = rclcpp::ParameterValue(map_servo.invert);
+        parameters["pin_mode"] = rclcpp::ParameterValue(map_servo.pin_mode);
         // parameters["frame_id"] = rclcpp::ParameterValue(map_servo.frame_id);
+        parameters["min_speed"] = rclcpp::ParameterValue(map_servo.min_speed);
+        parameters["max_speed"] = rclcpp::ParameterValue(map_servo.max_speed);
         std::set<std::string> unused_keys = get_keys(parameters);
         return ServoData(parser, node_data.board, name, parameters,
                          unused_keys);
@@ -39,5 +45,10 @@ Servo::~Servo() { tmx->detach_servo(data.pin); }
 bool Servo::set_angle_us(uint16_t duty_cycle) {
   tmx->write_servo(data.pin, std::clamp(duty_cycle, (uint16_t)data.min_pulse,
                                         (uint16_t)data.max_pulse));
+  return true;
+}
+bool Servo::set_percentage(float percentage) {
+  percentage = std::clamp(percentage, 0.0f, 100.0f);
+  tmx->pwmWrite(data.pin, percentage / 100.0f * tmx->board_features.pwm_max);
   return true;
 }
