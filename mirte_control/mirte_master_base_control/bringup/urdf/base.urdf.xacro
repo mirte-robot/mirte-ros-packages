@@ -5,7 +5,7 @@
     <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
     <xacro:arg name="ticks" default="${params['ticks']}"/>
 
-<xa cro:macro name="wheel" params="name prefix">
+<xacro:macro name="wheel" params="name prefix">
 
         <joint name="${prefix}${name}_wheel_joint" type="continuous">
       <parent link="${prefix}base_link"/>
