@@ -33,7 +33,10 @@ mirte_telemetrix_cpp_neopixel:
           type: int
           default_value: 1
           description: "Number of neopixels in the strip(1-255)"
-
+        data_order:
+          type: string
+          default_value: "GRB"
+          description: "Color data order for the neopixels, e.g. GRB or RGB"
 
 
 

@@ -13,9 +13,9 @@
 #include <ranges>
 using namespace std::placeholders;
 
-std::vector<std::shared_ptr<TelemetrixDevice>>
+std::vector<std::shared_ptr<Motor>>
 Motor::get_motors(NodeData node_data, std::shared_ptr<Parser> parser) {
-  std::vector<std::shared_ptr<TelemetrixDevice>> motors;
+  std::vector<std::shared_ptr<Motor>> motors;
   auto motor_datas =
       parser->params_object.motor.motors_map |
       std::views::transform([&](const auto &pair) {
@@ -31,6 +31,7 @@ Motor::get_motors(NodeData node_data, std::shared_ptr<Parser> parser) {
         parameters["type"] = rclcpp::ParameterValue(map_motor.type);
         parameters["inverted"] = rclcpp::ParameterValue(map_motor.inverted);
         parameters["stop_mode"] = rclcpp::ParameterValue(map_motor.stop_mode);
+        parameters["dp_type"] = rclcpp::ParameterValue(map_motor.dp_type);
         std::set<std::string> unused_keys = get_keys(parameters);
         return MotorData(parser, node_data.board, name, parameters,
                          unused_keys);
@@ -71,7 +72,7 @@ Motor::Motor(NodeData node_data, std::vector<pin_t> pins, DeviceData data,
 
   rclcpp::SubscriptionOptions options;
   options.callback_group = this->callback_group;
-  speed_subscription = nh->create_subscription<std_msgs::msg::Int32>(
+  speed_subscription = nh->create_subscription<mirte_msgs::msg::SetSpeed>(
       "motor/" + this->name + "/speed", rclcpp::SystemDefaultsQoS(),
       std::bind(&Motor::speed_subscription_callback, this, _1), options);
 
@@ -85,6 +86,6 @@ void Motor::set_speed_service_callback(
   res->status = true;
 }
 
-void Motor::speed_subscription_callback(const std_msgs::msg::Int32 &msg) {
-  this->set_speed(msg.data);
+void Motor::speed_subscription_callback(const mirte_msgs::msg::SetSpeed &msg) {
+  this->set_speed(msg.speed);
 }

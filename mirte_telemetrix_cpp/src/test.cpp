@@ -1,11 +1,11 @@
 #include "rclcpp/rclcpp.hpp"
 #include <algorithm>
 #include <mirte_telemetrix_cpp/ina226_parameters.hpp> // auto-generated parameter file from ina226_parameters.yaml
+#include <mirte_telemetrix_cpp/parsers/parsers.hpp>
 #include <mirte_telemetrix_cpp/telemetrix_parameters.hpp> // auto-generated parameter file from telemetrix_parameters.yaml
 #include <ranges>
 #include <regex>
 #include <set>
-
 //   START EDITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 //  std::cout << "Refreshing dynamic parameters..." << std::endl;
 //  std::cout << "prefix_: " << prefix_ << std::endl;
@@ -169,7 +169,7 @@ int main(int argc, char **argv) {
       rclcpp::NodeOptions()
           .allow_undeclared_parameters(true)
           .automatically_declare_parameters_from_overrides(true));
-  // auto parser = std::make_shared<mirte_telemetrix_cpp::Parser>(node);
+  auto parser = std::make_shared<Parser>(node);
   try {
     auto param_listener =
         std::make_shared<mirte_telemetrix_cpp::ParamListener>(node);
@@ -232,7 +232,7 @@ int main(int argc, char **argv) {
                  e.what());
     return 1;
   }
-  rclcpp::spin(node);
+  // rclcpp::spin(node);
   // auto param_listener =
   // std::make_shared<mirte_telemetrix_cpp::ParamListener>(node); auto params =
   // param_listener->get_params();

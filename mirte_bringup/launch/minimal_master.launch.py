@@ -13,6 +13,10 @@ from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node, PushRosNamespace, SetRemap
+from pathlib import Path
+
+ticks = 1321
+invert_motors = False
 
 
 def generate_launch_description():
@@ -50,7 +54,7 @@ def generate_launch_description():
     use_base_pid_control = LaunchConfiguration(
         "use_base_pid_control",
     )
-
+    ticks_arg = LaunchConfiguration("ticks", default=str(ticks))
     telemetrix = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -63,17 +67,32 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={
-            "config_path": PathJoinSubstitution(
-                [
-                    FindPackageShare("mirte_bringup"),
-                    "telemetrix_config",
-                    "mirte_master_config.yaml",
-                ]
-            ),
-            "hardware_namespace": hardware_namespace,
-            "frame_prefix": frame_prefix,
-        }.items(),
+        launch_arguments=(
+            {
+                "config_path": PathJoinSubstitution(
+                    [
+                        FindPackageShare("mirte_bringup"),
+                        "telemetrix_config",
+                        "mirte_master_config.yaml",
+                    ]
+                ),
+                "hardware_namespace": hardware_namespace,
+                "frame_prefix": frame_prefix,
+            }
+            | (
+                {
+                    "overlay_config_path": PathJoinSubstitution(
+                        [
+                            FindPackageShare("mirte_bringup"),
+                            "telemetrix_config/overlays",
+                            "invert_wheels.yaml",
+                        ]
+                    )
+                }
+                if invert_motors
+                else {}
+            )
+        ).items(),
     )
     ros2_control = GroupAction(
         actions=[
@@ -126,7 +145,7 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix}.items(),
+        launch_arguments={"frame_prefix": frame_prefix, "ticks": ticks_arg}.items(),
     )
 
     mecanum_drive_control = IncludeLaunchDescription(
@@ -194,26 +213,51 @@ def generate_launch_description():
         output="screen",
     )
 
-    depth_cam = GroupAction(
-        actions=[
-            # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
-            # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
-            # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
-            IncludeLaunchDescription(
-                XMLLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("astra_camera"),
-                                "launch",
-                                "astra_pro_plus.launch.xml",
-                            ]
-                        )
-                    ]
+    # use lsusb to detect which depth cam is connected
+    astra_devices = [device.name for device in Path("/dev").glob("astra*")]
+    print(astra_devices)
+    if "astradepth" in astra_devices and "astrauvc" in astra_devices:
+        depth_cam = GroupAction(
+            actions=[
+                # SetRemap(src="/camera/color/image_raw", dst="/camera/color/_image_raw"),
+                # SetRemap(src="/camera/depth/image_raw", dst="/camera/depth/_image_raw"),
+                # SetRemap(src="/camera/ir/image_raw", dst="/camera/ir/_image_raw"),
+                IncludeLaunchDescription(
+                    XMLLaunchDescriptionSource(
+                        [
+                            PathJoinSubstitution(
+                                [
+                                    FindPackageShare("astra_camera"),
+                                    "launch",
+                                    "astra_pro_plus.launch.xml",
+                                ]
+                            )
+                        ]
+                    ),
                 ),
-            ),
-        ]
-    )
+            ]
+        )
+    elif "astra_mini_pro" in astra_devices:
+        depth_cam = GroupAction(
+            actions=[
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(
+                        [
+                            PathJoinSubstitution(
+                                [
+                                    FindPackageShare("orbbec_camera"),
+                                    "launch",
+                                    "astra.launch.py",  # for the astra mini S pro
+                                ]
+                            )
+                        ]
+                    ),
+                ),
+            ]
+        )
+    else:
+        print("No compatible depth camera found, not launching any depth camera node.")
+        depth_cam = None
     lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -221,7 +265,10 @@ def generate_launch_description():
                     [FindPackageShare("rplidar_ros"), "launch", "rplidar_c1_launch.py"]
                 )
             ]
-        )
+        ),
+        launch_arguments={
+            "auto_standby": "true",
+        }.items(),
     )
     rosbridge = IncludeLaunchDescription(
         PathJoinSubstitution(
@@ -244,7 +291,9 @@ def generate_launch_description():
                 cameras,
                 web_video_server,
                 lidar,
-                depth_cam,
+                *(
+                    [depth_cam] if depth_cam is not None else []
+                ),  # if no cam is found, just not start it as it is unknown which one to start.
                 arm_control,
                 mecanum_drive_control,
                 rosbridge,

@@ -3,8 +3,10 @@
 #include <mirte_telemetrix_cpp/mirte-modules.hpp>
 #include <mirte_telemetrix_cpp/modules/adxl345_module.hpp>
 #include <mirte_telemetrix_cpp/modules/as5600_module.hpp>
+#include <mirte_telemetrix_cpp/modules/bno055_module.hpp>
 #include <mirte_telemetrix_cpp/modules/hiwonder_module.hpp>
 #include <mirte_telemetrix_cpp/modules/ina226_module.hpp>
+#include <mirte_telemetrix_cpp/modules/mpu6050_module.hpp>
 #include <mirte_telemetrix_cpp/modules/mpu9250_module.hpp>
 #include <mirte_telemetrix_cpp/modules/pca_module.hpp>
 #include <mirte_telemetrix_cpp/modules/ssd1306_module.hpp>
@@ -35,8 +37,8 @@ void Mirte_modules::start() {
 
   //   this->sensor_sys = std::make_shared<tmx_cpp::Sensors>(tmx);
   RCLCPP_INFO(nh->get_logger(), "Adding INA226 Modules");
-  auto ina_mods =
-      INA226_sensor::get_ina_modules(node_data, parser, this->sensor_sys);
+  auto ina_mods = INA226_sensor::get_ina_modules(
+      node_data, parser, this->sensor_sys, this->tmx->module_sys);
   std::cout << "Adding ina modules" << ina_mods.size() << std::endl;
   this->modules.insert(this->modules.end(), ina_mods.begin(), ina_mods.end());
 
@@ -51,7 +53,14 @@ void Mirte_modules::start() {
   auto mpu_mods =
       MPU9250_sensor::get_mpu_modules(node_data, parser, this->sensor_sys);
   this->modules.insert(this->modules.end(), mpu_mods.begin(), mpu_mods.end());
-
+  auto mpu6050_mods =
+      MPU6050_sensor::get_mpu_modules(node_data, parser, this->sensor_sys);
+  this->modules.insert(this->modules.end(), mpu6050_mods.begin(),
+                       mpu6050_mods.end());
+  auto bno055_mods =
+      BNO055_sensor::get_bno_modules(node_data, parser, this->sensor_sys);
+  this->modules.insert(this->modules.end(), bno055_mods.begin(),
+                       bno055_mods.end());
   RCLCPP_INFO(nh->get_logger(), "Adding ADXL345 Modules");
   auto adxl_mods =
       ADXL345_sensor::get_adxl_modules(node_data, parser, this->sensor_sys);

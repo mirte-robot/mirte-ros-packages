@@ -49,3 +49,8 @@ void PPMotor::set_speed(int speed) {
 
   // std::cout << "PP Setting speed to " << std::dec << speed << std::endl;
 }
+
+std::vector<std::pair<uint8_t, uint16_t>> PPMotor::get_speed_multi(int speed) {
+  auto [speedA, speedB] = calc_pwm_speed(speed);
+  return {{this->pwmA_pin, speedA}, {this->pwmB_pin, speedB}};
+}

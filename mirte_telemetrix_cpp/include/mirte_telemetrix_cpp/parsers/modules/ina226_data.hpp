@@ -12,6 +12,13 @@ public:
   float max_voltage = 14;
   float min_voltage = 10.5;
   float power_low_time = 5;
+  float turn_off_time = 30;
+  uint8_t shutdown_relay_pin = 0;
+  uint8_t shutdown_switch_in_pin = 0;
+  bool shutdown_switch_off_value = false;
+  uint8_t shutdown_switch_time_sec = 1;
+  bool disable_shutdown_relay = false;
+  bool shutdown_relay_off_value = false;
 
 #ifdef WITH_GPIO
   bool use_percentage_led = false;

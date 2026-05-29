@@ -19,7 +19,7 @@
   <depend>controller_manager</depend>
   <depend>trajectory_msgs</depend>
 
-  <depend>yaml_cpp_vendor</depend>
+  <depend>generate_parameter_library</depend>
 
   <depend>control_toolbox</depend>
 

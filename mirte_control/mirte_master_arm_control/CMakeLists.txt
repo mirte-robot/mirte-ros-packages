@@ -20,6 +20,7 @@ find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(generate_parameter_library REQUIRED)
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
     hardware_interface
@@ -30,7 +31,12 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     std_srvs
     std_msgs
     control_toolbox
-    yaml_cpp_vendor)
+    generate_parameter_library)
+
+generate_parameter_library(mirte_master_arm_control_parameters
+  hardware/mirte_master_arm_control_parameters.yaml
+)
+
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -40,8 +46,11 @@ endforeach()
 
 include_directories(hardware/include/ ${catkin_INCLUDE_DIRS})
 # COMPILE
-add_library(${PROJECT_NAME} SHARED hardware/mirte_master_arm_control.cpp
-                                   hardware/params.cpp)
+add_library(${PROJECT_NAME} SHARED hardware/mirte_master_arm_control.cpp)
+
+target_link_libraries(mirte_master_arm_control PUBLIC mirte_master_arm_control_parameters)
+
+
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
   ${PROJECT_NAME}
@@ -66,7 +75,7 @@ install(DIRECTORY bringup/launch bringup/config
 bringup/urdf
         DESTINATION share/${PROJECT_NAME})
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME} mirte_master_arm_control_parameters
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

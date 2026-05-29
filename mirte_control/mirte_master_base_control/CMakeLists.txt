@@ -10,16 +10,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(mirte_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
     hardware_interface
@@ -29,8 +19,9 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     mirte_msgs
     std_srvs
     std_msgs
+    sensor_msgs
     control_toolbox
-    yaml_cpp_vendor)
+)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -49,6 +40,7 @@ target_include_directories(
 ament_target_dependencies(${PROJECT_NAME} PUBLIC
                           ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
+  
 # Causes the visibility macros to use dllexport rather than dllimport, which is
 # appropriate when building the dll but not consuming it.
 target_compile_definitions(${PROJECT_NAME}
@@ -64,7 +56,7 @@ install(DIRECTORY hardware/include/ DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY bringup/launch bringup/config bringup/urdf
         DESTINATION share/${PROJECT_NAME})
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME} 
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

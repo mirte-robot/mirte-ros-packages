@@ -14,6 +14,9 @@ public:
   std::tuple<uint32_t, uint32_t> calc_pwm_speed(int speed);
   virtual void set_speed(int speed) override;
 
+  virtual std::vector<std::pair<uint8_t, uint16_t>>
+  get_speed_multi(int speed) override;
+
   pin_t pwmA_pin;
   pin_t pwmB_pin;
   bool stop_mode = false; // low->0%==low output, high->0==high output

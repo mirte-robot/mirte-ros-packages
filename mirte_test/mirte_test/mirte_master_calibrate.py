@@ -2,13 +2,13 @@
 
 # TODO check with the documentation and the config files
 ranges = {
-    # 2: {
-    #     "min": 3400,
-    #     "max": 21000,
-    #     "home": 12000,
-    #     "name": "shoulder_pan",
-    #     "position": 0,
-    # },
+    2: {
+        "min": 3400,
+        "max": 21000,
+        "home": 12000,
+        "name": "shoulder_pan",
+        "position": 0,
+    },
     3: {
         "min": 2832,
         "max": 20000,
@@ -18,7 +18,7 @@ ranges = {
     },
     4: {"min": 120, "max": 21000, "home": 11750, "name": "elbow", "position": 0},
     5: {"min": 1128, "max": 21672, "home": 12200, "name": "wrist", "position": 0},
-    6: {"min": 6168, "max": 14224, "home": 10524, "name": "gripper", "position": 0},
+    # 6: {"min": 6168, "max": 14224, "home": 10524, "name": "gripper", "position": 0},
 }
 
 import rclpy

@@ -35,6 +35,9 @@ EncoderData::EncoderData(
     this->pinB = (pin_t)-1;
     got_pins = true;
   }
+  if (unused_keys.erase("inverted")) {
+    this->inverted = parameters["inverted"].get<bool>();
+  }
   if (!got_pins) {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());

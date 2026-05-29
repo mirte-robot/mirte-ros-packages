@@ -41,12 +41,13 @@ Neopixel::get_neopixels(NodeData node_data, std::shared_ptr<Parser> parser) {
         // parameters["connector"] = rclcpp::ParameterValue(map_neo.connector);
         parameters["pins.data"] = rclcpp::ParameterValue(map_neo.pins.data);
         parameters["num_leds"] = rclcpp::ParameterValue(map_neo.num_pixels);
-        parameters["default_r"] =
+        parameters["default_color_r"] =
             rclcpp::ParameterValue(map_neo.default_color.r);
-        parameters["default_g"] =
+        parameters["default_color_g"] =
             rclcpp::ParameterValue(map_neo.default_color.g);
-        parameters["default_b"] =
+        parameters["default_color_b"] =
             rclcpp::ParameterValue(map_neo.default_color.b);
+        parameters["data_order"] = rclcpp::ParameterValue(map_neo.data_order);
         std::set<std::string> unused_keys = get_keys(parameters);
         return NeopixelData(parser, node_data.board, name, parameters,
                             unused_keys);
@@ -71,12 +72,22 @@ Neopixel::Neopixel(NodeData node_data, NeopixelData neopixel_data)
                        (DeviceData)neopixel_data) {
   this->num_leds = neopixel_data.num_leds;
   this->data_pin = neopixel_data.data_pin;
+  this->neopixel_data = std::make_shared<NeopixelData>(neopixel_data);
+
   std::cout << "attachin neopixel with data pin: " << (int)this->data_pin
             << " and num leds: " << this->num_leds << std::endl;
-  node_data.tmx->attach_neopixel(
-      neopixel_data.data_pin, neopixel_data.num_leds, 0,
-      {neopixel_data.default_r, neopixel_data.default_g,
-       neopixel_data.default_b});
+  std::cout << "def color" << neopixel_data.default_r << " "
+            << neopixel_data.default_g << " " << neopixel_data.default_b
+            << std::endl;
+  auto default_color = std::make_tuple((uint8_t)neopixel_data.default_r,
+                                       (uint8_t)neopixel_data.default_g,
+                                       (uint8_t)neopixel_data.default_b);
+  auto ordered_default_color = this->order_color(default_color);
+  std::cout << "ordered def color" << (int)std::get<0>(ordered_default_color)
+            << " " << (int)std::get<1>(ordered_default_color) << " "
+            << (int)std::get<2>(ordered_default_color) << std::endl;
+  node_data.tmx->attach_neopixel(neopixel_data.data_pin, neopixel_data.num_leds,
+                                 0, ordered_default_color);
 
   this->set_neopixel_service = nh->create_service<mirte_msgs::srv::SetNeopixel>(
       "leds/" + this->name + "/set_color",
@@ -98,7 +109,8 @@ void Neopixel::set_color_service(
     const mirte_msgs::srv::SetNeopixel::Request::ConstSharedPtr req,
     mirte_msgs::srv::SetNeopixel::Response::SharedPtr res) {
   //   std::vector<std::vector<uint8_t>> colors(this->num_leds, );
-  this->tmx->fill_neopixels({req->color.r, req->color.g, req->color.b}, true);
+  this->tmx->fill_neopixels(
+      this->order_color({req->color.r, req->color.g, req->color.b}), true);
   res->status = true;
 }
 
@@ -112,8 +124,26 @@ void Neopixel::set_color_single_service(
     return;
   }
   this->tmx->set_neopixel_color(
-      req->led_index, {req->color.r, req->color.g, req->color.b}, true);
+      req->led_index,
+      this->order_color({req->color.r, req->color.g, req->color.b}), true);
   res->status = true;
+}
+
+std::tuple<uint8_t, uint8_t, uint8_t>
+Neopixel::order_color(const std::tuple<uint8_t, uint8_t, uint8_t> &rgb_color) {
+  std::cout << "r_index: " << this->neopixel_data->r_index
+            << " g_index: " << this->neopixel_data->g_index
+            << " b_index: " << this->neopixel_data->b_index << std::endl;
+
+  uint8_t r = std::get<0>(rgb_color);
+  uint8_t g = std::get<1>(rgb_color);
+  uint8_t b = std::get<2>(rgb_color);
+  std::array<uint8_t, 3> ordered_color;
+  //   ordered_color
+  ordered_color[this->neopixel_data->r_index] = r;
+  ordered_color[this->neopixel_data->g_index] = g;
+  ordered_color[this->neopixel_data->b_index] = b;
+  return std::make_tuple(ordered_color[0], ordered_color[1], ordered_color[2]);
 }
 
 // Motor::Motor(NodeData node_data, std::vector<pin_t> pins, MotorData
@@ -168,19 +198,44 @@ NeopixelData::NeopixelData(
   }
   this->num_leds = parameters["num_leds"].get<int>();
 
-  if (unused_keys.erase("default_color.r")) {
-    this->default_r = parameters["default_color.r"].get<int>();
+  if (unused_keys.erase("default_color_r")) {
+    this->default_r = parameters["default_color_r"].get<int>();
   } else {
+    std::cout << "no def r" << std::endl;
     this->default_r = 0;
   }
-  if (unused_keys.erase("default_color.g")) {
-    this->default_g = parameters["default_color.g"].get<int>();
+  if (unused_keys.erase("default_color_g")) {
+    this->default_g = parameters["default_color_g"].get<int>();
   } else {
     this->default_g = 0;
   }
-  if (unused_keys.erase("default_color.b")) {
-    this->default_b = parameters["default_color.b"].get<int>();
+  if (unused_keys.erase("default_color_b")) {
+    this->default_b = parameters["default_color_b"].get<int>();
   } else {
     this->default_b = 0;
+  }
+  if (unused_keys.erase("data_order")) {
+    std::string data_order = parameters["data_order"].get<std::string>();
+    boost::algorithm::to_upper(data_order);
+    this->data_order = data_order;
+    std::cout << "data order: " << this->data_order << std::endl;
+    //     if not containing a single R, G or B, error
+    if (data_order.find('R') == std::string::npos ||
+        data_order.find('G') == std::string::npos ||
+        data_order.find('B') == std::string::npos) {
+      throw std::runtime_error("Invalid data order: " + data_order +
+                               " for neopixel module " + name +
+                               ". Must contain R, G and B");
+    }
+    if (data_order.size() != 3) {
+      throw std::runtime_error(
+          "Invalid data order: " + data_order + " for neopixel module " + name +
+          ". Must be 3 characters long, containing only R, G and B");
+    }
+    this->r_index = data_order.find('R');
+    this->g_index = data_order.find('G');
+    this->b_index = data_order.find('B');
+  } else {
+    std::cout << "no data order, defaulting to GRB" << std::endl;
   }
 }

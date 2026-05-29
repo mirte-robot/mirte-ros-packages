@@ -60,8 +60,6 @@
   <depend>controller_manager</depend>
   <depend>trajectory_msgs</depend>
 
-  <depend>yaml_cpp_vendor</depend>
-
   <depend>control_toolbox</depend>
   <depend>filters</depend>
   <exec_depend>forward_command_controller</exec_depend>

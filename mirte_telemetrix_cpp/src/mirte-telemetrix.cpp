@@ -23,8 +23,8 @@ NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
   rclcpp::init(argc, argv);
+  std::cout << "Mirte_telemetrix_cpp version " << GIT_SHA1 << std::endl;
   auto s = "main_thread";
-
   pthread_setname_np(pthread_self(), s);
   rclcpp::executors::MultiThreadedExecutor executor;
 
@@ -159,7 +159,12 @@ bool TelemetrixNode::start() {
           std::bind(&Mirte_Board::get_board_characteristics_service_callback,
                     this->board, _1, _2));
 
-  node_data = NodeData{node_, tmx, board};
+  node_data = NodeData{node_,
+                       tmx,
+                       board,
+                       [](std::chrono::duration<double, std::milli> duration,
+                          std::function<void()> callback) {},
+                       {}};
   node_data.add_timer = [](std::chrono::duration<double, std::milli> duration,
                            std::function<void()> callback) mutable {
     std::cout << "Adding cb for duration: " << duration.count() << " ms"

@@ -43,3 +43,31 @@ mirte_telemetrix_cpp_ina226:
           type: string
           default_value: NONE
           description: "Connector to which the INA226 sensor is connected"
+        shutdown_relay_pin:
+          type: string
+          default_value: NONE
+          description: "Pin number for the shutdown relay, if used, like GP28"
+        shutdown_relay_off_value:
+          type: bool
+          default_value: false
+          description: "Value to set the shutdown relay pin to when shutting down, true for high, false for low"
+        shutdown_switch_in_pin:
+          type: string
+          default_value: NONE
+          description: "Pin number for the shutdown switch input, if used, like GP27, keep empty if not used"
+        shutdown_switch_off_value:
+          type: bool
+          default_value: false
+          description: "Value of the shutdown switch when it is in the off position. If the switch is active low, this should be true, if it is active high, this should be false."
+        shutdown_switch_off_time:
+          type: double
+          default_value: 1.0
+          description: "Time in seconds that the shutdown switch must be in the off position to trigger a shutdown"
+        disable_shutdown_relay:
+          type: bool
+          default_value: false
+          description: "Whether to disable the shutdown relay functionality, useful for testing without a relay"
+        turn_off_time:
+          type: double
+          default_value: 30.0
+          description: "Time in seconds for the mcu to wait before cutting the power after receiving the shutdown signal, should be long enough to allow the SBC to shut down properly."
