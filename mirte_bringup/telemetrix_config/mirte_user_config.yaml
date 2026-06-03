@@ -1,6 +1,6 @@
 /**:
   ros__parameters:
-    test: true
+   
     device:
       mirte:
         type: pcb
@@ -11,7 +11,6 @@
       left:
         name: left
         device: mirte
-        max_distance: 2
         pins:
           trigger: GP9
           echo: GP8
@@ -35,59 +34,6 @@
         pins:
           analog: GP26
           digital: GP16
-    # module_names:
-    #   - t
-    a:
-      t:
-        test2: false
-      x:
-        test3: 123
-      
-    modules:
-      x: 3
-      asdf:
-        type: neopixel
-        pins:
-          data: 1
-        num_pixels: 6
-        default_color:
-          r: 255
-          g: 0
-          b: 1
-      b:
-        test: 3
-      t:
-        name: t
-        device: mirte
-        type: test_module
-      ina226_1:
-        name: ina226_1
-        device: mirte
-        type: INA226
-        connector: I2C1
-      z: 
-        pins:
-          sda: GP2
-          scl: GP3
-        addr: 0x40
-        port: I2C1
-        min_voltage: 7.0
-        power_low_time: 1.0
-        use_percentage_led: true
-        device: mirte
-      encoders:
-        type: AS5600
-        connector: I2C1
-        addr: 0x36
-        encoders:
-          wheel1:
-              mux: 3
-          wheel2:
-              mux: 4
-          wheel3:
-              mux: 5
-          wheel4:
-            mux: 6
     oled:
       left:
         name: left
@@ -101,6 +47,9 @@
         pins:
           sda: GP4
           scl: GP5
+        # default_screen_script can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text.
+        # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
+        # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
     servo:
       left:
         name: left
@@ -145,27 +94,18 @@
         pins:
           p1: GP20
           p2: GP21
-    # oled:
-    #   oled:
+    # encoder:
+    #   left:
+    #     name: left
     #     device: mirte
-    #     connector: I2C1
-    encoder:
-      left:
-        name: left
-        device: mirte
-        pins:
-          A: 15.0
-          B: 16
-      right:
-        name: right
-        device: mirte
-        pins:
-          A: 17
+    #     pins:
+    #       A: 15
+    #   right:
+    #     name: right
+    #     device: mirte
+    #     pins:
+    #       A: 17
 
-        type: SSD1306 # Optional must be 'SSD1306'
-        # default_screen_script can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text.
-        # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
-        # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
-    color:
-      asdf:
-        connector: I2C2
+    # color: # color sensor veml6040
+    #   color:
+    #     connector: I2C2
