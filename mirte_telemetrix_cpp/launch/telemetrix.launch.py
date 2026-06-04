@@ -41,6 +41,11 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "frame_prefix", default_value="", description="The TF2 frame prefix"
         ),
+        DeclareLaunchArgument(
+            "overlay_config_path",
+            default_value="",
+            description="Path to overlay config files",
+        ),
     ]
 
     ld = LaunchDescription(launch_arguments)
@@ -52,6 +57,7 @@ def generate_launch_description():
         parameters=[
             LaunchConfiguration("config_path"),
             {"frame_prefix": LaunchConfiguration("frame_prefix")},
+            LaunchConfiguration("overlay_config_path"),
         ],
         prefix=prefix,
         output="screen",

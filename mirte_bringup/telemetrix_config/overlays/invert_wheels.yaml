@@ -1,0 +1,21 @@
+/io/telemetrix:
+  ros__parameters:
+    motor:
+      front_left:
+        inverted: true
+      rear_right:
+        inverted: true
+      rear_left:
+        inverted: true
+      front_right:
+        inverted: true
+    encoder:
+      front_left:
+        inverted: true
+      rear_right:
+        inverted: true
+      rear_left:
+        inverted: true
+      front_right:
+        inverted: true
+

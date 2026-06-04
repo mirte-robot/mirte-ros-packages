@@ -1,7 +1,15 @@
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp"
 
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <ranges>
+#include <regex>
 #include <set>
-
+#include <string>
+#include <vector>
 std::map<std::string, rclcpp::ParameterValue>
 get_params_name(std::shared_ptr<rclcpp::Node> nh, std::string name) {
   auto node_parameters_iface = nh->get_node_parameters_interface();
@@ -51,6 +59,38 @@ Parser::Parser(std::shared_ptr<rclcpp::Node> nh)
               << ':' << rclcpp::to_string(val) // string's value
               << std::endl;
   }
+  // key, string types, num types
+  std::vector<std::tuple<std::string, std::vector<std::string>,
+                         std::vector<std::string>>>
+      list_items = {{"encoder", {"pins.pin", "pins.A", "pins.B"}, {}},
+                    {"color", {"pins.sda", "pins.scl"}, {}},
+                    {"distance",
+                     {"pins.trigger", "pins.echo"},
+                     {
+                         "min_distance",
+                         "max_distance",
+                     }},
+                    {"intensity", {"pins.digital", "pins.analog"}, {}},
+                    {"motor", {"pins.p1", "pins.p2", "pins.d1", "pins.d2"}, {}},
+                    {"servo", {"pins.pin"}, {}},
+                    {"oled", {"pins.sda", "pins.scl"}, {}},
+                    {"keypad", {"pins.pin"}, {}}};
+  for (auto item : list_items) {
+    auto [list_name, str_types, num_types] = item;
+    auto found_modules = this->update_params_list(
+        fmt::format("{}", list_name), fmt::format("{}s", list_name),
+        [](std::string x) { return true; });
+    // auto str_types = str;
+    this->fix_param_type_str_modules(fmt::format("{}", list_name),
+                                     found_modules, str_types);
+    this->fix_param_type_num_modules(fmt::format("{}", list_name),
+                                     found_modules, num_types);
+  }
+  this->fix_param_type_str("device.mirte.version");
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp::ParamListener>(nh);
+  auto params = param_listener->get_params();
+  this->params_object = params;
 }
 
 /**
@@ -70,20 +110,21 @@ Parser::get_params_name(std::string name) {
   return out_params;
 }
 
-std::set<std::string> Parser::get_params_keys(std::string name) {
-  std::set<std::string> out_params;
-  name += "."; // add dot to ensure we only take objects with exactly the same
-               // name, not oledTest.. when oled.. is requested
-  for (auto &servo_it : this->params) {
-    if (starts_with(servo_it.first, name)) {
-      std::string key = servo_it.first.substr(name.length());
-      auto next_dot = key.find(".");
-      key = key.substr(0, next_dot);
-      out_params.insert(key);
-    }
-  }
-  return out_params;
-}
+// std::set<std::string> Parser::get_params_keys(std::string name) {
+//   std::set<std::string> out_params;
+//   name += "."; // add dot to ensure we only take objects with exactly the
+//   same
+//                // name, not oledTest.. when oled.. is requested
+//   for (auto &servo_it : this->params) {
+//     if (starts_with(servo_it.first, name)) {
+//       std::string key = servo_it.first.substr(name.length());
+//       auto next_dot = key.find(".");
+//       key = key.substr(0, next_dot);
+//       out_params.insert(key);
+//     }
+//   }
+//   return out_params;
+// }
 std::string Parser::build_param_name(std::string name, std::string key) {
   return name + "." + key;
 }
@@ -100,14 +141,15 @@ Parser::build_param_name(std::initializer_list<const std::string> keys) {
 }
 
 int Parser::get_frequency() {
-  auto keys = get_params_keys("device.mirte");
-  auto values = get_params_name("device.mirte");
+  // auto keys = get_params_keys("device.mirte");
+  // auto values = get_params_name("device.mirte");
 
-  if (keys.erase("max_frequency")) {
-    return values["max_frequency"].get<int>();
-  } else {
-    return 50;
-  }
+  return this->params_object.device.mirte.max_frequency;
+  // if (keys.erase("max_frequency")) {
+  //   return values["max_frequency"].get<int>();
+  // } else {
+  //   return 50;
+  // }
 }
 
 std::string
@@ -131,4 +173,225 @@ std::set<std::string> &insert_default_param(std::set<std::string> &unused_keys,
                                             std::string key) {
   unused_keys.emplace(key);
   return unused_keys;
+}
+
+// bool update_params_list(std::string const& prefix_, std::string const &
+// list_name) {
+//       // __map_xxxxx does not automatically update the list of names, so we
+//       need to do it here
+//    auto x =
+//    this->nh->get_node_parameters_interface()->list_parameters({prefix_},
+//    10).names | std::views::transform([prefix_](const std::string&
+//    param_name){
+//         // std::cout << "Checking parameter: " << param_name << std::endl;
+//              std::regex word_regex("^" + prefix_ + "\\.");
+//                 if( std::regex_search(param_name, word_regex)) {
+//                     auto replaced = std::regex_replace(param_name,
+//                     word_regex, "");
+//                     // std::cout << "  replaced string: " << replaced <<
+//                     std::endl; auto next_key = replaced.substr(0,
+//                     replaced.find('.'));
+//                     // std::cout << "  extracted key: " << next_key <<
+//                     std::endl; return next_key;
+//                 } else {
+//                     return std::string{};
+//                 }
+
+//         //   return param.get_name().starts_with(prefix_ + "modules.");
+//       }) | std::views::filter([](const std::string& s){ return !s.empty(); })
+//       ; std::set<std::string> vec_x; for (const auto& v : x) {
+//         // std::cout << "inserting found dynamic parameter module name: " <<
+//         v << std::endl; vec_x.insert(v);
+//       }
+//       auto module_names = std::vector<std::string>(vec_x.begin(),
+//       vec_x.end());
+//       // std::cout << "Final module "<< list_name << " list: ";
+//       // for(const auto& name : module_names) {
+//       //     std::cout << name << " ";
+//       // }
+//       // std::cout << std::endl;
+//       this->nh->get_node_parameters_interface()->set_parameters({rclcpp::Parameter(list_name,
+//       module_names)}); return true;
+
+// }
+std::vector<std::string> Parser::update_params_list(
+    std::string const &prefix_, std::string const &list_name,
+    std::function<bool(const std::string &name)> filter_func) {
+  // __map_xxxxx does not automatically update the list of names, so we need to
+  // do it here
+  std::cout << "Updating parameter list for " << list_name << " with prefix "
+            << prefix_ << std::endl;
+  std::vector<std::string> names = this->nh->get_node_parameters_interface()
+                                       ->list_parameters({prefix_}, 10)
+                                       .names;
+  auto x =
+      names | std::views::transform([prefix_](const std::string &param_name) {
+        // std::cout << "Checking parameter: " << param_name << std::endl;
+        std::regex word_regex("^" + prefix_ + "\\.");
+        if (std::regex_search(param_name, word_regex)) {
+          auto replaced = std::regex_replace(param_name, word_regex, "");
+          // std::cout << "  replaced string: " << replaced << std::endl;
+          auto next_key = replaced.substr(0, replaced.find('.'));
+          // std::cout << "  extracted key: " << next_key << std::endl;
+          return std::pair(param_name, next_key);
+        } else {
+          return std::pair<std::string, std::string>{};
+        }
+        // return std::pair<std::string, std::string>();
+
+        //   return param.get_name().starts_with(prefix_ + "modules.");
+      }) |
+      std::views::filter([](const std::pair<std::string, std::string> &s) {
+        return !s.second.empty();
+      }) |
+      std::views::filter(
+          [filter_func](const std::pair<std::string, std::string> &s) {
+            return filter_func(s.first);
+          }) |
+      std::views::transform([](const std::pair<std::string, std::string> &s) {
+        return s.second;
+      });
+  std::set<std::string> vec_x;
+  for (const auto &v : x) {
+    std::cout << "inserting found dynamic parameter module name: " << v
+              << " for " << list_name << std::endl;
+    vec_x.insert(v);
+  }
+  auto module_names = std::vector<std::string>(vec_x.begin(), vec_x.end());
+  // std::cout << "Final module "<< list_name << " list: ";
+  // for(const auto& name : module_names) {
+  //     std::cout << name << " ";
+  // }
+  // std::cout << std::endl;
+  this->nh->get_node_parameters_interface()->set_parameters(
+      {rclcpp::Parameter(list_name, module_names)});
+  return module_names;
+}
+
+std::vector<std::string>
+Parser::update_params_list_type(std::string const &prefix_,
+                                std::string const &list_name,
+                                std::string const &type_filter) {
+  // __map_xxxxx does not automatically update the list of names, so we need to
+  // do it here
+
+  return this->update_params_list(
+      prefix_, list_name, [&](const std::string &name) {
+        // check if ends with type, then check if param type == "INA226"
+        // std::cout << "Filtering parameter: " << name << std::endl;
+        if (name.size() < 5) {
+          // std::cout << "  too short" << std::endl;
+          return false;
+        }
+        if (name.substr(name.size() - 4) != "type") {
+          // std::cout << "  does not end with type" << std::endl;
+          return false;
+        }
+        rclcpp::Parameter param;
+        param = this->nh->get_node_parameters_interface()->get_parameter(name);
+        if (boost::algorithm::to_lower_copy(param.value_to_string()) !=
+            boost::algorithm::to_lower_copy(type_filter)) {
+          // std::cout << "  type is not INA226" << std::endl;
+          return false;
+        }
+        // std::cout << "  accepted INA226 parameter" << std::endl;
+        return true;
+      });
+}
+
+bool Parser::fix_param_type_str(std::string const &key) {
+  if (!this->nh->get_node_parameters_interface()->has_parameter(key)) {
+    RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist",
+                key.c_str());
+    return false;
+  }
+
+  auto param = this->nh->get_node_parameters_interface()->get_parameter(key);
+  std::cout << "Fixing parameter type for " << key << " from "
+            << param.get_type() << " to string" << std::endl;
+  if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
+    std::string out = "";
+    switch (param.get_type()) {
+    case rclcpp::ParameterType::PARAMETER_BOOL:
+    case rclcpp::ParameterType::PARAMETER_INTEGER:
+    case rclcpp::ParameterType::PARAMETER_DOUBLE:
+
+    case rclcpp::ParameterType::PARAMETER_STRING:
+      out = param.value_to_string();
+      break;
+    default:
+      // dont support arrays
+      std::cout << "  current value: (unsupported type)" << std::endl;
+    }
+    this->nh->get_node_parameters_interface()->set_parameters(
+        {rclcpp::Parameter(key, out)});
+    return true;
+  }
+  return false;
+}
+
+void Parser::fix_param_type_str(std::vector<std::string> const &keys) {
+  for (const auto &key : keys) {
+    this->fix_param_type_str(key);
+  }
+}
+void Parser::fix_param_type_str_modules(std::string const &prefix_,
+                                        std::vector<std::string> const &modules,
+                                        std::vector<std::string> const &keys) {
+  for (const auto &module : modules) {
+    for (const auto &key : keys) {
+      std::string full_key = prefix_ + "." + module + "." + key;
+      this->fix_param_type_str(full_key);
+    }
+  }
+}
+
+bool Parser::fix_param_type_num(std::string const &key) {
+  if (!this->nh->get_node_parameters_interface()->has_parameter(key)) {
+    RCLCPP_WARN(this->nh->get_logger(), "Parameter %s does not exist",
+                key.c_str());
+    return false;
+  }
+  auto param = this->nh->get_node_parameters_interface()->get_parameter(key);
+  if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
+    std::cout << "Fixing parameter type for " << key << " from "
+              << param.get_type() << " to double" << std::endl;
+    double out = 0.0;
+    auto type = param.get_type_name();
+    if (type == "integer") {
+      out = static_cast<double>(param.as_int());
+    } else if (type == "string") {
+      try {
+        out = std::stod(param.as_string());
+      } catch (const std::exception &e) {
+        std::cout << "  could not convert string to double: " << e.what()
+                  << std::endl;
+        return false;
+      }
+    } else if (type == "boolean") {
+      out = param.as_bool() ? 1.0 : 0.0;
+    } else {
+      std::cout << "  unknown parameter type: " << type << std::endl;
+      return false;
+    }
+    this->nh->get_node_parameters_interface()->set_parameters(
+        {rclcpp::Parameter(key, out)});
+    return true;
+  }
+  return false;
+}
+void Parser::fix_param_type_num(std::vector<std::string> const &keys) {
+  for (const auto &key : keys) {
+    this->fix_param_type_num(key);
+  }
+}
+void Parser::fix_param_type_num_modules(std::string const &prefix_,
+                                        std::vector<std::string> const &modules,
+                                        std::vector<std::string> const &keys) {
+  for (const auto &module : modules) {
+    for (const auto &key : keys) {
+      std::string full_key = prefix_ + "." + module + "." + key;
+      this->fix_param_type_num(full_key);
+    }
+  }
 }

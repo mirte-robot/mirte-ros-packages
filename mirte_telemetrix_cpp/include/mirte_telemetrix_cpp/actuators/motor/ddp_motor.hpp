@@ -7,7 +7,8 @@ public:
   DDPMotor(NodeData node_data, MotorData motor_data);
 
   virtual void set_speed(int speed) override;
-
+  virtual std::vector<std::pair<uint8_t, uint16_t>>
+  get_speed_multi(int speed) override;
   pin_t A_pin;
   pin_t B_pin;
   pin_t pwm_pin;

@@ -1,0 +1,73 @@
+mirte_telemetrix_cpp_ina226:
+  ina_module_names: 
+      type: string_array
+      default_value: []
+      description: "List of module names to be loaded"
+  modules:
+    
+    __map_ina_module_names:
+        type:
+          type: string
+          default_value: NONE
+          description: "Type of power sensor (INA226)"
+        pins:
+          sda:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SDA line"
+          scl:
+            type: string
+            default_value: "-1"
+            description: "Pin number for I2C SCL line"
+        addr:
+          type: int
+          default_value: 0x40
+          description: "I2C address of the INA226 sensor"
+        min_voltage:
+          type: double
+          default_value: 7.0
+          description: "Minimum voltage threshold in Volts"
+        power_low_time:
+          type: double
+          default_value: 1.0
+          description: "Time in seconds the voltage must be below min_voltage to trigger a power dip"
+        use_percentage_led:
+          type: bool
+          default_value: true
+          description: "Whether to use LED indicators for power percentage"
+        percentage_led_pin:
+          type: string
+          default_value: NONE
+          description: "SBC gpio pin for showing percentage, like GPIO4_B4"
+        connector:
+          type: string
+          default_value: NONE
+          description: "Connector to which the INA226 sensor is connected"
+        shutdown_relay_pin:
+          type: string
+          default_value: NONE
+          description: "Pin number for the shutdown relay, if used, like GP28"
+        shutdown_relay_off_value:
+          type: bool
+          default_value: false
+          description: "Value to set the shutdown relay pin to when shutting down, true for high, false for low"
+        shutdown_switch_in_pin:
+          type: string
+          default_value: NONE
+          description: "Pin number for the shutdown switch input, if used, like GP27, keep empty if not used"
+        shutdown_switch_off_value:
+          type: bool
+          default_value: false
+          description: "Value of the shutdown switch when it is in the off position. If the switch is active low, this should be true, if it is active high, this should be false."
+        shutdown_switch_off_time:
+          type: double
+          default_value: 1.0
+          description: "Time in seconds that the shutdown switch must be in the off position to trigger a shutdown"
+        disable_shutdown_relay:
+          type: bool
+          default_value: false
+          description: "Whether to disable the shutdown relay functionality, useful for testing without a relay"
+        turn_off_time:
+          type: double
+          default_value: 30.0
+          description: "Time in seconds for the mcu to wait before cutting the power after receiving the shutdown signal, should be long enough to allow the SBC to shut down properly."

@@ -10,7 +10,7 @@
 #include <tmx_cpp/tmx.hpp>
 
 #include <mirte_telemetrix_cpp/modules/veml6040_module.hpp>
-
+#include <ranges>
 VEML6040_sensor::VEML6040_sensor(NodeData node_data, VEML6040Data veml_data,
                                  std::shared_ptr<tmx_cpp::Sensors> modules)
     : Mirte_module(node_data, {veml_data.scl, veml_data.sda},
@@ -162,7 +162,22 @@ VEML6040_sensor::get_veml6040_modules(
     NodeData node_data, std::shared_ptr<Parser> parser,
     std::shared_ptr<tmx_cpp::Sensors> sensors) {
   std::vector<std::shared_ptr<VEML6040_sensor>> new_modules;
-  auto datas = parse_all<VEML6040Data>(parser, node_data.board);
+  // auto datas = parse_all<VEML6040Data>(parser, node_data.board);
+  auto datas =
+      parser->params_object.color.colors_map |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_veml = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+
+        parameters["connector"] = rclcpp::ParameterValue(map_veml.connector);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_veml.pins.scl);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_veml.pins.sda);
+        parameters["addr"] = rclcpp::ParameterValue(map_veml.addr);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return VEML6040Data(parser, node_data.board, name, parameters,
+                            unused_keys);
+      });
   for (auto data : datas) {
     auto module = std::make_shared<VEML6040_sensor>(node_data, data, sensors);
     new_modules.push_back(module);

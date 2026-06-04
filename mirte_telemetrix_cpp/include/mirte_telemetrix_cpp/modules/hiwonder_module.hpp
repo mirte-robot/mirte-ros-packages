@@ -12,6 +12,8 @@
 
 #include <mirte_telemetrix_cpp/parsers/modules/hiwonder_data.hpp>
 
+#include <mirte_msgs/msg/set_angle_multiple.hpp>
+#include <mirte_msgs/srv/set_angle_multiple.hpp>
 #include <std_srvs/srv/set_bool.hpp>
 
 class HiWonderBus_module : public Mirte_module {
@@ -39,4 +41,11 @@ private:
   void enable_service_callback(
       const std_srvs::srv::SetBool::Request::ConstSharedPtr req,
       std_srvs::srv::SetBool::Response::SharedPtr res);
+
+  rclcpp::Service<mirte_msgs::srv::SetAngleMultiple>::SharedPtr angle_service;
+  rclcpp::Subscription<mirte_msgs::msg::SetAngleMultiple>::SharedPtr
+      angle_callback;
+  void set_angle_multiple_service_callback(
+      const mirte_msgs::srv::SetAngleMultiple::Request::ConstSharedPtr req,
+      mirte_msgs::srv::SetAngleMultiple::Response::SharedPtr res);
 };

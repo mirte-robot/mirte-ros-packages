@@ -9,7 +9,7 @@ public:
   ~Servo();
 
   virtual bool set_angle_us(uint16_t duty_cycle) override;
-
+  virtual bool set_percentage(float percentage) override;
   static std::vector<std::shared_ptr<Servo>>
   get_servos(NodeData node_data, std::shared_ptr<Parser> parser);
 };

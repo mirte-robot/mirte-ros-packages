@@ -14,6 +14,8 @@
 
 // ROS
 #include <mirte_msgs/msg/encoder.hpp>
+#include <mirte_msgs/msg/set_speed.hpp>
+#include <mirte_msgs/msg/set_speed_multiple.hpp>
 #include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <mirte_msgs/srv/set_speed_multiple.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -28,6 +30,8 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
+#include <realtime_tools/realtime_buffer.hpp>
+
 // ostringstream
 #include <algorithm>
 #include <cmath>
@@ -40,9 +44,6 @@
 #include <future>
 #include <mutex>
 #include <thread>
-// const unsigned int NUM_JOINTS = 4;
-const auto service_format = "io/motor/%s/set_speed";
-const auto encoder_format = "io/encoder/%s";
 const auto max_speed = 100; // Quick fix hopefully for power dip.
 
 namespace mirte_base_control {
@@ -96,12 +97,12 @@ public:
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
   double rad_per_enc_tick() {
-    if (this->ticks < 1.0) {
+    if (this->settings.ticks < 1.0) {
       std::cout << "ticks is less than 1.0, setting to 1.0" << std::endl;
-      this->ticks = 1.0;
+      this->settings.ticks = 1.0;
       return 1.0;
     }
-    return 2.0 * M_PI / this->ticks;
+    return 2.0 * M_PI / this->settings.ticks;
   }
   /**
    * Reading encoder values and setting position and velocity of encoders
@@ -126,10 +127,38 @@ private:
   bool running_ = true;
   double _wheel_diameter;
   double _max_speed;
-  double ticks = 40.0;
 
-  std::vector<int> _wheel_encoder;
-  std::vector<rclcpp::Time> _wheel_encoder_update_time;
+  // settings from hw interface params
+  struct SETTINGS {
+    double ticks = 40.0;
+    std::string separate_update_format = "/io/motor/set_%s_speed";
+    std::string single_update_name = "/io/set_multiple_motor_speeds";
+    std::string encoder_topic_format = "/encoder/%s";
+    bool use_topic_update = true;
+    bool use_single_update = true;
+    double cmd_vel_deadzone = 10.0;
+    double cmd_vel_update_deadzone = 3.0;
+    double max_rot_speed = 6 * M_PI;
+    bool always_send = false; // if true, always send motor commands
+  } settings;
+
+  void read_settings();
+
+  // PARAM NAMES
+  const std::string TICKS_PARAM_NAME = "ticks";
+  const std::string SEPARATE_UPDATE_FORMAT_PARAM_NAME =
+      "separate_update_format";
+  const std::string SINGLE_UPDATE_NAME_PARAM_NAME = "single_update_name";
+  const std::string ENCODER_TOPIC_FORMAT_PARAM_NAME = "encoder_topic_format";
+  const std::string USE_TOPIC_UPDATE_PARAM_NAME = "use_topic_update";
+  const std::string USE_SINGLE_UPDATE_PARAM_NAME = "use_single_update";
+  const std::string CMD_VEL_DEADZONE_PARAM_NAME = "cmd_vel_deadzone";
+  const std::string CMD_VEL_UPDATE_DEADZONE_PARAM_NAME =
+      "cmd_vel_update_deadzone";
+  const std::string MAX_ROT_SPEED_PARAM_NAME = "max_rot_speed";
+
+  // std::vector<int> _wheel_encoder;
+  // std::vector<rclcpp::Time> _wheel_encoder_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<int> _last_value;
@@ -142,20 +171,34 @@ private:
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> start_srv_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
 
-  bool use_single_client = true;
+  // When using services:
   std::vector<std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetMotorSpeed>>>
       service_clients;
   std::vector<std::shared_ptr<mirte_msgs::srv::SetMotorSpeed::Request>>
       service_requests;
+
+  // Services and single:
   std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetSpeedMultiple>>
       set_speed_multiple_client;
   std::shared_ptr<mirte_msgs::srv::SetSpeedMultiple::Request>
       set_speed_multiple_request;
+
+  // When using topics:
+  // Topics and multiple:
+  std::vector<std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeed>>>
+      speed_publishers;
+  std::vector<std::shared_ptr<mirte_msgs::msg::SetSpeed>> publish_msgs;
+  // Topics and single:
+  std::shared_ptr<rclcpp::Publisher<mirte_msgs::msg::SetSpeedMultiple>>
+      set_speed_multiple_publisher;
+  std::shared_ptr<mirte_msgs::msg::SetSpeedMultiple>
+      set_speed_multiple_publish_msg;
+
   std::vector<std::string> joints;
-  bool enablePID = false;
-  std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
-  std::shared_ptr<control_toolbox::Pid>
-      reconfig_pid; // one dummy pid to use for the dynamic reconfigure
+  // bool enablePID = false;
+  // std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
+  // std::shared_ptr<control_toolbox::Pid>
+  //     reconfig_pid; // one dummy pid to use for the dynamic reconfigure
 
   void start_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
                       std::shared_ptr<std_srvs::srv::Empty::Response> res) {
@@ -176,8 +219,10 @@ private:
     }
     const std::lock_guard<std::mutex> lock(this->encoder_mutex);
     // std::cout << "Encoder value: " << msg->value << std::endl;
-    _wheel_encoder[joint] = msg->value;
-    _wheel_encoder_update_time[joint] = msg->header.stamp;
+    // _wheel_encoder[joint] = msg->value;
+    // _wheel_encoder_update_time[joint] = msg->header.stamp;
+    this->latest_msgs_[joint].writeFromNonRT(
+        {msg, this->latest_msgs_[joint].readFromNonRT()->first});
   }
 
   // Thread and function to restart service clients when the service server has
@@ -187,7 +232,10 @@ private:
   void start_reconnect();
   std::mutex service_clients_mutex;
   std::mutex encoder_mutex;
-
+  std::vector<realtime_tools::RealtimeBuffer<
+      std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr,
+                mirte_msgs::msg::Encoder::ConstSharedPtr>>>
+      latest_msgs_{};
   // thread for ros spinning
   std::jthread ros_thread;
   void ros_spin();
@@ -195,6 +243,7 @@ private:
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;
+
 }; // class
 
 } // namespace mirte_base_control

@@ -2,8 +2,9 @@
 #include <memory>
 #include <numbers>
 
+#include <mirte_telemetrix_cpp/adxl345_parameters.hpp>
 #include <mirte_telemetrix_cpp/modules/adxl345_module.hpp>
-
+#include <ranges>
 using namespace std::placeholders;
 
 ADXL345_sensor::ADXL345_sensor(NodeData node_data, ADXL345Data imu_data,
@@ -81,8 +82,39 @@ ADXL345_sensor::get_adxl_modules(NodeData node_data,
                                  std::shared_ptr<Parser> parser,
                                  std::shared_ptr<tmx_cpp::Sensors> sensors) {
   std::vector<std::shared_ptr<ADXL345_sensor>> adxl_modules;
-  auto adxl_data = parse_all_modules<ADXL345Data>(parser, node_data.board);
-  for (auto adxl : adxl_data) {
+
+  auto modules = parser->update_params_list_type(
+      "modules", "adxl345_module_names", "adxl345");
+  parser->fix_param_type_str_modules("modules", modules,
+                                     {"pins.scl", "pins.sda"});
+
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_adxl345::ParamListener>(parser->nh);
+  auto params = param_listener->get_params();
+  // get modules list from parser
+  // loop over items, get one with type==adxl345
+  // add paramlistener to those with new parameters yaml
+  auto datas =
+      params.modules.adxl345_module_names_map |
+      std::views::filter([](const auto &pair) {
+        const auto &map_power = pair.second;
+        return boost::algorithm::to_lower_copy(map_power.type) == "adxl345";
+      }) |
+      std::views::transform([&](const auto &pair) {
+        const auto &name = pair.first;
+        const auto &map_adxl = pair.second;
+        std::map<std::string, rclcpp::ParameterValue> parameters;
+        parameters["type"] = rclcpp::ParameterValue(map_adxl.type);
+        parameters["connector"] = rclcpp::ParameterValue(map_adxl.connector);
+        parameters["pins.sda"] = rclcpp::ParameterValue(map_adxl.pins.sda);
+        parameters["pins.scl"] = rclcpp::ParameterValue(map_adxl.pins.scl);
+        parameters["addr"] = rclcpp::ParameterValue(map_adxl.addr);
+        std::set<std::string> unused_keys = get_keys(parameters);
+        return ADXL345Data(parser, node_data.board, name, parameters,
+                           unused_keys);
+      });
+
+  for (auto adxl : datas) {
     auto adxl_module =
         std::make_shared<ADXL345_sensor>(node_data, adxl, sensors);
     adxl_modules.push_back(adxl_module);

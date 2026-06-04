@@ -14,7 +14,7 @@
 #                 arch: [amd64, arm64, armhf]
 
 #     steps:
-#       - uses: actions/checkout@v4
+#       - uses: actions/checkout@v6
 
 #       - name: self-checkout
 #         run: |

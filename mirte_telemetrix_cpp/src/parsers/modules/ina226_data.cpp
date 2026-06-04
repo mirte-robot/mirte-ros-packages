@@ -42,6 +42,43 @@ INA226Data::INA226Data(std::shared_ptr<Parser> parser,
                          "enable)");
 #endif
   }
+
+  if (unused_keys.erase("turn_off_time")) {
+    this->turn_off_time = parameters["turn_off_time"].get<float>();
+  }
+
+  if (unused_keys.erase("shutdown_relay_pin")) {
+    this->shutdown_relay_pin =
+        board->resolvePin(get_string(parameters["shutdown_relay_pin"]));
+  }
+
+  if (unused_keys.erase("shutdown_switch_in_pin")) {
+    if (get_string(parameters["shutdown_switch_in_pin"]) != "NONE") {
+      this->shutdown_switch_in_pin =
+          board->resolvePin(get_string(parameters["shutdown_switch_in_pin"]));
+    } else {
+      this->shutdown_switch_in_pin = 0xFF; // invalid pin, will not be used
+    }
+  }
+  if (unused_keys.erase("shutdown_switch_off_value")) {
+    this->shutdown_switch_off_value =
+        parameters["shutdown_switch_off_value"].get<bool>();
+  }
+
+  if (unused_keys.erase("shutdown_switch_off_time")) {
+    this->shutdown_switch_time_sec =
+        parameters["shutdown_switch_off_time"].get<double>();
+  }
+
+  if (unused_keys.erase("disable_shutdown_relay")) {
+    this->disable_shutdown_relay =
+        parameters["disable_shutdown_relay"].get<bool>();
+  }
+  if (unused_keys.erase("shutdown_relay_off_value")) {
+    this->shutdown_relay_off_value =
+        parameters["shutdown_relay_off_value"].get<bool>();
+  }
+
   this->duration = DeviceDuration(1000.0 / 1.0); // 1Hz default
 }
 

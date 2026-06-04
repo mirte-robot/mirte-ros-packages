@@ -10,6 +10,7 @@
 
 #include <mirte_telemetrix_cpp/parsers/actuators/motor_data.hpp>
 
+#include <mirte_msgs/msg/set_speed.hpp>
 #include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <std_msgs/msg/int32.hpp>
 
@@ -23,21 +24,24 @@ public:
   bool inverted;
   int max_pwm;
 
-  static std::vector<std::shared_ptr<TelemetrixDevice>>
+  static std::vector<std::shared_ptr<Motor>>
   get_motors(NodeData node_data, std::shared_ptr<Parser> parser);
 
   virtual void set_speed(int speed) = 0;
+  virtual std::vector<std::pair<uint8_t, uint16_t>>
+  get_speed_multi(int speed) = 0;
+  std::string get_name() const { return this->name; }
 
   // TODO: Maybe add start to TelemetrixDevice
   void start() { this->set_speed(0); }
 
 private:
   // Subscriber: motor/NAME/speed
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr speed_subscription;
+  rclcpp::Subscription<mirte_msgs::msg::SetSpeed>::SharedPtr speed_subscription;
   // Service: motor/NAME/set_speed
   rclcpp::Service<mirte_msgs::srv::SetMotorSpeed>::SharedPtr set_speed_service;
 
-  void speed_subscription_callback(const std_msgs::msg::Int32 &msg);
+  void speed_subscription_callback(const mirte_msgs::msg::SetSpeed &msg);
 
   void set_speed_service_callback(
       const mirte_msgs::srv::SetMotorSpeed::Request::ConstSharedPtr req,

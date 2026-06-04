@@ -18,12 +18,13 @@
 #include "mirte_telemetrix_cpp/parsers/parsers.hpp" // for Parser
 #include "mirte_telemetrix_cpp/util.hpp"
 #include <mirte_telemetrix_cpp/mirte-telemetrix.hpp>
+#include <mirte_telemetrix_cpp/telemetrix_parameters.hpp> // auto-generated parameter file from telemetrix_parameters.yaml
 NodeData node_data;
 int main(int argc, char **argv) {
   // Initialize the ROS node
   rclcpp::init(argc, argv);
+  std::cout << "Mirte_telemetrix_cpp version " << GIT_SHA1 << std::endl;
   auto s = "main_thread";
-
   pthread_setname_np(pthread_self(), s);
   rclcpp::executors::MultiThreadedExecutor executor;
 
@@ -71,9 +72,11 @@ bool TelemetrixNode::start() {
   using namespace std::placeholders;
 
   auto parser = std::make_shared<Parser>(node_);
+
   std::shared_ptr<tmx_cpp::TMX> tmx;
-  if (this->node_->has_parameter("device.mirte.port")) {
-    auto port = this->node_->get_parameter("device.mirte.port").as_string();
+  // rclcpp::spin(node_);
+  if (parser->params_object.device.mirte.port != "") {
+    auto port = parser->params_object.device.mirte.port;
     std::cout << "Using port: " << port << std::endl;
     if (!tmx_cpp::TMX::check_port(port)) {
       std::cout << "Port " << port << " is not available" << std::endl;
@@ -156,7 +159,12 @@ bool TelemetrixNode::start() {
           std::bind(&Mirte_Board::get_board_characteristics_service_callback,
                     this->board, _1, _2));
 
-  node_data = NodeData{node_, tmx, board};
+  node_data = NodeData{node_,
+                       tmx,
+                       board,
+                       [](std::chrono::duration<double, std::milli> duration,
+                          std::function<void()> callback) {},
+                       {}};
   node_data.add_timer = [](std::chrono::duration<double, std::milli> duration,
                            std::function<void()> callback) mutable {
     std::cout << "Adding cb for duration: " << duration.count() << " ms"

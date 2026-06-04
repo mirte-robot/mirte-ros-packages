@@ -1,13 +1,14 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+
 #include <mirte_base_control.hpp>
 namespace mirte_base_control {
 
-const auto SPEED_CMD_DIFF = 3; // 3% difference before sending new command.
-const auto SPEED_CMD_DEADZONE = 10;
 double MirteBaseHWInterface::calc_speed_map(int joint, double target,
                                             const rclcpp::Duration &period) {
-  return std::max(std::min(int(target / (6.0 * M_PI) * 100), 100), -100);
+  return std::max(
+      std::min(int(target / this->settings.max_rot_speed * 100), 100), -100);
 }
 
 int MirteBaseHWInterface::calculate_single_speed(
@@ -23,36 +24,38 @@ int MirteBaseHWInterface::calculate_single_speed(
 bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         const rclcpp::Duration &period,
                                         bool &updated) {
-  // std::cout << "write_single" << joint << std::endl;
   auto speed_mapped = calculate_single_speed(joint, speed, period);
-  if (std::abs(speed_mapped) < SPEED_CMD_DEADZONE) {
+  bool in_deadzone =
+      std::abs(speed_mapped) <
+      this->settings.cmd_vel_deadzone; // if set to 0 bc too low percentage
+  bool to_deadzone =
+      _last_sent_cmd[joint] != 0 &&
+      in_deadzone; // if moving from moving to deadzone, force update
+  if (in_deadzone) {
     speed_mapped = 0;
   }
   auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
-  // _last_cmd[joint] = speed_mapped;
-  // if (diff > SPEED_CMD_DIFF) {
-  //   updated = true;
-  if (!this->use_single_client) {
-    if (diff > SPEED_CMD_DIFF) {
+  if (!this->settings.use_single_update) {
+    if (diff >= this->settings.cmd_vel_update_deadzone || to_deadzone) {
       updated = true;
-      _last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed_mapped;
 
-      service_requests[joint]->speed = (int)speed_mapped;
-      service_clients[joint]->async_send_request(service_requests[joint]);
-      //     TODO: loop until response is received
-
-      // if (!true) { // When persistent connection is implemented, this should
-      // be
-      //               // changed
-      //   this->start_reconnect();
-      //   return false;
-      // }
+      if (this->settings.use_topic_update) {
+        // publish topic
+        this->publish_msgs[joint]->speed = speed_mapped;
+        this->speed_publishers[joint]->publish(*this->publish_msgs[joint]);
+      } else {
+        this->service_requests[joint]->speed = (int)speed_mapped;
+        this->service_clients[joint]->async_send_request(
+            this->service_requests[joint]);
+      }
     }
   } else {
-    if (diff > SPEED_CMD_DIFF ||
-        (speed_mapped == 0 && _last_sent_cmd[joint] != 0)) {
+    if (to_deadzone ||
+        diff >= this->settings.cmd_vel_update_deadzone) { // if upd_deadzone ==
+                                                          // 0, then always upd
       updated = true;
-      _last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed_mapped;
     }
     // if another joint is sending an update, then just send all joints,
     // otherwise wait for the next loop.
@@ -65,7 +68,16 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
 hardware_interface::return_type
 MirteBaseHWInterface::write(const rclcpp::Time &time,
                             const rclcpp::Duration &period) {
-  if (running_) {
+  if (!running_) {
+    for (size_t i = 0; i < NUM_JOINTS; i++) {
+      cmd[i] = 0.0;
+      // this will stop the motors, but will not block other nodes from sending
+      // speed commands to the motors.
+    }
+  }
+
+  // block for guard
+  {
     // make sure the clients don't get overwritten while calling them
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
 
@@ -78,6 +90,7 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
     // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 rot/s (4*pi)
     // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
     // (6*pi)
+
     bool updated = false;
     for (size_t i = 0; i < NUM_JOINTS; i++) {
       if (!write_single(i, cmd[i], period, updated)) {
@@ -85,9 +98,19 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
         return hardware_interface::return_type::ERROR;
       }
     }
-    if (updated && this->use_single_client) {
-      this->set_speed_multiple_client->async_send_request(
-          this->set_speed_multiple_request);
+    if (updated && this->settings.use_single_update) {
+      if (this->settings.use_topic_update) {
+        // publish topic
+        for (size_t i = 0; i < NUM_JOINTS; i++) {
+          this->set_speed_multiple_publish_msg->speeds[i].speed =
+              this->set_speed_multiple_request->speeds[i].speed;
+        }
+        this->set_speed_multiple_publisher->publish(
+            *this->set_speed_multiple_publish_msg);
+      } else {
+        this->set_speed_multiple_client->async_send_request(
+            this->set_speed_multiple_request);
+      }
     }
     // Set the direction in so the read() can use it
     // TODO: this does not work properly, because at the end of a series
@@ -103,14 +126,32 @@ void MirteBaseHWInterface::read_single(int joint,
                                        const rclcpp::Duration &period) {
   const std::lock_guard<std::mutex> lock(this->encoder_mutex);
 
-  if (_last_value[joint] == 0) {
-    _last_value[joint] = _wheel_encoder[joint];
-    // when starting, the encoders dont have to be at 0. Without this, the odom
-    // can jump at the first loop
-  }
-  int16_t diff_ticks = _wheel_encoder[joint] - _last_value[joint];
+  // if (_last_value[joint] == 0) {
+  //   _last_value[joint] = _wheel_encoder[joint];
+  //   // when starting, the encoders dont have to be at 0. Without this, the
+  //   odom
+  //   // can jump at the first loop
+  // }
+  // int16_t diff_ticks = _wheel_encoder[joint] - _last_value[joint];
 
-  _last_value[joint] = _wheel_encoder[joint];
+  // _last_value[joint] = _wheel_encoder[joint];
+
+  auto latest_msg = this->latest_msgs_[joint].readFromRT();
+
+  if (latest_msg == nullptr || latest_msg->first == nullptr ||
+      latest_msg->second == nullptr) {
+    // no message received yet, do nothing
+    // diff_ticks = 0;
+    return;
+  }
+  auto latest_encoder_val = latest_msg->first->value;
+  auto diff_ticks = latest_msg->first->value - latest_msg->second->value;
+  auto period_sec = (rclcpp::Time(latest_msg->first->header.stamp) -
+                     rclcpp::Time(latest_msg->second->header.stamp))
+                        .seconds();
+  // velo = diff_ticks
+  // _last_value[joint] = latest_msg->first->value;
+
   double radPerEncoderTick = rad_per_enc_tick();
   double distance_rad;
   if (bidirectional) { // if encoder is counting bidirectional, then it
@@ -121,12 +162,17 @@ void MirteBaseHWInterface::read_single(int joint,
     distance_rad =
         diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
   }
-  pos[joint] += distance_rad;
-  if (period.seconds() < 0.01) {
+
+  // Doesn't work with single pin encoders, but no'ones using pos for odom with
+  // those anyways.
+  double distance_pos_rad = latest_encoder_val * radPerEncoderTick * 1.0;
+
+  pos[joint] = distance_pos_rad; // TODO: fix with last pos
+  if (period_sec < 0.01) {
     vel[joint] = 0;
     return;
   }
-  auto velo = distance_rad / period.seconds();
+  auto velo = distance_rad / period_sec;
   if (std::abs(velo) > 1000.0) { // if velocity is way too high, assume error in
                                  // encoder. More than 1000rad/s is not possible
     vel[joint] = 0;
@@ -177,77 +223,55 @@ MirteBaseHWInterface::read(const rclcpp::Time &time,
 using namespace std::chrono_literals;
 
 bool MirteBaseHWInterface::init_service_clients() {
-  if (!this->use_single_client) {
 
-    for (auto joint : this->joints) {
-      auto service = (boost::format(service_format) % joint).str();
-      //     RCLCPP_INFO_STREAM("Waiting for service " << service); // todo
-      //     print rclcpp::service::waitForService(service, -1); // TODO: wait
-      //     after creating service
-    }
+  std::cout << "init_service_clients" << std::endl;
+  std::cout << "settings.use_single_update: "
+            << this->settings.use_single_update << std::endl;
+  std::cout << "settings.use_topic_update: " << this->settings.use_topic_update
+            << std::endl;
+
+  service_clients.clear();
+  service_requests.clear();
+  if (!this->settings.use_single_update) {
     {
       const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-      service_clients.clear();
-      service_requests.clear();
-      for (size_t i = 0; i < NUM_JOINTS; i++) {
-        auto motor_service =
-            (boost::format(service_format) % this->joints[i]).str();
-        auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
-            motor_service); // TODO: add persistent connection
+      if (this->settings.use_topic_update) {
+        this->publish_msgs.clear();
+        this->speed_publishers.clear();
+        for (size_t i = 0; i < NUM_JOINTS; i++) {
+          auto pub = (boost::format(this->settings.separate_update_format) %
+                      this->joints[i])
+                         .str();
+          auto publisher =
+              nh->template create_publisher<mirte_msgs::msg::SetSpeed>(pub, 1);
+          auto msg = std::make_shared<mirte_msgs::msg::SetSpeed>();
+          this->publish_msgs.push_back(msg);
+          this->speed_publishers.push_back(publisher);
+        }
+      } else {
+        service_clients.clear();
+        service_requests.clear();
+        for (size_t i = 0; i < NUM_JOINTS; i++) {
+          auto motor_service =
+              (boost::format(this->settings.separate_update_format) %
+               this->joints[i])
+                  .str();
+          auto client = nh->create_client<mirte_msgs::srv::SetMotorSpeed>(
+              motor_service); // TODO: add persistent connection
 
-        auto MAX_WAIT_TIME = 10;
-        auto wait_time = 0;
-        // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
-        //   wait_time++;
-        //   if (!rclcpp::ok()) {
-        //     RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
-        //                  "Interrupted while waiting for the service.
-        //                  Exiting.");
-        //     return false;
-        //   }
-        //   RCLCPP_INFO(
-        //       rclcpp::get_logger("MirteBaseSystemHardware"),
-        //       ("service " + motor_service + " not available, waiting
-        //       again...")
-        //           .c_str());
-        // }
-        // if (wait_time == MAX_WAIT_TIME) {
-        //   RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
-        //                "Could not connect to service %s",
-        //                motor_service.c_str());
-        //   return false;
-        // }
-        service_clients.push_back(client);
-        service_requests.push_back(
-            std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>());
+          auto MAX_WAIT_TIME = 10;
+          auto wait_time = 0;
+          service_clients.push_back(client);
+          service_requests.push_back(
+              std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>());
+        }
       }
     }
 
   } else {
-    service_clients.clear();
-    service_requests.clear();
-    this->set_speed_multiple_client =
-        nh->create_client<mirte_msgs::srv::SetSpeedMultiple>(
-            "io/motor/motorservocontroller/set_multiple_speeds");
-    auto MAX_WAIT_TIME = 10;
-    auto wait_time = 0;
-    // while (!this->set_speed_multiple_client->wait_for_service(1s) &&
-    //        wait_time < MAX_WAIT_TIME) {
-    //   wait_time++;
-    //   if (!rclcpp::ok()) {
-    //     RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
-    //                  "Interrupted while waiting for the service. Exiting.");
-    //     return false;
-    //     // return hardware_interface::CallbackReturn::ERROR;
-    //   }
-    // }
-    // if (wait_time == MAX_WAIT_TIME) {
-    //   RCLCPP_ERROR(rclcpp::get_logger("MirteBaseSystemHardware"),
-    //                "Could not connect to service %s",
-    //                "io/motor/motorservocontroller/set_multiple_speeds");
-    //   return false;
-    // }
-
+    // single
+    // set speed multiple request is always filled by each motor, if topic, then
+    // copied to publish msg, if service, then sent as service request
     this->set_speed_multiple_request =
         std::make_shared<mirte_msgs::srv::SetSpeedMultiple::Request>();
     this->set_speed_multiple_request->speeds.resize(NUM_JOINTS);
@@ -259,26 +283,39 @@ bool MirteBaseHWInterface::init_service_clients() {
       this->set_speed_multiple_request->speeds[i].speed = 0;
       this->set_speed_multiple_request->speeds[i].name = this->joints[i];
     }
-    this->set_speed_multiple_client->async_send_request(
-        this->set_speed_multiple_request);
-  }
-  return true;
-}
 
-unsigned int detect_joints(std::shared_ptr<rclcpp::Node> nh) {
-  std::string type;
-  // return info_.joints.size();
-  //   nh->param<std::string>("mobile_base_controller/type", type, ""); // TODO:
-  //   params
-  if (type.rfind("mecanum", 0) == 0) { // starts with mecanum
-    return 4;
-  } else if (type.rfind("diff", 0) == 0) { // starts with diff
-    return 2;
-  } else {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
-                        "Unknown type: " << type);
-    return 4;
+    if (this->settings.use_topic_update) {
+      this->set_speed_multiple_publish_msg =
+          std::make_shared<mirte_msgs::msg::SetSpeedMultiple>();
+      this->set_speed_multiple_publish_msg->speeds.resize(NUM_JOINTS);
+      for (auto i = 0; i < NUM_JOINTS; i++) {
+        this->set_speed_multiple_publish_msg->speeds[i].name = this->joints[i];
+      }
+      this->set_speed_multiple_publisher =
+          nh->template create_publisher<mirte_msgs::msg::SetSpeedMultiple>(
+              this->settings.single_update_name, 1);
+    } else {
+      this->set_speed_multiple_client =
+          nh->create_client<mirte_msgs::srv::SetSpeedMultiple>(
+              this->settings.single_update_name);
+      this->set_speed_multiple_client->async_send_request(
+          this->set_speed_multiple_request);
+    }
+
+    auto MAX_WAIT_TIME = 10;
+    auto wait_time = 0;
   }
+
+  assert(this->service_clients.size() == NUM_JOINTS ||
+         this->settings.use_single_update || this->settings.use_topic_update);
+  assert(this->service_requests.size() == NUM_JOINTS ||
+         this->settings.use_single_update || this->settings.use_topic_update);
+  assert(this->publish_msgs.size() == NUM_JOINTS ||
+         !this->settings.use_topic_update || this->settings.use_single_update);
+  assert(this->speed_publishers.size() == NUM_JOINTS ||
+         !this->settings.use_topic_update || this->settings.use_single_update);
+
+  return true;
 }
 
 hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
@@ -288,27 +325,6 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
   RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
               "Activating ...please wait...");
 
-  // for (auto i = 0; i < 2; i++)
-  // {
-  //   rclcpp::sleep_for(std::chrono::seconds(1));
-  //   RCLCPP_INFO(
-  //     rclcpp::get_logger("MirteBaseSystemHardware"), "%.1f seconds left...",
-  //     2 - i);
-  // }
-  // END: This part here is for exemplary purposes - Please do not copy to your
-  // production code
-
-  // // set some default values
-  // for (auto i = 0u; i < hw_positions_.size(); i++)
-  // {
-  //   if (std::isnan(hw_positions_[i]))
-  //   {
-  //     hw_positions_[i] = 0;
-  //     hw_velocities_[i] = 0;
-  //     hw_commands_[i] = 0;
-  //   }
-  // }
-
   RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"),
               "Successfully activated!");
 
@@ -317,6 +333,13 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_activate(
 
 hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
+  // write 0s to all motors in write() to stop the robot
+
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
+    cmd[i] = 0;
+  }
+  this->write(rclcpp::Time(),
+              rclcpp::Duration(0, 100)); // send stop command to motors
   // BEGIN: This part here is for exemplary purposes - Please do not copy to
   // your production code
   // RCLCPP_INFO(rclcpp::get_logger("MirteBaseSystemHardware"), "Deactivating
@@ -340,8 +363,77 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
 
 void MirteBaseHWInterface::ros_spin() { rclcpp::spin(nh); }
 
+void MirteBaseHWInterface::read_settings() {
+  if (!info_.hardware_parameters.count(TICKS_PARAM_NAME)) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
+                        "Missing required hardware parameter: ticks");
+    throw std::runtime_error("Missing required hardware parameter: ticks");
+  }
+  this->settings.ticks =
+      std::stod(info_.hardware_parameters.at(TICKS_PARAM_NAME));
+  if (info_.hardware_parameters.count(SEPARATE_UPDATE_FORMAT_PARAM_NAME)) {
+    this->settings.separate_update_format =
+        info_.hardware_parameters.at(SEPARATE_UPDATE_FORMAT_PARAM_NAME);
+  }
+  if (info_.hardware_parameters.count(SINGLE_UPDATE_NAME_PARAM_NAME)) {
+    this->settings.single_update_name =
+        info_.hardware_parameters.at(SINGLE_UPDATE_NAME_PARAM_NAME);
+  }
+  if (info_.hardware_parameters.count(USE_TOPIC_UPDATE_PARAM_NAME)) {
+    this->settings.use_topic_update =
+        boost::algorithm::to_lower_copy(info_.hardware_parameters.at(
+            USE_TOPIC_UPDATE_PARAM_NAME)) == "true";
+  }
+  if (info_.hardware_parameters.count(USE_SINGLE_UPDATE_PARAM_NAME)) {
+    std::cout << "use_single_update: "
+              << info_.hardware_parameters.at(USE_SINGLE_UPDATE_PARAM_NAME)
+              << std::endl;
+    this->settings.use_single_update =
+        boost::algorithm::to_lower_copy(info_.hardware_parameters.at(
+            USE_SINGLE_UPDATE_PARAM_NAME)) == "true";
+  }
+  if (info_.hardware_parameters.count(CMD_VEL_DEADZONE_PARAM_NAME)) {
+    this->settings.cmd_vel_deadzone =
+        std::stod(info_.hardware_parameters.at(CMD_VEL_DEADZONE_PARAM_NAME));
+  }
+  if (info_.hardware_parameters.count(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME)) {
+    this->settings.cmd_vel_update_deadzone = std::stod(
+        info_.hardware_parameters.at(CMD_VEL_UPDATE_DEADZONE_PARAM_NAME));
+    if (this->settings.cmd_vel_update_deadzone == 0) {
+      // this->settings.always_send = true;
+    }
+  }
+  if (info_.hardware_parameters.count(ENCODER_TOPIC_FORMAT_PARAM_NAME)) {
+    this->settings.encoder_topic_format =
+        info_.hardware_parameters.at(ENCODER_TOPIC_FORMAT_PARAM_NAME);
+  }
+  if (info_.hardware_parameters.count(MAX_ROT_SPEED_PARAM_NAME)) {
+    this->settings.max_rot_speed =
+        std::stod(info_.hardware_parameters.at(MAX_ROT_SPEED_PARAM_NAME));
+  }
+
+  // print all settings:
+  rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
+  RCLCPP_INFO_STREAM(logger, "ticks: " << this->settings.ticks);
+  RCLCPP_INFO_STREAM(logger, "separate_update_format: "
+                                 << this->settings.separate_update_format);
+  RCLCPP_INFO_STREAM(
+      logger, "single_update_name: " << this->settings.single_update_name);
+  RCLCPP_INFO_STREAM(logger,
+                     "use_topic_update: " << this->settings.use_topic_update);
+  RCLCPP_INFO_STREAM(logger,
+                     "use_single_update: " << this->settings.use_single_update);
+  RCLCPP_INFO_STREAM(logger,
+                     "cmd_vel_deadzone: " << this->settings.cmd_vel_deadzone);
+  RCLCPP_INFO_STREAM(logger, "cmd_vel_update_deadzone: "
+                                 << this->settings.cmd_vel_update_deadzone);
+  RCLCPP_INFO_STREAM(
+      logger, "encoder_topic_format: " << this->settings.encoder_topic_format);
+  RCLCPP_INFO_STREAM(logger, "max_rot_speed: " << this->settings.max_rot_speed);
+}
+
 using namespace std::placeholders;
-MirteBaseHWInterface::MirteBaseHWInterface(){};
+MirteBaseHWInterface::MirteBaseHWInterface() {};
 hardware_interface::CallbackReturn
 MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   if (hardware_interface::SystemInterface::on_init(info) !=
@@ -351,7 +443,6 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
 
   std::cout << "starting on_init" << std::endl;
   nh = rclcpp::Node::make_shared("mirte_base_control");
-
   std::cout << "on_init" << __LINE__ << std::endl;
   running_ = true;
   start_srv_ = nh->create_service<std_srvs::srv::Empty>(
@@ -363,27 +454,7 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   std::cout << "Initializing MirteBaseHWInterface" << std::endl;
   std::cout << "on_init" << __LINE__ << std::endl;
   this->ros_thread = std::jthread([this] { this->ros_spin(); });
-  /*
-   nh->param<double>("mobile_base_controller/wheel_radius", _wheel_diameter,
-                    0.06);
-   _wheel_diameter *= 2; // convert from radius to diameter
-   nh->param<double>("mobile_base_controller/max_speed", _max_speed,
-                    2.0); // TODO: unused
-   nh->param<double>("mobile_base_controller/ticks", ticks, 40.0);
-   */
-  //  info.hardware_parameters.at("ticks");
-  this->ticks = std::stod(info.hardware_parameters.at("ticks"));
-  // std::string param_file = info.hardware_parameters.at("param_file");
-  // parse_params(param_file, nh);
-  // std::cout << "on_init" << __LINE__ << std::endl;
-  // this->NUM_JOINTS = detect_joints(nh);
-  //  std::cout << "on_init" << __LINE__ << std::endl;
-  if (info.hardware_parameters.find("single_client") !=
-      info.hardware_parameters.end()) {
-    this->use_single_client =
-        std::stod(info.hardware_parameters.at("single_client"));
-  }
-
+  this->read_settings();
   this->NUM_JOINTS = info.joints.size();
   if (this->NUM_JOINTS > 2) {
     this->bidirectional = true;
@@ -391,32 +462,46 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   std::cout << "on_init" << __LINE__ << std::endl;
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
-    _wheel_encoder.push_back(0);
-    _wheel_encoder_update_time.push_back(nh->now());
+    // _wheel_encoder.push_back(0);
+    latest_msgs_.push_back(
+        realtime_tools::RealtimeBuffer<
+            std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr,
+                      mirte_msgs::msg::Encoder::ConstSharedPtr>>{});
+    // _wheel_encoder_update_time.push_back(nh->now());
     _last_value.push_back(0);
     _last_wheel_cmd_direction.push_back(0);
-    _last_cmd.push_back(0);
-    _last_sent_cmd.push_back(0);
+    // _last_cmd.push_back(0);
+    _last_sent_cmd.push_back(-1000);
 
     pos.push_back(0);
     vel.push_back(0);
     eff.push_back(0);
     cmd.push_back(0);
   }
-  assert(_wheel_encoder.size() == NUM_JOINTS);
-  assert(_last_value.size() == NUM_JOINTS);
+  // assert(_wheel_encoder.size() == NUM_JOINTS);
+  // assert(_last_value.size() == NUM_JOINTS);
   assert(_last_wheel_cmd_direction.size() == NUM_JOINTS);
-  assert(_last_cmd.size() == NUM_JOINTS);
+  // assert(_last_cmd.size() == NUM_JOINTS);
   assert(pos.size() == NUM_JOINTS);
   assert(vel.size() == NUM_JOINTS);
   assert(eff.size() == NUM_JOINTS);
   assert(cmd.size() == NUM_JOINTS);
 
-  this->joints = {"left", // Edit the control.yaml when using this for the
-                          // normal mirte as well
-                  "right"};
-  if (NUM_JOINTS == 4) {
-    this->joints = {"front_left", "rear_left", "rear_right", "front_right"};
+  // this->joints = {"left", // Edit the control.yaml when using this for the
+  //                         // normal mirte as well
+  //                 "right"};
+  // if (NUM_JOINTS == 4) {
+  //   this->joints = {"front_left", "rear_left", "rear_right", "front_right"};
+  // }
+  this->joints.clear();
+  for (size_t i = 0; i < NUM_JOINTS; i++) {
+    auto name = info.joints[i].name;
+    // remove _wheel_joint suffix if it exists, to get the joint name (e.g.
+    // left, right), needed for the topic and service names formatting
+    if (name.ends_with("_wheel_joint")) {
+      name = name.substr(0, name.size() - std::string("_wheel_joint").size());
+    }
+    this->joints.push_back(name);
   }
   std::cout << "Initializing MirteBaseHWInterface with " << NUM_JOINTS
             << " joints" << std::endl;
@@ -467,45 +552,16 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
     }
   }
 
-  // // connect and register the joint state and velocity interfaces
-  // for (unsigned int i = 0; i < NUM_JOINTS; ++i) {
-  //   std::string joint =
-  //       (boost::format("wheel_%s_joint") % this->joints[i]).str();
-  //   hardware_interface::JointStateHandle state_handle(joint, &pos[i],
-  //   &vel[i],
-  //                                                     &eff[i]);
-  //   jnt_state_interface.registerHandle(state_handle);
-
-  //   hardware_interface::JointHandle vel_handle(
-  //       jnt_state_interface.getHandle(joint), &cmd[i]);
-  //   jnt_vel_interface.registerHandle(vel_handle);
-  // }
-  // registerInterface(&jnt_state_interface);
-  // registerInterface(&jnt_vel_interface);
-
-  // nh->param<bool>("mobile_base_controller/enable_pid", enablePID, false);
-  // if (enablePID) {
-  //   // dummy pid for dynamic reconfigure.
-  //   this->reconfig_pid = std::make_shared<control_toolbox::Pid>(1, 0, 0);
-  //   this->reconfig_pid->initParam("mobile_base_controller/", false);
-  //   auto gains = this->reconfig_pid->getGains();
-  //   for (auto i = 0; i < NUM_JOINTS; i++) {
-  //     auto pid = std::make_shared<control_toolbox::Pid>(1, 1, 1);
-  //     pid->setGains(gains);
-  //     this->pids.push_back(pid);
-  //   }
-  // }
-
   // Initialize publishers and subscribers
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     auto encoder_topic =
-        (boost::format(encoder_format) % this->joints[i]).str();
+        (boost::format(this->settings.encoder_topic_format) % this->joints[i])
+            .str();
     std::cout << "add encoder topic: " << encoder_topic << std::endl;
     wheel_encoder_subs_.push_back(
         nh->create_subscription<mirte_msgs::msg::Encoder>(
             encoder_topic, 1,
             [this, i](std::shared_ptr<mirte_msgs::msg::Encoder> msg) {
-              // std::cout << "Encoder callback: " << msg->value << std::endl;
               this->WheelEncoderCallback(msg, i);
             }));
   }
@@ -548,110 +604,7 @@ void MirteBaseHWInterface::start_reconnect() {
       std::async(std::launch::async, [this] { this->init_service_clients(); });
 }
 
-/*
-  base_x_ = 0.0;
-  base_y_ = 0.0;
-  base_theta_ = 0.0;
-
-  last_cmd_left_ = 0;
-  last_cmd_right_ = 0;
-
-  std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("diff_drive");
-  left_client_ =
-  node->create_client<mirte_msgs::srv::SetMotorSpeed>("/mirte/set_left_speed");
-  right_client_ =
-  node->create_client<mirte_msgs::srv::SetMotorSpeed>("/mirte/set_right_speed");
-
-  while (!left_client_->wait_for_service(std::chrono::seconds(1))) {
-    if (!rclcpp::ok()) {
-      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for
-  the service. Exiting."); return hardware_interface::CallbackReturn::ERROR;
-    }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting
-  again...");
-  }
-
-  // TODO: conbine with above
-  while (!right_client_->wait_for_service(std::chrono::seconds(1))) {
-    if (!rclcpp::ok()) {
-      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for
-  the service. Exiting."); return hardware_interface::CallbackReturn::ERROR;
-    }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting
-  again...");
-  }
-
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to
-  your production code hw_start_sec_ =
-  std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
-  hw_stop_sec_ =
-  std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
-  // END: This part here is for exemplary purposes - Please do not copy to your
-  production code hw_positions_.resize(info_.joints.size(),
-  std::numeric_limits<double>::quiet_NaN());
-  hw_velocities_.resize(info_.joints.size(),
-  std::numeric_limits<double>::quiet_NaN());
-  hw_commands_.resize(info_.joints.size(),
-  std::numeric_limits<double>::quiet_NaN());
-
-  for (const hardware_interface::ComponentInfo & joint : info_.joints)
-  {
-    // DiffBotSystem has exactly two states and one command interface on each
-  joint if (joint.command_interfaces.size() != 1)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("MirteBaseSystemHardware"),
-        "Joint '%s' has %zu command interfaces found. 1 expected.",
-  joint.name.c_str(), joint.command_interfaces.size()); return
-  hardware_interface::CallbackReturn::ERROR;
-    }
-
-    if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("MirteBaseSystemHardware"),
-        "Joint '%s' have %s command interfaces found. '%s' expected.",
-  joint.name.c_str(), joint.command_interfaces[0].name.c_str(),
-  hardware_interface::HW_IF_VELOCITY); return
-  hardware_interface::CallbackReturn::ERROR;
-    }
-
-    if (joint.state_interfaces.size() != 2)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("MirteBaseSystemHardware"),
-        "Joint '%s' has %zu state interface. 2 expected.", joint.name.c_str(),
-        joint.state_interfaces.size());
-      return hardware_interface::CallbackReturn::ERROR;
-    }
-
-    if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("MirteBaseSystemHardware"),
-        "Joint '%s' have '%s' as first state interface. '%s' expected.",
-  joint.name.c_str(), joint.state_interfaces[0].name.c_str(),
-  hardware_interface::HW_IF_POSITION); return
-  hardware_interface::CallbackReturn::ERROR;
-    }
-
-    if (joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("MirteBaseSystemHardware"),
-        "Joint '%s' have '%s' as second state interface. '%s' expected.",
-  joint.name.c_str(), joint.state_interfaces[1].name.c_str(),
-  hardware_interface::HW_IF_VELOCITY); return
-  hardware_interface::CallbackReturn::ERROR;
-    }
-  }*/
-
 } // namespace mirte_base_control
-
-/*
-
-MirteBaseHWInterface::
-*/
 
 #include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(mirte_base_control::MirteBaseHWInterface,

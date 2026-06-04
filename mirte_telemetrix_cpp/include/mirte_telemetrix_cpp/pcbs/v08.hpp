@@ -19,6 +19,7 @@ const connector_map mirte_pico_pcb_map08 = {
     {"SRF2", {{"trigger", "9"}, {"echo", "8"}}},
     {"I2C1", {{"scl", "5"}, {"sda", "4"}}},
     {"I2C2", {{"scl", "11"}, {"sda", "10"}}},
+    {"I2C3", {{"scl", "3"}, {"sda", "2"}}}, // hack for mirte master v3
     {"ENC1", {{"pinA", "2"}, {"pinB", "-1"}}},
     {"ENC2", {{"pinA", "3"}, {"pinB", "-1"}}},
     {"Keypad", {{"pin", "28"}}},

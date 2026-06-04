@@ -13,13 +13,15 @@ public:
   bool inverted = false;
   // Default to PP motor
   MotorType type = MotorType::PP;
-
+  bool stop_mode =
+      false; // stop mode low -> pwm pins low when 0%, high -> pins high when 0%
+  std::string dp_type = "normal";
   bool check();
 
   MotorData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
             std::string name,
             std::map<std::string, rclcpp::ParameterValue> parameters,
             std::set<std::string> &unused_keys);
-  ~MotorData(){};
+  ~MotorData() {};
   static std::string get_device_class() { return "motor"; }
 };

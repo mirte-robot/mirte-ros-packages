@@ -1,11 +1,12 @@
 #pragma once
 
 #include <mirte_telemetrix_cpp/parsers/sensors/base_sensor_data.hpp>
-
+#include <mirte_telemetrix_cpp/telemetrix_parameters.hpp>
 class EncoderData : public SensorData {
 public:
   pin_t pinA = (pin_t)-1;
   pin_t pinB = (pin_t)-1;
+  bool inverted = false;
 
   EncoderData(std::shared_ptr<Parser> parser,
               std::shared_ptr<Mirte_Board> board, std::string name,

@@ -43,7 +43,12 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_pid_control",
             default_value="true",
-            description="Use speed PID control for the wheels, you might need to change the gains in mirte_master_base_control/bringup/config/mirte_base_cotnrol.yaml",
+            description="Use speed PID control for the wheels, you might need to change the gains in mirte_base_control/bringup/config/mirte_base_cotnrol.yaml",
+        ),
+        DeclareLaunchArgument(
+            "ticks",
+            default_value="132",
+            description="The number of ticks per wheel revolution, used for odometry and control. Defaults to 1320, which is 11 pulses per second * 30 reduction * 4 (quadrature encoding)",
         ),
     ]
     use_pid_control = LaunchConfiguration("use_pid_control")
@@ -51,7 +56,7 @@ def generate_launch_description():
     robot_description_content = Command(
         [
             FindExecutable(name="xacro"),
-            " ",
+            f"ticks:=${LaunchConfiguration('ticks')}",
             PathJoinSubstitution(
                 [
                     FindPackageShare("mirte_base_control"),
@@ -61,7 +66,6 @@ def generate_launch_description():
             ),
         ]
     )
-
     robot_description = {
         "robot_description": robot_description_content,
         "frame_prefix": LaunchConfiguration("frame_prefix"),

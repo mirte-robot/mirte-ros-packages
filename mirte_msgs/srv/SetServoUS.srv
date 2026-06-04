@@ -1,0 +1,4 @@
+uint16 time_us   # servo time in microseconds, typically between 1000 and 2000
+---
+bool status    # indicate successful run
+string message # informational for error messages
