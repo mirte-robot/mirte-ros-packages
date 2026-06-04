@@ -582,6 +582,15 @@
         <mimic joint="gripper_joint" multiplier="-1"/>
     </joint>
 
+    <link name="gripper_camera_link" />
+
+    <joint name="gripper_camera_joint" type="fixed">
+        <origin
+            xyz="0.027 0 -0.067"
+            rpy="1.5707963267949 0 1.5707963267949" />
+        <parent link="wrist" />
+        <child link="gripper_camera_link" />
+    </joint>
 
 
 <gazebo>
