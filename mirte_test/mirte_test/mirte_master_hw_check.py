@@ -36,7 +36,10 @@ class HWNode(Node):
         # check service existence
         motors = ["front_left", "front_right", "rear_left", "rear_right"]
         for motor in motors:
-            print("testing motor", motor)
+            print(
+                "testing motor %s, should move forward, if not, change configuration for motor and encoder!"
+                % motor
+            )
             service = "/io/motor/%s/set_speed" % motor
             # check if service exists
             if service not in self.all_services:
@@ -109,6 +112,14 @@ class HWNode(Node):
                 continue
             if abs(start_enc - last_encoder) < 100:
                 self.get_logger().error("Encoder %s is not updating" % encoder_topic)
+                self.ok = False
+                continue
+            # check for direction
+            if (start_enc - last_encoder) > 0:
+                self.get_logger().error(
+                    "Encoder %s and motor %s are not moving in the same direction. Change configuration for encoder or motor. It should've moved forward just now."
+                    % (encoder_topic, motor)
+                )
                 self.ok = False
                 continue
 
