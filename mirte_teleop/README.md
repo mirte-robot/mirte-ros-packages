@@ -28,3 +28,52 @@ Uses L1 (left button) as enable for cmd_vel.
 
 ## Mirte master arm script:
 Controls the arm as described above (mm arm).
+
+
+
+# Connecting bluetooth controller directly to robot
+Make sure that bluez, teleop-twist-joy, joy and joy-linux are installed on the robot:
+```bash
+sudo apt install bluez bluetooth ros-humble-teleop-twist-joy ros-humble-joy ros-humble-joy-linux
+```
+
+Connect bluetooth controller:
+```bash
+sudo bluetoothctl
+        scan on
+        # hold and press share and PS button till fast blink
+        # find MAC of controller:
+        devices
+        connect <MAC>
+        trust <MAC>
+        exit
+```
+The controller should now have a blue bar and there should be a `/dev/js0` file.
+
+
+Sometimes you'll need to restart the bluetooth service after it to auto-connect and show up as `/dev/jsX`
+
+```bash
+sudo systemctl restart bluetooth.service
+```
+
+
+
+## Autostart on boot
+Add 
+```python
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(
+                        [
+                            PathJoinSubstitution(
+                                [
+                                    FindPackageShare("mirte_teleop"),
+                                    "launch",
+                                    "teleop_joy_mm_arm.launch.py",
+                                ]
+                            )
+                        ]
+                    )
+                )
+```
+to `src/mirte-ros-packages/mirte_bringup/launch/minimal_master.launch.py`, line 300.
