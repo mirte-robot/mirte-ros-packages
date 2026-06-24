@@ -11,7 +11,9 @@ find_package(ament_cmake REQUIRED)
 # manually. find_package(<dependency> REQUIRED)
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-
+install(PROGRAMS  
+  scripts/mirte_master_arm.py  
+  DESTINATION lib/${PROJECT_NAME} )
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights comment the

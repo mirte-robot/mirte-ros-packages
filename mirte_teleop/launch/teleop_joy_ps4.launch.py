@@ -18,9 +18,7 @@ def generate_launch_description():
                 package="joy_linux",
                 executable="joy_linux_node",
                 name="joy_linux_node",
-                parameters=[
-                    {"deadzone": 0.1, "autorepeat_rate": 20.0}
-                ],
+                parameters=[{"deadzone": 0.1, "autorepeat_rate": 20.0}],
             ),
             Node(
                 package="teleop_twist_joy",
