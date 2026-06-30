@@ -44,6 +44,7 @@ sudo bluetoothctl
         # hold and press share and PS button till fast blink
         # find MAC of controller:
         devices
+        pair <MAC>
         connect <MAC>
         trust <MAC>
         exit

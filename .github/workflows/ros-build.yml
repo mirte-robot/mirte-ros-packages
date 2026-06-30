@@ -58,6 +58,7 @@ jobs:
                     fi
                   done
               fi
+              git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
               # always skip generate_parameter_library example packages
               skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
