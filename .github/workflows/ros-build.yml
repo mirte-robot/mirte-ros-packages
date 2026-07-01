@@ -90,6 +90,7 @@ jobs:
               GIT_SHA1=$(git describe --match=NeVeRmAtCh --always --abbrev=40)
               echo "GIT_SHA1=${GIT_SHA1}" >> $GITHUB_ENV
               echo "BUILD_ALL=${build_all}" >> $GITHUB_ENV
+              echo "BUILD_ALL=${build_all}" >> $GITHUB_OUTPUT
               echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'true'
