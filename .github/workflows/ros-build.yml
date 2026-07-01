@@ -45,12 +45,12 @@ jobs:
               # if not on develop or main, only build the packages from the last 2 commits
               # allowed refs for all build
               refs=("refs/heads/main" "refs/heads/develop" "refs/heads/rsp")
-              not_all=false
-              build_all=true
+              not_all=true
+              build_all=false
               for r in "${refs[@]}"; do
                 if [[ "$r" == "${{ github.ref }}" ]]; then
-                  not_all=true
-                  build_all=false
+                  not_all=false
+                  build_all=true
 
                   echo "Not on main or develop, only building packages from last 2 commits."
                 fi
@@ -92,7 +92,7 @@ jobs:
               echo "BUILD_ALL=${build_all}" >> $GITHUB_ENV
               echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
-        if: ${{ steps.self-checkout.outputs.BUILD_ALL == 'true' }}
+        if: steps.self-checkout.outputs.BUILD_ALL == 'true'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
@@ -108,7 +108,7 @@ jobs:
           UPLOAD_ARTIFACTS: false
           CONTINUE_ON_ERROR: false
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
-        if: ${{ steps.self-checkout.outputs.BUILD_ALL == 'false' }}
+        if: steps.self-checkout.outputs.BUILD_ALL == 'false'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
