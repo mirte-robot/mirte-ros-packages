@@ -51,7 +51,8 @@ jobs:
                 if [[ "$r" == "$ref" ]]; then
                   not_all=true
                   build_all=false
-                  break
+
+                  echo "Not on main or develop, only building packages from last 2 commits."
                 fi
               done
               if [[ "$not_all" == true ]]; then
