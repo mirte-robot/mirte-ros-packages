@@ -37,7 +37,7 @@ jobs:
       - name: self-checkout
         id: self-checkout
         run: |
-              set -e
+              set -x
               mkdir -p ./srcO/
               mv ./mirte_* ./srcO/
               rm -rf ./src
@@ -48,7 +48,7 @@ jobs:
               not_all=false
               build_all=true
               for r in "${refs[@]}"; do
-                if [[ "$r" == "$ref" ]]; then
+                if [[ "$r" == "${{ github.ref }}" ]]; then
                   not_all=true
                   build_all=false
 
