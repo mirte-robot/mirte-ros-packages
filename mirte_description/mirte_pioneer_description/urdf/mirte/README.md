@@ -1,1 +1,0 @@
-The mirte_labX.urdf files were generated from the mirte.xacro with the settings as in the lab launch files.
