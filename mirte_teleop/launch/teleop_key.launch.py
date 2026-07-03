@@ -14,7 +14,6 @@ hostname = platform.node().replace("-", "_").lower()
 
 # FIXME: This differs between the Pioneer and the Master...
 # OPT-TODO: Set it to publish stamped directly
-# Currently parameters (turn/speed) are not implemented in ROS2
 sys.exit(
     subprocess.call(
         [
@@ -22,6 +21,10 @@ sys.exit(
             "--ros-args",
             "-r",
             f"cmd_vel:=/mirte_base_controller/cmd_vel",
+            "-p",
+            "speed:=0.55",
+            "-p",
+            "turn:=0.05",
         ]
     )
 )
