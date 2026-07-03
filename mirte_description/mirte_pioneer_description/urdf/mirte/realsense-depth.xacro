@@ -81,8 +81,9 @@ https://github.com/SyrianSpock/realsense_gazebo_plugin
         <camera name="camera_depth">
           <horizontal_fov>2.0</horizontal_fov>
           <image>
-            <width>640</width>
-            <height>480</height>
+          <!-- changed from 640x480 to optimize performance -->
+            <width>320</width>
+            <height>240</height>
             <format>B8G8R8</format>
           </image>
           <clip>
