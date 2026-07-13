@@ -64,10 +64,19 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
   logger_ = rclcpp::get_logger(logger_name);
 
   // TODO: Make wheel service names configurable (Including namespace)
-  auto left_service = "io/motor/left/set_speed";
+  node->declare_parameter("left_motor_name", "left");
+  node->declare_parameter("right_motor_name", "right");
+
+  std::string left_motor_name =
+    node->get_parameter("left_motor_name").as_string();
+
+  std::string right_motor_name =
+    node->get_parameter("right_motor_name").as_string();
+
+  auto left_service = "io/motor/" + left_motor_name + "/set_speed";
   left_client_ =
       node->create_client<mirte_msgs::srv::SetMotorSpeed>(left_service);
-  auto right_service = "io/motor/right/set_speed";
+  auto right_service = "io/motor/" + right_motor_name + "/set_speed";
   right_client_ =
       node->create_client<mirte_msgs::srv::SetMotorSpeed>(right_service);
 
