@@ -9,6 +9,9 @@ IntensityData::IntensityData(
   auto key = get_device_key(this);
   auto logger = parser->logger;
   bool got_pins = false;
+  if (unused_keys.erase("type")) {
+    this->type = get_string(parameters["type"]);
+  }
   if (unused_keys.erase("connector")) {
     auto connector = get_string(parameters["connector"]);
     auto pins = board->resolveConnector(connector);
@@ -36,6 +39,13 @@ IntensityData::IntensityData(
   if (!got_pins) {
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
+  }
+  std::string frame_prefix = parser->params_object.device.mirte.frame_prefix;
+
+  this->frame_id = frame_prefix + this->type + "_" + this->name;
+  if (unused_keys.erase("frame_id")) {
+
+    this->frame_id = frame_prefix + get_string(parameters["frame_id"]);
   }
 }
 

@@ -16,24 +16,57 @@ IntensityMonitor::IntensityMonitor(NodeData node_data, std::vector<pin_t> pins,
 std::vector<std::shared_ptr<IntensityMonitor>>
 IntensityMonitor::get_intensity_monitors(NodeData node_data,
                                          std::shared_ptr<Parser> parser) {
-  // std::vector<std::shared_ptr<IntensityMonitor>> sensors;
-  // auto ir_sensors = parse_all<IntensityData>(parser, node_data.board);
   std::vector<std::shared_ptr<IntensityMonitor>> sensors;
+
+  // loop over intensity_monitor_types, for each, read parameters (after fixing
+  // types) and create monitors for each with the correct 'type'
+  for (const auto type : intensity_monitor_types) {
+    auto monitors = get_intensity_monitors(node_data, parser, type);
+    sensors.insert(sensors.end(), monitors.begin(), monitors.end());
+  }
+
+  return sensors;
+}
+
+std::vector<std::shared_ptr<IntensityMonitor>>
+IntensityMonitor::get_intensity_monitors(NodeData node_data,
+                                         std::shared_ptr<Parser> parser,
+                                         std::string type) {
+  std::vector<std::shared_ptr<IntensityMonitor>> sensors;
+
+  /*
+  TYPE:
+    NAME:
+      pins:
+        analog: x
+        digital: y
+      connector: z
+      name: NAME
+
+  */
+
+  auto found_modules = parser->update_params_list(
+      type, type + ".intensity_keys", [](auto name) { return true; });
+  parser->fix_param_type_str_modules(type, found_modules,
+                                     {"pins.analog", "pins.digital"});
+
+  auto param_listener =
+      std::make_shared<mirte_telemetrix_cpp_intensity::ParamListener>(
+          parser->nh, type);
+  auto params = param_listener->get_params();
   auto ir_sensors =
-      parser->params_object.intensity.intensitys_map |
-      std::views::transform([&](auto const &pair) {
-        // auto name = item.first;
+      params.intensity_keys_map |
+      std::views::transform([&](const auto &pair) -> IntensityData {
         const auto &name = pair.first;
-        const auto &map_encoder = pair.second;
+        const auto &map_ina = pair.second;
         std::map<std::string, rclcpp::ParameterValue> parameters;
-        parameters["device"] = rclcpp::ParameterValue(map_encoder.device);
-        parameters["connector"] = rclcpp::ParameterValue(map_encoder.connector);
+        parameters["type"] = rclcpp::ParameterValue(type);
+        parameters["connector"] = rclcpp::ParameterValue(map_ina.connector);
+        parameters["pins.analog"] = rclcpp::ParameterValue(map_ina.pins.analog);
         parameters["pins.digital"] =
-            rclcpp::ParameterValue(map_encoder.pins.digital);
-        parameters["pins.analog"] =
-            rclcpp::ParameterValue(map_encoder.pins.analog);
-        parameters["frame_id"] = rclcpp::ParameterValue(map_encoder.frame_id);
-        auto unused_keys = get_keys(parameters);
+            rclcpp::ParameterValue(map_ina.pins.digital);
+
+        std::set<std::string> unused_keys = get_keys(parameters);
         return IntensityData(parser, node_data.board, name, parameters,
                              unused_keys);
       }) |
@@ -51,12 +84,13 @@ IntensityMonitor::get_intensity_monitors(NodeData node_data,
             }
             return result;
           });
-  // TODO: use join and std::ranges::to when available
+
   for (const auto &ir_sensor_vec : ir_sensors) {
     for (auto &ir_sensor : ir_sensor_vec) {
       sensors.push_back(ir_sensor);
     }
   }
+
   return sensors;
 }
 
@@ -80,14 +114,16 @@ DigitalIntensityMonitor::DigitalIntensityMonitor(NodeData node_data,
                                                  IntensityData intensity_data)
     : IntensityMonitor(node_data, {intensity_data.d_pin}, intensity_data) {
   using namespace std::placeholders;
-
+  // override default frame id, as it otherwise will be
+  // intensitydata::get_device_class
+  this->frame_id = intensity_data.frame_id;
   // Use default QOS for sensor publishers as specified in REP2003
   intensity_pub = nh->create_publisher<mirte_msgs::msg::IntensityDigital>(
-      "intensity/" + intensity_data.name + "/digital",
+      intensity_data.type + "/" + intensity_data.name + "/digital",
       rclcpp::SystemDefaultsQoS());
 
   intensity_service = nh->create_service<mirte_msgs::srv::GetIntensityDigital>(
-      "intensity/" + intensity_data.name + "/get_digital",
+      intensity_data.type + "/" + intensity_data.name + "/get_digital",
       std::bind(&DigitalIntensityMonitor::service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
 
@@ -102,13 +138,17 @@ AnalogIntensityMonitor::AnalogIntensityMonitor(NodeData node_data,
                                                IntensityData intensity_data)
     : IntensityMonitor(node_data, {intensity_data.a_pin}, intensity_data) {
   using namespace std::placeholders;
-
+  // override default frame id, as it otherwise will be
+  // intensitydata::get_device_class
+  this->frame_id = intensity_data.frame_id;
   // Use default QOS for sensor publishers as specified in REP2003
   intensity_pub = nh->create_publisher<mirte_msgs::msg::Intensity>(
-      "intensity/" + intensity_data.name, rclcpp::SystemDefaultsQoS());
+
+      intensity_data.type + "/" + intensity_data.name,
+      rclcpp::SystemDefaultsQoS());
 
   intensity_service = nh->create_service<mirte_msgs::srv::GetIntensity>(
-      "intensity/" + intensity_data.name + "/get_analog",
+      intensity_data.type + "/" + intensity_data.name + "/get_analog",
       std::bind(&AnalogIntensityMonitor::service_callback, this, _1, _2),
       rclcpp::ServicesQoS().get_rmw_qos_profile(), this->callback_group);
 

@@ -3,6 +3,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <mirte_telemetrix_cpp/analog_digital_parameters.hpp>
 #include <mirte_telemetrix_cpp/parsers/sensors/intensity_data.hpp>
 
 #include <mirte_telemetrix_cpp/sensors/base_sensor.hpp>
@@ -21,7 +22,12 @@ public:
 
   static std::vector<std::shared_ptr<IntensityMonitor>>
   get_intensity_monitors(NodeData node_data, std::shared_ptr<Parser> parser);
+  static std::vector<std::shared_ptr<IntensityMonitor>>
+  get_intensity_monitors(NodeData node_data, std::shared_ptr<Parser> parser,
+                         std::string type);
 
+  static const inline std::vector<std::string> intensity_monitor_types = {
+      "raw_data", "intensity", "line", "object"};
   IntensityData intensity_data;
 };
 

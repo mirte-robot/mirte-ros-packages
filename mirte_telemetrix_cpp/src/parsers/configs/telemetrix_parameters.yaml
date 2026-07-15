@@ -163,34 +163,34 @@ mirte_telemetrix_cpp:
         description: "Type of stop value(low/high) when motor is set to 0%. Some drivers have a coast/brake function. Only for pp motor."
         validation:
           one_of<>: [[ "low", "high" ]]
-  intensitys: # list definition, do not use directly. Yes, its a typo, but easier for processing multiple lists.
-    type: string_array
-    default_value: []
-    description: "List of intensity sensors"
-  intensity:
-    __map_intensitys:
-      device:
-        type: string
-        default_value: mirte
-        description: "Device to which the intensity sensor is connected"
-      pins:
-        digital:
-          type: string
-          default_value: "-1"
-          description: "Pin number for the intensity sensor"
-        analog:
-          type: string
-          default_value: "-1"
-          description: "Analog pin number for the intensity sensor"
-      connector:
-        type: string
-        default_value: NONE
-        description: "Connector to which the intensity sensor is connected"
-      frame_id:
-        type: string
-        # required: false
-        default_value: ""
-        description: "Frame ID for the sonar data"
+  # intensitys: # list definition, do not use directly. Yes, its a typo, but easier for processing multiple lists.
+  #   type: string_array
+  #   default_value: []
+  #   description: "List of intensity sensors"
+  # intensity:
+  #   __map_intensitys:
+  #     device:
+  #       type: string
+  #       default_value: mirte
+  #       description: "Device to which the intensity sensor is connected"
+  #     pins:
+  #       digital:
+  #         type: string
+  #         default_value: "-1"
+  #         description: "Pin number for the intensity sensor"
+  #       analog:
+  #         type: string
+  #         default_value: "-1"
+  #         description: "Analog pin number for the intensity sensor"
+  #     connector:
+  #       type: string
+  #       default_value: NONE
+  #       description: "Connector to which the intensity sensor is connected"
+  #     frame_id:
+  #       type: string
+  #       # required: false
+  #       default_value: ""
+  #       description: "Frame ID for the sensor data"
 
   servos: # servo definition, do not use directly
     type: string_array
@@ -272,7 +272,7 @@ mirte_telemetrix_cpp:
         type: string
         # required: false
         default_value: ""
-        description: "Frame ID for the sonar data"
+        description: "Frame ID for the sensor data"
 
   oleds: # oled definition, do not use directly
     type: string_array
@@ -344,7 +344,7 @@ mirte_telemetrix_cpp:
         type: string
         # required: false
         default_value: ""
-        description: "Frame ID for the sonar data"
+        description: "Frame ID for the sensor data"
 
 
 
@@ -362,4 +362,9 @@ mirte_telemetrix_cpp:
         type: string
         default_value: ina226
         description: "Type of module (ina226, veml6040, ssd1306, ...)"
-      
+  
+  # intensity_types: # list definition of intensity types to reuse this for multiple types of sensors while keeping them in separate keys.
+  #   type: string_array
+  #   default_value: []
+  #   description: "List of intensity type sensors, like intensity, line, object, raw_data"
+  # __map_intensity_types:
