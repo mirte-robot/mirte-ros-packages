@@ -33,7 +33,8 @@ public:
 
 class DigitalIntensityMonitor : public IntensityMonitor {
 public:
-  DigitalIntensityMonitor(NodeData node_data, IntensityData intensity_data);
+  DigitalIntensityMonitor(NodeData node_data, IntensityData intensity_data,
+                          bool single_monitor = false);
   virtual void update() override;
 
   void data_callback(uint16_t value);
@@ -54,7 +55,8 @@ private:
 
 class AnalogIntensityMonitor : public IntensityMonitor {
 public:
-  AnalogIntensityMonitor(NodeData node_data, IntensityData intensity_data);
+  AnalogIntensityMonitor(NodeData node_data, IntensityData intensity_data,
+                         bool single_monitor = false);
   virtual void update() override;
 
   void data_callback(uint16_t value);

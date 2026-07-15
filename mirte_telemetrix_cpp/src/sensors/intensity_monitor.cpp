@@ -74,13 +74,15 @@ IntensityMonitor::get_intensity_monitors(NodeData node_data,
           [&](auto const &ir_data)
               -> std::vector<std::shared_ptr<IntensityMonitor>> {
             std::vector<std::shared_ptr<IntensityMonitor>> result;
+            bool has_analog = ir_data.a_pin != (pin_t)-1;
+            bool has_digital = ir_data.d_pin != (pin_t)-1;
             if (ir_data.a_pin != (pin_t)-1) {
-              result.push_back(
-                  std::make_shared<AnalogIntensityMonitor>(node_data, ir_data));
+              result.push_back(std::make_shared<AnalogIntensityMonitor>(
+                  node_data, ir_data, !has_digital));
             }
             if (ir_data.d_pin != (pin_t)-1) {
               result.push_back(std::make_shared<DigitalIntensityMonitor>(
-                  node_data, ir_data));
+                  node_data, ir_data, !has_analog));
             }
             return result;
           });
@@ -111,16 +113,21 @@ void DigitalIntensityMonitor::update() {
 }
 
 DigitalIntensityMonitor::DigitalIntensityMonitor(NodeData node_data,
-                                                 IntensityData intensity_data)
+                                                 IntensityData intensity_data,
+                                                 bool single_monitor)
     : IntensityMonitor(node_data, {intensity_data.d_pin}, intensity_data) {
   using namespace std::placeholders;
   // override default frame id, as it otherwise will be
   // intensitydata::get_device_class
   this->frame_id = intensity_data.frame_id;
+
+  auto topic_name = intensity_data.type + "/" + intensity_data.name;
+  if (!single_monitor) {
+    topic_name += "/digital";
+  }
   // Use default QOS for sensor publishers as specified in REP2003
   intensity_pub = nh->create_publisher<mirte_msgs::msg::IntensityDigital>(
-      intensity_data.type + "/" + intensity_data.name + "/digital",
-      rclcpp::SystemDefaultsQoS());
+      topic_name, rclcpp::SystemDefaultsQoS());
 
   intensity_service = nh->create_service<mirte_msgs::srv::GetIntensityDigital>(
       intensity_data.type + "/" + intensity_data.name + "/get_digital",
@@ -135,17 +142,22 @@ DigitalIntensityMonitor::DigitalIntensityMonitor(NodeData node_data,
 }
 
 AnalogIntensityMonitor::AnalogIntensityMonitor(NodeData node_data,
-                                               IntensityData intensity_data)
+                                               IntensityData intensity_data,
+                                               bool single_monitor)
     : IntensityMonitor(node_data, {intensity_data.a_pin}, intensity_data) {
   using namespace std::placeholders;
   // override default frame id, as it otherwise will be
   // intensitydata::get_device_class
   this->frame_id = intensity_data.frame_id;
+
+  auto topic_name = intensity_data.type + "/" + intensity_data.name;
+  if (!single_monitor) {
+    topic_name += "/analog";
+  }
+
   // Use default QOS for sensor publishers as specified in REP2003
   intensity_pub = nh->create_publisher<mirte_msgs::msg::Intensity>(
-
-      intensity_data.type + "/" + intensity_data.name,
-      rclcpp::SystemDefaultsQoS());
+      topic_name, rclcpp::SystemDefaultsQoS());
 
   intensity_service = nh->create_service<mirte_msgs::srv::GetIntensity>(
       intensity_data.type + "/" + intensity_data.name + "/get_analog",
