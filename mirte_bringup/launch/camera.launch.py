@@ -62,6 +62,9 @@ def generate_launch_description():
                     {
                         "pixel_format": "yuyv2rgb",
                         "video_device": str(device),
+                        "image_width": 320,
+                        "image_height": 240,
+                        "framerate": 10.0,
                     }
                 ],
             )
