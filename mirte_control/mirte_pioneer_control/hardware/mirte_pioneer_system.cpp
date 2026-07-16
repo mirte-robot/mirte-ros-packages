@@ -72,9 +72,11 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
 
   std::string left_motor_name =
     node_->get_parameter("left_motor_name").as_string();
+  left_motor_name = left_motor_name.empty() ? "left" : left_motor_name;
 
   std::string right_motor_name =
     node_->get_parameter("right_motor_name").as_string();
+  right_motor_name = right_motor_name.empty() ? "right" : right_motor_name;
 
   auto left_service = "io/motor/" + left_motor_name + "/set_speed";
   left_client_ =
