@@ -71,11 +71,11 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
   node_->declare_parameter("right_motor_name", "right");
 
   std::string left_motor_name =
-    node_->get_parameter("left_motor_name").as_string();
+      node_->get_parameter("left_motor_name").as_string();
   left_motor_name = left_motor_name.empty() ? "left" : left_motor_name;
 
   std::string right_motor_name =
-    node_->get_parameter("right_motor_name").as_string();
+      node_->get_parameter("right_motor_name").as_string();
   right_motor_name = right_motor_name.empty() ? "right" : right_motor_name;
 
   auto left_service = "io/motor/" + left_motor_name + "/set_speed";
@@ -92,10 +92,8 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
       return hardware_interface::CallbackReturn::ERROR;
     }
 
-    RCLCPP_INFO(
-       logger_.value(),
-       "service %s not available, waiting again...",
-       left_service.c_str());
+    RCLCPP_INFO(logger_.value(), "service %s not available, waiting again...",
+                left_service.c_str());
   }
 
   // TODO: conbine with above
@@ -106,10 +104,8 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
       return hardware_interface::CallbackReturn::ERROR;
     }
 
-    RCLCPP_INFO(
-      logger_.value(),
-      "service %s not available, waiting again...",
-      right_service.c_str());
+    RCLCPP_INFO(logger_.value(), "service %s not available, waiting again...",
+                right_service.c_str());
   }
 
   hw_positions_.resize(info_.joints.size(),
