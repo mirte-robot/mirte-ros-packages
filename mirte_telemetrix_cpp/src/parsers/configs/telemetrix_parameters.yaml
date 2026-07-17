@@ -95,7 +95,12 @@ mirte_telemetrix_cpp:
         type: string
         default_value: ""
         description: "Frame ID for the sonar data"
-
+      unit:
+        type: string
+        default_value: m
+        description: "Unit for the sonar distance data (m, cm)"
+        validation:
+          one_of<>: [ ["m", "cm"] ]
       pins:
         trigger:
           type: string

@@ -28,6 +28,20 @@ SonarData::SonarData(
   }
   this->min_distance = distance_params.min_distance;
   this->max_distance = distance_params.max_distance;
+
+  if (unused_keys.erase("unit")) {
+    auto unit_str = get_string(parameters["unit"]);
+    if (unit_str == "m") {
+      this->unit = 1.0;
+    } else if (unit_str == "cm") {
+      this->unit = 0.01;
+    } else {
+      RCLCPP_ERROR(logger,
+                   "Device %s has an invalid unit specified: %s. Using default "
+                   "unit meters.",
+                   key.c_str(), unit_str.c_str());
+    }
+  }
 }
 
 bool SonarData::check() {
