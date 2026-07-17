@@ -70,6 +70,9 @@ public:
 
 private:
   std::optional<rclcpp::Logger> logger_;
+  rclcpp::Node::SharedPtr node_;
+  std::jthread ros_thread_;
+  void ros_spin();
 
   // Store the command for the simulated robot
   std::vector<double> hw_commands_;

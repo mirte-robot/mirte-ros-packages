@@ -41,6 +41,8 @@ std::string convert_to_snake_case(const std::string &input) {
   return result;
 }
 
+void MirtePioneerSrvSystemHardware::ros_spin() { rclcpp::spin(node_); }
+
 // TODO: Maybe make this all configurable so N wheels resulting in a combinable
 // Mirte Master Hardware Interface
 hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
@@ -57,19 +59,31 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
   // https://github.com/joshnewans/diffdrive_arduino/blob/humble/description/ros2_control/diffbot.ros2_control.xacro
 
   // TODO: Maybe move this to a later stage if that would make sense
-  std::shared_ptr<rclcpp::Node> node =
-      rclcpp::Node::make_shared(convert_to_snake_case(get_name()));
-  auto logger_name = std::string(node->get_namespace()).substr(1) + "." +
-                     std::string(node->get_name());
+  node_ = rclcpp::Node::make_shared(convert_to_snake_case(get_name()));
+  ros_thread_ = std::jthread([this] { this->ros_spin(); });
+
+  auto logger_name = std::string(node_->get_namespace()).substr(1) + "." +
+                     std::string(node_->get_name());
   logger_ = rclcpp::get_logger(logger_name);
 
   // TODO: Make wheel service names configurable (Including namespace)
-  auto left_service = "io/motor/left/set_speed";
+  node_->declare_parameter("left_motor_name", "left");
+  node_->declare_parameter("right_motor_name", "right");
+
+  std::string left_motor_name =
+      node_->get_parameter("left_motor_name").as_string();
+  left_motor_name = left_motor_name.empty() ? "left" : left_motor_name;
+
+  std::string right_motor_name =
+      node_->get_parameter("right_motor_name").as_string();
+  right_motor_name = right_motor_name.empty() ? "right" : right_motor_name;
+
+  auto left_service = "io/motor/" + left_motor_name + "/set_speed";
   left_client_ =
-      node->create_client<mirte_msgs::srv::SetMotorSpeed>(left_service);
-  auto right_service = "io/motor/right/set_speed";
+      node_->create_client<mirte_msgs::srv::SetMotorSpeed>(left_service);
+  auto right_service = "io/motor/" + right_motor_name + "/set_speed";
   right_client_ =
-      node->create_client<mirte_msgs::srv::SetMotorSpeed>(right_service);
+      node_->create_client<mirte_msgs::srv::SetMotorSpeed>(right_service);
 
   while (!left_client_->wait_for_service(std::chrono::seconds(1))) {
     if (!rclcpp::ok()) {
@@ -77,9 +91,9 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(
-        logger_.value(),
-        "service io/motor/left/set_speed not available, waiting again...");
+
+    RCLCPP_INFO(logger_.value(), "service %s not available, waiting again...",
+                left_service.c_str());
   }
 
   // TODO: conbine with above
@@ -89,9 +103,9 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_init(
                    "Interrupted while waiting for the service. Exiting.");
       return hardware_interface::CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(
-        logger_.value(),
-        "service io/motor/right/set_speed not available, waiting again...");
+
+    RCLCPP_INFO(logger_.value(), "service %s not available, waiting again...",
+                right_service.c_str());
   }
 
   hw_positions_.resize(info_.joints.size(),

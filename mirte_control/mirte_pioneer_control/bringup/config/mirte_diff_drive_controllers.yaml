@@ -58,3 +58,7 @@
       angular.z.max_jerk: 0.0
       angular.z.min_jerk: 0.0
 
+/**/mirte_hardware:
+  ros__parameters:
+    left_motor_name: "left"
+    right_motor_name: "right"
