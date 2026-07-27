@@ -2,7 +2,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
-# works for ps4 controller
+# works for ps4 controller (new kernels, old kernels, see teleop_joy.launch.py)
 def generate_launch_description():
     return LaunchDescription(
         [
