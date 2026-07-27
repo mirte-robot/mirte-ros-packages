@@ -8,6 +8,15 @@ from sensor_msgs.msg import Joy
 from mirte_msgs.srv import SetServoAngle
 from control_msgs.action import GripperCommand
 
+# set joystick button map, these values should work for PS4 controller
+JOY_OPEN_GRIPPER = 5
+JOY_CLOSE_GRIPPER = 7
+JOY_SHUTDOWN = 9
+
+# joy axis map
+JOY_AXIS_HORIZONTAL = 2
+JOY_AXIS_VERTICAL = 5
+
 
 class MirteMasterArm(Node):
     def __init__(self):
@@ -36,8 +45,8 @@ class MirteMasterArm(Node):
         self.gripper_goal_active = False
 
         # Right stick: axis 3 = right horizontal, axis 4 = right vertical (may vary by controller)
-        self.right_axis_horizontal = 2  # rotation
-        self.right_axis_vertical = 5  # lift
+        JOY_AXIS_HORIZONTAL = 2  # rotation
+        JOY_AXIS_VERTICAL = 5  # lift
 
         self.shoulder_angle = 0.0
         self.shoulder_pan_angle = 0.0
@@ -47,7 +56,9 @@ class MirteMasterArm(Node):
         self.deadzone = 0.01
         # self.step = 0.050  # rad per callback
         # self.max_angle = math.radians(20.0)  # testing limit: +/- 20 degrees
-        self.max_pan_angle = 1.0  # keep left/right rotation limited to about +/- 90 degrees
+        self.max_pan_angle = (
+            1.0  # keep left/right rotation limited to about +/- 90 degrees
+        )
 
         self.filter_alpha = 0.2  # 0.0 = no movement, 1.0 = no filtering
         self.command_epsilon = 0.01  # rad; keep sending until this close to target
@@ -67,12 +78,12 @@ class MirteMasterArm(Node):
         self.check_shutdown()
         axes = self.axes
 
-        if len(axes) <= max(self.right_axis_horizontal, self.right_axis_vertical):
+        if len(axes) <= max(JOY_AXIS_HORIZONTAL, JOY_AXIS_VERTICAL):
             self.get_logger().warn("Not enough axes in Joy message")
             return
 
-        horiz = axes[self.right_axis_horizontal]
-        vert = axes[self.right_axis_vertical]
+        horiz = axes[JOY_AXIS_HORIZONTAL]
+        vert = axes[JOY_AXIS_VERTICAL]
 
         shoulder_changed = False
         shoulder_pan_changed = False
@@ -149,14 +160,13 @@ class MirteMasterArm(Node):
         new_shoulder_angle = self.filter_towards(
             self.shoulder_angle, target_shoulder_angle
         )
-        new_elbow_angle = self.filter_towards(
-            self.elbow_angle, target_elbow_angle
-        )
-        new_wrist_angle = self.filter_towards(
-            self.wrist_angle, target_wrist_angle
-        )
+        new_elbow_angle = self.filter_towards(self.elbow_angle, target_elbow_angle)
+        new_wrist_angle = self.filter_towards(self.wrist_angle, target_wrist_angle)
 
-        if abs(target_shoulder_pan_angle - self.shoulder_pan_angle) > self.command_epsilon:
+        if (
+            abs(target_shoulder_pan_angle - self.shoulder_pan_angle)
+            > self.command_epsilon
+        ):
             self.shoulder_pan_angle = new_shoulder_pan_angle
             shoulder_pan_changed = True
         else:
@@ -206,8 +216,12 @@ class MirteMasterArm(Node):
             return
 
         # print(f"Gripper button state: {self.buttons}")
-        open_button = self.buttons[5]  # Assuming button 5 is for opening the gripper
-        close_button = self.buttons[7]  # Assuming button 7 is for closing the gripper
+        open_button = self.buttons[
+            JOY_OPEN_GRIPPER
+        ]  # Assuming button 5 is for opening the gripper
+        close_button = self.buttons[
+            JOY_CLOSE_GRIPPER
+        ]  # Assuming button 7 is for closing the gripper
 
         open_pressed = open_button and not self.prev_open_button
         close_pressed = close_button and not self.prev_close_button
@@ -235,7 +249,7 @@ class MirteMasterArm(Node):
             self.get_logger().warn("Not enough buttons in Joy message")
             return
 
-        if self.buttons[9] == 1:  # Assuming button 9 is the options button
+        if self.buttons[JOY_SHUTDOWN] == 1:  # Assuming button 9 is the options button
             if self.shutdown_timer is None:
                 self.shutdown_timer = self.create_timer(2.0, self.shutdown_robot)
         else:
