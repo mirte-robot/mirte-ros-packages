@@ -1,0 +1,9 @@
+libboost-all-dev:
+  - version: 1.74.0.3ubuntu7
+  - license: MIT
+libgpiod-dev:
+  - version: 1.6.3-1build1
+  - license: LGPL-2.1-or-later
+libopencv-dev:
+  - version: 4.5.4+dfsg-9ubuntu4
+  - license: Apache-2.0
