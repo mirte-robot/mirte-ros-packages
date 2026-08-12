@@ -1,84 +1,58 @@
 /**:
   ros__parameters:
-   
     device:
       mirte:
         type: pcb
         version: 0.8
         board: pico
-        max_frequency: 50
+        max_frequency: 25
+        # The current bottleneck for the frequency is the websocket server for the webIDE.
+        # If you are not using the webIDE, you can probably increase the frequency (eg.
+        # to 50Hz). This all depends on the number of sensors you use, and their data-size.
+        # You can check with top/htop wether you are still under 100% cpu usage.
     distance:
       left:
         name: left
         device: mirte
         pins:
-          trigger: GP9
           echo: GP8
+          trigger: GP9
       right:
         name: right
         device: mirte
         pins:
-          trigger: GP7
           echo: GP6
-   
-    intensity:
+          trigger: GP7
+#     encoder:
+#       left:
+#         name: left
+#         device: mirte
+#         pins:
+#           A: 15
+#       right:
+#         name: right
+#         device: mirte
+#         pins:
+#           A: 17
+#    keypad:
+#      yellow:
+#        name: yellow
+#        device: mirte
+#        pins:
+#          pin: GP28
+    line:
       left:
         name: left
-        device: mirte
-        pins:
-          analog: GP27
-          digital: GP17
-      right:
-        name: right
         device: mirte
         pins:
           analog: GP26
           digital: GP16
-    oled:
-      left:
-        name: left
-        device: mirte
-        pins:
-          sda: GP10
-          scl: GP11
       right:
         name: right
         device: mirte
         pins:
-          sda: GP4
-          scl: GP5
-        # default_screen_script can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text.
-        # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
-        # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
-    servo:
-      left:
-        name: left
-        device: mirte
-        pins:
-          pin: GP14
-      right:
-        name: right
-        device: mirte
-        pins:
-          pin: GP15
-      # These servo's have the same pins as the ObjectDetectors. So as
-      # soon as they are implemented, these should be commented out
-      gripper:
-        name: gripper
-        device: mirte
-        pins:
-          pin: GP12
-      arm:
-        name: arm
-        device: mirte
-        pins:
-          pin: GP13
-    keypad:
-      yellow:
-        name: yellow
-        device: mirte
-        pins:
-          pin: GP28
+          analog: GP27
+          digital: GP17
     motor:
       left:
         name: left
@@ -94,18 +68,35 @@
         pins:
           p1: GP20
           p2: GP21
-    # encoder:
-    #   left:
-    #     name: left
-    #     device: mirte
-    #     pins:
-    #       A: 15
-    #   right:
-    #     name: right
-    #     device: mirte
-    #     pins:
-    #       A: 17
-
-    # color: # color sensor veml6040
-    #   color:
-    #     connector: I2C2
+#    object:
+#      left:
+#        name: left
+#        device: mirte
+#        pins:
+#          pin: GP13
+#      right:
+#        name: right
+#        device: mirte
+#        pins:
+#          pin: GP12
+    oled:
+      left:
+        name: left
+        device: mirte
+        pins:
+          scl: GP11
+          sda: GP10
+        # default_screen_script can be a path or package URI (pkg://PACKAGE_NAME/FOLEDRS) to a image or an executable script which provides text.
+        # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
+        # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
+#    servo:
+#      left:
+#        name: left
+#        device: mirte
+#        pins:
+#          pin: GP14
+#      right:
+#        name: right
+#        device: mirte
+#        pins:
+#          pin: GP15
