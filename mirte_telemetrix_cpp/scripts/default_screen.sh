@@ -2,7 +2,7 @@
 # set -x
 
 # Hostname
-echo "Hn:$(cat /etc/hostname)"
+echo "Name: $(cat /etc/hostname)"
 
 # Wi-Fi Line
 wifi=$(iwgetid -r)
@@ -22,8 +22,9 @@ if [ "$(echo $percentage | wc -c)" -gt 1 ]; then
 	printf "SOC: %.0f%%\n" "$soc"
 fi
 
-# IPs might be very long, so after hostname and SoC
-echo "IPs: $(hostname -I)"
+# Show only active IP4 addresses
+ips=$(ip -4 -o addr show scope global | while read -r line; do dev=$(echo "$line" | awk '{print $2}'); ip link show "$dev" | grep -q "LOWER_UP" && echo "$line"; done | awk '{print $4}' | cut -d/ -f1)
+echo "IPs: $ips"
 
 # if not sure about date, then show uptime, otherwise show date
 if [ "$(timedatectl | grep "synchronized: yes" | wc -l)" -eq 1 ]; then
