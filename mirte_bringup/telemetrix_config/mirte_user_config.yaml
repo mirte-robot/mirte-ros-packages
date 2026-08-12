@@ -80,8 +80,8 @@
 #        pins:
 #          pin: GP12
     oled:
-      left:
-        name: left
+      rear:
+        name: rear
         device: mirte
         pins:
           scl: GP11
@@ -90,13 +90,13 @@
         # By default it points to "pkg://mirte_telemetrix_cpp/scripts/default_screen.sh"
         # default_screen_script: "/home/jap/mirte/mirte-oled-images/images/mirte_logo_inv.png"
 #    servo:
-#      left:
-#        name: left
+#      front:
+#        name: front
 #        device: mirte
 #        pins:
 #          pin: GP14
-#      right:
-#        name: right
+#      rear:
+#        name: rear
 #        device: mirte
 #        pins:
 #          pin: GP15
