@@ -7,8 +7,11 @@
 # subprocess.
 # TODO: Get the lib location in a more generic way
 
+import os
 import sys, subprocess
 import platform
+
+from ament_index_python import get_package_prefix
 
 hostname = platform.node().replace("-", "_").lower()
 
@@ -18,10 +21,19 @@ hostname = platform.node().replace("-", "_").lower()
 sys.exit(
     subprocess.call(
         [
-            "/opt/ros/humble/lib/teleop_twist_keyboard/teleop_twist_keyboard",
+            os.path.join(
+                get_package_prefix("teleop_twist_keyboard"),
+                "lib",
+                "teleop_twist_keyboard",
+                "teleop_twist_keyboard",
+            ),
             "--ros-args",
             "-r",
             f"cmd_vel:=/mirte_base_controller/cmd_vel",
+            # "-p",
+            # "speed:=0.55",
+            # "-p",
+            # "turn:=0.05",
         ]
     )
 )
