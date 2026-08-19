@@ -20,7 +20,7 @@ JOY_AXIS_VERTICAL = 5
 
 class MirteMasterArm(Node):
     def __init__(self):
-        super().__init__("mirte_master_arm")
+        super().__init__("mirte_master_arm_gamepad_teleop")
 
         self.joy_sub = self.create_subscription(Joy, "/joy", self.joy_callback, 1)
 
@@ -122,8 +122,8 @@ class MirteMasterArm(Node):
                     (-1.0, 0.0),
                     (-0.6, 0.5),
                     (0.0, -0.5),
-                    (0.4, -1.57),
-                    (1.0, -1.57),
+                    (0.4, -1.5),
+                    (1.0, -1.5),
                 ],
             )
             target_elbow_angle = self.interpolate_piecewise(
@@ -132,8 +132,8 @@ class MirteMasterArm(Node):
                     (-1.0, -0.3),
                     (-0.6, -1.6),
                     (0.0, -1.0),
-                    (0.4, -1.57),
-                    (1.0, -0.9),
+                    (0.4, -1.5),
+                    (1.0, -1.0),
                 ],
             )
             target_wrist_angle = self.interpolate_piecewise(
@@ -143,7 +143,7 @@ class MirteMasterArm(Node):
                     (-0.6, -0.5),
                     (0.0, 0.0),
                     (0.4, 1.3),
-                    (1.0, 0.8),
+                    (1.0, 0.7),
                 ],
             )
         else:
