@@ -6,7 +6,8 @@ class IntensityData : public SensorData {
 public:
   pin_t a_pin = (pin_t)-1;
   pin_t d_pin = (pin_t)-1;
-
+  std::string type = "raw_data";
+  std::string frame_id = "";
   IntensityData(std::shared_ptr<Parser> parser,
                 std::shared_ptr<Mirte_Board> board, std::string name,
                 std::map<std::string, rclcpp::ParameterValue> parameters,

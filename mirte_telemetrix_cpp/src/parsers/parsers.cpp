@@ -70,7 +70,7 @@ Parser::Parser(std::shared_ptr<rclcpp::Node> nh)
                          "min_distance",
                          "max_distance",
                      }},
-                    {"intensity", {"pins.digital", "pins.analog"}, {}},
+                    // {"intensity", {"pins.digital", "pins.analog"}, {}},
                     {"motor", {"pins.p1", "pins.p2", "pins.d1", "pins.d2"}, {}},
                     {"servo", {"pins.pin"}, {}},
                     {"oled", {"pins.sda", "pins.scl"}, {}},
