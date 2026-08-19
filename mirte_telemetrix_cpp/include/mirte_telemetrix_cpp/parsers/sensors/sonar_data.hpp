@@ -13,7 +13,7 @@ public:
   pin_t echo = -1;
   float min_distance = 0.02;
   float max_distance = 4.5;
-
+  float unit = 1.0; // default unit is meters, so 1.0, cm is 0.01, etc.
   SonarData(std::shared_ptr<Parser> parser, std::shared_ptr<Mirte_Board> board,
             std::string name,
             std::map<std::string, rclcpp::ParameterValue> parameters,

@@ -1,0 +1,33 @@
+mirte_telemetrix_cpp_intensity:
+  # intensity_types: # list definition of intensity types to reuse this for multiple types of sensors while keeping them in separate keys.
+  #   type: string_array
+  #   default_value: []
+  #   description: "List of intensity type sensors, like intensity, line, object, raw_data"
+  # __map_intensity_types:
+  intensity_keys:
+    type: string_array
+    default_value: []
+    description: "List of names, like left, right, ...."
+  __map_intensity_keys:
+    device:
+      type: string
+      default_value: mirte
+      description: "Device to which the sensor is connected"
+    pins:
+      digital:
+        type: string
+        default_value: "-1"
+        description: "Pin number for the sensor"
+      analog:
+        type: string
+        default_value: "-1"
+        description: "Analog pin number for the sensor"
+    connector:
+      type: string
+      default_value: NONE
+      description: "Connector to which the sensor is connected"
+    frame_id:
+      type: string
+      # required: false
+      default_value: ""
+      description: "Frame ID for the sensor data"

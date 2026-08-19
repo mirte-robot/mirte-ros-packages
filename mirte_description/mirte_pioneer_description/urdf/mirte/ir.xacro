@@ -30,7 +30,7 @@
     </link>
     <gazebo reference="base_ir_${name}">
       <sensor type="camera" name="camera_ir_${name}">
-        <update_rate>50</update_rate>
+        <update_rate>10</update_rate>
         <always_on>true</always_on>
         <visualize>false</visualize>
         <topic>camera_${name}/image_raw</topic>
