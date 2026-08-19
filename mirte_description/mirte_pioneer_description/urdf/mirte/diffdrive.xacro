@@ -2,8 +2,10 @@
 <robot>
   <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+    <!-- 'documentation': https://github.com/ros-simulation/gazebo_ros_pkgs/blob/ros2/gazebo_plugins/src/gazebo_ros_diff_drive.cpp -->
+    <!-- Some of the old settings (like cmd_vel) don't seem to work anymore -->
       <ros>
-        <!-- Set namespace -->
+        <!-- Set namespace, but probably overridden by spawn namespace command -->
         <namespace>mirte</namespace>
       </ros>
       <!-- Replace camelCase elements with snake_case ones -->
