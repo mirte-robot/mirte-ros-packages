@@ -37,13 +37,25 @@ jobs:
       - name: self-checkout
         id: self-checkout
         run: |
-              set -e
+              set -x
               mkdir -p ./srcO/
               mv ./mirte_* ./srcO/
               rm -rf ./src
               
               # if not on develop or main, only build the packages from the last 2 commits
-              if [[ "${{ github.ref }}" != "refs/heads/main" && "${{ github.ref }}" != "refs/heads/develop" ]]; then
+              # allowed refs for all build
+              refs=("refs/heads/main" "refs/heads/develop")
+              not_all=true
+              build_all=false
+              for r in "${refs[@]}"; do
+                if [[ "$r" == "${{ github.ref }}" ]]; then
+                  not_all=false
+                  build_all=true
+
+                  echo "Not on main or develop, only building packages from last 2 commits."
+                fi
+              done
+              if [[ "$not_all" == true ]]; then
                 rm ./sources.repos
                 # for all packages in list, check if they are in the last 2 commits
                 packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control")
@@ -63,6 +75,12 @@ jobs:
                   git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
                 fi
               fi
+              
+
+              # if amd, then clone the mirte_gazebo repo, otherwise skip it, arm doesnt have gazebo compiled (yet)
+              if [[ "${{ matrix.arch }}" == "amd64" ]]; then
+                git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
+              fi
               # always skip generate_parameter_library example packages
               skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
@@ -76,9 +94,17 @@ jobs:
               # get the git sha1 of the current commit
               GIT_SHA1=$(git describe --match=NeVeRmAtCh --always --abbrev=40)
               echo "GIT_SHA1=${GIT_SHA1}" >> $GITHUB_ENV
+              echo "BUILD_ALL=${build_all}" >> $GITHUB_ENV
+              echo "BUILD_ALL=${build_all}" >> $GITHUB_OUTPUT
+              branch_name=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
+              REPO_BRANCH=ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}_${branch_name}
+              if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+                REPO_BRANCH=ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}
+              fi
+              echo "REPO_BRANCH=${REPO_BRANCH}" >> $GITHUB_OUTPUT
               echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        if: steps.self-checkout.outputs.BUILD_ALL == 'true'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
@@ -86,7 +112,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOS_FILE: ./sources.repos
           SKIP_CHECKOUT: true
-          PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
+          PACKAGES_BRANCH: ${{ steps.self-checkout.outputs.REPO_BRANCH }}
           SKIP_PACKAGES:  ${{ steps.self-checkout.outputs.SKIP_PACKAGES || '' }}
         #   SBUILD_CONF: "$enable_network = 1;"
         #   Skip pushing to repo when not on main branch
@@ -94,7 +120,7 @@ jobs:
           UPLOAD_ARTIFACTS: false
           CONTINUE_ON_ERROR: false
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
-        if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+        if: steps.self-checkout.outputs.BUILD_ALL == 'false'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}

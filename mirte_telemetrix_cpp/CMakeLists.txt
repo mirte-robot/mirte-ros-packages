@@ -97,6 +97,7 @@ set(config_files
     as5600_sensor
     neopixel
     mpu6050
+    analog_digital
     telemetrix)
 set(param_libs "")
 foreach(config_file IN LISTS config_files)
