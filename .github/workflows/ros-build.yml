@@ -75,12 +75,7 @@ jobs:
                   git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
                 fi
               fi
-              
 
-              # if amd, then clone the mirte_gazebo repo, otherwise skip it, arm doesnt have gazebo compiled (yet)
-              if [[ "${{ matrix.arch }}" == "amd64" ]]; then
-                git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
-              fi
               # always skip generate_parameter_library example packages
               skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
