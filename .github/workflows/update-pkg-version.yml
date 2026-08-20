@@ -4,8 +4,6 @@ name: Update Package Version
 permissions:
   contents: write
 on:
-  release:
-    types: [published]
 #   when started from actions workflow_dispatch:
   workflow_dispatch:
     inputs:
@@ -21,38 +19,19 @@ jobs:
                 - name: Update package version
                   run: |
                         set -xe
-                        shopt -s globstar
+                        shopt -s globstar # for **/package.xml
+                        # if 0.0.0 is passed as the version, then we don't want to update the package.xml file
+                        if [ "${{ github.event.inputs.version }}" = "0.0.0" ]; then
+                                echo "Version is 0.0.0, not updating package.xml"
+                                exit 1
+                        fi
                         sudo apt update
                         sudo apt install -y xmlstarlet
                         # get the version from the release tag or from the workflow_dispatch input
-                        if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-                                version="${{ github.event.inputs.version }}"
-                        else
-                                version="${GITHUB_REF#refs/tags/}"
-                        fi
+                        version="${{ github.event.inputs.version }}"
                         xmlstarlet ed -P -L -u "/package/version" -v "$version" **/package.xml
-                        # git diff
                         git config --global user.name "github-actions[bot]"
                         git config --global user.email "github-actions[bot]@users.noreply.github.com"
                         git add **/package.xml
                         git commit -m "Update package versions to $version"
                         git push
-                # - name: Update tag
-                #   uses: EndBug/latest-tag@latest
-                #   with:
-                #         # You can change the name of the tag or branch with this input.
-                #         # Default: 'latest'
-                #         ref: $GITHUB_REF_NAME
-
-                #         # If a description is provided, the action will use it to create an annotated tag. If none is given, the action will create a lightweight tag.
-                #         # Default: ''
-                #         # description: Description for the tag
-
-                #         # Force-update a branch instead of using a tag.
-                #         # Default: false
-                #         # force-branch: true
-
-                #         # Directory to use when executing git commands
-                #         # Default: '${{ github.workspace }}'
-                #         # git-directory: 'path/to/repo/dir'
-                                
