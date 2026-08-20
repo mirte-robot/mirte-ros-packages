@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>mirte_master_arm_control</name>
-  <version>0.1.0</version>
+  <version>0.2.1</version>
   <description>Simple simulation interface and template for setting up a hardware interface for ros_control</description>
 
   <maintainer email="m.klomp@tudelft.nl">Martin Klomp</maintainer>
