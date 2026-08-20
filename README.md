@@ -1,6 +1,6 @@
 # mirte-ros-packages
 
-This package provides the ROS2 pcakages for the [MIRTE robot](https://mirte.org).
+This package provides the ROS2 packages for the [MIRTE robot](https://mirte.org).
 Please read the [MIRTE documentation](https://docs.mirte.org/develop/doc/mirte_os/supported_hardware.html) 
 for further documentation of this repository.
 
