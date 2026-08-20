@@ -22,9 +22,5 @@ repositories:
   orbbecsdk_ros2:
     type: git
     url: https://github.com/orbbec/OrbbecSDK_ROS2.git
-    version: main # v2-main doesn't support astra mini pro yet
-  # generate_parameter_library:
-  #   type: git
-  #   url: https://github.com/ArendJan/generate_parameter_library.git
-  #   version: test-any-string
+    version: main # v2-main requires firmware update for the astra mini pro, not yet decided on how to
   

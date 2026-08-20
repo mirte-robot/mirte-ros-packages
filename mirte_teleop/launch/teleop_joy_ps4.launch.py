@@ -2,17 +2,23 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
-# works for ps4 controller (old kernels, new kernels: see teleop_joy_ps4.launch.py)
+# works for ps4 controller (new kernels, old kernels, see teleop_joy.launch.py)
 def generate_launch_description():
     return LaunchDescription(
         [
+            # Node(
+            #     package="joy",
+            #     executable="joy_node",
+            #     name="joy_node",
+            #     parameters=[
+            #         {"dev": "/dev/input/js0", "deadzone": 0.1, "autorepeat_rate": 20.0}
+            #     ],
+            # ),
             Node(
-                package="joy",
-                executable="joy_node",
-                name="joy_node",
-                parameters=[
-                    {"dev": "/dev/input/js0", "deadzone": 0.1, "autorepeat_rate": 20.0}
-                ],
+                package="joy_linux",
+                executable="joy_linux_node",
+                name="joy_linux_node",
+                parameters=[{"deadzone": 0.1, "autorepeat_rate": 20.0}],
             ),
             Node(
                 package="teleop_twist_joy",
@@ -22,10 +28,11 @@ def generate_launch_description():
                     {
                         "axis_linear.x": 1,
                         "axis_angular.yaw": 0,
-                        "axis_linear.y": 3,
+                        "axis_linear.y": 6,
                         "scale_linear.x": 1.0,
                         "scale_linear.y": 1.0,
                         "scale_angular.yaw": 4.0,
+                        "enable_button": 4,
                         # 'scale_angular': 1.0
                     }
                 ],

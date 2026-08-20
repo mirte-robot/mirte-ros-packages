@@ -69,6 +69,11 @@ jobs:
                     echo ${skip_packages}
                     fi
                   done
+              else
+                # if amd, then clone the mirte_gazebo repo, otherwise skip it, arm doesnt have gazebo compiled (yet)
+                if [[ "${{ matrix.arch }}" == "amd64" ]]; then
+                  git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
+                fi
               fi
               
 
