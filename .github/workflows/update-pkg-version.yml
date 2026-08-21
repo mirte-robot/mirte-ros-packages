@@ -3,8 +3,8 @@ name: Update Package Version
 
 permissions:
   contents: write
+
 on:
-#   when started from actions workflow_dispatch:
   workflow_dispatch:
     inputs:
       version:
@@ -14,8 +14,14 @@ on:
 jobs:
         update-package-version:
                 runs-on: ubuntu-latest
+                environment:
+                        name: pkg_upd # for the secrets to be used in the workflow, otherwise it is not allowed to push to protected branches
+                        # this env is only enabled for main
+                        deployment: false
                 steps:
                 - uses: actions/checkout@v7
+                  with:
+                        ssh-key: ${{ secrets.PKG_UPD_KEY }}
                 - name: Update package version
                   run: |
                         set -xe
