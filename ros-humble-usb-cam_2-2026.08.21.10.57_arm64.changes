@@ -1,0 +1,53 @@
+Format: 1.8
+Date: Wed, 01 May 2024 00:00:00 -0000
+Source: ros-humble-usb-cam
+Binary: ros-humble-usb-cam
+Built-For-Profiles: noudeb
+Architecture: arm64
+Version: 2-2026.08.21.10.57
+Distribution: jammy
+Urgency: high
+Maintainer: Evan Flynn <evanflynn.msu@gmail.com>
+Changed-By: Evan Flynn <evanflynn.msu@gmail.com>
+Description:
+ ros-humble-usb-cam - A ROS Driver for V4L USB Cameras
+Changes:
+ ros-humble-usb-cam (2-2026.08.21.10.57) jammy; urgency=high
+ .
+   * Merge pull request #330 <https://github.com/ros-drivers/usb_cam/issues/330> from ros-drivers/fix-rolling-builds
+     Update comment in CI from Jammy to Noble
+   * Fix linter error in uyvy file
+     - Update comment in CI from Jammy to Noble
+   * Merge pull request #324 <https://github.com/ros-drivers/usb_cam/issues/324> from clalancette/clalancette/const-avcodec
+     Switch to a const AVCodec *.
+   * Switch to a const AVCodec *.
+     This is because newer versions of avcodec return a const AVCodec *.
+   * Merge pull request #313 <https://github.com/ros-drivers/usb_cam/issues/313> from ros-drivers/v4l2-devices-might-not-be-named-video
+     V4l2 devices might not be named video
+   * Use /sys/class/video4linux/ to get list of v4l2 devices
+   * Merge pull request #311 <https://github.com/ros-drivers/usb_cam/issues/311> from firesurfer/ros2
+     Resolve Symlinks
+   * Update usb_cam_node.cpp
+     Fix formatting
+   * try to fix formatting issue
+   * resolve symlinks
+   * Merge pull request #305 <https://github.com/ros-drivers/usb_cam/issues/305> from ros-drivers/fix-docs-deployment
+   * Remove unnecessary steps from docs CI
+   * Merge pull request #304 <https://github.com/ros-drivers/usb_cam/issues/304> from ros-drivers/fix-docs-ci
+     Fix docs ci
+   * Trigger docs CI on every push to ros2 branch
+   * Merge pull request #303 <https://github.com/ros-drivers/usb_cam/issues/303> from ros-drivers/add-mkdocs-documentation
+   * Standup basic mkdocs documentation site
+   * Contributors: Chris Lalancette, Evan Flynn, Lennart Nachtigall
+Checksums-Sha1:
+ 5985376852418080e82900c75ee1cbfa5164532e 2384154 ros-humble-usb-cam-dbgsym_2-2026.08.21.10.57_arm64.ddeb
+ 3b98233c77a4736d258488b2fe677aff4c0d0bad 31341 ros-humble-usb-cam_2-2026.08.21.10.57_arm64.buildinfo
+ 51ed77ac4dafedb5535b2f5578a01302b3b83568 163442 ros-humble-usb-cam_2-2026.08.21.10.57_arm64.deb
+Checksums-Sha256:
+ cf969e6ac238931c40fde60cef1cf0a7f4fede53a6df00583a6b6073d594d8c5 2384154 ros-humble-usb-cam-dbgsym_2-2026.08.21.10.57_arm64.ddeb
+ 4c9fb971092fe8e6790144db4509f65d9d1dc61e40e50302e8789f918d8f2e7e 31341 ros-humble-usb-cam_2-2026.08.21.10.57_arm64.buildinfo
+ 1ec5346c5a1ba766d83963e68bf44726a87afe7a1f74ff0a153ff0a344c1ff2b 163442 ros-humble-usb-cam_2-2026.08.21.10.57_arm64.deb
+Files:
+ 84db4a3386fc76450aa7380258278164 2384154 debug optional ros-humble-usb-cam-dbgsym_2-2026.08.21.10.57_arm64.ddeb
+ 0de6b1336d748c32d13be717221fab54 31341 misc optional ros-humble-usb-cam_2-2026.08.21.10.57_arm64.buildinfo
+ 3754338703801eda4e68737417db881a 163442 misc optional ros-humble-usb-cam_2-2026.08.21.10.57_arm64.deb
