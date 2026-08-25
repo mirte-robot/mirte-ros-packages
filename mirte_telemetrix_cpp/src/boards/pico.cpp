@@ -19,6 +19,13 @@ int Mirte_Board_pico::resolvePin(std::string pin_name) {
       return pin.value();
     }
   }
+  // Special pin names that should be resolved to something else
+  if (pin_name == "LED") {
+    // PICO W has no onboard LED, but the LED pin is connected to wifi chip
+    // This special value indicates that the LED is meant, pico will decide what
+    // to do with it
+    return static_cast<int>(tmx_cpp::SPECIAL_PINS::LED_PIN);
+  }
   std::cerr << "Not implemented: pico::resolvePin : " << pin_name << std::endl;
   return -1;
 }

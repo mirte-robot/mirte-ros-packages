@@ -1,4 +1,5 @@
 #pragma once
+#include "tmx_cpp/tmx.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -27,8 +28,9 @@ const connector_map mirte_pico_pcb_map08 = {
     {"Servo2", {{"pin", "15"}}},
     {"Servo3", {{"pin", "12"}}},
     {"Servo4", {{"pin", "13"}}},
-    // TODO: IS THIS THE ONBOARD LED?
-    {"LED", {{"pin", "25"}}}, // Does not work with the Pico W
+    {"LED", // Shouldn't really be used for connectors
+     {{"pin",
+       std::to_string(static_cast<int>(tmx_cpp::SPECIAL_PINS::LED_PIN))}}},
     {"MC1-A", generate_motor_mapping("19", "18")},
     {"MC1-B", generate_motor_mapping("21", "20")},
     {"MC2-A", generate_motor_mapping("16", "26")},
