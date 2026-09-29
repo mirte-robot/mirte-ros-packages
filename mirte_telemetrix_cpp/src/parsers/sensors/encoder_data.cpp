@@ -42,6 +42,7 @@ EncoderData::EncoderData(
     RCLCPP_ERROR(logger, "Device %s has no a connector or pins specified.",
                  key.c_str());
   }
+  this->frequency = parser->get_frequency();
 }
 
 bool EncoderData::check() {

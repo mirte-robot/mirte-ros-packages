@@ -1,0 +1,43 @@
+# action that updates the version of a package in the package.xml file and commits the change to the repository when a new release is created
+name: Update Package Version
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update the package.xml file to'
+        required: true
+        default: '0.0.0'
+jobs:
+        update-package-version:
+                runs-on: ubuntu-latest
+                environment:
+                        name: pkg_upd # for the secrets to be used in the workflow, otherwise it is not allowed to push to protected branches
+                        # this env is only enabled for main
+                        deployment: false
+                steps:
+                - uses: actions/checkout@v7
+                  with:
+                        ssh-key: ${{ secrets.PKG_UPD_KEY }}
+                - name: Update package version
+                  run: |
+                        set -xe
+                        shopt -s globstar # for **/package.xml
+                        # if 0.0.0 is passed as the version, then we don't want to update the package.xml file
+                        if [ "${{ github.event.inputs.version }}" = "0.0.0" ]; then
+                                echo "Version is 0.0.0, not updating package.xml"
+                                exit 1
+                        fi
+                        sudo apt update
+                        sudo apt install -y xmlstarlet
+                        # get the version from the release tag or from the workflow_dispatch input
+                        version="${{ github.event.inputs.version }}"
+                        xmlstarlet ed -P -L -u "/package/version" -v "$version" **/package.xml
+                        git config --global user.name "github-actions[bot]"
+                        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                        git add **/package.xml
+                        git commit -m "Update package versions to $version"
+                        git push

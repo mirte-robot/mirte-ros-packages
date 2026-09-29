@@ -113,10 +113,9 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
       }
     }
     // Set the direction in so the read() can use it
-    // TODO: this does not work properly, because at the end of a series
-    // cmd_vel is negative, while the rotation is not
+    // only fir single dir encoders
     for (size_t i = 0; i < NUM_JOINTS; i++) {
-      _last_wheel_cmd_direction[i] = cmd[i] > 0.0 ? 1 : -1;
+      _last_wheel_cmd_direction[i] = cmd[i] > 0.0 ? 1 : (cmd[i] < 0.0 ? -1 : 0);
     }
   }
   return hardware_interface::return_type::OK;
@@ -126,49 +125,17 @@ void MirteBaseHWInterface::read_single(int joint,
                                        const rclcpp::Duration &period) {
   const std::lock_guard<std::mutex> lock(this->encoder_mutex);
 
-  // if (_last_value[joint] == 0) {
-  //   _last_value[joint] = _wheel_encoder[joint];
-  //   // when starting, the encoders dont have to be at 0. Without this, the
-  //   odom
-  //   // can jump at the first loop
-  // }
-  // int16_t diff_ticks = _wheel_encoder[joint] - _last_value[joint];
-
-  // _last_value[joint] = _wheel_encoder[joint];
-
-  auto latest_msg = this->latest_msgs_[joint].readFromRT();
-
-  if (latest_msg == nullptr || latest_msg->first == nullptr ||
-      latest_msg->second == nullptr) {
-    // no message received yet, do nothing
-    // diff_ticks = 0;
+  const auto last_msg = latest_msgs_[joint].readFromRT()->msg;
+  if (last_msg == nullptr) {
     return;
   }
-  //   static auto prev_msg_ticks = latest_msg->first->value;
-  // static auto prev_msg_stamp = latest_msg->first->header.stamp;
-  if (this->_last_value[joint]->header.stamp.sec == 0 &&
-      this->_last_value[joint]->header.stamp.nanosec == 0) {
-    this->_last_value[joint] = latest_msg->first;
-    return;
-  }
-  auto latest_encoder_val = latest_msg->first->value;
+  const auto first_msg = _last_value[joint];
 
-  auto diff_ticks = latest_msg->first->value - this->_last_value[joint]->value;
-  auto period_sec = (rclcpp::Time(latest_msg->first->header.stamp) -
-                     rclcpp::Time(this->_last_value[joint]->header.stamp))
-                        .seconds();
-  this->_last_value[joint] = latest_msg->first;
-  // if(joint == 0){
-  //   prev_msg_ticks = latest_msg->first->value;
-  //   prev_msg_stamp = latest_msg->first->header.stamp;
-  // }
-  // if (joint == 0) {
-  //   std::cout << "diff_ticks: " << diff_ticks << " period_sec: " <<
-  //   period_sec
-  //             << "  " << period.seconds() << std::endl;
-  // }
-  // velo = diff_ticks
-  // _last_value[joint] = latest_msg->first->value;
+  const auto diff_ticks = last_msg->value - first_msg->value;
+  const auto period_sec = (rclcpp::Time(last_msg->header.stamp) -
+                           rclcpp::Time(first_msg->header.stamp))
+                              .seconds();
+  _last_value[joint] = last_msg; // update last value for next loop
 
   double radPerEncoderTick = rad_per_enc_tick();
   double distance_rad;
@@ -183,18 +150,12 @@ void MirteBaseHWInterface::read_single(int joint,
 
   // Doesn't work with single pin encoders, but no'ones using pos for odom with
   // those anyways.
-  double distance_pos_rad = latest_encoder_val * radPerEncoderTick * 1.0;
 
-  pos[joint] = distance_pos_rad; // TODO: fix with last pos
-  // if () {
-  //   // vel[joint] = 0;
-  //   // return;
-  // }
+  pos[joint] += distance_rad;
+
   auto velo = distance_rad / period_sec;
-  if (period_sec < 0.01) { // if velocity is way too high, assume error in
-                           // encoder. More than 1000rad/s is not possible
-    // vel[joint] = 0;
-  } else {
+  if (latest_msgs_[joint].readFromRT()->counter >
+      0) { // if no new message, don't update.
     vel[joint] = velo;
   }
 }
@@ -481,14 +442,9 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   // Initialize raw data
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
-    latest_msgs_.push_back(
-        realtime_tools::RealtimeBuffer<
-            std::pair<mirte_msgs::msg::Encoder::ConstSharedPtr,
-                      mirte_msgs::msg::Encoder::ConstSharedPtr>>{});
-    // _wheel_encoder_update_time.push_back(nh->now());
+    latest_msgs_.push_back(realtime_tools::RealtimeBuffer<Encoder_store>{});
     _last_value.push_back(std::make_shared<mirte_msgs::msg::Encoder>());
     _last_wheel_cmd_direction.push_back(0);
-    // _last_cmd.push_back(0);
     _last_sent_cmd.push_back(-1000);
 
     pos.push_back(0);
