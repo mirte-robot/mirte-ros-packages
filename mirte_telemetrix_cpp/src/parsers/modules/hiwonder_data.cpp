@@ -47,7 +47,8 @@ HiWonderBusData::HiWonderBusData(
   //       parser, board, key, unused_keys, this->frame_id);
   // }
   for (auto &servo : this->servos) {
-    servo->frame_id = this->frame_id;
+    // TODO: not great, but better than without servo_name
+    servo->frame_id = this->frame_id + "/" + servo->name;
   }
 }
 

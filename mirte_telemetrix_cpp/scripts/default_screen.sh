@@ -8,7 +8,6 @@ fi
 
 counter=$1
 
-
 # Hostname
 echo "Name: $(cat /etc/hostname)"
 
@@ -21,7 +20,7 @@ if [ "$counter" -eq 0 ]; then
 		echo "ROS Domain ID: $ROS_DOMAIN_ID"
 	fi
 elif [ "$counter" -eq 1 ]; then
-	
+
 	# Wi-Fi Line
 	wifi=$(iwgetid -r)
 	if [ "$wifi" ]; then
@@ -55,5 +54,8 @@ fi
 echo "Uptime: $(uptime | sed 's/^.* up \+\(.\+\), \+[0-9] user.*$/\1/')"
 
 # Show only active IP4 addresses (as last, since there might be more)
-ips=$(ip -4 -o addr show scope global | while read -r line; do dev=$(echo "$line" | awk '{print $2}'); ip link show "$dev" | grep -q "LOWER_UP" && echo "$line"; done | awk '{print $4}' | cut -d/ -f1)
+ips=$(ip -4 -o addr show scope global | while read -r line; do
+	dev=$(echo "$line" | awk '{print $2}')
+	ip link show "$dev" | grep -q "LOWER_UP" && echo "$line"
+done | awk '{print $4}' | cut -d/ -f1)
 echo "IPs: $ips"

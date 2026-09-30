@@ -6,6 +6,9 @@
 #include <mirte_msgs/msg/encoder.hpp>
 #include <mirte_msgs/srv/get_encoder.hpp>
 #include <ranges>
+
+#include <chrono>
+
 EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
     : Mirte_Sensor(node_data, {encoder_data.pinA, encoder_data.pinB},
                    (SensorData)encoder_data),
@@ -25,6 +28,39 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
       encoder_data.pinA, encoder_data.pinB,
       [this](auto pin, auto value) { this->data_callback(value); });
 }
+using namespace std::chrono_literals;
+
+// To have a steady timestamp for control purposes, don't use timestamp, but use
+// the frequency of the encoder to calculate the timestamp. Pico should be
+// sending at the correct rate, so this should be good and filters out any
+// jitter in the timestamp of the messages.
+std_msgs::msg::Header EncoderMonitor::create_header() {
+  std_msgs::msg::Header header = this->get_header();
+  // Update_interval in seconds, based on the frequency of the encoder
+  auto update_interval =
+      std::chrono::duration<double>(1.0s / this->encoder_data.frequency);
+  if (this->last_update_time.nanoseconds() != 0) {
+    // If the message already has a timestamp, use that and increase with
+    // frequency.
+    this->last_update_time += update_interval;
+
+    auto diff = this->nh->now() - this->last_update_time;
+    // if pico forgot to send or message missing, forward the timestamp some
+    // steps.
+    if (diff >= 2 * update_interval) {
+      // count is int, so need to use ms for calculations.
+      this->last_update_time +=
+          std::floor((diff.to_chrono<std::chrono::milliseconds>().count() /
+                      (update_interval.count() * 1000))) *
+          (update_interval);
+    }
+
+  } else {
+    this->last_update_time = this->nh->now();
+  }
+  header.stamp = this->last_update_time;
+  return header;
+}
 
 void EncoderMonitor::data_callback(int16_t value) {
   if (this->encoder_data.inverted) {
@@ -32,7 +68,7 @@ void EncoderMonitor::data_callback(int16_t value) {
   }
   this->value += (int32_t)value;
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
-                  .header(get_header()) // Build the message
+                  .header(create_header()) // Build the message
                   .value(this->value);
 }
 

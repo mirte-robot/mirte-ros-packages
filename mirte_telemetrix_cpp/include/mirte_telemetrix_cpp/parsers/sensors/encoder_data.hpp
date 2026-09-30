@@ -7,6 +7,7 @@ public:
   pin_t pinA = (pin_t)-1;
   pin_t pinB = (pin_t)-1;
   bool inverted = false;
+  double frequency = 50.0; // Hz
 
   EncoderData(std::shared_ptr<Parser> parser,
               std::shared_ptr<Mirte_Board> board, std::string name,
