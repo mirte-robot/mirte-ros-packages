@@ -55,7 +55,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         hw_commands_[i] = servo_data[info_.name][i].data;
       }
       if (init_steps[info_.name] >=
-          5 * this->update_rate_) { // wait for 5 seconds to make sure the
+          5 * period.seconds()) { // wait for 5 seconds to make sure the
                                     // servos are initialized
         initialized[info_.name] = true;
       }
@@ -86,8 +86,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         servo.last_command_time = time;
 
         // giving servo the time to reach the target position.
-        service_requests[i]->time =
-            (1s / this->update_rate_).count(); // seconds
+        service_requests[i]->time = period.seconds();
         servo.sent_stuck_command = false;
         if (this->enable) {
           service_clients[i]->async_send_request(service_requests[i]);
@@ -366,7 +365,6 @@ void MirteMasterArmHWInterface::updateParams(Params params) {
               params.servo_update_dead_band);
   this->servo_moved_dead_band_ = params.servo_moved_dead_band;
   this->servo_update_dead_band_ = params.servo_update_dead_band;
-  this->update_rate_ = params.update_rate;
 }
 
 } // namespace mirte_master_arm_control

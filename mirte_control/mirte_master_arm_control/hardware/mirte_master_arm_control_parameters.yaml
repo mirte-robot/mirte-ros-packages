@@ -9,8 +9,3 @@ mirte_master_arm_control:
     default_value: 0.05, # radians, 2.9 degrees
     description: "Dead zone for servo movement in radians, if the servo is moved less than this, the controller will not send a 'new' command.",
   }
-  update_rate: { # default ros2 control param, this way easier to read.
-    type: double,
-    default_value: 10.0, # Hz
-    description: "Update rate for the controller manager in Hz.",
-  }
