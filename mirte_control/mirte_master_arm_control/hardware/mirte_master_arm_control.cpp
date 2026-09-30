@@ -55,8 +55,8 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         hw_commands_[i] = servo_data[info_.name][i].data;
       }
       if (init_steps[info_.name] >=
-          5 / period.seconds()) { // wait for 5 seconds to make sure the servos
-                                  // are initialized
+          5 * this->update_rate_) { // wait for 5 seconds to make sure the
+                                    // servos are initialized
         initialized[info_.name] = true;
       }
     }
@@ -84,15 +84,12 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         servo.moved = false;
         servo.last_request = service_requests[i]->angle;
         servo.last_command_time = time;
-        // rate is rad/s, use diff to calculate the time to move to the new
-        // position based on control loop time.
 
-        service_requests[i]->time = period.seconds();
+        // giving servo the time to reach the target position.
+        service_requests[i]->time =
+            (1s / this->update_rate_).count(); // seconds
         servo.sent_stuck_command = false;
         if (this->enable) {
-          // std::cout << "Sending command to servo " << i
-          //           << ": " << service_requests[i]->angle
-          //           << " (diff: " << diff << ")" << std::endl;
           service_clients[i]->async_send_request(service_requests[i]);
         }
       }
@@ -131,27 +128,7 @@ bool MirteMasterArmHWInterface::connectServices() {
         (boost::format(service_format) % servo_name).str();
     auto client =
         nh->create_client<mirte_msgs::srv::SetServoAngleWithTime>(service_name);
-    auto MAX_WAIT_TIME = 10;
-    auto wait_time = 0;
-    // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
-    //   wait_time++;
-    //   if (!rclcpp::ok()) {
-    //     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-    //                  "Interrupted while waiting for the service. Exiting.");
-    //     return false;
-    //   }
-    //   RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-    //               (boost::format("service %s not available, waiting
-    //               again...") %
-    //                service_name)
-    //                   .str()
-    //                   .c_str());
-    // }
-    // if (wait_time == MAX_WAIT_TIME) {
-    //   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-    //                "Could not connect to service %s", service_name.c_str());
-    //   return false;
-    // }
+
     service_clients.push_back(client);
   }
   this->enable_arm_service = nh->create_service<std_srvs::srv::SetBool>(
@@ -380,20 +357,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 
 void MirteMasterArmHWInterface::updateParams(Params params) {
   this->params_ = params;
-  for (auto &service_request : this->service_requests) {
-    // NOTE: This doesnt work as the service_requests are empty at the
-    // beginning.
-    //  NOTE: Also rate doesnt work as wanted, rate is rad/s, but this
-    // is target time.
-    // RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),"Setting
-    // servo_target_time to %f seconds.", params.servo_target_time);
-    // service_request->rate =
-    // std::clamp(static_cast<float>(params.servo_target_time),
-    // 0.01f, 10.0f);
-  }
-  RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
-              "Updated servo_target_time to %f seconds.",
-              params.servo_target_time);
+
   RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
               "Updated servo_moved_dead_band to %f radians.",
               params.servo_moved_dead_band);
@@ -402,12 +366,7 @@ void MirteMasterArmHWInterface::updateParams(Params params) {
               params.servo_update_dead_band);
   this->servo_moved_dead_band_ = params.servo_moved_dead_band;
   this->servo_update_dead_band_ = params.servo_update_dead_band;
-  // TODO: make it configurable, right now it's 1s and 2x
-  // servo_update_dead_band_
-
-  // this->servo_stuck_timeout_ =
-  // rclcpp::Duration::from_seconds(params.servo_stuck_timeout);
-  // this->servo_stuck_trigger_diff_ = params.servo_stuck_trigger_diff;
+  this->update_rate_ = params.update_rate;
 }
 
 } // namespace mirte_master_arm_control

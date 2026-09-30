@@ -153,6 +153,7 @@ private:
 
   double servo_update_dead_band_ = 0.05; // radians, 2.9 degrees
   double servo_moved_dead_band_ = 0.05;  // radians, 2.9 degrees
+  double update_rate_ = 10.0;            // Hz
 
   // Objects for logging
   std::shared_ptr<rclcpp::Logger> logger_;
