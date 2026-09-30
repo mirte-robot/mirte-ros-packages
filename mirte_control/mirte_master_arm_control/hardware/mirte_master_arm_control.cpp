@@ -109,7 +109,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         // send the current position as command to prevent damage
         service_requests[i]->angle = servo.data;
         if (this->enable) {
-          // service_clients[i]->async_send_request(service_requests[i]);
+          service_clients[i]->async_send_request(service_requests[i]);
         }
       }
     }
