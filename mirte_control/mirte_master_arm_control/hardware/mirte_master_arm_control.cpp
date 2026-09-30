@@ -56,7 +56,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       }
       if (init_steps[info_.name] >=
           5 * period.seconds()) { // wait for 5 seconds to make sure the
-                                    // servos are initialized
+                                  // servos are initialized
         initialized[info_.name] = true;
       }
     }
