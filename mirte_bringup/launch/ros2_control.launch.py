@@ -23,11 +23,6 @@ def generate_launch_description():
             default_value="",
             description="An arbitrary prefix to add to the published tf2 frames. Defaults to the empty string.",
         ),
-        # DeclareLaunchArgument(
-        #     "use_base_pid_control",
-        #     default_value="true",
-        #     description="Use speed PID control for the wheels, you might need to change the gains in mirte_base_control/bringup/config/mirte_base_cotnrol.yaml",
-        # ),
         DeclareLaunchArgument(
             "control_config_file",
             default_value=PathJoinSubstitution(
@@ -35,7 +30,7 @@ def generate_launch_description():
                     FindPackageShare("mirte_base_control"),
                     "bringup",
                     "config",
-                    "mirte_base_control_def.yaml",
+                    "mirte_base_control.yaml",
                 ]
             ),
         ),

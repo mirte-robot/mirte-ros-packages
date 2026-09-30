@@ -61,6 +61,7 @@ HiWonderBus_module::HiWonderBus_module(
         servos_to_add_failed.push_back(servo_data);
       }
     }
+    servos_to_add.clear();
     if (servos_to_add_failed.empty()) {
       break;
     } else {
