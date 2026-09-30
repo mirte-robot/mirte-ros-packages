@@ -23,6 +23,7 @@ public:
   ~EncoderMonitor() {};
 
   void data_callback(int16_t value);
+  std_msgs::msg::Header create_header();
 
 private:
   std::atomic<int32_t> value = 0;
@@ -36,4 +37,5 @@ private:
   void service_callback(
       const mirte_msgs::srv::GetEncoder::Request::ConstSharedPtr req,
       mirte_msgs::srv::GetEncoder::Response::SharedPtr res);
+  rclcpp::Time last_update_time;
 };
