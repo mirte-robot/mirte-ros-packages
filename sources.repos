@@ -1,0 +1,25 @@
+repositories:
+  libuvc:
+    type: git
+    url: https://github.com/ArendJan/libuvc.git
+    version: f89008d9dd4cf46946661451bce0c4d1fa00383a
+  orbbecsdk_ros2:
+    type: git
+    url: https://github.com/orbbec/OrbbecSDK_ROS2.git
+    version: 0ea4ab68f5b8ddf22998b7c45d251dc58ea2779e
+  ros2_astra_camera:
+    type: git
+    url: https://github.com/ArendJan/ros2_astra_camera/
+    version: fffebbddc9eb644198b3fa739a5c61ac4f7f4735
+  teleop_twist_keyboard:
+    type: git
+    url: https://github.com/arendjan/teleop_twist_keyboard.git
+    version: 8b4104c7b9f878efc4d48256b2a5d8343345803a
+  usb_cam:
+    type: git
+    url: https://github.com/ArendJan/usb_cam.git
+    version: 9930280550ef91add6971833e29dfde434b3c850
+  web_video_server:
+    type: git
+    url: https://github.com/RobotWebTools/web_video_server.git
+    version: 5c60fad378bb439e9ca283de5a4e58f32e5384ef
