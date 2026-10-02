@@ -20,6 +20,7 @@
 #include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <mirte_msgs/srv/set_servo_angle.hpp>
 #include <mirte_msgs/srv/set_servo_angle_with_speed.hpp>
+#include <mirte_msgs/srv/set_servo_angle_with_time.hpp>
 #include <mirte_msgs/srv/set_servo_offset.hpp>
 #include <mirte_msgs/srv/set_servo_voltage_range.hpp>
 #include <std_msgs/msg/header.hpp>
@@ -66,6 +67,8 @@ private:
   // Service: servo/GROUP/NAME/set_angle_with_speed
   rclcpp::Service<mirte_msgs::srv::SetServoAngleWithSpeed>::SharedPtr
       angle_speed_service;
+  rclcpp::Service<mirte_msgs::srv::SetServoAngleWithTime>::SharedPtr
+      angle_time_service;
   // Service: servo/GROUP/NAME/get_range
   rclcpp::Service<mirte_msgs::srv::GetServoRange>::SharedPtr range_service;
   // Service: servo/GROUP/NAME/set_motor_speed
@@ -89,6 +92,9 @@ private:
       const mirte_msgs::srv::SetServoAngleWithSpeed::Request::ConstSharedPtr
           req,
       mirte_msgs::srv::SetServoAngleWithSpeed::Response::SharedPtr res);
+  void set_angle_with_time_service_callback(
+      const mirte_msgs::srv::SetServoAngleWithTime::Request::ConstSharedPtr req,
+      mirte_msgs::srv::SetServoAngleWithTime::Response::SharedPtr res);
 
   void get_range_service_callback(
       const mirte_msgs::srv::GetServoRange::Request::ConstSharedPtr req,
