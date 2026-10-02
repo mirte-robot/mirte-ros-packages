@@ -20,6 +20,7 @@
 #include <mirte_msgs/srv/set_speed_multiple.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 // ros_control
 #include "hardware_interface/actuator_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -241,6 +242,7 @@ private:
   std::jthread ros_thread;
   void ros_spin();
 
+  bool feedforward_enabled_ = false;
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;

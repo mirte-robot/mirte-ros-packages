@@ -1,51 +1,36 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <chrono>
 
 #include <mirte_base_control.hpp>
 namespace mirte_base_control {
 
-double MirteBaseHWInterface::calc_speed_map(int joint, double target,
-                                            const rclcpp::Duration &period) {
-  return std::max(
-      std::min(int(target / this->settings.max_rot_speed * 100), 100), -100);
-}
-
-int MirteBaseHWInterface::calculate_single_speed(
-    int joint, double speed, const rclcpp::Duration &period) {
-  double speed_mapped;
-
-  speed_mapped = this->calc_speed_map(joint, speed, period);
-  speed_mapped = std::clamp<double>(speed_mapped, -max_speed, max_speed);
-
-  return speed_mapped;
-}
-
 bool MirteBaseHWInterface::write_single(int joint, double speed,
                                         const rclcpp::Duration &period,
                                         bool &updated) {
-  auto speed_mapped = calculate_single_speed(joint, speed, period);
+
   bool in_deadzone =
-      std::abs(speed_mapped) <
+      std::abs(speed) <
       this->settings.cmd_vel_deadzone; // if set to 0 bc too low percentage
   bool to_deadzone =
       _last_sent_cmd[joint] != 0 &&
       in_deadzone; // if moving from moving to deadzone, force update
   if (in_deadzone) {
-    speed_mapped = 0;
+    speed = 0;
   }
-  auto diff = std::abs(speed_mapped - _last_sent_cmd[joint]);
+  auto diff = std::abs(speed - _last_sent_cmd[joint]);
   if (!this->settings.use_single_update) {
     if (diff >= this->settings.cmd_vel_update_deadzone || to_deadzone) {
       updated = true;
-      this->_last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed;
 
       if (this->settings.use_topic_update) {
         // publish topic
-        this->publish_msgs[joint]->speed = speed_mapped;
+        this->publish_msgs[joint]->speed = speed;
         this->speed_publishers[joint]->publish(*this->publish_msgs[joint]);
       } else {
-        this->service_requests[joint]->speed = (int)speed_mapped;
+        this->service_requests[joint]->speed = (int)speed;
         this->service_clients[joint]->async_send_request(
             this->service_requests[joint]);
       }
@@ -55,11 +40,11 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
         diff >= this->settings.cmd_vel_update_deadzone) { // if upd_deadzone ==
                                                           // 0, then always upd
       updated = true;
-      this->_last_sent_cmd[joint] = speed_mapped;
+      this->_last_sent_cmd[joint] = speed;
     }
     // if another joint is sending an update, then just send all joints,
     // otherwise wait for the next loop.
-    this->set_speed_multiple_request->speeds[joint].speed = speed_mapped;
+    this->set_speed_multiple_request->speeds[joint].speed = speed;
   }
 
   return true;
@@ -68,6 +53,24 @@ bool MirteBaseHWInterface::write_single(int joint, double speed,
 hardware_interface::return_type
 MirteBaseHWInterface::write(const rclcpp::Time &time,
                             const rclcpp::Duration &period) {
+
+  // Putting this logic in on_init() or on_activate() will
+  // deadlock the controller (PID controller will wait for
+  // HW inreface to be up).
+  // TODO: this can be removed from Jazzy onward, as
+  // ff is enabled when ff!=0
+  if (!feedforward_enabled_) {
+    auto ff_service = "/pid_wheels_controller/set_feedforward_control";
+    auto client = nh->create_client<std_srvs::srv::SetBool>(ff_service);
+    auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
+    request->data = true;
+    auto result = client->async_send_request(request);
+    if (result.wait_for(std::chrono::seconds(2)) == std::future_status::ready &&
+        result.get()->success) {
+      feedforward_enabled_ = true;
+    }
+  }
+
   if (!running_) {
     for (size_t i = 0; i < NUM_JOINTS; i++) {
       cmd[i] = 0.0;
@@ -80,16 +83,6 @@ MirteBaseHWInterface::write(const rclcpp::Time &time,
   {
     // make sure the clients don't get overwritten while calling them
     const std::lock_guard<std::mutex> lock(this->service_clients_mutex);
-
-    // cmd[0] = ros_control calculated speed of left motor in rad/s
-    // cmd[1] = ros_control calculated speed of right motor in rad/s
-
-    // This function converts cmd[0] to pwm and calls that service
-
-    // NOTE: this *highly* depends on the voltage of the motors!!!!
-    // For 5V power bank: 255 pwm = 90 ticks/sec -> ca 2 rot/s (4*pi)
-    // For 6V power supply: 255 pwm = 120 ticks/sec -> ca 3 rot/s
-    // (6*pi)
 
     bool updated = false;
     for (size_t i = 0; i < NUM_JOINTS; i++) {
