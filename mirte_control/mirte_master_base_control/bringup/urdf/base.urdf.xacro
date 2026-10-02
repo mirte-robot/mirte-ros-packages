@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- TODO: is this file used/reference somewhere? -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffdrive_robot">
-    <xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
-    <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
-    <xacro:arg name="ticks" default="${params['ticks']}"/>
+    <!-- Load the YAML parameters, default to current pkg, but when using mirte_bringup, it'll use `mirte_bringup/config/control/...` -->
+    <xacro:arg name="hw_config_file" default="$(find mirte_base_control)/config/control_master.yaml"/>
+    <xacro:property name="params" value="${xacro.load_yaml(hw_config_file)}"/>
 
 <xacro:macro name="wheel" params="name prefix">
 
-        <joint name="${prefix}${name}_wheel_joint" type="continuous">
+      <joint name="${prefix}${name}_wheel_joint" type="continuous">
       <parent link="${prefix}base_link"/>
       <child link="${prefix}${name}_wheel"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -40,7 +40,7 @@
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
         <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-        <param name="ticks">$(arg ticks)</param>
+        <param name="ticks">$(params['ticks'])</param>
         <param name="separate_update_format">${params['separate_update_format']}</param>
         <!-- Use %s in format strings to replace with joint names -->
         <param name="single_update_name">${params['single_update_name']}</param>
