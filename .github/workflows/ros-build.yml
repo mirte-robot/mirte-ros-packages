@@ -111,18 +111,15 @@ jobs:
               fi
 
               # check if secrets.PREBUILT_REPO_KEY is set, if not, then skip pushing to repo
+              # need to update the secret every year!
               if [[ -z "${{ secrets.PREBUILT_REPO_KEY }}" ]]; then
                 echo "PREBUILT_REPO_KEY is not set, pushing to own repo."
                 REPO="${{ github.repository }}"
               fi
 
-
               echo "REPO=${REPO}" >> $GITHUB_OUTPUT
 
-
-
-
-      - uses: arendjan/ros-deb-builder-action@external_repo # allows for failing builds
+      - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'true'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
@@ -139,7 +136,7 @@ jobs:
           SKIP_PUSH: false
           UPLOAD_ARTIFACTS: false
           CONTINUE_ON_ERROR: false
-      - uses: arendjan/ros-deb-builder-action@external_repo # allows for failing builds
+      - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'false'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
@@ -153,6 +150,6 @@ jobs:
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
         #   Skip pushing to repo when not on main branch
-          SKIP_PUSH: false
+          SKIP_PUSH: true
           UPLOAD_ARTIFACTS: true
           CONTINUE_ON_ERROR: true
