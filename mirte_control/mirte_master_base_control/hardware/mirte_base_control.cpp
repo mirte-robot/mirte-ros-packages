@@ -137,15 +137,13 @@ void MirteBaseHWInterface::read_single(int joint,
                               .seconds();
   _last_value[joint] = last_msg; // update last value for next loop
 
-  double radPerEncoderTick = rad_per_enc_tick();
   double distance_rad;
   if (bidirectional) { // if encoder is counting bidirectional, then it
                        // decreases by itself, dont want to use
                        // last_wheel_cmd_direction
-    distance_rad = diff_ticks * radPerEncoderTick * 1.0;
+    distance_rad = diff_ticks;
   } else {
-    distance_rad =
-        diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
+    distance_rad = diff_ticks * _last_wheel_cmd_direction[joint];
   }
 
   // Doesn't work with single pin encoders, but no'ones using pos for odom with
@@ -443,7 +441,7 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
     latest_msgs_.push_back(realtime_tools::RealtimeBuffer<Encoder_store>{});
-    _last_value.push_back(std::make_shared<mirte_msgs::msg::Encoder>());
+    _last_value.push_back(std::make_shared<mirte_msgs::msg::EncoderRad>());
     _last_wheel_cmd_direction.push_back(0);
     _last_sent_cmd.push_back(-1000);
 
@@ -533,9 +531,9 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
             .str();
     std::cout << "add encoder topic: " << encoder_topic << std::endl;
     wheel_encoder_subs_.push_back(
-        nh->create_subscription<mirte_msgs::msg::Encoder>(
+        nh->create_subscription<mirte_msgs::msg::EncoderRad>(
             encoder_topic, 1,
-            [this, i](std::shared_ptr<mirte_msgs::msg::Encoder> msg) {
+            [this, i](std::shared_ptr<mirte_msgs::msg::EncoderRad> msg) {
               this->WheelEncoderCallback(msg, i);
             }));
   }

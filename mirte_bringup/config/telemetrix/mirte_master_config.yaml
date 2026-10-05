@@ -109,6 +109,7 @@
         name: front_left
         device: mirte
         invert: false
+        ticks: 1320
         pins:
           A: 18
           B: 19
@@ -116,6 +117,7 @@
         name: rear_left
         device: mirte
         invert: false
+        ticks: 1320
         pins:
           A: 22
           B: 26
@@ -123,6 +125,7 @@
         name: front_right
         device: mirte
         invert: false
+        ticks: 1320
         pins:
           A: 13
           B: 12
@@ -130,6 +133,7 @@
         name: rear_right
         device: mirte
         invert: false
+        ticks: 1320
         pins:
           A: 9
           B: 8
