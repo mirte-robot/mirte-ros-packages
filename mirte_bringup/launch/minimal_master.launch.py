@@ -62,11 +62,6 @@ def generate_launch_description():
             "mirte_master_arm_control.yaml",
         ]
     )
-    print(f"Reading config from {control_master_path}")
-    invert_motors = False
-    if os.path.exists(control_master_path):
-        invert_motors = yaml.safe_load(open(control_master_path))["invert_motors"]
-        print(f"Read invert_motors={invert_motors} from {control_master_path}")
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
     frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
@@ -105,13 +100,6 @@ def generate_launch_description():
                 ),
                 "hardware_namespace": hardware_namespace,
                 "frame_prefix": frame_prefix,
-                "overlay_config_path": PathJoinSubstitution(
-                    [
-                        FindPackageShare("mirte_bringup"),
-                        "config/telemetrix/overlays",
-                        "invert_wheels.yaml" if invert_motors else "empty_overlay.yaml",
-                    ]
-                ),
             }
         ).items(),
     )

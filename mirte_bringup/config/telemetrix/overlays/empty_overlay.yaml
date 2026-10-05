@@ -1,5 +1,0 @@
-/io/telemetrix:
-  ros__parameters:
-    empty: 1
-  # no overlay
-
