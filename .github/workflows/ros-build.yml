@@ -58,7 +58,7 @@ jobs:
               if [[ "$not_all" == true ]]; then
                 rm ./sources.repos
                 # for all packages in list, check if they are in the last 2 commits
-                packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control")
+                packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_test" "mirte_master_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control" "mirte_zenoh_setup" "mirte_fastdds_discovery_setup" )
                 skip_packages=""
                 for package in "${packages[@]}"; do
                   if git log -n 2 --name-only --oneline | grep -q "$package"; then
@@ -109,6 +109,14 @@ jobs:
                 echo "Did not find ${REPO_OWNER}/mirte-ros-prebuilt-packages, using current repo for debs."
                 REPO="${{ github.repository }}"
               fi
+
+              # check if secrets.PREBUILT_REPO_KEY is set, if not, then skip pushing to repo
+              if [[ -z "${{ secrets.PREBUILT_REPO_KEY }}" ]]; then
+                echo "PREBUILT_REPO_KEY is not set, pushing to own repo."
+                REPO="${{ github.repository }}"
+              fi
+
+
               echo "REPO=${REPO}" >> $GITHUB_OUTPUT
 
 
@@ -120,7 +128,7 @@ jobs:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PREBUILT_REPO_KEY || secrets.GITHUB_TOKEN }}
           GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
           REPOS_FILE: ./sources.repos
           SKIP_CHECKOUT: true
@@ -138,7 +146,7 @@ jobs:
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
           GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PREBUILT_REPO_KEY || secrets.GITHUB_TOKEN }}
           # REPOS_FILE: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}./sources.repos
           # if not on develop or main, only build the packages from the last 2 commits
           SKIP_PACKAGES: ${{ steps.self-checkout.outputs.SKIP_PACKAGES || '' }}
