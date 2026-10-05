@@ -12,8 +12,6 @@ permissions:
 
 env:
         file_sync_paths: |
-          mirte_bringup/config/telemetrix/mirte_master_config.yaml:mirte_telemetrix_cpp/config/mirte_master_config.yaml
-          mirte_bringup/config/telemetrix/mirte_user_config.yaml:mirte_telemetrix_cpp/config/mirte_user_config.yaml
           mirte_bringup/config/control/mirte_master_arm_control.yaml:mirte_control/mirte_master_arm_control/bringup/config/mirte_master_arm_control.yaml
           mirte_bringup/config/control/mirte_base_control.yaml:mirte_control/mirte_master_base_control/bringup/config/mirte_base_control.yaml
           mirte_bringup/config/control/control_master.yaml:mirte_control/mirte_master_base_control/bringup/config/control_master.yaml

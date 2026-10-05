@@ -29,7 +29,7 @@ def generate_launch_description():
                 (
                     FindPackageShare("mirte_telemetrix_cpp"),
                     "config",
-                    "mirte_user_config.yaml",
+                    "minimal_config.yaml",
                 )
             ),
         ),
