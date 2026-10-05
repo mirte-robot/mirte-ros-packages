@@ -131,19 +131,16 @@ void MirteBaseHWInterface::read_single(int joint,
   }
   const auto first_msg = _last_value[joint];
 
-  const auto diff_ticks = last_msg->value - first_msg->value;
+  auto distance_rad = last_msg->value - first_msg->value;
   const auto period_sec = (rclcpp::Time(last_msg->header.stamp) -
                            rclcpp::Time(first_msg->header.stamp))
                               .seconds();
   _last_value[joint] = last_msg; // update last value for next loop
 
-  double distance_rad;
-  if (bidirectional) { // if encoder is counting bidirectional, then it
-                       // decreases by itself, dont want to use
-                       // last_wheel_cmd_direction
-    distance_rad = diff_ticks;
-  } else {
-    distance_rad = diff_ticks * _last_wheel_cmd_direction[joint];
+  if (!bidirectional) { // if encoder is counting bidirectional, then it
+                        // decreases by itself, dont want to use
+                        // last_wheel_cmd_direction
+    distance_rad *= _last_wheel_cmd_direction[joint];
   }
 
   // Doesn't work with single pin encoders, but no'ones using pos for odom with
@@ -341,13 +338,6 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
 void MirteBaseHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 void MirteBaseHWInterface::read_settings() {
-  if (!info_.hardware_parameters.count(TICKS_PARAM_NAME)) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
-                        "Missing required hardware parameter: ticks");
-    throw std::runtime_error("Missing required hardware parameter: ticks");
-  }
-  this->settings.ticks =
-      std::stod(info_.hardware_parameters.at(TICKS_PARAM_NAME));
   if (info_.hardware_parameters.count(SEPARATE_UPDATE_FORMAT_PARAM_NAME)) {
     this->settings.separate_update_format =
         info_.hardware_parameters.at(SEPARATE_UPDATE_FORMAT_PARAM_NAME);
@@ -391,7 +381,6 @@ void MirteBaseHWInterface::read_settings() {
 
   // print all settings:
   rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
-  RCLCPP_INFO_STREAM(logger, "ticks: " << this->settings.ticks);
   RCLCPP_INFO_STREAM(logger, "separate_update_format: "
                                  << this->settings.separate_update_format);
   RCLCPP_INFO_STREAM(

@@ -6,7 +6,6 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction
 from launch.substitutions import (
     PathJoinSubstitution,
-    TextSubstitution,
     LaunchConfiguration,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -16,7 +15,6 @@ from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node, PushRosNamespace, SetRemap
 from pathlib import Path
-import yaml
 
 
 def generate_launch_description():

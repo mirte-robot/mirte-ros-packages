@@ -40,7 +40,6 @@
    <ros2_control name="mecanumdrive" type="system">
       <hardware>
         <plugin>mirte_base_control/MirteBaseHWInterface</plugin>
-        <param name="ticks">$(params['ticks'])</param>
         <param name="separate_update_format">${params['separate_update_format']}</param>
         <!-- Use %s in format strings to replace with joint names -->
         <param name="single_update_name">${params['single_update_name']}</param>

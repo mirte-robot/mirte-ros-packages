@@ -71,9 +71,10 @@ void EncoderMonitor::data_callback(int16_t value) {
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                   .header(create_header()) // Build the message
                   .value(this->value);
-  this->rad_msg = mirte_msgs::build<mirte_msgs::msg::EncoderRad>()
-                      .header(create_header()) // Build the message
-                      .value(this->value * 2.0 * M_PI / this->encoder_data.ticks);
+  this->rad_msg =
+      mirte_msgs::build<mirte_msgs::msg::EncoderRad>()
+          .header(create_header()) // Build the message
+          .value(this->value * 2.0 * M_PI / this->encoder_data.ticks);
 }
 
 void EncoderMonitor::update() {

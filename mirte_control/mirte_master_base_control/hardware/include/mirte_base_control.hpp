@@ -96,14 +96,7 @@ public:
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  double rad_per_enc_tick() {
-    if (this->settings.ticks < 1.0) {
-      std::cout << "ticks is less than 1.0, setting to 1.0" << std::endl;
-      this->settings.ticks = 1.0;
-      return 1.0;
-    }
-    return 2.0 * M_PI / this->settings.ticks;
-  }
+
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -130,7 +123,6 @@ private:
 
   // settings from hw interface params
   struct SETTINGS {
-    double ticks = 40.0;
     std::string separate_update_format = "/io/motor/set_%s_speed";
     std::string single_update_name = "/io/set_multiple_motor_speeds";
     std::string encoder_topic_format = "/encoder/%s/rad";
