@@ -11,28 +11,28 @@
         name: front_left
         device: mirte
         type: pp
-        invert: false
+        inverted: false
         pins:
           p1: 17
           p2: 16
       rear_right:
         name: rear_right
         device: mirte
-        invert: false
+        inverted: false
         pins:
           p1: 10
           p2: 11
       rear_left:
         name: rear_left
         device: mirte
-        invert: false
+        inverted: false
         pins:
           p1: 21
           p2: 20
       front_right:
         name: front_right
         device: mirte
-        invert: false
+        inverted: false
         pins:
           p1: 14
           p2: 15
@@ -108,7 +108,7 @@
       front_left:
         name: front_left
         device: mirte
-        invert: false
+        inverted: false
         ticks: 1320
         pins:
           A: 18
@@ -116,7 +116,7 @@
       rear_left:
         name: rear_left
         device: mirte
-        invert: false
+        inverted: false
         ticks: 1320
         pins:
           A: 22
@@ -124,7 +124,7 @@
       front_right:
         name: front_right
         device: mirte
-        invert: false
+        inverted: false
         ticks: 1320
         pins:
           A: 13
@@ -132,7 +132,7 @@
       rear_right:
         name: rear_right
         device: mirte
-        invert: false
+        inverted: false
         ticks: 1320
         pins:
           A: 9
