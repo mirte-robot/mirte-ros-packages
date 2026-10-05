@@ -14,12 +14,12 @@ def generate_launch_description():
             #         {"dev": "/dev/input/js0", "deadzone": 0.1, "autorepeat_rate": 20.0}
             #     ],
             # ),
-            # Node(
-            #     package="joy_linux",
-            #     executable="joy_linux_node",
-            #     name="joy_linux_node",
-            #     parameters=[{"deadzone": 0.1, "autorepeat_rate": 20.0}],
-            # ),
+            Node(
+                package="joy_linux",
+                executable="joy_linux_node",
+                name="joy_linux_node",
+                parameters=[{"deadzone": 0.1, "autorepeat_rate": 20.0}],
+            ),
             Node(
                 package="teleop_twist_joy",
                 executable="teleop_node",
@@ -32,7 +32,7 @@ def generate_launch_description():
                         "scale_linear.x": 1.0,
                         "scale_linear.y": 1.0,
                         "scale_angular.yaw": 4.0,
-                        "enable_button": 4,
+                        "enable_button": 6,
                         # 'scale_angular': 1.0
                     }
                 ],
