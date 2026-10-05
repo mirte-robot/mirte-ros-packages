@@ -98,13 +98,30 @@ jobs:
               fi
               echo "REPO_BRANCH=${REPO_BRANCH}" >> $GITHUB_OUTPUT
               echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
-      - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
+
+              # get the repo owner and name from the github context
+              REPO_OWNER="${{ github.repository_owner }}"
+              # if REPO_OWNER/mirte-ros-prebuilt-packages exists, then use that repo, otherwise use the current repo
+              if git ls-remote --exit-code --heads https://github.com/${REPO_OWNER}/mirte-ros-prebuilt-packages.git; then
+                echo "Found ${REPO_OWNER}/mirte-ros-prebuilt-packages, using that repo for debs."
+                REPO="${REPO_OWNER}/mirte-ros-prebuilt-packages"
+              else
+                echo "Did not find ${REPO_OWNER}/mirte-ros-prebuilt-packages, using current repo for debs."
+                REPO="${{ github.repository }}"
+              fi
+              echo "REPO=${REPO}" >> $GITHUB_OUTPUT
+
+
+
+
+      - uses: arendjan/ros-deb-builder-action@external_repo # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'true'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
           REPOS_FILE: ./sources.repos
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ${{ steps.self-checkout.outputs.REPO_BRANCH }}
@@ -114,12 +131,13 @@ jobs:
           SKIP_PUSH: false
           UPLOAD_ARTIFACTS: false
           CONTINUE_ON_ERROR: false
-      - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
+      - uses: arendjan/ros-deb-builder-action@external_repo # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'false'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
+          GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # REPOS_FILE: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}./sources.repos
           # if not on develop or main, only build the packages from the last 2 commits
@@ -127,6 +145,6 @@ jobs:
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ros_mirte_${{ matrix.ros_distro }}_${{ matrix.deb_distro }}_${{ matrix.arch }}${{ github.ref == 'refs/heads/develop' && '_develop' || '' }}
         #   Skip pushing to repo when not on main branch
-          SKIP_PUSH: true
+          SKIP_PUSH: false
           UPLOAD_ARTIFACTS: true
           CONTINUE_ON_ERROR: true
