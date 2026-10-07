@@ -17,7 +17,6 @@ from launch import LaunchDescription
 
 from ament_index_python import get_package_prefix
 
-
 # if argv contains this filename, then run the teleop_twist_keyboard node, otherwise just return the launch description
 if len(sys.argv) > 0 and sys.argv.count(os.path.basename(__file__)) > 0:
     # FIXME: This differs between the Pioneer and the Master...
@@ -44,10 +43,12 @@ if len(sys.argv) > 0 and sys.argv.count(os.path.basename(__file__)) > 0:
     )
 else:
     # print with yellow color
-    print("\033[93m" + "Not running teleop_twist_keyboard node as teleop_key.launch.py cannot be included. Run directly instead." + "\033[0m")
+    print(
+        "\033[93m"
+        + "Not running teleop_twist_keyboard node as teleop_key.launch.py cannot be included. Run directly instead."
+        + "\033[0m"
+    )
+
 
 def generate_launch_description():
-    return LaunchDescription(
-        []
-           
-    )
+    return LaunchDescription([])
