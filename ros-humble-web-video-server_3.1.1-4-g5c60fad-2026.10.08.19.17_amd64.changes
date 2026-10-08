@@ -1,0 +1,30 @@
+Format: 1.8
+Date: Thu, 07 May 2026 00:00:00 -0000
+Source: ros-humble-web-video-server
+Binary: ros-humble-web-video-server
+Built-For-Profiles: noudeb
+Architecture: amd64
+Version: 3.1.1-4-g5c60fad-2026.10.08.19.17
+Distribution: jammy
+Urgency: high
+Maintainer: Błażej Sowa <blazej@fictionlab.pl>
+Changed-By: Błażej Sowa <blazej@fictionlab.pl>
+Description:
+ ros-humble-web-video-server - HTTP Streaming of ROS Image Topics in Multiple Formats
+Changes:
+ ros-humble-web-video-server (3.1.1-4-g5c60fad-2026.10.08.19.17) jammy; urgency=high
+ .
+   * fix: Don't link against Boost::system (#200)
+   * Contributors: Błażej Sowa
+Checksums-Sha1:
+ 1a44b21a8185852495e2deb04520ef92de42b4b6 7284426 ros-humble-web-video-server-dbgsym_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.ddeb
+ 928aeb773d50538f87c98c267c432de9b076762b 35835 ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.buildinfo
+ 285d54470d57e29e2be7da8887e883dbd504fb35 313460 ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.deb
+Checksums-Sha256:
+ 431a86b9f279ffb941f09e650809643545b2c51bfb666021adeaab05dd28ee5f 7284426 ros-humble-web-video-server-dbgsym_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.ddeb
+ 57c4744b7aeb615827276d85940dd65d34cb53aed4e1dbfd8dc9f839d925d733 35835 ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.buildinfo
+ 77a2540e739ad68f0142fea4746be6ab34620e2e88e15c991fd078de0b892e67 313460 ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.deb
+Files:
+ 773717f2c500494e2ec3b93695bdbfb5 7284426 debug optional ros-humble-web-video-server-dbgsym_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.ddeb
+ ff1aa01c22ec10141ade433704de56aa 35835 misc optional ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.buildinfo
+ fc3d754ba2ad4fa270ec9f53e34db1a3 313460 misc optional ros-humble-web-video-server_3.1.1-4-g5c60fad-2026.10.08.19.17_amd64.deb
