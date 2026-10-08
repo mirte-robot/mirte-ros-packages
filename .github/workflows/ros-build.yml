@@ -58,7 +58,7 @@ jobs:
               if [[ "$not_all" == true ]]; then
                 rm ./sources.repos
                 # for all packages in list, check if they are in the last 2 commits
-                packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control")
+                packages=("mirte_telemetrix_cpp" "mirte_bringup" "mirte_teleop" "mirte_description" "mirte_test" "mirte_master_description" "mirte_moveit_config" "mirte_master_arm_control" "mirte_master_base_control" "mirte_pioneer_control" "mirte_zenoh_setup" "mirte_fastdds_discovery_setup" )
                 skip_packages=""
                 for package in "${packages[@]}"; do
                   if git log -n 2 --name-only --oneline | grep -q "$package"; then
@@ -69,13 +69,13 @@ jobs:
                     echo ${skip_packages}
                     fi
                   done
+              else
+                # if amd, then clone the mirte_gazebo repo, otherwise skip it, arm doesnt have gazebo compiled (yet)
+                if [[ "${{ matrix.arch }}" == "amd64" ]]; then
+                  git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
+                fi
               fi
-              
 
-              # if amd, then clone the mirte_gazebo repo, otherwise skip it, arm doesnt have gazebo compiled (yet)
-              if [[ "${{ matrix.arch }}" == "amd64" ]]; then
-                git clone https://github.com/mirte-robot/mirte-gazebo.git ./srcO/mirte_gazebo
-              fi
               # always skip generate_parameter_library example packages
               skip_packages+=" generate_parameter_library_example cmake_generate_parameter_module_example generate_parameter_library_example_external generate_parameter_module_example"
               # export the skip_packages array as a string for the next step
@@ -98,13 +98,35 @@ jobs:
               fi
               echo "REPO_BRANCH=${REPO_BRANCH}" >> $GITHUB_OUTPUT
               echo "${GIT_SHA1}" > ./srcO/mirte_telemetrix_cpp/git_sha1.txt
+
+              # get the repo owner and name from the github context
+              REPO_OWNER="${{ github.repository_owner }}"
+              # if REPO_OWNER/mirte-ros-prebuilt-packages exists, then use that repo, otherwise use the current repo
+              if git ls-remote --exit-code --heads https://github.com/${REPO_OWNER}/mirte-ros-prebuilt-packages.git; then
+                echo "Found ${REPO_OWNER}/mirte-ros-prebuilt-packages, using that repo for debs."
+                REPO="${REPO_OWNER}/mirte-ros-prebuilt-packages"
+              else
+                echo "Did not find ${REPO_OWNER}/mirte-ros-prebuilt-packages, using current repo for debs."
+                REPO="${{ github.repository }}"
+              fi
+
+              # check if secrets.PREBUILT_REPO_KEY is set, if not, then skip pushing to repo
+              # need to update the secret every year!
+              if [[ -z "${{ secrets.PREBUILT_REPO_KEY }}" ]]; then
+                echo "PREBUILT_REPO_KEY is not set, pushing to own repo."
+                REPO="${{ github.repository }}"
+              fi
+
+              echo "REPO=${REPO}" >> $GITHUB_OUTPUT
+
       - uses: arendjan/ros-deb-builder-action@upmain # allows for failing builds
         if: steps.self-checkout.outputs.BUILD_ALL == 'true'
         with:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PREBUILT_REPO_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
           REPOS_FILE: ./sources.repos
           SKIP_CHECKOUT: true
           PACKAGES_BRANCH: ${{ steps.self-checkout.outputs.REPO_BRANCH }}
@@ -120,7 +142,8 @@ jobs:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           DEB_DISTRO: ${{ matrix.deb_distro }}
           DEB_ARCH: ${{ matrix.arch }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: "${{ steps.self-checkout.outputs.REPO }}"
+          GITHUB_TOKEN: ${{ secrets.PREBUILT_REPO_KEY || secrets.GITHUB_TOKEN }}
           # REPOS_FILE: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}./sources.repos
           # if not on develop or main, only build the packages from the last 2 commits
           SKIP_PACKAGES: ${{ steps.self-checkout.outputs.SKIP_PACKAGES || '' }}
