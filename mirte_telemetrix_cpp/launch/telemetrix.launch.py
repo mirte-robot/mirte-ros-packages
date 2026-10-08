@@ -27,9 +27,9 @@ def generate_launch_description():
             "config_path",
             default_value=PathJoinSubstitution(
                 (
-                    FindPackageShare("mirte_bringup"),
-                    "telemetrix_config",
-                    "mirte_master_config.yaml",
+                    FindPackageShare("mirte_telemetrix_cpp"),
+                    "config",
+                    "minimal_config.yaml",
                 )
             ),
         ),
@@ -40,11 +40,6 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "frame_prefix", default_value="", description="The TF2 frame prefix"
-        ),
-        DeclareLaunchArgument(
-            "overlay_config_path",
-            default_value="",
-            description="Path to overlay config files",
         ),
     ]
 
@@ -57,7 +52,6 @@ def generate_launch_description():
         parameters=[
             LaunchConfiguration("config_path"),
             {"frame_prefix": LaunchConfiguration("frame_prefix")},
-            LaunchConfiguration("overlay_config_path"),
         ],
         prefix=prefix,
         output="screen",

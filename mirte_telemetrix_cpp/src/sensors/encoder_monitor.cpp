@@ -18,7 +18,8 @@ EncoderMonitor::EncoderMonitor(NodeData node_data, EncoderData encoder_data)
   // Use default QOS for sensor publishers as specified in REP2003
   encoder_pub = nh->create_publisher<mirte_msgs::msg::Encoder>(
       "encoder/" + encoder_data.name, rclcpp::SystemDefaultsQoS());
-
+  encoder_rad_pub = nh->create_publisher<mirte_msgs::msg::EncoderRad>(
+      "encoder/" + encoder_data.name + "/rad", rclcpp::SystemDefaultsQoS());
   encoder_service = nh->create_service<mirte_msgs::srv::GetEncoder>(
       "encoder/" + encoder_data.name + "/get_encoder",
       std::bind(&EncoderMonitor::service_callback, this, _1, _2),
@@ -70,16 +71,21 @@ void EncoderMonitor::data_callback(int16_t value) {
   this->msg = mirte_msgs::build<mirte_msgs::msg::Encoder>()
                   .header(create_header()) // Build the message
                   .value(this->value);
+  this->rad_msg =
+      mirte_msgs::build<mirte_msgs::msg::EncoderRad>()
+          .header(create_header()) // Build the message
+          .value(this->value * 2.0 * M_PI / this->encoder_data.ticks);
 }
 
 void EncoderMonitor::update() {
-  if (this->encoder_pub->get_subscription_count() == 0) {
-    // No subscribers, so no need to publish
-    return;
+  if (this->encoder_pub->get_subscription_count() > 0) {
+    // Pico always sends the encoder value, so we can just publish it, header is
+    // updated in the data_callback
+    encoder_pub->publish(msg);
   }
-  // Pico always sends the encoder value, so we can just publish it, header is
-  // updated in the data_callback
-  encoder_pub->publish(msg);
+  if (this->encoder_rad_pub->get_subscription_count() > 0) {
+    encoder_rad_pub->publish(rad_msg);
+  }
 }
 
 void EncoderMonitor::service_callback(
@@ -99,8 +105,7 @@ EncoderMonitor::get_encoder_monitors(NodeData node_data,
         const auto &map_encoder = pair.second;
         std::map<std::string, rclcpp::ParameterValue> parameters;
 
-        parameters["ticks_per_wheel"] =
-            rclcpp::ParameterValue(map_encoder.ticks_per_wheel);
+        parameters["ticks"] = rclcpp::ParameterValue(map_encoder.ticks);
         parameters["device"] = rclcpp::ParameterValue(map_encoder.device);
         parameters["connector"] = rclcpp::ParameterValue(map_encoder.connector);
         parameters["pins.pin"] = rclcpp::ParameterValue(map_encoder.pins.pin);

@@ -1,10 +1,11 @@
 import platform
+import os
+from ament_index_python import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction
 from launch.substitutions import (
     PathJoinSubstitution,
-    TextSubstitution,
     LaunchConfiguration,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -14,9 +15,6 @@ from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node, PushRosNamespace, SetRemap
 from pathlib import Path
-
-ticks = 1321
-invert_motors = False
 
 
 def generate_launch_description():
@@ -40,6 +38,28 @@ def generate_launch_description():
         ],
     )
 
+    control_master_path = os.path.join(
+        get_package_share_directory("mirte_bringup"),
+        "config",
+        "control",
+        "control_master.yaml",
+    )
+    control_config_file = PathJoinSubstitution(
+        [
+            FindPackageShare("mirte_bringup"),
+            "config",
+            "control",
+            "mirte_base_control.yaml",
+        ]
+    )
+    arm_control_config_file = PathJoinSubstitution(
+        [
+            FindPackageShare("mirte_bringup"),
+            "config",
+            "control",
+            "mirte_master_arm_control.yaml",
+        ]
+    )
     machine_namespace = LaunchConfiguration("machine_namespace")
     hardware_namespace = LaunchConfiguration("hardware_namespace")
     frame_prefix = ""  # LaunchConfiguration( # No frame prefixes as that does not work with moveit/nav2 and the odom topic must be prefixed instead of the frames.
@@ -54,7 +74,6 @@ def generate_launch_description():
     use_base_pid_control = LaunchConfiguration(
         "use_base_pid_control",
     )
-    ticks_arg = LaunchConfiguration("ticks", default=str(ticks))
     telemetrix = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -72,26 +91,14 @@ def generate_launch_description():
                 "config_path": PathJoinSubstitution(
                     [
                         FindPackageShare("mirte_bringup"),
-                        "telemetrix_config",
+                        "config",
+                        "telemetrix",
                         "mirte_master_config.yaml",
                     ]
                 ),
                 "hardware_namespace": hardware_namespace,
                 "frame_prefix": frame_prefix,
             }
-            | (
-                {
-                    "overlay_config_path": PathJoinSubstitution(
-                        [
-                            FindPackageShare("mirte_bringup"),
-                            "telemetrix_config/overlays",
-                            "invert_wheels.yaml",
-                        ]
-                    )
-                }
-                if invert_motors
-                else {}
-            )
         ).items(),
     )
     ros2_control = GroupAction(
@@ -110,7 +117,8 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     "frame_prefix": frame_prefix,
-                    "use_base_pid_control": use_base_pid_control,
+                    "control_config_file": control_config_file,
+                    "arm_control_config_file": arm_control_config_file,
                 }.items(),
             ),
             # IncludeLaunchDescription(
@@ -145,7 +153,7 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"frame_prefix": frame_prefix, "ticks": ticks_arg}.items(),
+        launch_arguments={"frame_prefix": frame_prefix}.items(),
     )
 
     mecanum_drive_control = IncludeLaunchDescription(
@@ -165,6 +173,22 @@ def generate_launch_description():
             "start_controller_manager": start_controller_manager,
             "start_state_publishers": start_state_publishers,
             "use_pid_control": use_base_pid_control,
+            "hw_config_file": PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_bringup"),
+                    "config",
+                    "control",
+                    "control_master.yaml",
+                ],
+            ),
+            "control_config_file": PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_bringup"),
+                    "config",
+                    "control",
+                    "mirte_base_control.yaml",
+                ]
+            ),
         }.items(),
     )
 
@@ -184,6 +208,7 @@ def generate_launch_description():
             "frame_prefix": frame_prefix,
             "start_controller_manager": start_controller_manager,
             "start_state_publishers": start_state_publishers,
+            "arm_control_config_file": arm_control_config_file,
         }.items(),
     )
     cameras = IncludeLaunchDescription(

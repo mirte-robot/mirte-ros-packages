@@ -124,21 +124,16 @@ void MirteBaseHWInterface::read_single(int joint,
   }
   const auto first_msg = _last_value[joint];
 
-  const auto diff_ticks = last_msg->value - first_msg->value;
+  auto distance_rad = last_msg->value - first_msg->value;
   const auto period_sec = (rclcpp::Time(last_msg->header.stamp) -
                            rclcpp::Time(first_msg->header.stamp))
                               .seconds();
   _last_value[joint] = last_msg; // update last value for next loop
 
-  double radPerEncoderTick = rad_per_enc_tick();
-  double distance_rad;
-  if (bidirectional) { // if encoder is counting bidirectional, then it
-                       // decreases by itself, dont want to use
-                       // last_wheel_cmd_direction
-    distance_rad = diff_ticks * radPerEncoderTick * 1.0;
-  } else {
-    distance_rad =
-        diff_ticks * radPerEncoderTick * _last_wheel_cmd_direction[joint] * 1.0;
+  if (!bidirectional) { // if encoder is counting bidirectional, then it
+                        // decreases by itself, dont want to use
+                        // last_wheel_cmd_direction
+    distance_rad *= _last_wheel_cmd_direction[joint];
   }
 
   // Doesn't work with single pin encoders, but no'ones using pos for odom with
@@ -336,13 +331,6 @@ hardware_interface::CallbackReturn MirteBaseHWInterface::on_deactivate(
 void MirteBaseHWInterface::ros_spin() { rclcpp::spin(nh); }
 
 void MirteBaseHWInterface::read_settings() {
-  if (!info_.hardware_parameters.count(TICKS_PARAM_NAME)) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("MirteBaseSystemHardware"),
-                        "Missing required hardware parameter: ticks");
-    throw std::runtime_error("Missing required hardware parameter: ticks");
-  }
-  this->settings.ticks =
-      std::stod(info_.hardware_parameters.at(TICKS_PARAM_NAME));
   if (info_.hardware_parameters.count(SEPARATE_UPDATE_FORMAT_PARAM_NAME)) {
     this->settings.separate_update_format =
         info_.hardware_parameters.at(SEPARATE_UPDATE_FORMAT_PARAM_NAME);
@@ -386,7 +374,6 @@ void MirteBaseHWInterface::read_settings() {
 
   // print all settings:
   rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
-  RCLCPP_INFO_STREAM(logger, "ticks: " << this->settings.ticks);
   RCLCPP_INFO_STREAM(logger, "separate_update_format: "
                                  << this->settings.separate_update_format);
   RCLCPP_INFO_STREAM(
@@ -436,7 +423,7 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
     latest_msgs_.push_back(realtime_tools::RealtimeBuffer<Encoder_store>{});
-    _last_value.push_back(std::make_shared<mirte_msgs::msg::Encoder>());
+    _last_value.push_back(std::make_shared<mirte_msgs::msg::EncoderRad>());
     _last_wheel_cmd_direction.push_back(0);
     _last_sent_cmd.push_back(-1000);
 
@@ -526,9 +513,9 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
             .str();
     std::cout << "add encoder topic: " << encoder_topic << std::endl;
     wheel_encoder_subs_.push_back(
-        nh->create_subscription<mirte_msgs::msg::Encoder>(
+        nh->create_subscription<mirte_msgs::msg::EncoderRad>(
             encoder_topic, 1,
-            [this, i](std::shared_ptr<mirte_msgs::msg::Encoder> msg) {
+            [this, i](std::shared_ptr<mirte_msgs::msg::EncoderRad> msg) {
               this->WheelEncoderCallback(msg, i);
             }));
   }

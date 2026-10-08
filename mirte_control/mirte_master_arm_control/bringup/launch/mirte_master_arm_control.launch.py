@@ -49,6 +49,16 @@ def generate_launch_description():
             default_value="true",
             description="A boolean whether this launchfile needs to start the state publisher and joint boardcaster. Defaults to true.",
         ),
+        DeclareLaunchArgument(
+            "arm_control_config_file",
+            default_value=PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_master_arm_control"),
+                    "config",
+                    "mirte_master_arm_control.yaml",
+                ]
+            ),
+        ),
     ]
 
     robot_description_content = Command(
@@ -70,13 +80,7 @@ def generate_launch_description():
         "frame_prefix": LaunchConfiguration("frame_prefix"),
     }
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("mirte_master_arm_control"),
-            "config",
-            "mirte_master_arm_control.yaml",
-        ]
-    )
+    robot_controllers = LaunchConfiguration("arm_control_config_file")
 
     control_node = Node(
         package="controller_manager",

@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <!-- Basic differential drive mobile base -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffdrive_robot">
-    <xacro:property name="yaml_param_file" value="$(find mirte_base_control)/config/control_master.yaml"/>
-    <xacro:property name="params" value="${xacro.load_yaml(yaml_param_file)}"/>
  <link
         name="arm_Rot">
         <inertial>
@@ -602,23 +600,11 @@
             <ros2_control name="arm_control" type="system">
       <hardware>
         <plugin>mirte_master_arm_control/MirteMasterArmHWInterface</plugin>
-        <!-- <param name="ticks">${params['ticks']}</param>
-        <param name="enable_pid">${params['enable_pid']}</param>
-        <param name="kp">${params['kp']}</param>
-        <param name="ki">${params['ki']}</param>
-        <param name="kd">${params['kd']}</param>
-        <param name="i_clamp">${params['i_clamp']}</param>
-        <param name="antiwindup">${params['antiwindup']}</param> -->
       </hardware>
       <xacro:joint prefix="$(arg prefix)" name="rotate"  />
         <xacro:joint prefix="$(arg prefix)" name="shoulder"  />
         <xacro:joint prefix="$(arg prefix)" name="elbow"  />
         <xacro:joint prefix="$(arg prefix)" name="wrist"  />
-      <!-- <joint name="${prefix}right_wheel_joint">
-        <command_interface name="velocity"/>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
-      </joint> -->
     </ros2_control>
 
 </robot>
