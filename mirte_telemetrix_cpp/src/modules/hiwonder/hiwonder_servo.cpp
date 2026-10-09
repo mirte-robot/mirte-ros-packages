@@ -76,7 +76,13 @@ Hiwonder_servo::Hiwonder_servo(
           std::bind(&Hiwonder_servo::set_angle_with_speed_service_callback,
                     this, _1, _2),
           rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
-
+  this->angle_time_service =
+      nh->create_service<mirte_msgs::srv::SetServoAngleWithTime>(
+          "servo/" + servo_group + this->servo_data->name +
+              "/set_angle_with_time",
+          std::bind(&Hiwonder_servo::set_angle_with_time_service_callback, this,
+                    _1, _2),
+          rclcpp::ServicesQoS().get_rmw_qos_profile(), callback_group);
   // create range service
   this->range_service = nh->create_service<mirte_msgs::srv::GetServoRange>(
       "servo/" + servo_group + this->servo_data->name + "/get_range",
@@ -176,7 +182,7 @@ void Hiwonder_servo::set_angle_with_speed_service_callback(
   float speed = req->rate;
   bool is_rad =
       req->degrees == mirte_msgs::srv::SetServoAngleWithSpeed::Request::RADIANS;
-  this->set_angle(angle, is_rad, speed);
+  res->status = this->set_angle(angle, is_rad, speed);
 }
 
 bool Hiwonder_servo::set_angle(float angle, const bool radians,
@@ -243,6 +249,22 @@ bool Hiwonder_servo::set_angle(float angle, const bool radians,
 
   return this->bus_mod->set_single_servo(this->servo_data->id, angle_out,
                                          time_ms);
+}
+
+void Hiwonder_servo::set_angle_with_time_service_callback(
+    const mirte_msgs::srv::SetServoAngleWithTime::Request::ConstSharedPtr req,
+    mirte_msgs::srv::SetServoAngleWithTime::Response::SharedPtr res) {
+  float angle = req->angle;
+  float time = req->time;
+
+  time = std::clamp(time, 0.0f, 30.0f);
+  uint16_t time_ms = time * 1000;
+  // NOTE: When time_ms is 0 than the servo attemps to move as fast as possible.
+
+  auto angle_out = this->calc_angle_out(angle);
+
+  res->status =
+      this->bus_mod->set_single_servo(this->servo_data->id, angle_out, time_ms);
 }
 
 void Hiwonder_servo::get_range_service_callback(

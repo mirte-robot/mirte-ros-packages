@@ -14,7 +14,7 @@
 
 // ROS
 #include <mirte_msgs/msg/servo_position.hpp>
-#include <mirte_msgs/srv/set_servo_angle_with_speed.hpp>
+#include <mirte_msgs/srv/set_servo_angle_with_time.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
 #include <std_srvs/srv/set_bool.hpp>
@@ -120,9 +120,9 @@ private:
 
   bool use_single_client = true;
   std::vector<
-      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithSpeed>>>
+      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithTime>>>
       service_clients;
-  std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngleWithSpeed::Request>>
+  std::vector<std::shared_ptr<mirte_msgs::srv::SetServoAngleWithTime::Request>>
       service_requests;
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr enable_arm_service;
@@ -138,7 +138,7 @@ private:
   std::mutex service_clients_mutex;
 
   std::vector<
-      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithSpeed>>>
+      std::shared_ptr<rclcpp::Client<mirte_msgs::srv::SetServoAngleWithTime>>>
       set_servo_angle_service_clients;
 
   rclcpp::Logger get_logger() const { return *logger_; }
