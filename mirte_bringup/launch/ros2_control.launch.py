@@ -24,40 +24,38 @@ def generate_launch_description():
             description="An arbitrary prefix to add to the published tf2 frames. Defaults to the empty string.",
         ),
         DeclareLaunchArgument(
-            "use_base_pid_control",
-            default_value="true",
-            description="Use speed PID control for the wheels, you might need to change the gains in mirte_base_control/bringup/config/mirte_base_cotnrol.yaml",
-        ),
-    ]
-    use_base_pid_control = LaunchConfiguration("use_base_pid_control")
-    arm_controller_yaml = PathJoinSubstitution(
-        [
-            FindPackageShare("mirte_master_arm_control"),
-            "config",
-            "mirte_master_arm_control.yaml",
-        ]
-    )
-
-    base_controller_yaml = PathJoinSubstitution(
-        [
-            FindPackageShare("mirte_base_control"),
-            "config",
-            PythonExpression(
+            "control_config_file",
+            default_value=PathJoinSubstitution(
                 [
-                    '"mirte_base_control.yaml" if "',
-                    use_base_pid_control,
-                    '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"',
+                    FindPackageShare("mirte_base_control"),
+                    "bringup",
+                    "config",
+                    "mirte_base_control.yaml",
                 ]
             ),
-        ]
-    )
+        ),
+        DeclareLaunchArgument(
+            "arm_control_config_file",
+            default_value=PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_master_arm_control"),
+                    "config",
+                    "mirte_master_arm_control.yaml",
+                ]
+            ),
+        ),
+    ]
 
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
-            ParameterFile(base_controller_yaml, allow_substs=True),
-            ParameterFile(arm_controller_yaml, allow_substs=True),
+            ParameterFile(
+                LaunchConfiguration("control_config_file"), allow_substs=True
+            ),
+            ParameterFile(
+                LaunchConfiguration("arm_control_config_file"), allow_substs=True
+            ),
         ],
         output="both",
         remappings=[

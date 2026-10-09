@@ -32,10 +32,10 @@ mirte_telemetrix_cpp:
 
   encoder:
     __map_encoders:
-      ticks_per_wheel:
+      ticks:
         type: int
         default_value: 20
-        description: "Number of ticks per wheel revolution, TODO: implement"
+        description: "Number of ticks per wheel revolution"
         validation:
           bounds<>: [1, 100000]
       device:

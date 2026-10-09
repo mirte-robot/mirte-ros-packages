@@ -1,7 +1,6 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include <algorithm>
 #include <mirte_master_arm_control.hpp>
-#include <unistd.h>
 
 namespace mirte_master_arm_control {
 using namespace std::chrono_literals;
@@ -167,7 +166,7 @@ void MirteMasterArmHWInterface::ServoPositionCallback(
 std::vector<hardware_interface::StateInterface>
 MirteMasterArmHWInterface::export_state_interfaces() {
   std::vector<hardware_interface::StateInterface> state_interfaces;
-  for (uint i = 0; i < info_.joints.size(); i++) {
+  for (std::size_t i = 0; i < info_.joints.size(); i++) {
     state_interfaces.emplace_back(hardware_interface::StateInterface(
         info_.joints[i].name, hardware_interface::HW_IF_POSITION,
         &hw_states_[i]));
@@ -183,7 +182,7 @@ std::vector<hardware_interface::CommandInterface>
 MirteMasterArmHWInterface::export_command_interfaces() {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 
-  for (uint i = 0; i < info_.joints.size(); i++) {
+  for (std::size_t i = 0; i < info_.joints.size(); i++) {
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
         info_.joints[i].name, hardware_interface::HW_IF_POSITION,
         &hw_commands_[i]));
@@ -212,7 +211,7 @@ void MirteMasterArmHWInterface::init_service_clients() {}
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
   // command and state should be equal when starting
-  for (uint i = 0; i < hw_states_.size(); i++) {
+  for (std::size_t i = 0; i < hw_states_.size(); i++) {
     hw_commands_[i] = hw_states_[i];
   }
 
@@ -344,7 +343,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
   }
 
   // reset values always when configuring hardware
-  for (uint i = 0; i < hw_states_.size(); i++) {
+  for (std::size_t i = 0; i < hw_states_.size(); i++) {
     hw_states_[i] = NAN;
     hw_commands_[i] = NAN;
   }

@@ -17,6 +17,7 @@ set(msg_files
     "msg/ColorRGBW.msg"
     "msg/ColorRGBWStamped.msg"
     "msg/Encoder.msg"
+    "msg/EncoderRad.msg"
     "msg/Intensity.msg"
     "msg/IntensityDigital.msg"
     "msg/Keypad.msg"

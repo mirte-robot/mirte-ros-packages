@@ -26,6 +26,8 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+constexpr double PI = 3.14159265358979323846;
+
 namespace mirte_control {
 
 std::string convert_to_snake_case(const std::string &input) {
@@ -217,7 +219,7 @@ hardware_interface::CallbackReturn MirtePioneerSrvSystemHardware::on_deactivate(
 hardware_interface::return_type
 MirtePioneerSrvSystemHardware::read(const rclcpp::Time & /*time*/,
                                     const rclcpp::Duration &period) {
-  for (uint i = 0; i < hw_commands_.size(); i++) {
+  for (std::size_t i = 0; i < hw_commands_.size(); i++) {
     // Simulate DiffBot wheels's movement as a first-order system
     // Update the joint status: this is a revolute joint without any limit.
     // Simply integrates
@@ -241,7 +243,7 @@ mirte_control ::MirtePioneerSrvSystemHardware::write(
   auto left_request =
       std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>();
   int left_speed =
-      std::max(std::min(int(hw_commands_[0] / (6 * M_PI) * 100), 100), -100);
+      std::max(std::min(int(hw_commands_[0] / (6 * PI) * 100), 100), -100);
   if (left_speed != last_cmd_left_) {
     left_request->speed = left_speed;
     auto result = left_client_->async_send_request(left_request);
@@ -251,7 +253,7 @@ mirte_control ::MirtePioneerSrvSystemHardware::write(
   auto right_request =
       std::make_shared<mirte_msgs::srv::SetMotorSpeed::Request>();
   int right_speed =
-      std::max(std::min(int(hw_commands_[1] / (6 * M_PI) * 100), 100), -100);
+      std::max(std::min(int(hw_commands_[1] / (6 * PI) * 100), 100), -100);
   if (right_speed != last_cmd_right_) {
     right_request->speed = right_speed;
     auto result = right_client_->async_send_request(right_request);

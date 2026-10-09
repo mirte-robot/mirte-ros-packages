@@ -13,13 +13,14 @@
 #define _USE_MATH_DEFINES
 
 // ROS
-#include <mirte_msgs/msg/encoder.hpp>
+#include <mirte_msgs/msg/encoder_rad.hpp>
 #include <mirte_msgs/msg/set_speed.hpp>
 #include <mirte_msgs/msg/set_speed_multiple.hpp>
 #include <mirte_msgs/srv/set_motor_speed.hpp>
 #include <mirte_msgs/srv/set_speed_multiple.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/empty.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 // ros_control
 #include "hardware_interface/actuator_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -96,14 +97,7 @@ public:
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  double rad_per_enc_tick() {
-    if (this->settings.ticks < 1.0) {
-      std::cout << "ticks is less than 1.0, setting to 1.0" << std::endl;
-      this->settings.ticks = 1.0;
-      return 1.0;
-    }
-    return 2.0 * M_PI / this->settings.ticks;
-  }
+
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -130,10 +124,9 @@ private:
 
   // settings from hw interface params
   struct SETTINGS {
-    double ticks = 40.0;
     std::string separate_update_format = "/io/motor/set_%s_speed";
     std::string single_update_name = "/io/set_multiple_motor_speeds";
-    std::string encoder_topic_format = "/encoder/%s";
+    std::string encoder_topic_format = "/encoder/%s/rad";
     bool use_topic_update = true;
     bool use_single_update = true;
     double cmd_vel_deadzone = 10.0;
@@ -161,12 +154,13 @@ private:
   // std::vector<rclcpp::Time> _wheel_encoder_update_time;
   std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
-  std::vector<std::shared_ptr<const mirte_msgs::msg::Encoder>> _last_value;
+  std::vector<std::shared_ptr<const mirte_msgs::msg::EncoderRad>> _last_value;
   std::vector<int> _last_wheel_cmd_direction;
 
   rclcpp::Time curr_update_time, prev_update_time;
 
-  std::vector<std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::Encoder>>>
+  std::vector<
+      std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::EncoderRad>>>
       wheel_encoder_subs_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> start_srv_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty>> stop_srv_;
@@ -212,9 +206,9 @@ private:
     // return true;
   }
 
-  void WheelEncoderCallback(std::shared_ptr<mirte_msgs::msg::Encoder> msg,
+  void WheelEncoderCallback(std::shared_ptr<mirte_msgs::msg::EncoderRad> msg,
                             int joint) {
-    if (msg->value < 0) {
+    if (msg->value < this->latest_msgs_[joint].readFromNonRT()->msg->value) {
       bidirectional = true;
     }
     const std::lock_guard<std::mutex> lock(this->encoder_mutex);
@@ -232,7 +226,7 @@ private:
   std::mutex encoder_mutex;
 
   struct Encoder_store {
-    std::shared_ptr<mirte_msgs::msg::Encoder> msg;
+    std::shared_ptr<mirte_msgs::msg::EncoderRad> msg;
     int counter;
   };
 
@@ -241,6 +235,7 @@ private:
   std::jthread ros_thread;
   void ros_spin();
 
+  bool feedforward_enabled_ = false;
   bool bidirectional = false; // assume it is one direction, when receiving any
                               // negative value, it will be set to true
   unsigned int NUM_JOINTS = 2;

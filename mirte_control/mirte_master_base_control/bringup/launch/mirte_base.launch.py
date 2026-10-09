@@ -50,13 +50,35 @@ def generate_launch_description():
             default_value="132",
             description="The number of ticks per wheel revolution, used for odometry and control. Defaults to 1320, which is 11 pulses per second * 30 reduction * 4 (quadrature encoding)",
         ),
+        DeclareLaunchArgument(
+            "control_config_file",
+            default_value=PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_base_control"),
+                    "bringup",
+                    "config",
+                    "mirte_base_control.yaml",
+                ]
+            ),
+        ),
+        DeclareLaunchArgument(
+            "hw_config_file",
+            default_value=PathJoinSubstitution(
+                [
+                    FindPackageShare("mirte_base_control"),
+                    "bringup",
+                    "config",
+                    "control_master.yaml",
+                ]
+            ),
+        ),
     ]
     use_pid_control = LaunchConfiguration("use_pid_control")
 
     robot_description_content = Command(
         [
             FindExecutable(name="xacro"),
-            f"ticks:=${LaunchConfiguration('ticks')}",
+            f"hw_config_file:=${LaunchConfiguration('hw_config_file')}",
             PathJoinSubstitution(
                 [
                     FindPackageShare("mirte_base_control"),
@@ -71,19 +93,7 @@ def generate_launch_description():
         "frame_prefix": LaunchConfiguration("frame_prefix"),
     }
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("mirte_base_control"),
-            "config",
-            PythonExpression(
-                [
-                    '"mirte_base_control.yaml" if "',
-                    use_pid_control,
-                    '".lower() in ("yes", "true", "t", "1") else "mirte_base_control_no_pid.yaml"',
-                ]
-            ),
-        ],
-    )
+    robot_controllers = LaunchConfiguration("control_config_file")
 
     control_node = Node(
         package="controller_manager",
