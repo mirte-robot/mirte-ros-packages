@@ -15,14 +15,26 @@ def generate_launch_description():
                 package="mirte_teleop",
                 executable="mirte_master_arm.py",
                 name="mirte_master_arm",
-                parameters=[{}],
+                parameters=[
+                    {
+                        "joy_open_gripper": 9,
+                        "joy_close_gripper": 7,
+                        "joy_shutdown": 9,
+                        "joy_axis_horizontal": 2,
+                        "joy_axis_vertical": 3,
+                        "deadzone": 0.01,
+                        "max_pan_angle": 1.0,
+                        "filter_alpha": 0.2,
+                        "command_epsilon": 0.01,
+                    }
+                ],
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     os.path.join(
                         get_package_share_directory("mirte_teleop"),
                         "launch",
-                        "teleop_joy_ps4.launch.py",
+                        "teleop_joy_8b.launch.py",
                     )
                 )
             ),

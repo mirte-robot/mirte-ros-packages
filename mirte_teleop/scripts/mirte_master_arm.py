@@ -8,19 +8,26 @@ from sensor_msgs.msg import Joy
 from mirte_msgs.srv import SetServoAngle
 from control_msgs.action import GripperCommand
 
-# set joystick button map, these values should work for PS4 controller
-JOY_OPEN_GRIPPER = 5
-JOY_CLOSE_GRIPPER = 7
-JOY_SHUTDOWN = 9
-
-# joy axis map
-JOY_AXIS_HORIZONTAL = 2
-JOY_AXIS_VERTICAL = 5
-
 
 class MirteMasterArm(Node):
     def __init__(self):
         super().__init__("mirte_master_arm_gamepad_teleop")
+
+        self.declare_parameter("joy_open_gripper", 5)
+        self.declare_parameter("joy_close_gripper", 7)
+        self.declare_parameter("joy_shutdown", 9)
+        self.declare_parameter("joy_axis_horizontal", 2)
+        self.declare_parameter("joy_axis_vertical", 5)
+        self.declare_parameter("deadzone", 0.01)
+        self.declare_parameter("max_pan_angle", 1.0)
+        self.declare_parameter("filter_alpha", 0.2)
+        self.declare_parameter("command_epsilon", 0.01)
+
+        self.joy_open_gripper = self.get_parameter("joy_open_gripper").value
+        self.joy_close_gripper = self.get_parameter("joy_close_gripper").value
+        self.joy_shutdown = self.get_parameter("joy_shutdown").value
+        self.joy_axis_horizontal = self.get_parameter("joy_axis_horizontal").value
+        self.joy_axis_vertical = self.get_parameter("joy_axis_vertical").value
 
         self.joy_sub = self.create_subscription(Joy, "/joy", self.joy_callback, 1)
 
@@ -44,24 +51,18 @@ class MirteMasterArm(Node):
         self.prev_close_button = 0
         self.gripper_goal_active = False
 
-        # Right stick: axis 3 = right horizontal, axis 4 = right vertical (may vary by controller)
-        JOY_AXIS_HORIZONTAL = 2  # rotation
-        JOY_AXIS_VERTICAL = 5  # lift
-
         self.shoulder_angle = 0.0
         self.shoulder_pan_angle = 0.0
         self.elbow_angle = -1.5
         self.wrist_angle = 0.0
 
-        self.deadzone = 0.01
+        self.deadzone = self.get_parameter("deadzone").value
         # self.step = 0.050  # rad per callback
         # self.max_angle = math.radians(20.0)  # testing limit: +/- 20 degrees
-        self.max_pan_angle = (
-            1.0  # keep left/right rotation limited to about +/- 90 degrees
-        )
+        self.max_pan_angle = self.get_parameter("max_pan_angle").value
 
-        self.filter_alpha = 0.2  # 0.0 = no movement, 1.0 = no filtering
-        self.command_epsilon = 0.01  # rad; keep sending until this close to target
+        self.filter_alpha = self.get_parameter("filter_alpha").value
+        self.command_epsilon = self.get_parameter("command_epsilon").value
 
         self.axes = []
         self.buttons = []
@@ -78,12 +79,12 @@ class MirteMasterArm(Node):
         self.check_shutdown()
         axes = self.axes
 
-        if len(axes) <= max(JOY_AXIS_HORIZONTAL, JOY_AXIS_VERTICAL):
+        if len(axes) <= max(self.joy_axis_horizontal, self.joy_axis_vertical):
             self.get_logger().warn("Not enough axes in Joy message")
             return
 
-        horiz = axes[JOY_AXIS_HORIZONTAL]
-        vert = axes[JOY_AXIS_VERTICAL]
+        horiz = axes[self.joy_axis_horizontal]
+        vert = axes[self.joy_axis_vertical]
 
         shoulder_changed = False
         shoulder_pan_changed = False
@@ -216,12 +217,8 @@ class MirteMasterArm(Node):
             return
 
         # print(f"Gripper button state: {self.buttons}")
-        open_button = self.buttons[
-            JOY_OPEN_GRIPPER
-        ]  # Assuming button 5 is for opening the gripper
-        close_button = self.buttons[
-            JOY_CLOSE_GRIPPER
-        ]  # Assuming button 7 is for closing the gripper
+        open_button = self.buttons[self.joy_open_gripper]
+        close_button = self.buttons[self.joy_close_gripper]
 
         open_pressed = open_button and not self.prev_open_button
         close_pressed = close_button and not self.prev_close_button
@@ -249,7 +246,10 @@ class MirteMasterArm(Node):
             self.get_logger().warn("Not enough buttons in Joy message")
             return
 
-        if self.buttons[JOY_SHUTDOWN] == 1:  # Assuming button 9 is the options button
+        # joy_shutdown = self.get_parameter("joy_shutdown").value
+        if (
+            self.buttons[self.joy_shutdown] == 1
+        ):  # Assuming button 9 is the options button
             if self.shutdown_timer is None:
                 self.shutdown_timer = self.create_timer(2.0, self.shutdown_robot)
         else:
