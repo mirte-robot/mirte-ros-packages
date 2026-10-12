@@ -48,7 +48,6 @@
         <param name="use_single_update">${params['use_single_update']}</param>
         <param name="cmd_vel_deadzone">${params['cmd_vel_deadzone']}</param>
         <param name="cmd_vel_update_deadzone">${params['cmd_vel_update_deadzone']}</param>
-        <param name="max_rot_speed">${params['max_rot_speed']}</param>
       </hardware>
       <xacro:joint prefix="$(arg prefix)" name="front_left"  />
       <xacro:joint prefix="$(arg prefix)" name="front_right"  />

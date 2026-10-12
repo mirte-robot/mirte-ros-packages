@@ -80,17 +80,8 @@ public:
   std::vector<hardware_interface::CommandInterface>
   export_command_interfaces() override;
 
-  double calc_speed_pid(int joint, double target,
-                        const rclcpp::Duration &period);
-
-  double calc_speed_map(int joint, double target,
-                        const rclcpp::Duration &period);
-
   bool write_single(int joint, double speed, const rclcpp::Duration &period,
                     bool &updated);
-
-  int calculate_single_speed(int joint, double speed,
-                             const rclcpp::Duration &period);
 
   /*
    *
@@ -119,8 +110,6 @@ private:
   std::vector<double> eff;
 
   bool running_ = true;
-  double _wheel_diameter;
-  double _max_speed;
 
   // settings from hw interface params
   struct SETTINGS {
@@ -131,14 +120,12 @@ private:
     bool use_single_update = true;
     double cmd_vel_deadzone = 10.0;
     double cmd_vel_update_deadzone = 3.0;
-    double max_rot_speed = 6 * M_PI;
     bool always_send = false; // if true, always send motor commands
   } settings;
 
   void read_settings();
 
   // PARAM NAMES
-  const std::string TICKS_PARAM_NAME = "ticks";
   const std::string SEPARATE_UPDATE_FORMAT_PARAM_NAME =
       "separate_update_format";
   const std::string SINGLE_UPDATE_NAME_PARAM_NAME = "single_update_name";
@@ -148,16 +135,10 @@ private:
   const std::string CMD_VEL_DEADZONE_PARAM_NAME = "cmd_vel_deadzone";
   const std::string CMD_VEL_UPDATE_DEADZONE_PARAM_NAME =
       "cmd_vel_update_deadzone";
-  const std::string MAX_ROT_SPEED_PARAM_NAME = "max_rot_speed";
 
-  // std::vector<int> _wheel_encoder;
-  // std::vector<rclcpp::Time> _wheel_encoder_update_time;
-  std::vector<double> _last_cmd;
   std::vector<double> _last_sent_cmd;
   std::vector<std::shared_ptr<const mirte_msgs::msg::EncoderRad>> _last_value;
   std::vector<int> _last_wheel_cmd_direction;
-
-  rclcpp::Time curr_update_time, prev_update_time;
 
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::EncoderRad>>>
@@ -189,10 +170,6 @@ private:
       set_speed_multiple_publish_msg;
 
   std::vector<std::string> joints;
-  // bool enablePID = false;
-  // std::vector<std::shared_ptr<control_toolbox::Pid>> pids;
-  // std::shared_ptr<control_toolbox::Pid>
-  //     reconfig_pid; // one dummy pid to use for the dynamic reconfigure
 
   void start_callback(std::shared_ptr<std_srvs::srv::Empty::Request> req,
                       std::shared_ptr<std_srvs::srv::Empty::Response> res) {

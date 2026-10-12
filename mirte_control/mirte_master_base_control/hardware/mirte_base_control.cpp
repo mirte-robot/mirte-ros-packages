@@ -367,10 +367,6 @@ void MirteBaseHWInterface::read_settings() {
     this->settings.encoder_topic_format =
         info_.hardware_parameters.at(ENCODER_TOPIC_FORMAT_PARAM_NAME);
   }
-  if (info_.hardware_parameters.count(MAX_ROT_SPEED_PARAM_NAME)) {
-    this->settings.max_rot_speed =
-        std::stod(info_.hardware_parameters.at(MAX_ROT_SPEED_PARAM_NAME));
-  }
 
   // print all settings:
   rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
@@ -388,7 +384,6 @@ void MirteBaseHWInterface::read_settings() {
                                  << this->settings.cmd_vel_update_deadzone);
   RCLCPP_INFO_STREAM(
       logger, "encoder_topic_format: " << this->settings.encoder_topic_format);
-  RCLCPP_INFO_STREAM(logger, "max_rot_speed: " << this->settings.max_rot_speed);
 }
 
 using namespace std::placeholders;
