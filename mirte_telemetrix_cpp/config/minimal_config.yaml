@@ -1,0 +1,25 @@
+# See for options mirte_bringup/config/telemetrix/mirte_user_config.yaml
+
+/**:
+  ros__parameters:
+    device:
+      mirte:
+        type: pcb
+        version: 0.8
+        board: pico
+        max_frequency: 25
+    motor:
+      left:
+        name: left
+        device: mirte
+        type: pp
+        pins:
+          p1: GP18
+          p2: GP19
+      right:
+        name: right
+        device: mirte
+        type: pp
+        pins:
+          p1: GP20
+          p2: GP21

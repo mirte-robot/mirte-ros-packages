@@ -259,7 +259,7 @@ ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 # EXPORTS ament_export_targets( ${PROJECT_NAME}_node HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
-# install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 install(PROGRAMS scripts/default_screen.sh
         DESTINATION share/${PROJECT_NAME}/scripts/)
 

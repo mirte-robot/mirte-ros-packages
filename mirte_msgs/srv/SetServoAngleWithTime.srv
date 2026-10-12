@@ -1,0 +1,4 @@
+float32 angle # Target angle in rad
+float32 time  # Time for servo to move to target in seconds
+---
+bool status

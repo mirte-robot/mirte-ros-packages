@@ -38,8 +38,8 @@ jobs:
         run: |
               # set -ex
               . install/setup.bash
-              #        for every file in mirte_bringup/telemetrix_config/ that ends with _config.yaml, run the test node with that config to check config parser.
-              for file in src/mirte_bringup/telemetrix_config/*_config.yaml; do
+              #        for every file in mirte_bringup/config/telemetrix/ that ends with _config.yaml, run the test node with that config to check config parser.
+              for file in src/mirte_bringup/config/telemetrix/*_config.yaml; do
                 echo "Running telemetrix_node with config file: $file"
                 ros2 run mirte_telemetrix_cpp mirte_telemetrix_cpp_test --ros-args --params-file $file
                 sleep 1
