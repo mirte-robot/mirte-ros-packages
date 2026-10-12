@@ -6,7 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 
-# works for ps4 controller
+# works for 8BitDo Ultimate 2C controller
 # if other controller, maybe change the included launch file to teleop_joy.launch.py
 def generate_launch_description():
     return LaunchDescription(

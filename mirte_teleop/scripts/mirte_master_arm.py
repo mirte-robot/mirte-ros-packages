@@ -245,7 +245,6 @@ class MirteMasterArm(Node):
             self.get_logger().warn("Not enough buttons in Joy message")
             return
 
-        # joy_shutdown = self.get_parameter("joy_shutdown").value
         if (
             self.buttons[self.joy_shutdown] == 1
         ):  # Assuming button 9 is the options button
