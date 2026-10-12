@@ -13,14 +13,6 @@ const auto enable_format = "enable_%s";
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
-  // if(NUM_SERVOS>1) {
-  //                                   std::cout << "len init  " <<
-  //                                   (int)servo_data.size() << std::endl;
-
-  // std::cout << "first servo angle: " << hw_commands_[0] << "ifo" <<
-  // info_.name << std::endl; std::cout << "service len" <<
-  // service_clients.size() << std::endl;
-  // }
   if (!initialized) {
     if (std::all_of(std::begin(servo_data), std::end(servo_data),
                     [](Servo_data &x) { return x.init; })) {
@@ -68,11 +60,6 @@ void MirteMasterArmHWInterface::set_servo(int i, const rclcpp::Time &time,
     service_requests[i]->time = period.seconds();
 
     if (this->enable) {
-      // std::cout << "Sending command to servo " << i
-      //           << ": " << service_requests[i]->angle
-      //           << " (diff: " << diff << ") moved: " << (int)servo.moved << "
-      //           hw command: " << hw_commands_[i] << std::endl;
-
       service_clients[i]->async_send_request(service_requests[i]);
     }
     servo.moved = false;
@@ -129,11 +116,10 @@ bool MirteMasterArmHWInterface::connectServices() {
       (boost::format(enable_format) % info_.name).str(),
       [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
              std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
-        this->enable =
-            request->data; // TODO: enable for gripper and arm separately
+        this->enable = request->data;
         response->success = true;
-        response->message =
-            this->enable ? "Arm control enabled" : "Arm control disabled";
+        response->message = this->enable ? "Arm/gripper control enabled"
+                                         : "Arm/gripper control disabled";
       });
   return true;
 }
@@ -141,15 +127,11 @@ bool MirteMasterArmHWInterface::connectServices() {
 void MirteMasterArmHWInterface::ServoPositionCallback(
     std::shared_ptr<mirte_msgs::msg::ServoPosition> msg, int joint) {
   if (msg->angle == 0 && msg->raw == 0) {
-    // std::cout << "Received default servo position for joint " << joint
-    //           << ", ignoring this message." << std::endl;
     // This is the default value when the servo position is not yet published,
     // ignore this
     return;
   }
   auto &servo = servo_data[joint];
-  // std::cout << "Received servo position for joint " << joint
-  //           << ": " << msg->angle << "name:" << info_.name << std::endl;
   servo.data = msg->angle;
   servo.init = true;
   // The servo should only be written to iff the servo gets a new location or
@@ -198,6 +180,9 @@ MirteMasterArmHWInterface::read(const rclcpp::Time &time,
                                 const rclcpp::Duration &period) {
   for (std::size_t joint_id = 0; joint_id < NUM_SERVOS; ++joint_id) {
     if (servo_data[joint_id].init && servo_data[joint_id].started) {
+      // started is set to true when the first command is received, so the servo
+      // is actually used, otherwise the hw_states_ is kept at NAN, so the
+      // controller will not send a command to it.
       hw_states_[joint_id] = servo_data[joint_id].data;
     }
   }
@@ -211,10 +196,6 @@ void MirteMasterArmHWInterface::init_service_clients() {}
 
 hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_activate(
     const rclcpp_lifecycle::State & /*previous_state*/) {
-  // command and state should be equal when starting
-  // for (std::size_t i = 0; i < hw_states_.size(); i++) {
-  //   hw_commands_[i] = hw_states_[i];
-  // }
 
   RCLCPP_INFO(get_logger(), "Successfully activated!");
 
@@ -260,18 +241,14 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
   // Initialize custom members
-  std::vector<Servo_data> sd_vector;
   for (size_t i = 0; i < NUM_SERVOS; i++) {
     Servo_data sd;
 
-    sd_vector.push_back(sd);
-    _servo_position.push_back(0);
-    _servo_position_update_time.push_back(nh->now());
+    servo_data.push_back(sd);
 
     service_requests.push_back(
         std::make_shared<mirte_msgs::srv::SetServoAngleWithTime::Request>());
   }
-  servo_data.insert(servo_data.end(), sd_vector.begin(), sd_vector.end());
 
   // ROS2 control interfaces
   hw_states_.resize(info_.joints.size(),
@@ -346,6 +323,9 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 
   // reset values always when configuring hardware
   for (std::size_t i = 0; i < hw_states_.size(); i++) {
+    for (std::size_t j = 0; j < servo_data.size(); j++) {
+      servo_data[j].started = false;
+    }
     hw_states_[i] = NAN;
     hw_commands_[i] = NAN;
   }

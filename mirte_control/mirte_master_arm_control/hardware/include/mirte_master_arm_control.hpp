@@ -84,7 +84,7 @@ public:
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  // double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
+
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -95,7 +95,6 @@ public:
   hardware_interface::return_type read(const rclcpp::Time &time,
                                        const rclcpp::Duration &period);
   std::shared_ptr<rclcpp::Node> nh;
-  // rclcpp::Node private_nh;
 
 private:
   int NUM_SERVOS;
@@ -116,9 +115,6 @@ private:
     rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
     bool sent_stuck_command = false; // only send it once to go to the current
                                      // position (cancel original command)
-    double start_angle =
-        NAN; // if hw_command is equal to this, then don't act on it, when a
-             // different angle is received, then do something
     bool started = false;
   };
 
@@ -130,16 +126,6 @@ private:
   std::vector<Servo_data> servo_data;
   bool initialized;
   int init_steps;
-
-  std::vector<double> _servo_position;
-  std::vector<rclcpp::Time> _servo_position_update_time;
-  std::vector<double> _last_cmd;
-  std::vector<double> _last_sent_cmd;
-  std::vector<int> _last_value;
-  std::vector<double> position;
-
-  rclcpp::Time curr_update_time, prev_update_time;
-  rclcpp::Subscription<mirte_msgs::msg::ServoPosition>::SharedPtr subscriber_;
 
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
@@ -177,8 +163,6 @@ private:
   // thread for ros spinning
   std::jthread ros_thread;
   void ros_spin();
-
-  bool received_servo_data_ = false;
 
   double servo_update_dead_band_ = 0.05; // radians, 2.9 degrees
   double servo_moved_dead_band_ = 0.05;  // radians, 2.9 degrees
