@@ -85,7 +85,6 @@ class MirteMasterArm(Node):
 
         horiz = axes[self.joy_axis_horizontal]
         vert = axes[self.joy_axis_vertical]
-        self.get_logger().warn(f"vert: {vert}")
         shoulder_changed = False
         shoulder_pan_changed = False
 
@@ -273,7 +272,6 @@ class MirteMasterArm(Node):
         rclpy.shutdown()
 
     def send_servo_request(self, client, angle, name):
-        self.get_logger().warn(f"{name}: {angle}")
         if not client.service_is_ready():
             self.get_logger().warn(f"{name} service not available")
             return
