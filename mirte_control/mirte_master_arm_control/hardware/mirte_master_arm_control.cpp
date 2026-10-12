@@ -117,6 +117,14 @@ bool MirteMasterArmHWInterface::connectServices() {
       [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
              std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
         this->enable = request->data;
+        if (this->enable) {
+          for (auto &servo : servo_data) {
+            // allow sending commands to the servos
+            // So either this service or trajectory enables hw_state and
+            // hw_commands to be sent to the servos
+            servo.started = true;
+          }
+        }
         response->success = true;
         response->message = this->enable ? "Arm/gripper control enabled"
                                          : "Arm/gripper control disabled";
