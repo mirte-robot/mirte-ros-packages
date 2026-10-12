@@ -102,32 +102,34 @@ private:
 
   bool running_ = true;
 
-// The data we store per servo
-struct Servo_data {
-  double data = NAN; // unknown position, so hw_control will also not send 0
-                     // (otherwise default) back.
-  bool init = false;
-  bool moved = false;
-  double last_move_update = -100;
-  double last_request = -100;
-  // timestamp for last commanded position, if it's too old and the position is
-  // different, the servo might be stuck and need to send safe commands to
-  // prevent damage
-  rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
-  bool sent_stuck_command = false; // only send it once to go to the current
-                                   // position (cancel original command)
-  double start_angle = NAN; // if hw_command is equal to this, then don't act on it, when a different angle is received, then do something
-  bool started = false;
-};
+  // The data we store per servo
+  struct Servo_data {
+    double data = NAN; // unknown position, so hw_control will also not send 0
+                       // (otherwise default) back.
+    bool init = false;
+    bool moved = false;
+    double last_move_update = -100;
+    double last_request = -100;
+    // timestamp for last commanded position, if it's too old and the position
+    // is different, the servo might be stuck and need to send safe commands to
+    // prevent damage
+    rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
+    bool sent_stuck_command = false; // only send it once to go to the current
+                                     // position (cancel original command)
+    double start_angle =
+        NAN; // if hw_command is equal to this, then don't act on it, when a
+             // different angle is received, then do something
+    bool started = false;
+  };
 
-// Since the plugin itself is loaded once, the member variables
-// are shared between all instances of the plugin (ie.
-// the arm and the gripper both use the same variables.
-// There content is therefore stored in a map, with the
-// name as key.
-std::vector<Servo_data> servo_data;
-bool initialized;
-int init_steps;
+  // Since the plugin itself is loaded once, the member variables
+  // are shared between all instances of the plugin (ie.
+  // the arm and the gripper both use the same variables.
+  // There content is therefore stored in a map, with the
+  // name as key.
+  std::vector<Servo_data> servo_data;
+  bool initialized;
+  int init_steps;
 
   std::vector<double> _servo_position;
   std::vector<rclcpp::Time> _servo_position_update_time;
@@ -195,8 +197,8 @@ int init_steps;
   bool connectServices();
 
   void updateParams(Params params);
-void set_servo(int i,const rclcpp::Time &time,
-                                 const rclcpp::Duration &period);
+  void set_servo(int i, const rclcpp::Time &time,
+                 const rclcpp::Duration &period);
 }; // class
 
 } // namespace mirte_master_arm_control
