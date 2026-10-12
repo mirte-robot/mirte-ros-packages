@@ -423,6 +423,8 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
     latest_msgs_.push_back(realtime_tools::RealtimeBuffer<Encoder_store>{});
+    latest_msgs_[i].writeFromNonRT({std::make_shared<mirte_msgs::msg::EncoderRad>(),
+                                    0}); // initialize with empty msg
     _last_value.push_back(std::make_shared<mirte_msgs::msg::EncoderRad>());
     _last_wheel_cmd_direction.push_back(0);
     _last_sent_cmd.push_back(-1000);
