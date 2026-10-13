@@ -32,8 +32,9 @@ std::map<std::string, int> init_steps;
 
 // Format of the topics and services
 const auto topic_format = "io/servo/hiwonder/%s/position";
-const auto service_format = "io/servo/hiwonder/%s/set_angle_with_speed";
+const auto service_format = "io/servo/hiwonder/%s/set_angle_with_time";
 const auto enable_format = "enable_arm_control";
+
 hardware_interface::return_type
 MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                                  const rclcpp::Duration &period) {
@@ -52,7 +53,9 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
       for (auto i = 0; i < NUM_SERVOS; i++) {
         hw_commands_[i] = servo_data[info_.name][i].data;
       }
-      if (init_steps[info_.name] == 50) {
+      if (init_steps[info_.name] >=
+          5 * period.seconds()) { // wait for 5 seconds to make sure the
+                                  // servos are initialized
         initialized[info_.name] = true;
       }
     }
@@ -80,13 +83,11 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
         servo.moved = false;
         servo.last_request = service_requests[i]->angle;
         servo.last_command_time = time;
-        service_requests[i]->degrees = false;
-        service_requests[i]->rate = NAN; // use default rate (0.1s target time)
+
+        // giving servo the time to reach the target position.
+        service_requests[i]->time = period.seconds();
         servo.sent_stuck_command = false;
         if (this->enable) {
-          // std::cout << "Sending command to servo " << i
-          //           << ": " << service_requests[i]->angle
-          //           << " (diff: " << diff << ")" << std::endl;
           service_clients[i]->async_send_request(service_requests[i]);
         }
       }
@@ -103,8 +104,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                     i, servo.data, servo.last_request);
         servo.last_command_time = time;
         servo.sent_stuck_command = true; // only do this once
-        service_requests[i]->degrees = false;
-        service_requests[i]->rate = NAN; // use default rate (0.1s target time)
+        service_requests[i]->time = period.seconds();
         // send the current position as command to prevent damage
         service_requests[i]->angle = servo.data;
         if (this->enable) {
@@ -124,29 +124,9 @@ bool MirteMasterArmHWInterface::connectServices() {
     std::string servo_name = joint_name.substr(0, joint_name.size() - 6);
     std::string service_name =
         (boost::format(service_format) % servo_name).str();
-    auto client = nh->create_client<mirte_msgs::srv::SetServoAngleWithSpeed>(
-        service_name);
-    auto MAX_WAIT_TIME = 10;
-    auto wait_time = 0;
-    // while (!client->wait_for_service(1s) && wait_time < MAX_WAIT_TIME) {
-    //   wait_time++;
-    //   if (!rclcpp::ok()) {
-    //     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-    //                  "Interrupted while waiting for the service. Exiting.");
-    //     return false;
-    //   }
-    //   RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
-    //               (boost::format("service %s not available, waiting
-    //               again...") %
-    //                service_name)
-    //                   .str()
-    //                   .c_str());
-    // }
-    // if (wait_time == MAX_WAIT_TIME) {
-    //   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
-    //                "Could not connect to service %s", service_name.c_str());
-    //   return false;
-    // }
+    auto client =
+        nh->create_client<mirte_msgs::srv::SetServoAngleWithTime>(service_name);
+
     service_clients.push_back(client);
   }
   this->enable_arm_service = nh->create_service<std_srvs::srv::SetBool>(
@@ -287,7 +267,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     _servo_position_update_time.push_back(nh->now());
 
     service_requests.push_back(
-        std::make_shared<mirte_msgs::srv::SetServoAngleWithSpeed::Request>());
+        std::make_shared<mirte_msgs::srv::SetServoAngleWithTime::Request>());
   }
   servo_data.insert({info_.name, sd_vector});
 
@@ -375,20 +355,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 
 void MirteMasterArmHWInterface::updateParams(Params params) {
   this->params_ = params;
-  for (auto &service_request : this->service_requests) {
-    // NOTE: This doesnt work as the service_requests are empty at the
-    // beginning.
-    //  NOTE: Also rate doesnt work as wanted, rate is rad/s, but this
-    // is target time.
-    // RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),"Setting
-    // servo_target_time to %f seconds.", params.servo_target_time);
-    // service_request->rate =
-    // std::clamp(static_cast<float>(params.servo_target_time),
-    // 0.01f, 10.0f);
-  }
-  RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
-              "Updated servo_target_time to %f seconds.",
-              params.servo_target_time);
+
   RCLCPP_INFO(rclcpp::get_logger("mirte_master_arm_control"),
               "Updated servo_moved_dead_band to %f radians.",
               params.servo_moved_dead_band);
@@ -397,12 +364,6 @@ void MirteMasterArmHWInterface::updateParams(Params params) {
               params.servo_update_dead_band);
   this->servo_moved_dead_band_ = params.servo_moved_dead_band;
   this->servo_update_dead_band_ = params.servo_update_dead_band;
-  // TODO: make it configurable, right now it's 1s and 2x
-  // servo_update_dead_band_
-
-  // this->servo_stuck_timeout_ =
-  // rclcpp::Duration::from_seconds(params.servo_stuck_timeout);
-  // this->servo_stuck_trigger_diff_ = params.servo_stuck_trigger_diff;
 }
 
 } // namespace mirte_master_arm_control

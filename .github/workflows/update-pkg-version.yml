@@ -31,6 +31,11 @@ jobs:
                                 echo "Version is 0.0.0, not updating package.xml"
                                 exit 1
                         fi
+                        # if it doesnt match the x.y.z format, then we don't want to update the package.xml file
+                        if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                                echo "Version is not in x.y.z format, not updating package.xml bc ROS doesnt like it"
+                                exit 1
+                        fi
                         sudo apt update
                         sudo apt install -y xmlstarlet
                         # get the version from the release tag or from the workflow_dispatch input

@@ -1,0 +1,60 @@
+# config files need to be kept in sync between mirte_bringup and mirte_telemetrix_cpp. 
+# This workflow checks for differences and updates the files in mirte_telemetrix_cpp if needed.
+name: Config Sync
+
+on:
+  push:
+        # paths: # on all pushes to keep error when mirte_telemetrix_cpp is newer than mirte_bringup
+        # - 'mirte_bringup/config/**'
+permissions:
+  contents: write
+
+
+env:
+        file_sync_paths: |
+          mirte_bringup/config/control/mirte_master_arm_control.yaml:mirte_control/mirte_master_arm_control/bringup/config/mirte_master_arm_control.yaml
+          mirte_bringup/config/control/mirte_base_control.yaml:mirte_control/mirte_master_base_control/bringup/config/mirte_base_control.yaml
+          mirte_bringup/config/control/control_master.yaml:mirte_control/mirte_master_base_control/bringup/config/control_master.yaml
+        #   Add all your config files here in the format: source_path:destination_path
+jobs:
+  config-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Sync config files
+        run: |
+                set -xe
+                arr=(${file_sync_paths})
+                #   loop over the file_sync_paths and copy the files from mirte_bringup to mirte_telemetrix_cpp
+                for path in "${arr[@]}"; do
+                        src=$(echo $path | cut -d':' -f1)
+                        dest=$(echo $path | cut -d':' -f2)
+                        echo "Syncing $src to $dest"
+                        # if files same, skip
+                        if cmp -s "$src" "$dest"; then
+                                echo "Files are the same, skipping $src to $dest"
+                                continue
+                        fi
+                        # print error when git date of dest is newer than src
+                        if [ $(git log -1 --format="%ct" -- $dest) -gt $(git log -1 --format="%ct" -- $src) ]; then
+                                echo "Error: $dest is newer than $src. Please update $src first."
+                                exit 1
+                        fi
+                        cp "$src" "$dest"
+                done
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          arr=(${file_sync_paths})
+          #   loop over the file_sync_paths and copy the files from mirte_bringup to mirte_telemetrix_cpp
+          for path in "${arr[@]}"; do
+                dest=$(echo $path | cut -d':' -f2)
+                echo "Adding $dest to git"
+                git add "$dest"
+          done
+          git commit -m "Sync config files from mirte_bringup" || echo "No changes to commit"
+          git push origin HEAD
+        
