@@ -42,9 +42,19 @@ if len(sys.argv) > 0 and sys.argv.count(os.path.basename(__file__)) > 0:
         )
     )
 else:
-    raise RuntimeError(
-        "mirte_teleop teleop_key.launch.py cannot be included. Run directly instead."
+
+    # print with yellow color
+    print(
+        "\n\n\n\n\033[93m"
+        + "Not running teleop_twist_keyboard node as teleop_key.launch.py cannot be included. Run directly instead."
+        + "\033[0m\n\n\n\n"
     )
+
+    # once https://github.com/ros2/launch/pull/996 is backported(or we updated), we can use the following code
+    # currently this would crash ros2 launch, but keep gazebo/other nodes running.
+    # raise RuntimeError(
+    #     "mirte_teleop teleop_key.launch.py cannot be included. Run directly instead."
+    # )
 
 
 def generate_launch_description():
