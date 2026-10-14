@@ -42,11 +42,8 @@ if len(sys.argv) > 0 and sys.argv.count(os.path.basename(__file__)) > 0:
         )
     )
 else:
-    # print with yellow color
-    print(
-        "\033[93m"
-        + "Not running teleop_twist_keyboard node as teleop_key.launch.py cannot be included. Run directly instead."
-        + "\033[0m"
+    raise RuntimeError(
+        "mirte_teleop teleop_key.launch.py cannot be included. Run directly instead."
     )
 
 
