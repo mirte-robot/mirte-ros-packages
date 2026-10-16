@@ -18,6 +18,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                     [](Servo_data &x) { return x.init; })) {
       init_steps++;
       // period is very high the first few rounds until everything is started.
+      // Wait for at least 5 seconds after the servos have sent their position
       if (init_steps >= (5.0 / period.seconds()) && init_steps >= 10) {
         initialized = true;
       }
@@ -40,8 +41,8 @@ void MirteMasterArmHWInterface::set_servo(int i, const rclcpp::Time &time,
   if (std::isnan(hw_commands_[i])) {
     return;
   }
-  // Only set the servo when there is a new command or the servo is moved by
-  // hand or gravity.
+  // Only set the servo when there is a new command or updates from the servo
+  // (eg. user or gravity movements)
   auto diff = std::abs(servo.last_request - hw_commands_[i]);
 
   if (diff > this->servo_update_dead_band_ || servo.moved) {
