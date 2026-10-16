@@ -17,7 +17,8 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
     if (std::all_of(std::begin(servo_data), std::end(servo_data),
                     [](Servo_data &x) { return x.init; })) {
       init_steps++;
-      if (init_steps >= (5.0 / period.seconds())) {
+      // period is very high the first few rounds until everything is started.
+      if (init_steps >= (5.0 / period.seconds()) && init_steps >=10) {
         initialized = true;
       }
     }
@@ -33,21 +34,12 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
   return hardware_interface::return_type::OK;
 }
 
-// hw_commands should be nan until someone sets a command(coming from
-// trajectory-controller), then it will be sent to the servo, and the
-// last_request is updated. hw_commands is nan as hw_state is also nan, when
-// control gets a first command, started will be set to true, then hw_state will
-// also be written otherwise hw_commands = hw_state from the first received
-// angle. With telemetrix restarting, servo moving, etc, this might trigger a
-// send command
 
 void MirteMasterArmHWInterface::set_servo(int i, const rclcpp::Time &time,
                                           const rclcpp::Duration &period) {
   auto &servo = servo_data[i];
   if (std::isnan(hw_commands_[i])) {
     return;
-  } else {
-    servo.started = true;
   }
   // Only set the servo when there is a new command or the servo is moved by
   // hand or gravity.
@@ -117,17 +109,9 @@ bool MirteMasterArmHWInterface::connectServices() {
       [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
              std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
         this->enable = request->data;
-        if (this->enable) {
-          for (auto &servo : servo_data) {
-            // allow sending commands to the servos
-            // So either this service or trajectory enables hw_state and
-            // hw_commands to be sent to the servos
-            servo.started = true;
-          }
-        }
         response->success = true;
-        response->message = this->enable ? "Arm/gripper control enabled"
-                                         : "Arm/gripper control disabled";
+        response->message = this->enable ? info_.name + ": enabled"
+                                         : info_.name + ": disabled";
       });
   return true;
 }
@@ -187,7 +171,7 @@ hardware_interface::return_type
 MirteMasterArmHWInterface::read(const rclcpp::Time &time,
                                 const rclcpp::Duration &period) {
   for (std::size_t joint_id = 0; joint_id < NUM_SERVOS; ++joint_id) {
-    if (servo_data[joint_id].init && servo_data[joint_id].started) {
+    if (servo_data[joint_id].init) {
       // started is set to true when the first command is received, so the servo
       // is actually used, otherwise the hw_states_ is kept at NAN, so the
       // controller will not send a command to it.
@@ -229,7 +213,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
   NUM_SERVOS = info_.joints.size();
   initialized = false;
   init_steps = 0;
-  this->enable = true;
 
   // TODO: As far as I know we are not able to get the nodehandle
   // from the plugin, so we need to start one ourselves.
@@ -243,6 +226,7 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_init(
     param_listener_->setUserCallback(
         [this](const auto &params) { this->updateParams(params); });
     this->updateParams(param_listener_->get_params());
+    this->enable = this->params_.enable_default;
   } catch (const std::exception &e) {
     fprintf(stderr, "Exception thrown during init stage with message: %s \n",
             e.what());
@@ -331,9 +315,6 @@ hardware_interface::CallbackReturn MirteMasterArmHWInterface::on_configure(
 
   // reset values always when configuring hardware
   for (std::size_t i = 0; i < hw_states_.size(); i++) {
-    for (std::size_t j = 0; j < servo_data.size(); j++) {
-      servo_data[j].started = false;
-    }
     hw_states_[i] = NAN;
     hw_commands_[i] = NAN;
   }

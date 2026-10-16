@@ -115,14 +115,8 @@ private:
     rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
     bool sent_stuck_command = false; // only send it once to go to the current
                                      // position (cancel original command)
-    bool started = false;
   };
 
-  // Since the plugin itself is loaded once, the member variables
-  // are shared between all instances of the plugin (ie.
-  // the arm and the gripper both use the same variables.
-  // There content is therefore stored in a map, with the
-  // name as key.
   std::vector<Servo_data> servo_data;
   bool initialized;
   int init_steps;
