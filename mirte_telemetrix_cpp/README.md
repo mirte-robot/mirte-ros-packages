@@ -1,7 +1,5 @@
 # mirte-telemetrix-cpp
 
-```make -k CXX=include-what-you-use CXXFLAGS="-Xiwyu --error_always"```
-
 
 # Feature matrix:
 
@@ -21,7 +19,7 @@
 | **Mirte-master parts** |                           |                      |                                                                                       |
 | hiwonder servo         | ✅                        | ✅                   |                                                                                      |
 | pca9685 pwm            | ✅                        | ✅                   |                                                                                       |
-| ina226                 | ✅                        | ✅                   | shutdown relay not implemented as hw is not working.                                  |
+| ina226                 | ✅                        | ✅                   | 
 | imu                    | ✅                        | ✅                   | mpu9250                                                                               |
 | ledstrip               | ✅                        | ✅                   |                                                                                       |
 | oled module            | ✅                        | ✅                   |                                                                                       |
