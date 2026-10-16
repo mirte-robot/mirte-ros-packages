@@ -18,7 +18,7 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
                     [](Servo_data &x) { return x.init; })) {
       init_steps++;
       // period is very high the first few rounds until everything is started.
-      if (init_steps >= (5.0 / period.seconds()) && init_steps >=10) {
+      if (init_steps >= (5.0 / period.seconds()) && init_steps >= 10) {
         initialized = true;
       }
     }
@@ -33,7 +33,6 @@ MirteMasterArmHWInterface::write(const rclcpp::Time &time,
 
   return hardware_interface::return_type::OK;
 }
-
 
 void MirteMasterArmHWInterface::set_servo(int i, const rclcpp::Time &time,
                                           const rclcpp::Duration &period) {
@@ -110,8 +109,8 @@ bool MirteMasterArmHWInterface::connectServices() {
              std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
         this->enable = request->data;
         response->success = true;
-        response->message = this->enable ? info_.name + ": enabled"
-                                         : info_.name + ": disabled";
+        response->message =
+            this->enable ? info_.name + ": enabled" : info_.name + ": disabled";
       });
   return true;
 }
