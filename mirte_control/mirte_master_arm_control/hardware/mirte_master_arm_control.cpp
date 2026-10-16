@@ -170,11 +170,20 @@ hardware_interface::return_type
 MirteMasterArmHWInterface::read(const rclcpp::Time &time,
                                 const rclcpp::Duration &period) {
   for (std::size_t joint_id = 0; joint_id < NUM_SERVOS; ++joint_id) {
+    // when at least one message has been received, we can set the state to the
+    // servo position
     if (servo_data[joint_id].init) {
-      // started is set to true when the first command is received, so the servo
-      // is actually used, otherwise the hw_states_ is kept at NAN, so the
-      // controller will not send a command to it.
       hw_states_[joint_id] = servo_data[joint_id].data;
+      if (std::isnan(hw_commands_[joint_id])) {
+        // to have reproducible behaviour, if control doesnt set a command, use
+        // the current position.
+        // Otherwise sometimes at boot, hw_commands_[x] = hw_states_[x], and
+        // sometimes not.
+        RCLCPP_INFO(get_logger(),
+                    "Setting hw_commands_[%d] to current position %f", joint_id,
+                    servo_data[joint_id].data);
+        hw_commands_[joint_id] = servo_data[joint_id].data;
+      }
     }
   }
 
