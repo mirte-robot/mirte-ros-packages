@@ -1,0 +1,267 @@
+# See mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/* for all the parameter files and defaults.
+
+/**:
+  ros__parameters:
+    device:
+      mirte:
+        type: pcb
+        version: 0.8
+        board: pico
+        max_frequency: 25
+        port: /dev/ttyACM0
+        frame_prefix: /mirte
+    encoder:
+      x:
+        name: x
+        device: mirte
+        type: quadrature # not read tho, switched by pins.pin or pins.A (and pins.B). Only pins.A is also fine.
+        pins:
+          a: GP16
+          b: GP17
+        ticks: 12
+        inverted: false
+      single_pin:
+        name: single_pin
+        device: mirte
+        type: single # not read tho, switched by pins.pin or pins.A (and pins.B). Only pins.A is also fine.
+        pins:
+          pin: GP22
+        ticks: 12
+      connector:
+        name: connector
+        device: mirte
+        connector: ENC1
+        ticks: 12
+    distance:
+      left:
+        name: left
+        device: mirte
+        pins:
+          trigger: GP26
+          echo: GP27
+        max_distance: 4 # 0.2-10m
+        min_distance: 0.2 #0.01 - 2m
+        unit: m # or cm, then topic is in cm
+        # connector: SRF1
+      
+
+
+
+
+    motor:
+      left:
+        name: left
+        device: mirte
+        type: pp # or dp or ddp
+        pins:
+          p1: GP18
+          p2: GP19
+          # d1: GP14 # when type is dp or ddp
+          # d2: GP15
+        dp_type: normal # or dir_speed, when using direction and speed signal.
+        # Normal (2x inputs, inverted speed if !d1) or dir and speed input (normal, dir_speed)
+        inverted: false # invert speed commands
+        stop_mode: low # low or high, what to set each pin when stopping motor, only for pp motor
+        # connector: MC1
+    servo:
+      left:
+        name: left
+        device: mirte
+        pins:
+          pin: GP20
+        # connector: Servo1
+        min_pulse: 500 # in microseconds, 500-2500
+        max_pulse: 2500 # in microseconds, 500-2500
+        min_angle: 0 # in degrees, 
+        max_angle: 180 # in degrees
+        invert: false # invert angle commands
+        pin_mode: servo # or motor or pwm, Cahnge min/max speed when using motor. PWM is for direct pwm control, use percentage.
+        min_speed: -100 # in percentage, -100-100, only for motor pin_mode
+        max_speed: 100 # in percentage, -100-100, only for motor pin_mode
+        # Motor mode is for continuous rotation servos, or when using a motor driver like an rc motor driver (brushless/brushed ESC)
+
+    keypad:
+      keypad1:
+        name: keypad
+        device: mirte
+        pins:
+          pin: GP21
+        # connector: Keypad1
+
+    oled:
+      oled1:
+        name: oled
+        device: mirte
+        pins:
+          sda: GP0
+          scl: GP1
+        # connector: I2C1  
+        default_screen_script: some_path # can have pkg uri or be an image
+        default_screen_script_update_time: 5.0 # in seconds, how often to update the screen with the script.
+        addr: 0x3C # 0x3C or 0x3D, default is 0x3C
+
+    color:
+      color1:
+        name: color
+        device: mirte
+        pins:
+          sda: GP0
+          scl: GP1
+        # connector: I2C1  
+        addr: 0x29 # 0x29 or 0x39, default is 0x29
+
+    intensity: # this key can also be line, object or raw_data. Uses same param and code, only other topic/service names.
+    # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/analog_digital_parameters.yaml
+      left:
+        name: left
+        device: mirte
+        pins:
+          analog: GP28
+          digital: GP2
+        # connector: Obj1
+
+
+    modules:
+      # defined in the other generate_param lib configuration files:
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/adxl345_parameters.yaml
+      adxl_mod: # 3-axis accelerometer
+        name: adxl_mod
+        device: mirte
+        type: adxl345 # this defines what type it is, not the name.
+        pins:
+          sda: GP0
+          scl: GP1
+        addr: 0x53 # 0x53 or 0x1D, default is 0x53
+        frame_id: imu_link
+        # connector: I2C1
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/as5600_parameters.yaml
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/as5600_sensor_parameters.yaml (encoder list)
+      as5600_mod: # magnetic rotary encoder, with a multiplexer for multiple encoders on the same I2C bus.
+        name: as5600_mod
+        device: mirte
+        type: as5600 # this defines what type it is, not the name.
+        pins:
+          sda: GP0
+          scl: GP1
+        addr: 0x36
+        # connector: I2C1
+        encoders:
+          a:
+            mux: 0 # multiplexer line.
+          b:
+            mux: 1
+      
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/bno055_parameters.yaml
+      bno055_mod: # 9-axis IMU
+        name: bno055_mod
+        device: mirte
+        type: bno055 # this defines what type it is, not the name.
+        pins:
+          sda: GP0
+          scl: GP1
+        addr: 0x28
+        frame_id: imu_link
+        # connector: I2C1
+
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/hiwonder_parameters.yaml
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/hiwonder_servo_parameters.yaml
+      servo_controller:
+        device: mirte
+        type: Hiwonder_Servo
+        pins:
+          rx: 0
+          tx: 1
+        servos:
+          shoulder_pan:
+            id: 2
+            home_out: 12000
+            min_angle_out: 3400
+            max_angle_out: 21000
+            invert: false
+          shoulder_lift:
+            id: 3
+            home_out: 11450
+            min_angle_out: 2832
+            max_angle_out: 20000
+            invert: false
+          
+
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/ina226_parameters.yaml
+      power_watcher:
+        device: mirte
+        type: INA226
+        connector: I2C3
+        addr: 0x40
+        min_voltage: 10.6 # according to the datasheet of Parkside battery.
+        max_current: 5.0
+        max_voltage: 15.0
+        turn_off_time: 200.0 # shutdown service will let it know that it should turn it off when usb power is lost.
+        power_low_time: 20.0 # how long the voltage must be below min_voltage to trigger a power dip
+        percentage_led_pin: GPIO4_B4 # 12 = B4, left-most led on usb switcher pcb
+        shutdown_switch_in_pin: GP27
+        shutdown_relay_pin: GP28
+        shutdown_switch_off_value: true
+        shutdown_relay_off_value: false
+        shutdown_switch_off_time: 2.0
+        # disable_shutdown_relay: false
+        use_percentage_led: true # whether to use LED indicators for power percentage
+
+
+
+
+
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/mpu9250_parameters.yaml
+      movement:
+        device: mirte
+        type: MPU9250 # same config as MPU6050
+        # connector: I2C3
+        pins:
+          sda: GP0
+          scl: GP1
+        frame_id: imu_link
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/neopixel_parameters.yaml
+      leds:
+        type: neopixel
+        pins:
+          data: 6
+        num_pixels: 12
+        default_color: # startup color.
+          r: 255
+          g: 0
+          b: 1
+        data_order: GRB # or RGB, default is GRB, depends on the ledstrip.
+
+      # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/pca_parameters.yaml
+      pca_module_name: 
+        name: pca_module_name
+        type: PCA9685
+        pins:
+          sda: GP0
+          scl: GP1
+        addr: 0x40
+        # connector: I2C1
+        frequency: 100 # 50 for servos.
+        motors:
+        # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/pca_motor_parameters.yaml
+          rear_left:
+            pin_A: 6 #0
+            pin_B: 7 #1
+            invert: false
+        servos:
+          # src/mirte-ros-packages/mirte_telemetrix_cpp/src/parsers/configs/pca_servo_parameters.yaml
+          pin: 1
+          invert: false
+          min_pulse: 500
+          max_pulse: 2500
+          min_angle: 0
+          max_angle: 180
+          pin_mode: servo # or motor or pwm, Cahnge min/max speed when using motor. PWM is for direct pwm control, use percentage.
+          min_speed: -100 # in percentage, -100-100, only for motor pin_mode
+          max_speed: 100 # in percentage, -100-100, only for motor pin_mode
+          # Motor mode is for continuous rotation servos, or when using a motor driver like an rc motor driver (brushless/brushed ESC)
+      
