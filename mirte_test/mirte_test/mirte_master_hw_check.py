@@ -441,30 +441,34 @@ class HWNode(Node):
             return
         print("imu okay!")
 
+    def call_enable_service(self, enable, service_name):
+        enable_client = self.create_client(SetBool, service_name)
+        if not enable_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error("Service %s is not callable" % service_name)
+        else:
+            enable_req = SetBool.Request()
+            enable_req.data = enable
+            fut = enable_client.call_async(enable_req)
+            rclpy.spin_until_future_complete(self, fut)
+            if fut.result() is None:
+                self.get_logger().error(
+                    "Service %s failed, will continue with calibration" % enable_client
+                )
+            return True
+        return False
+
+    def enable_arm_control(self, enable):
+        return self.call_enable_service(
+            enable, "/enable_ros2_arm_control"
+        ) and self.call_enable_service(enable, "/enable_ros2_gripper_control")
+
     def check_servos(self):
         # check if servos are connected
         servos = ["shoulder_pan", "shoulder_lift", "elbow", "wrist"]  # "gripper"
         # check if service exists
-        # call /enable_arm_control
-        enable_service = "/enable_arm_control"
-        # check if service exists
-        if enable_service not in self.all_services:
-            self.get_logger().error("Service %s does not exist" % enable_service)
-            # self.ok = False
-            # return
-        # check if service is callable
-        enable_client = self.create_client(SetBool, enable_service)
-        if not enable_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().error("Service %s is not callable" % enable_service)
-            self.ok = False
-            return
-        # set to true
-        enable_req = SetBool.Request()
-        enable_req.data = False
-        fut = enable_client.call_async(enable_req)
-        rclpy.spin_until_future_complete(self, fut)
-        if fut.result() is None:
-            self.get_logger().error("Service %s failed" % enable_service)
+
+        if not self.enable_arm_control(False):
+            self.get_logger().error("Enable arm service failed")
             self.ok = False
             return
 
@@ -556,11 +560,8 @@ class HWNode(Node):
                 self.ok = False
                 continue
 
-        enable_req.data = True
-        fut = enable_client.call_async(enable_req)
-        rclpy.spin_until_future_complete(self, fut)
-        if fut.result() is None:
-            self.get_logger().error("Service %s failed" % service)
+        if not self.enable_arm_control(True):
+            self.get_logger().error("Enable arm service failed")
             self.ok = False
             return
 

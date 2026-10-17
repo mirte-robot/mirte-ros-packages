@@ -15,6 +15,7 @@ def generate_launch_description():
                 package="mirte_teleop",
                 executable="mirte_master_arm.py",
                 name="mirte_master_arm",
+                parameters=[{}],
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(

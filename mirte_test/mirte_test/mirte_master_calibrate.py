@@ -49,11 +49,10 @@ class CalibrateNode(Node):
             ranges[servo_id]["position"] = msg.raw
             # print("servo_id", servo_id, "position", msg.raw)
 
-    def enable_arm_control(self, enable):
-        enable_service = "/enable_arm_control"
-        enable_client = self.create_client(SetBool, enable_service)
+    def call_enable_service(self, enable, service_name):
+        enable_client = self.create_client(SetBool, service_name)
         if not enable_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().error("Service %s is not callable" % enable_service)
+            self.get_logger().error("Service %s is not callable" % service_name)
         else:
             enable_req = SetBool.Request()
             enable_req.data = enable
@@ -63,6 +62,10 @@ class CalibrateNode(Node):
                 self.get_logger().error(
                     "Service %s failed, will continue with calibration" % enable_client
                 )
+
+    def enable_arm_control(self, enable):
+        self.call_enable_service(enable, "/enable_ros2_arm_control")
+        self.call_enable_service(enable, "/enable_ros2_gripper_control")
 
     def calibrate(self):
         # check existence of all servos and that they have a position

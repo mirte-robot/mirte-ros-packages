@@ -7,6 +7,10 @@ Sample teleoperation launch and scripts for MIRTE pioneer and master.
 This is an ugly hack to get input from the user, the launch file doesn't actually launch. Don't include this one in other launch files!
 
 
+# Arm teleop
+
+To teleop the arm, the script uses the /io/servo/... services. You'll need to disable the ros2_arm_control, either with the /enable_ros2_arm_control service or disable it by setting `enable_default` to `false` in `mirte_bringup/config/control/mirte_master_arm_control.yaml:53`.
+
 ## Teleop joy mm arm:
 Default settings are for an PS4 controller directly connected to the robot.
 Change includes to use xbox controller (probably)

@@ -9,3 +9,9 @@ mirte_master_arm_control:
     default_value: 0.05, # radians, 2.9 degrees
     description: "Dead zone for servo movement in radians, if the servo is moved less than this, the controller will not send a 'new' command.",
   }
+  enable_default: {
+    type: bool,
+    default_value: true, # enable ros-control by default
+    description: "Enable ros-control by default. Set to false if you want to control arm/gripper using the mirte_telemetrix_cpp services. During runtime, call the /enable_ros2_{arm/gripper}_control service to enable/disable.",
+    read_only: true,
+  }

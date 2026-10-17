@@ -367,10 +367,6 @@ void MirteBaseHWInterface::read_settings() {
     this->settings.encoder_topic_format =
         info_.hardware_parameters.at(ENCODER_TOPIC_FORMAT_PARAM_NAME);
   }
-  if (info_.hardware_parameters.count(MAX_ROT_SPEED_PARAM_NAME)) {
-    this->settings.max_rot_speed =
-        std::stod(info_.hardware_parameters.at(MAX_ROT_SPEED_PARAM_NAME));
-  }
 
   // print all settings:
   rclcpp::Logger logger = rclcpp::get_logger("MirteBaseSystemHardware");
@@ -388,7 +384,6 @@ void MirteBaseHWInterface::read_settings() {
                                  << this->settings.cmd_vel_update_deadzone);
   RCLCPP_INFO_STREAM(
       logger, "encoder_topic_format: " << this->settings.encoder_topic_format);
-  RCLCPP_INFO_STREAM(logger, "max_rot_speed: " << this->settings.max_rot_speed);
 }
 
 using namespace std::placeholders;
@@ -423,6 +418,9 @@ MirteBaseHWInterface::on_init(const hardware_interface::HardwareInfo &info) {
   for (size_t i = 0; i < NUM_JOINTS; i++) {
     // _wheel_encoder.push_back(0);
     latest_msgs_.push_back(realtime_tools::RealtimeBuffer<Encoder_store>{});
+    latest_msgs_[i].writeFromNonRT(
+        {std::make_shared<mirte_msgs::msg::EncoderRad>(),
+         0}); // initialize with empty msg
     _last_value.push_back(std::make_shared<mirte_msgs::msg::EncoderRad>());
     _last_wheel_cmd_direction.push_back(0);
     _last_sent_cmd.push_back(-1000);

@@ -84,7 +84,7 @@ public:
    */
   hardware_interface::return_type write(const rclcpp::Time &time,
                                         const rclcpp::Duration &period);
-  // double rad_per_enc_tick() { return 2.0 * M_PI / this->ticks; }
+
   /**
    * Reading encoder values and setting position and velocity of encoders
    */
@@ -95,22 +95,31 @@ public:
   hardware_interface::return_type read(const rclcpp::Time &time,
                                        const rclcpp::Duration &period);
   std::shared_ptr<rclcpp::Node> nh;
-  // rclcpp::Node private_nh;
 
 private:
   int NUM_SERVOS;
 
   bool running_ = true;
 
-  std::vector<double> _servo_position;
-  std::vector<rclcpp::Time> _servo_position_update_time;
-  std::vector<double> _last_cmd;
-  std::vector<double> _last_sent_cmd;
-  std::vector<int> _last_value;
-  std::vector<double> position;
+  // The data we store per servo
+  struct Servo_data {
+    double data = NAN; // unknown position, so hw_control will also not send 0
+                       // (otherwise default) back.
+    bool init = false;
+    bool moved = false;
+    double last_move_update = -100;
+    double last_request = -100;
+    // timestamp for last commanded position, if it's too old and the position
+    // is different, the servo might be stuck and need to send safe commands to
+    // prevent damage
+    rclcpp::Time last_command_time = rclcpp::Time(0, 0, RCL_ROS_TIME);
+    bool sent_stuck_command = false; // only send it once to go to the current
+                                     // position (cancel original command)
+  };
 
-  rclcpp::Time curr_update_time, prev_update_time;
-  rclcpp::Subscription<mirte_msgs::msg::ServoPosition>::SharedPtr subscriber_;
+  std::vector<Servo_data> servo_data;
+  bool initialized;
+  int init_steps;
 
   std::vector<
       std::shared_ptr<rclcpp::Subscription<mirte_msgs::msg::ServoPosition>>>
@@ -149,8 +158,6 @@ private:
   std::jthread ros_thread;
   void ros_spin();
 
-  bool received_servo_data_ = false;
-
   double servo_update_dead_band_ = 0.05; // radians, 2.9 degrees
   double servo_moved_dead_band_ = 0.05;  // radians, 2.9 degrees
 
@@ -168,7 +175,8 @@ private:
   bool connectServices();
 
   void updateParams(Params params);
-
+  void set_servo(int i, const rclcpp::Time &time,
+                 const rclcpp::Duration &period);
 }; // class
 
 } // namespace mirte_master_arm_control

@@ -47,6 +47,11 @@
     servo_target_time: 0.1  # seconds
     servo_update_dead_band: 0.05  # radians
     servo_moved_dead_band: 0.05  # radians
+    
+    # when using other control methods, set to false to disable ros2_control by default. 
+    # During runtime, call the /enable_ros2_{arm/gripper}_control service to enable/disable.
+    # enable_default: false 
+
 
 /**/ros2_gripper_control_hw_interface: # Settings for gripper interface, somehow these are not shared with arm hw interface.
   ros__parameters:
