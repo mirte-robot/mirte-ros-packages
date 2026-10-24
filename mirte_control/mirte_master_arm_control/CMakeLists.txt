@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10)
 project(mirte_master_arm_control)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
