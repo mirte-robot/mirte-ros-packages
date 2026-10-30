@@ -181,7 +181,7 @@ MirteMasterArmHWInterface::read(const rclcpp::Time &time,
         // Otherwise sometimes at boot, hw_commands_[x] = hw_states_[x], and
         // sometimes not.
         RCLCPP_INFO(get_logger(),
-                    "Setting hw_commands_[%d] to current position %f", joint_id,
+                    "Setting hw_commands_[%zu] to current position %f", joint_id,
                     servo_data[joint_id].data);
         hw_commands_[joint_id] = servo_data[joint_id].data;
       }
